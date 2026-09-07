@@ -66,7 +66,7 @@ Netlify serves the frontend from edge locations worldwide and proxies API calls 
    ```toml
    [[redirects]]
      from = "/api/*"
-     to = "https://YOUR-RENDER-NAME.onrender.com/api/:splat"
+     to = "https://vayucoupler-9sfi.onrender.com/api/:splat"
      status = 200
      force = true
    ```
