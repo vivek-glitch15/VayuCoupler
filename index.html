@@ -1454,10 +1454,10 @@
           <div onclick="filterStationsByZone('West Delhi'); openStationPickerModal();" class="surface-card p-3 rounded-xl border border-[#262A26] hover:border-[#383E38] transition cursor-pointer min-w-[140px] shrink-0 flex flex-col gap-1.5">
             <div class="flex items-center justify-between">
               <span class="text-xs font-semibold text-[#EEF0EC]">West Delhi</span>
-              <span class="w-2 h-2 rounded-full bg-[#FF9D7F]"></span>
+              <span id="zone-dot-west" class="w-2 h-2 rounded-full bg-[#FF9D7F]"></span>
             </div>
             <div class="flex items-baseline gap-1.5">
-              <span class="text-xl font-bold font-serif-display text-[#FF9D7F]">431</span>
+              <span id="zone-aqi-west" class="text-xl font-bold font-serif-display text-[#FF9D7F]">431</span>
               <span class="text-[10px] font-mono-data text-[#8C948B]">AQI</span>
             </div>
             <span class="text-[10px] font-mono-data text-[#8C948B]">8 stations</span>
@@ -1466,10 +1466,10 @@
           <div onclick="filterStationsByZone('North Delhi'); openStationPickerModal();" class="surface-card p-3 rounded-xl border border-[#262A26] hover:border-[#383E38] transition cursor-pointer min-w-[140px] shrink-0 flex flex-col gap-1.5">
             <div class="flex items-center justify-between">
               <span class="text-xs font-semibold text-[#EEF0EC]">North Delhi</span>
-              <span class="w-2 h-2 rounded-full bg-[#FF9D7F]"></span>
+              <span id="zone-dot-north" class="w-2 h-2 rounded-full bg-[#FF9D7F]"></span>
             </div>
             <div class="flex items-baseline gap-1.5">
-              <span class="text-xl font-bold font-serif-display text-[#FF9D7F]">424</span>
+              <span id="zone-aqi-north" class="text-xl font-bold font-serif-display text-[#FF9D7F]">424</span>
               <span class="text-[10px] font-mono-data text-[#8C948B]">AQI</span>
             </div>
             <span class="text-[10px] font-mono-data text-[#8C948B]">7 stations</span>
@@ -1478,10 +1478,10 @@
           <div onclick="filterStationsByZone('East Delhi'); openStationPickerModal();" class="surface-card p-3 rounded-xl border border-[#262A26] hover:border-[#383E38] transition cursor-pointer min-w-[140px] shrink-0 flex flex-col gap-1.5">
             <div class="flex items-center justify-between">
               <span class="text-xs font-semibold text-[#EEF0EC]">East Delhi</span>
-              <span class="w-2 h-2 rounded-full bg-[#FF9D7F]"></span>
+              <span id="zone-dot-east" class="w-2 h-2 rounded-full bg-[#FF9D7F]"></span>
             </div>
             <div class="flex items-baseline gap-1.5">
-              <span class="text-xl font-bold font-serif-display text-[#FF9D7F]">438</span>
+              <span id="zone-aqi-east" class="text-xl font-bold font-serif-display text-[#FF9D7F]">438</span>
               <span class="text-[10px] font-mono-data text-[#8C948B]">AQI</span>
             </div>
             <span class="text-[10px] font-mono-data text-[#8C948B]">6 stations</span>
@@ -1490,10 +1490,10 @@
           <div onclick="filterStationsByZone('South Delhi'); openStationPickerModal();" class="surface-card p-3 rounded-xl border border-[#262A26] hover:border-[#383E38] transition cursor-pointer min-w-[140px] shrink-0 flex flex-col gap-1.5">
             <div class="flex items-center justify-between">
               <span class="text-xs font-semibold text-[#EEF0EC]">South Delhi</span>
-              <span class="w-2 h-2 rounded-full bg-[#FFE270]"></span>
+              <span id="zone-dot-south" class="w-2 h-2 rounded-full bg-[#FFE270]"></span>
             </div>
             <div class="flex items-baseline gap-1.5">
-              <span class="text-xl font-bold font-serif-display text-[#FFE270]">386</span>
+              <span id="zone-aqi-south" class="text-xl font-bold font-serif-display text-[#FFE270]">386</span>
               <span class="text-[10px] font-mono-data text-[#8C948B]">AQI</span>
             </div>
             <span class="text-[10px] font-mono-data text-[#8C948B]">9 stations</span>
@@ -1502,10 +1502,10 @@
           <div onclick="filterStationsByZone('Central Delhi'); openStationPickerModal();" class="surface-card p-3 rounded-xl border border-[#262A26] hover:border-[#383E38] transition cursor-pointer min-w-[140px] shrink-0 flex flex-col gap-1.5">
             <div class="flex items-center justify-between">
               <span class="text-xs font-semibold text-[#EEF0EC]">Central Delhi</span>
-              <span class="w-2 h-2 rounded-full bg-[#FF9D7F]"></span>
+              <span id="zone-dot-central" class="w-2 h-2 rounded-full bg-[#FF9D7F]"></span>
             </div>
             <div class="flex items-baseline gap-1.5">
-              <span class="text-xl font-bold font-serif-display text-[#FF9D7F]">412</span>
+              <span id="zone-aqi-central" class="text-xl font-bold font-serif-display text-[#FF9D7F]">412</span>
               <span class="text-[10px] font-mono-data text-[#8C948B]">AQI</span>
             </div>
             <span class="text-[10px] font-mono-data text-[#8C948B]">5 stations</span>
@@ -1514,10 +1514,10 @@
           <div onclick="filterStationsByZone('South West Delhi'); openStationPickerModal();" class="surface-card p-3 rounded-xl border border-[#262A26] hover:border-[#383E38] transition cursor-pointer min-w-[140px] shrink-0 flex flex-col gap-1.5">
             <div class="flex items-center justify-between">
               <span class="text-xs font-semibold text-[#EEF0EC]">SW Delhi</span>
-              <span class="w-2 h-2 rounded-full bg-[#FF9D7F]"></span>
+              <span id="zone-dot-sw" class="w-2 h-2 rounded-full bg-[#FF9D7F]"></span>
             </div>
             <div class="flex items-baseline gap-1.5">
-              <span class="text-xl font-bold font-serif-display text-[#FF9D7F]">408</span>
+              <span id="zone-aqi-sw" class="text-xl font-bold font-serif-display text-[#FF9D7F]">408</span>
               <span class="text-[10px] font-mono-data text-[#8C948B]">AQI</span>
             </div>
             <span class="text-[10px] font-mono-data text-[#8C948B]">6 stations</span>
@@ -1526,10 +1526,10 @@
           <div onclick="filterStationsByZone('NCR'); openStationPickerModal();" class="surface-card p-3 rounded-xl border border-[#262A26] hover:border-[#383E38] transition cursor-pointer min-w-[140px] shrink-0 flex flex-col gap-1.5">
             <div class="flex items-center justify-between">
               <span class="text-xs font-semibold text-[#EEF0EC]">NCR Fringe</span>
-              <span class="w-2 h-2 rounded-full bg-[#FFE270]"></span>
+              <span id="zone-dot-ncr" class="w-2 h-2 rounded-full bg-[#FFE270]"></span>
             </div>
             <div class="flex items-baseline gap-1.5">
-              <span class="text-xl font-bold font-serif-display text-[#FFE270]">394</span>
+              <span id="zone-aqi-ncr" class="text-xl font-bold font-serif-display text-[#FFE270]">394</span>
               <span class="text-[10px] font-mono-data text-[#8C948B]">AQI</span>
             </div>
             <span class="text-[10px] font-mono-data text-[#8C948B]">15 stations</span>
@@ -7180,9 +7180,172 @@
       lucide.createIcons();
     }
 
+    function updateZonesStrip(baseAqi) {
+      const aqi = baseAqi || 431;
+      const zones = [
+        { id: 'west', ratio: 1.0 },
+        { id: 'north', ratio: 0.98 },
+        { id: 'east', ratio: 1.02 },
+        { id: 'south', ratio: 0.89 },
+        { id: 'central', ratio: 0.95 },
+        { id: 'sw', ratio: 0.94 },
+        { id: 'ncr', ratio: 0.91 },
+      ];
+      zones.forEach(z => {
+        const valEl = document.getElementById(`zone-aqi-${z.id}`);
+        const dotEl = document.getElementById(`zone-dot-${z.id}`);
+        if (valEl) {
+          const zAqi = Math.round(aqi * z.ratio);
+          valEl.innerText = zAqi;
+          const color = zAqi > 400 ? '#FF9D7F' : (zAqi > 300 ? '#FFE270' : '#8FFFB0');
+          valEl.style.color = color;
+          if (dotEl) dotEl.style.backgroundColor = color;
+        }
+      });
+    }
+
+    function getCoupledEpisodeMetrics(step) {
+      let aqi, pblh, windSpeed, windDir, temp, vi, fires, pm25, cat, color, stage, advisory;
+      
+      if (step < 24) {
+        const p = step / 24;
+        aqi = Math.round(160 + p * 60);
+        pblh = Math.round(1250 - p * 200);
+        windSpeed = (14.5 - p * 3).toFixed(1);
+        windDir = "WNW";
+        temp = 28 - Math.round(p * 2);
+        fires = Math.round(320 + p * 250);
+      } else if (step < 60) {
+        const p = (step - 24) / 36;
+        aqi = Math.round(220 + p * 160);
+        pblh = Math.round(1050 - p * 550);
+        windSpeed = (11.5 - p * 3).toFixed(1);
+        windDir = "NW";
+        temp = 26 - Math.round(p * 2);
+        fires = Math.round(570 + p * 650);
+      } else if (step < 100) {
+        const p = (step - 60) / 40;
+        aqi = Math.round(380 + p * 75);
+        pblh = Math.round(500 - p * 260);
+        windSpeed = (8.5 - p * 3).toFixed(1);
+        windDir = "NW";
+        temp = 24 - Math.round(p * 2);
+        fires = Math.round(1220 + p * 1100);
+      } else if (step < 135) {
+        const p = (step - 100) / 35;
+        aqi = Math.round(455 + Math.sin(p * Math.PI) * 38);
+        pblh = Math.round(240 - Math.sin(p * Math.PI) * 60);
+        windSpeed = (5.5 - Math.sin(p * Math.PI) * 2).toFixed(1);
+        windDir = "NNW";
+        temp = 22;
+        fires = Math.round(2320 + Math.sin(p * Math.PI) * 450);
+      } else {
+        const p = (step - 135) / 32;
+        aqi = Math.round(455 - p * 270);
+        pblh = Math.round(240 + p * 1100);
+        windSpeed = (5.5 + p * 11).toFixed(1);
+        windDir = "ENE";
+        temp = 25 + Math.round(p * 3);
+        fires = Math.round(2320 - p * 1900);
+      }
+
+      if (typeof VayuForecastEngine !== 'undefined' && VayuForecastEngine.currentStation) {
+        const ratio = (VayuForecastEngine.currentStation.baseAQI || 431) / 431;
+        aqi = Math.round(aqi * ratio);
+      }
+
+      pm25 = Math.round(aqi * 0.65);
+      vi = Math.round(pblh * parseFloat(windSpeed));
+
+      if (aqi > 450) {
+        cat = "EMERGENCY"; color = "#FF708F"; stage = "GRAP IV+";
+        advisory = `Extreme atmospheric crisis. Severe boundary layer stagnation trapping diesel soot and biomass plumes below ${pblh}m.`;
+      } else if (aqi > 400) {
+        cat = "SEVERE"; color = "#FF9D7F"; stage = "GRAP IV";
+        advisory = `Hazardous air quality. Nocturnal temperature inversion trapping trans-boundary stubble smoke below ${pblh}m.`;
+      } else if (aqi > 300) {
+        cat = "VERY POOR"; color = "#FFE270"; stage = "GRAP III";
+        advisory = `Very Poor air quality. Elevated particulate loading; inversion suppressing atmospheric ventilation to ${vi} m²/s.`;
+      } else if (aqi > 200) {
+        cat = "POOR"; color = "#FFE270"; stage = "GRAP II";
+        advisory = `Poor air quality. Ground mixing layer expanding to ${pblh}m during daylight hours.`;
+      } else {
+        cat = "MODERATE"; color = "#8FFFB0"; stage = "GRAP I";
+        advisory = `Favorable dispersion conditions with active atmospheric ventilation across Delhi NCR.`;
+      }
+
+      return { aqi, pblh, windSpeed, windDir, temp, vi, fires, pm25, cat, color, stage, advisory };
+    }
+
+    function applyStepDataLocally(step) {
+      const m = getCoupledEpisodeMetrics(step);
+
+      const mobAqi = document.getElementById('mob-hero-aqi-val');
+      if (mobAqi) { mobAqi.innerText = m.aqi; mobAqi.style.color = m.color; }
+
+      const currAqi = document.getElementById('curr-aqi-val');
+      if (currAqi) currAqi.innerText = m.aqi;
+
+      const mobCat = document.getElementById('mob-hero-category');
+      if (mobCat) {
+        mobCat.innerText = m.cat;
+        mobCat.style.color = m.color;
+        mobCat.style.backgroundColor = m.color + '22';
+        mobCat.style.borderColor = m.color + '44';
+      }
+
+      const mobGrap = document.getElementById('mob-hero-grap-stage');
+      if (mobGrap) {
+        mobGrap.innerText = m.stage;
+        mobGrap.style.color = m.color;
+        mobGrap.style.backgroundColor = m.color + '22';
+      }
+
+      const mobAdv = document.getElementById('mob-hero-advisory');
+      if (mobAdv) mobAdv.innerText = m.advisory;
+
+      const mobTemp = document.getElementById('mob-hero-temp');
+      if (mobTemp) mobTemp.innerText = `${m.temp}°C`;
+
+      const windSpd = document.getElementById('curr-wind-speed');
+      if (windSpd) windSpd.innerText = `${m.windSpeed} km/h`;
+
+      const windDir = document.getElementById('curr-wind-dir');
+      if (windDir) windDir.innerText = m.windDir;
+
+      const pmEl = document.getElementById('curr-pm25-val');
+      if (pmEl) pmEl.innerText = m.pm25;
+
+      const pblEl = document.getElementById('curr-pblh-val');
+      if (pblEl) pblEl.innerHTML = `${m.pblh} <span class="text-[10px] text-slate-400">m</span>`;
+
+      const viEl = document.getElementById('curr-vi-val');
+      if (viEl) viEl.innerHTML = `${m.vi.toLocaleString()} <span class="text-[10px] text-[#8C948B]">m²/s</span>`;
+
+      const fireEl = document.getElementById('curr-fire-count');
+      if (fireEl) fireEl.innerHTML = `${m.fires.toLocaleString()} <span class="text-[10px] text-slate-400">fires</span>`;
+
+      const hdrAqi = document.getElementById('header-aqi-val');
+      if (hdrAqi) hdrAqi.innerText = m.aqi;
+      const hdrSev = document.getElementById('header-aqi-severity');
+      if (hdrSev) hdrSev.innerText = m.cat;
+      const hdrBadge = document.getElementById('header-aqi-badge');
+      if (hdrBadge) {
+        hdrBadge.className = `px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-xl ${m.aqi > 400 ? 'badge-red' : (m.aqi > 300 ? 'badge-orange' : (m.aqi > 200 ? 'badge-yellow' : 'badge-green'))} flex items-center gap-1 text-[11px] sm:text-xs font-mono-data font-bold shadow-sm shrink-0`;
+      }
+
+      updateZonesStrip(m.aqi);
+
+      if (typeof renderCleanAirWindows === 'function') {
+        renderCleanAirWindows();
+      }
+    }
+
     function onScrubChange(val) {
       currentStep = parseInt(val);
-      document.getElementById('step-hour-badge').innerText = `Hour: ${currentStep} / 167`;
+      const badge = document.getElementById('step-hour-badge');
+      if (badge) badge.innerText = `Hour: ${currentStep} / 167`;
+      applyStepDataLocally(currentStep);
       loadCurrentStepData(currentStep);
       checkLiveVoiceAlert(currentStep);
     }
@@ -7238,89 +7401,149 @@
         updateDispatchesView(dispatchesData);
         updateInterStateGrid(snapshotData, grapTriggers);
 
-        lucide.createIcons();
+        if (window.lucide) lucide.createIcons();
       } catch (e) {
         console.warn("API offline or running in standalone static mode. Using coupled physics engine fallback.", e);
-        // Fallback coupled calculation for 100% offline standalone compatibility
-        const aqiVal = Math.round(220 + (step > 60 ? (step - 60) * 3.8 : 0));
-        const pblh = Math.max(220, Math.round(1400 - (step > 40 ? (step - 40) * 12 : 0)));
-        const inv = (Math.sin(step / 12) * 2.5 + 2.5).toFixed(1);
-        const vi = Math.round((pblh * 3.5));
-        
-        document.getElementById('curr-aqi-val').innerText = aqiVal;
-        document.getElementById('curr-pblh-val').innerHTML = `${pblh} <span class="text-[10px] text-slate-400">m</span>`;
-        document.getElementById('curr-inversion-val').innerHTML = `${inv} <span class="text-[10px] text-slate-400">°C</span>`;
-        document.getElementById('curr-vi-val').innerHTML = `${vi} <span class="text-[10px] text-cyan-400">m²/s</span>`;
-        updateInterStateGridFallback(step, aqiVal, pblh);
-        updateForecastFromEngine();
-        updateAttributionPanelFallback();
+        applyStepDataLocally(step);
       }
     }
 
     function updateHeaderAndTelemetry(snap, grap) {
+      if (!snap) return;
       const mobTs = document.getElementById('mobile-timestamp-display');
-      if (mobTs) mobTs.innerText = snap.timestamp.slice(5, 16);
+      if (mobTs && snap.timestamp) mobTs.innerText = snap.timestamp.slice(5, 16);
       
-      document.getElementById('curr-aqi-val').innerText = snap.delhi_ncr_avg_aqi;
-      document.getElementById('curr-pm25-val').innerText = snap.stations[0]?.pm25 || '--';
+      const currAqi = document.getElementById('curr-aqi-val');
+      if (currAqi) currAqi.innerText = snap.delhi_ncr_avg_aqi;
+
+      const currPm25 = document.getElementById('curr-pm25-val');
+      if (currPm25) {
+        const pmVal = (snap.stations && snap.stations.length && snap.stations[0].pm25) ? Math.round(snap.stations[0].pm25) : Math.round(snap.delhi_ncr_avg_aqi * 0.65);
+        currPm25.innerText = pmVal;
+      }
       
       const catBadge = document.getElementById('curr-aqi-category-badge');
-      catBadge.innerText = snap.category;
-      catBadge.style.backgroundColor = snap.category_color + '33';
-      catBadge.style.color = snap.category_color;
-      document.getElementById('aqi-card-border').style.borderLeftColor = snap.category_color;
-
-      const met = snap.meteorology;
-      document.getElementById('curr-vi-val').innerHTML = `${met.ventilation_index_m2s} <span class="text-[10px] text-emerald-400">m²/s</span>`;
-      document.getElementById('curr-vi-status').innerText = met.ventilation_status;
-      if (met.ventilation_index_m2s < 2000) {
-        document.getElementById('curr-vi-status').className = "text-[10px] sm:text-[11px] font-semibold text-rose-400 mt-0.5 truncate";
-      } else {
-        document.getElementById('curr-vi-status').className = "text-[10px] sm:text-[11px] font-semibold text-emerald-300 mt-0.5 truncate";
+      if (catBadge) {
+        catBadge.innerText = snap.category || 'Severe';
+        catBadge.style.backgroundColor = (snap.category_color || '#EF4444') + '33';
+        catBadge.style.color = snap.category_color || '#EF4444';
       }
 
-      document.getElementById('curr-pblh-val').innerHTML = `${met.boundary_layer_height_m} <span class="text-[10px] text-slate-400">m</span>`;
-      const pblhPct = Math.min(100, Math.max(15, (met.boundary_layer_height_m / 1500) * 100));
-      document.getElementById('pblh-bar').style.width = `${pblhPct}%`;
-      document.getElementById('pblh-subtext').innerText = met.boundary_layer_height_m < 500 ? "Severe Trapping" : "Normal Mixing";
+      const aqiBorder = document.getElementById('aqi-card-border');
+      if (aqiBorder && snap.category_color) {
+        aqiBorder.style.borderLeftColor = snap.category_color;
+      }
 
-      document.getElementById('curr-inversion-val').innerHTML = `${met.inversion_strength_c} <span class="text-[10px] text-slate-400">°C</span>`;
-      const trapMult = (1.0 + met.inversion_strength_c * 0.38).toFixed(2);
-      document.getElementById('curr-trapping-status').innerText = `Trapping: ${trapMult}x`;
+      const met = snap.meteorology || {};
+      const viVal = document.getElementById('curr-vi-val');
+      if (viVal && met.ventilation_index_m2s !== undefined) {
+        viVal.innerHTML = `${Math.round(met.ventilation_index_m2s).toLocaleString()} <span class="text-[10px] text-emerald-400">m²/s</span>`;
+      }
+      const viStatus = document.getElementById('curr-vi-status');
+      if (viStatus) {
+        viStatus.innerText = met.ventilation_status || "Evaluating";
+        viStatus.className = (met.ventilation_index_m2s < 2000) 
+          ? "text-[10px] sm:text-[11px] font-semibold text-rose-400 mt-0.5 truncate" 
+          : "text-[10px] sm:text-[11px] font-semibold text-emerald-300 mt-0.5 truncate";
+      }
 
-      document.getElementById('curr-wind-speed').innerText = `${met.wind_speed_kmh} km/h`;
-      document.getElementById('curr-wind-dir').innerText = `${met.wind_direction_cardinal} (${met.wind_direction_deg}°)`;
-      document.getElementById('wind-compass-needle').style.transform = `rotate(${met.wind_direction_deg - 45}deg)`;
-      document.getElementById('map-wind-label').innerText = `NW: ${met.wind_direction_deg}° @ ${met.wind_speed_kmh}k`;
+      const pblhVal = document.getElementById('curr-pblh-val');
+      if (pblhVal && met.boundary_layer_height_m !== undefined) {
+        pblhVal.innerHTML = `${Math.round(met.boundary_layer_height_m)} <span class="text-[10px] text-slate-400">m</span>`;
+      }
+      const pblhBar = document.getElementById('pblh-bar');
+      if (pblhBar && met.boundary_layer_height_m !== undefined) {
+        const pblhPct = Math.min(100, Math.max(15, (met.boundary_layer_height_m / 1500) * 100));
+        pblhBar.style.width = `${pblhPct}%`;
+      }
+      const pblhSub = document.getElementById('pblh-subtext');
+      if (pblhSub) {
+        pblhSub.innerText = met.boundary_layer_height_m < 500 ? "Severe Trapping" : "Normal Mixing";
+      }
 
-      const fires = snap.stubble_burning;
-      document.getElementById('curr-fire-count').innerHTML = `${fires.total_active_fires} <span class="text-[10px] text-slate-400">fires</span>`;
-      document.getElementById('stubble-share-badge').innerText = `Stubble: ${snap.source_attribution.stubble_burning}%`;
+      const invVal = document.getElementById('curr-inversion-val');
+      if (invVal && met.inversion_strength_c !== undefined) {
+        invVal.innerHTML = `${met.inversion_strength_c} <span class="text-[10px] text-slate-400">°C</span>`;
+      }
+      const trapStatus = document.getElementById('curr-trapping-status');
+      if (trapStatus && met.inversion_strength_c !== undefined) {
+        const trapMult = (1.0 + met.inversion_strength_c * 0.38).toFixed(2);
+        trapStatus.innerText = `Trapping: ${trapMult}x`;
+      }
 
-      // Mobile Native Hero Card Sync
+      const windSpeed = document.getElementById('curr-wind-speed');
+      if (windSpeed && met.wind_speed_kmh !== undefined) {
+        windSpeed.innerText = `${met.wind_speed_kmh} km/h`;
+      }
+      const windDir = document.getElementById('curr-wind-dir');
+      if (windDir && met.wind_direction_cardinal) {
+        windDir.innerText = `${met.wind_direction_cardinal} (${met.wind_direction_deg || 0}°)`;
+      }
+      const compassNeedle = document.getElementById('wind-compass-needle');
+      if (compassNeedle && met.wind_direction_deg !== undefined) {
+        compassNeedle.style.transform = `rotate(${met.wind_direction_deg - 45}deg)`;
+      }
+      const mapWindLabel = document.getElementById('map-wind-label');
+      if (mapWindLabel && met.wind_speed_kmh !== undefined) {
+        mapWindLabel.innerText = `${met.wind_direction_cardinal || 'NW'}: ${met.wind_direction_deg || 0}° @ ${met.wind_speed_kmh}k`;
+      }
+
+      const fires = snap.stubble_burning || {};
+      const fireCount = document.getElementById('curr-fire-count');
+      if (fireCount && fires.total_active_fires !== undefined) {
+        fireCount.innerHTML = `${fires.total_active_fires.toLocaleString()} <span class="text-[10px] text-slate-400">fires</span>`;
+      }
+      const stubbleBadge = document.getElementById('stubble-share-badge');
+      if (stubbleBadge && snap.source_attribution) {
+        stubbleBadge.innerText = `Stubble: ${snap.source_attribution.stubble_burning}%`;
+      }
+
+      // Hero Card Live Sync
       const mobAqi = document.getElementById('mob-hero-aqi-val');
       if (mobAqi) {
         mobAqi.innerText = snap.delhi_ncr_avg_aqi;
-        mobAqi.style.color = snap.category_color;
+        mobAqi.style.color = snap.category_color || '#FF9D7F';
       }
       const mobCat = document.getElementById('mob-hero-category');
       if (mobCat) {
         mobCat.innerText = (snap.category || 'Evaluating').toUpperCase();
-        mobCat.style.backgroundColor = snap.category_color + '33';
-        mobCat.style.color = snap.category_color;
+        mobCat.style.backgroundColor = (snap.category_color || '#FF9D7F') + '22';
+        mobCat.style.color = snap.category_color || '#FF9D7F';
+        mobCat.style.borderColor = (snap.category_color || '#FF9D7F') + '44';
       }
-      const mobStation = document.getElementById('mob-hero-station-name');
-      if (mobStation) {
-        mobStation.innerText = selectedStationId ? selectedStationId.replace(/_/g, ' ').toUpperCase() : "Punjabi Bagh, Delhi";
+      const mobGrap = document.getElementById('mob-hero-grap-stage');
+      if (mobGrap) {
+        const stage = grap ? (grap.active_stage_name || grap.active_stage) : (snap.delhi_ncr_avg_aqi > 450 ? 'GRAP IV+' : (snap.delhi_ncr_avg_aqi > 400 ? 'GRAP IV' : (snap.delhi_ncr_avg_aqi > 300 ? 'GRAP III' : 'GRAP II')));
+        mobGrap.innerText = stage || 'GRAP IV';
+      }
+      const mobAdv = document.getElementById('mob-hero-advisory');
+      if (mobAdv) {
+        if (snap.delhi_ncr_avg_aqi > 400) {
+          mobAdv.innerText = `Hazardous air quality. Nocturnal temperature inversion trapping trans-boundary stubble smoke below ${Math.round(met.boundary_layer_height_m || 340)}m.`;
+        } else if (snap.delhi_ncr_avg_aqi > 300) {
+          mobAdv.innerText = `Very Poor air quality. Significant inversion capping ground dispersion with elevated particulate accumulation.`;
+        } else if (snap.delhi_ncr_avg_aqi > 200) {
+          mobAdv.innerText = `Poor air quality. Daylight solar heating expanding boundary layer to ${Math.round(met.boundary_layer_height_m || 800)}m.`;
+        } else {
+          mobAdv.innerText = `Moderate / Favorable dispersion conditions across Delhi NCR corridor.`;
+        }
       }
       const mobTemp = document.getElementById('mob-hero-temp');
-      if (mobTemp && met) mobTemp.innerText = Math.round(met.temperature_c || 30) + '°C';
-      const mobWind = document.getElementById('mob-hero-wind');
-      if (mobWind && met) mobWind.innerText = Math.round(met.wind_speed_kmh || 10) + ' ' + (met.wind_direction_cardinal || 'NW');
-      const mobPm = document.getElementById('mob-hero-pm25');
-      if (mobPm && snap.stations && snap.stations.length) mobPm.innerText = Math.round(snap.stations[0].pm25 || 284);
-      const mobPbl = document.getElementById('mob-hero-pbl');
-      if (mobPbl && met) mobPbl.innerText = Math.round(met.boundary_layer_height_m || 1016) + 'm';
+      if (mobTemp && met.temperature_c !== undefined) {
+        mobTemp.innerText = Math.round(met.temperature_c) + '°C';
+      }
+
+      // Top Header Badge Sync
+      const hdrAqi = document.getElementById('header-aqi-val');
+      if (hdrAqi) hdrAqi.innerText = snap.delhi_ncr_avg_aqi;
+      const hdrSev = document.getElementById('header-aqi-severity');
+      if (hdrSev) hdrSev.innerText = snap.category || 'SEVERE';
+      const hdrBadge = document.getElementById('header-aqi-badge');
+      if (hdrBadge) {
+        hdrBadge.className = `px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-xl ${snap.delhi_ncr_avg_aqi > 400 ? 'badge-red' : (snap.delhi_ncr_avg_aqi > 300 ? 'badge-orange' : (snap.delhi_ncr_avg_aqi > 200 ? 'badge-yellow' : 'badge-green'))} flex items-center gap-1 text-[11px] sm:text-xs font-mono-data font-bold shadow-sm shrink-0`;
+      }
+
+      updateZonesStrip(snap.delhi_ncr_avg_aqi);
     }
 
     function updateMapElements(snap) {
