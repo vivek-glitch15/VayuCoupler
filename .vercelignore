@@ -13,3 +13,5 @@ DEPLOYMENT_GUIDE.md
 PLAN.md
 README.md
 requirements.txt
+android/
+.github/

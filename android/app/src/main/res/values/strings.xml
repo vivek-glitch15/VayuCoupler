@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">VayuCoupler</string>
+    <string name="loading_telemetry">Connecting to MoES Coupled Forecaster...</string>
+    <string name="offline_title">Offline / Connection Error</string>
+    <string name="offline_msg">Unable to connect to VayuCoupler live telemetry. Please check your internet connection.</string>
+    <string name="retry">Retry Connection</string>
+</resources>
