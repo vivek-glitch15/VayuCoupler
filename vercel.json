@@ -1,0 +1,9 @@
+{
+  "version": 2,
+  "outputDirectory": "backend/app/static",
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/static/(.*)", "destination": "/$1" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
