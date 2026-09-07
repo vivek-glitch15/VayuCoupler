@@ -14,8 +14,8 @@
   <link rel="apple-touch-icon" href="/static/apple-touch-icon.png?v=6">
   <link rel="icon" type="image/png" href="/static/icon-192.png?v=6">
   
-  <link rel="stylesheet" href="/static/css/styles.css?v=6">
-  <link rel="stylesheet" href="/static/css/mobile.css?v=6">
+  <link rel="stylesheet" href="/static/css/styles.css?v=8">
+  <link rel="stylesheet" href="/static/css/mobile.css?v=8">
 
   <script>
     (function() {
@@ -734,7 +734,7 @@
   </div>
 
   <!-- ================= APPLICATION SETTINGS MODAL (LANGUAGE & THEME) ================= -->
-  <div id="settings-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-3 sm:p-4">
+  <div id="settings-modal" onclick="if(event.target === this) closeSettingsModal()" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-3 sm:p-4">
     <div class="surface-panel p-4 sm:p-6 rounded-2xl max-w-md w-full border border-[#1c1f1c] shadow-2xl relative flex flex-col gap-4 max-h-[90vh] overflow-y-auto">
       
       <!-- Modal Header -->
@@ -768,7 +768,7 @@
         
         <div class="grid grid-cols-2 gap-2.5 mt-1">
           <!-- Hinglish Option -->
-          <div onclick="VayuSettings.setLanguage('hinglish')" id="opt-lang-hinglish" class="setting-card-option active" role="button" tabindex="0">
+          <div onclick="VayuSettings.stageLanguage('hinglish')" id="opt-lang-hinglish" class="setting-card-option active" role="button" tabindex="0">
             <div class="flex items-center gap-2.5 min-w-0 flex-1">
               <span class="text-xl shrink-0">🇮🇳</span>
               <div class="min-w-0 flex-1">
@@ -784,7 +784,7 @@
           </div>
 
           <!-- English Option -->
-          <div onclick="VayuSettings.setLanguage('en')" id="opt-lang-en" class="setting-card-option" role="button" tabindex="0">
+          <div onclick="VayuSettings.stageLanguage('en')" id="opt-lang-en" class="setting-card-option" role="button" tabindex="0">
             <div class="flex items-center gap-2.5 min-w-0 flex-1">
               <span class="text-xl shrink-0">🇬🇧</span>
               <div class="min-w-0 flex-1">
@@ -813,7 +813,7 @@
         
         <div class="grid grid-cols-2 gap-2.5 mt-1">
           <!-- Dark Mode Option -->
-          <div onclick="VayuSettings.setTheme('dark')" id="opt-theme-dark" class="setting-card-option active" role="button" tabindex="0">
+          <div onclick="VayuSettings.stageTheme('dark')" id="opt-theme-dark" class="setting-card-option active" role="button" tabindex="0">
             <div class="flex items-center gap-2.5 min-w-0 flex-1">
               <span class="text-xl shrink-0">🌙</span>
               <div class="min-w-0 flex-1">
@@ -829,7 +829,7 @@
           </div>
 
           <!-- Light Mode Option -->
-          <div onclick="VayuSettings.setTheme('light')" id="opt-theme-light" class="setting-card-option" role="button" tabindex="0">
+          <div onclick="VayuSettings.stageTheme('light')" id="opt-theme-light" class="setting-card-option" role="button" tabindex="0">
             <div class="flex items-center gap-2.5 min-w-0 flex-1">
               <span class="text-xl shrink-0">☀️</span>
               <div class="min-w-0 flex-1">
@@ -858,8 +858,8 @@
         <span class="text-[10px] font-mono-tag px-2 py-0.5 rounded bg-[#1f3d30] text-[#6fe2a3] font-bold shrink-0">ACTIVE</span>
       </div>
 
-      <!-- Action Footer -->
-      <button onclick="closeSettingsModal()" id="settings-modal-done-btn" class="w-full py-2.5 rounded-xl bg-[#6fe2a3] hover:bg-[#5cd493] text-[#060706] font-bold text-xs transition shadow-md active:scale-98">
+      <!-- Action Footer: Only saves and applies when Done is clicked -->
+      <button onclick="VayuSettings.saveAndApply()" id="settings-modal-done-btn" class="w-full py-2.5 rounded-xl bg-[#6fe2a3] hover:bg-[#5cd493] text-[#060706] font-bold text-xs transition shadow-md active:scale-98">
         ✓ Done
       </button>
 
@@ -930,27 +930,6 @@
   </div>
 
 
-  <!-- Mobile Direct Install Floating Bar (Shows ONLY on initial web visit) -->
-  <div id="mobile-quick-install-bar" class="sm:hidden bg-gradient-to-r from-cyan-950 via-earth-900 to-cyan-900 border-b border-cyan-400/40 px-3 py-2 flex items-center justify-between shadow-2xl w-full max-w-full overflow-hidden">
-    <div class="flex items-center gap-2 min-w-0">
-      <img src="/static/icon-192.png?v=6" class="w-7 h-7 rounded-lg border border-cyan-300 shrink-0">
-      <div class="min-w-0">
-        <div class="text-xs font-bold text-white flex items-center gap-1 truncate">
-          <span>VayuCoupler App</span>
-          <span class="text-[9px] px-1 py-0.2 bg-cyan-500/20 text-cyan-300 rounded font-mono">v2.0</span>
-        </div>
-        <div class="text-[9px] text-cyan-200 truncate">MoES Coupled Air Quality Forecast</div>
-      </div>
-    </div>
-    <div class="flex items-center gap-1.5 shrink-0">
-      <button onclick="triggerNativePwaInstall(); document.getElementById('mobile-quick-install-bar').style.display='none'; localStorage.setItem('vayucoupler_installed', 'true');" class="px-2.5 py-1 rounded-lg bg-cyan-400 text-earth-950 font-bold text-xs shadow-lg shadow-cyan-950 active:scale-95 transition">
-        Install
-      </button>
-      <button onclick="document.getElementById('mobile-quick-install-bar').style.display='none'; localStorage.setItem('vayucoupler_installed', 'true');" class="text-earth-400 p-1">
-        <i data-lucide="x" class="w-3.5 h-3.5"></i>
-      </button>
-    </div>
-  </div>
 
   <!-- ================= TOP APP HEADER ================= -->
   <header class="sticky top-0 z-50 natural-glass border-b border-earth-700/60 w-full max-w-full overflow-hidden">
@@ -959,57 +938,57 @@
     <div class="max-w-[1720px] mx-auto px-3 sm:px-6 py-2 sm:py-2.5 flex items-center justify-between gap-2 sm:gap-4 w-full">
       
       <!-- Identity -->
-      <div class="flex items-center gap-2 sm:gap-2.5 min-w-0">
-        <img src="/static/icon-192.png?v=6" class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl border border-[#1f3d30] shadow-lg object-cover ring-1 ring-[#6fe2a3]/30 shrink-0">
+      <div class="flex items-center gap-2 sm:gap-2.5 min-w-0 shrink-0">
+        <img src="/static/icon-192.png?v=6" class="w-7 h-7 sm:w-9 sm:h-9 rounded-xl border border-[#1f3d30] shadow-lg object-cover ring-1 ring-[#6fe2a3]/30 shrink-0">
         <div class="min-w-0">
-          <h1 class="text-sm sm:text-base font-bold text-white tracking-tight flex items-center gap-1.5 truncate font-serif-display">
+          <h1 class="text-xs sm:text-base font-bold text-white tracking-tight flex items-center gap-1.5 truncate font-serif-display">
             <span>VayuCoupler</span>
             <span class="hidden sm:inline text-xs text-[#8b9390] font-sans-ui font-normal">| Delhi-NCR</span>
             <span class="hidden sm:inline-flex items-center gap-1 text-[10px] font-bold text-[#6fe2a3] bg-[#10201a] px-2 py-0.5 rounded-full border border-[#1f3d30] shrink-0 font-mono-tag">
               <span class="w-1.5 h-1.5 rounded-full bg-[#6fe2a3] animate-pulse"></span> PREDICTIVE GRAP
             </span>
           </h1>
-          <div class="text-[10px] text-[#8b9390] font-medium truncate font-mono-data">MoES Atmospheric Coupled System</div>
+          <div class="text-[10px] text-[#8b9390] font-medium truncate font-mono-data hidden md:block">MoES Atmospheric Coupled System</div>
         </div>
       </div>
 
       <!-- Center / Location Pill & Live AQI Badge -->
-      <div class="flex items-center gap-1.5 sm:gap-2 min-w-0">
+      <div class="flex items-center gap-1 sm:gap-2 min-w-0">
         <!-- Clickable Location Pill (Opens Station Picker) -->
-        <button onclick="openStationPickerModal()" id="header-location-pill" class="px-2.5 py-1.5 rounded-xl bg-[#0f110f] hover:bg-[#141714] border border-[#1c1f1c] hover:border-[#6fe2a3]/40 text-[#f2f5f3] flex items-center gap-1.5 text-xs font-mono-data transition shadow-sm" title="Tap to select another station or refresh GPS">
-          <span class="w-2 h-2 rounded-full bg-[#6fe2a3] animate-pulse shrink-0"></span>
-          <span id="header-station-text" class="font-bold truncate max-w-[120px] sm:max-w-[180px]">Punjabi Bagh (6.2 km)</span>
-          <svg class="w-3 h-3 text-[#8b9390] svg-icon-line shrink-0" viewBox="0 0 24 24" stroke="currentColor"><path d="M6 9l6 6 6-6"/></svg>
+        <button onclick="openStationPickerModal()" id="header-location-pill" class="px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-xl bg-[#0f110f] hover:bg-[#141714] border border-[#1c1f1c] hover:border-[#6fe2a3]/40 text-[#f2f5f3] flex items-center gap-1 sm:gap-1.5 text-[11px] sm:text-xs font-mono-data transition shadow-sm" title="Tap to select another station or refresh GPS">
+          <span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#6fe2a3] animate-pulse shrink-0"></span>
+          <span id="header-station-text" class="font-bold truncate max-w-[90px] xs:max-w-[120px] sm:max-w-[180px]">Punjabi Bagh</span>
+          <svg class="w-2.5 h-2.5 sm:w-3 sm:h-3 text-[#8b9390] svg-icon-line shrink-0" viewBox="0 0 24 24" stroke="currentColor"><path d="M6 9l6 6 6-6"/></svg>
         </button>
 
         <!-- Live AQI Severity Pill -->
-        <div id="header-aqi-badge" class="px-2.5 py-1.5 rounded-xl badge-red flex items-center gap-1.5 text-xs font-mono-data font-bold shadow-sm shrink-0">
-          <span id="header-aqi-val">AQI 431</span>
+        <div id="header-aqi-badge" class="px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-xl badge-red flex items-center gap-1 text-[11px] sm:text-xs font-mono-data font-bold shadow-sm shrink-0">
+          <span id="header-aqi-val">431</span>
           <span class="text-[9px] uppercase text-[#f2966e] hidden sm:inline" id="header-aqi-severity">SEVERE</span>
         </div>
 
         <!-- GPS Re-detect Button -->
-        <button onclick="refreshGPSLocation()" class="w-8 h-8 rounded-xl bg-[#0f110f] hover:bg-[#141714] text-[#6fe2a3] border border-[#1c1f1c] flex items-center justify-center transition shadow-sm shrink-0" title="Detect Exact GPS Coordinates">
-          <svg class="w-3.5 h-3.5 svg-icon-line" viewBox="0 0 24 24" stroke="currentColor"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <button onclick="refreshGPSLocation()" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-[#0f110f] hover:bg-[#141714] text-[#6fe2a3] border border-[#1c1f1c] flex items-center justify-center transition shadow-sm shrink-0" title="Detect Exact GPS Coordinates">
+          <svg class="w-3 h-3 sm:w-3.5 sm:h-3.5 svg-icon-line" viewBox="0 0 24 24" stroke="currentColor"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
         </button>
       </div>
 
-      <!-- Actions: Fullscreen, Alert, Pause, Reset -->
+      <!-- Actions: Settings on mobile, full controls on desktop -->
       <div class="flex items-center gap-1 sm:gap-2 shrink-0">
-        <button onclick="toggleAppFullscreen()" class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-cyan-950/80 hover:bg-cyan-900 text-cyan-300 border border-cyan-700/80 flex items-center justify-center transition shadow-sm" title="Toggle 100% Fullscreen View">
+        <button onclick="toggleAppFullscreen()" class="hidden md:flex w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-cyan-950/80 hover:bg-cyan-900 text-cyan-300 border border-cyan-700/80 items-center justify-center transition shadow-sm" title="Toggle 100% Fullscreen View">
           <i data-lucide="maximize" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-cyan-400"></i>
         </button>
-        <button id="voice-alert-play-btn" onclick="playEmergencyAudio()" class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-emerald-950 hover:bg-emerald-900 text-emerald-300 border border-emerald-700 flex items-center justify-center transition shadow-sm" title="Play Voice Broadcast Alert">
+        <button id="voice-alert-play-btn" onclick="playEmergencyAudio()" class="hidden md:flex w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-emerald-950 hover:bg-emerald-900 text-emerald-300 border border-emerald-700 items-center justify-center transition shadow-sm" title="Play Voice Broadcast Alert">
           <i data-lucide="volume-2" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-400"></i>
         </button>
-        <button id="voice-pause-btn" onclick="pauseOrResumeVoiceAlert()" class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-amber-950 hover:bg-amber-900 text-amber-300 border border-amber-800/80 flex items-center justify-center transition shadow-sm" title="Pause / Resume Live Voice Alert">
+        <button id="voice-pause-btn" onclick="pauseOrResumeVoiceAlert()" class="hidden md:flex w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-amber-950 hover:bg-amber-900 text-amber-300 border border-amber-800/80 items-center justify-center transition shadow-sm" title="Pause / Resume Live Voice Alert">
           <i data-lucide="pause" id="voice-pause-icon" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-400"></i>
         </button>
-        <button onclick="resetSimulation()" class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-earth-850 hover:bg-earth-800 text-emerald-300 border border-earth-700 flex items-center justify-center transition shadow-sm" title="Reset Episode">
+        <button onclick="resetSimulation()" class="hidden md:flex w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-earth-850 hover:bg-earth-800 text-emerald-300 border border-earth-700 items-center justify-center transition shadow-sm" title="Reset Episode">
           <i data-lucide="rotate-ccw" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-400"></i>
         </button>
-        <button onclick="openSettingsModal()" id="header-settings-btn" class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 border border-slate-700/80 flex items-center justify-center transition shadow-sm shrink-0" title="System Settings (Language & Theme)">
-          <i data-lucide="settings" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-400"></i>
+        <button onclick="openSettingsModal()" id="header-settings-btn" class="w-7 h-7 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 border border-slate-700/80 flex items-center justify-center transition shadow-sm shrink-0" title="System Settings (Language & Theme)">
+          <i data-lucide="settings" class="w-3 h-3 sm:w-4 sm:h-4 text-emerald-400"></i>
         </button>
       </div>
 
@@ -1086,7 +1065,7 @@
       <!-- Presets Row (Wrapped in strict overflow-x-auto min-w-0) -->
       <div class="w-full md:w-auto min-w-0 overflow-x-auto pb-0.5 no-scrollbar">
         <div class="flex items-center gap-1.5 w-max text-[11px] font-medium">
-          <button id="live-voice-toggle-btn" onclick="toggleLiveVoiceAlerts()" class="px-2 py-1 rounded-lg bg-emerald-950/90 hover:bg-emerald-900 text-emerald-300 border border-emerald-700/80 text-[10px] sm:text-[11px] font-bold flex items-center gap-1 shadow-sm transition shrink-0" title="Toggle Continuous Live Spoken Alerts">
+          <button id="live-voice-toggle-btn" onclick="toggleLiveVoiceAlerts()" class="hidden md:flex px-2 py-1 rounded-lg bg-emerald-950/90 hover:bg-emerald-900 text-emerald-300 border border-emerald-700/80 text-[10px] sm:text-[11px] font-bold items-center gap-1 shadow-sm transition shrink-0" title="Toggle Continuous Live Spoken Alerts">
             <span id="voice-pulse-dot" class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
             <span id="voice-toggle-label">Live Voice: ON</span>
           </button>
@@ -1239,8 +1218,87 @@
     <!-- === TAB 1: COMMAND CENTER (MAP + FORECAST + ATTRIBUTION) === -->
     <div id="panel-overview" class="tab-panel flex flex-col gap-3 sm:gap-6 w-full min-w-0">
 
-      <!-- 1. NATURAL TELEMETRY BAR (Inside Command Center Tab Only) -->
-      <section class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3.5 w-full min-w-0">
+      <!-- ================= MOBILE APP NATIVE HERO & GLANCE CARD (< md) ================= -->
+      <div class="md:hidden flex flex-col gap-3 w-full" id="mobile-hero-container">
+        
+        <!-- Main AQI Hero Card -->
+        <div class="natural-glass p-4 rounded-3xl border border-earth-700/80 shadow-2xl flex flex-col gap-3.5 relative overflow-hidden bg-gradient-to-b from-earth-900/90 to-earth-950/95">
+          
+          <!-- Top Row: Location & Live Pulse -->
+          <div class="flex items-center justify-between">
+            <button onclick="openStationPickerModal()" class="flex items-center gap-1.5 text-xs text-earth-300 font-mono bg-earth-950/80 px-2.5 py-1 rounded-xl border border-earth-800">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span id="mob-hero-station-name" class="font-bold text-white text-xs truncate max-w-[170px]">Punjabi Bagh, Delhi</span>
+              <svg class="w-3 h-3 text-earth-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <span id="mob-hero-category" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-950 text-rose-300 border border-rose-800 uppercase font-mono tracking-wider">SEVERE</span>
+          </div>
+
+          <!-- Central AQI Value & Gauge -->
+          <div class="flex items-center justify-between py-1">
+            <div>
+              <div class="text-[11px] font-mono text-earth-400 font-semibold uppercase tracking-wider">Real-Time Coupled AQI</div>
+              <div class="flex items-baseline gap-2">
+                <span id="mob-hero-aqi-val" class="text-5xl font-black font-mono tracking-tight text-rose-400">431</span>
+                <span class="text-xs font-mono text-earth-400 font-bold">NAQI</span>
+              </div>
+              <div id="mob-hero-advisory" class="text-xs text-earth-200 mt-1 font-medium leading-snug">
+                ⚠️ Hazardous air quality. Inversion trapping stubble smoke plume.
+              </div>
+            </div>
+            
+            <!-- Stage IV Circular Shield Badge -->
+            <div class="w-16 h-16 rounded-2xl bg-earth-950 border border-rose-600/60 flex flex-col items-center justify-center text-center shadow-lg shrink-0">
+              <span class="text-[9px] text-earth-400 font-mono font-bold">GRAP</span>
+              <span id="mob-hero-grap-stage" class="text-xl font-black text-rose-400 font-mono">IV</span>
+              <span class="text-[8px] text-rose-300 uppercase font-mono">CURBS</span>
+            </div>
+          </div>
+
+          <!-- Quick 4-Metric Glance Grid -->
+          <div class="grid grid-cols-4 gap-1.5 pt-2.5 border-t border-earth-700/60 text-center font-mono">
+            <div class="bg-earth-950/70 p-2 rounded-xl border border-earth-800/80">
+              <div class="text-[9px] text-earth-400">TEMP</div>
+              <div id="mob-hero-temp" class="text-xs font-bold text-white">30°C</div>
+            </div>
+            <div class="bg-earth-950/70 p-2 rounded-xl border border-earth-800/80">
+              <div class="text-[9px] text-earth-400">WIND</div>
+              <div id="mob-hero-wind" class="text-xs font-bold text-teal-300">10 NW</div>
+            </div>
+            <div class="bg-earth-950/70 p-2 rounded-xl border border-earth-800/80">
+              <div class="text-[9px] text-earth-400">PM2.5</div>
+              <div id="mob-hero-pm25" class="text-xs font-bold text-rose-300">284</div>
+            </div>
+            <div class="bg-earth-950/70 p-2 rounded-xl border border-earth-800/80">
+              <div class="text-[9px] text-earth-400">PBL</div>
+              <div id="mob-hero-pbl" class="text-xs font-bold text-sky-300">1016m</div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Pre-emptive Action Banner (Mobile) -->
+        <div class="bg-gradient-to-r from-rose-950/80 to-earth-900/90 border border-rose-700/60 p-3 rounded-2xl flex items-center justify-between shadow-lg">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <span class="p-2 rounded-xl bg-rose-900/80 text-rose-300 border border-rose-700 shrink-0">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </span>
+            <div class="min-w-0">
+              <div class="text-xs font-bold text-white flex items-center gap-1.5">
+                <span>Predictive GRAP Stage IV Active</span>
+              </div>
+              <div class="text-[10px] text-rose-200 truncate">Odd-even, construction stop, diesel truck ban in force</div>
+            </div>
+          </div>
+          <button onclick="switchTab('grap')" class="text-[11px] font-bold text-rose-300 bg-rose-900/70 hover:bg-rose-900 px-2.5 py-1.5 rounded-xl border border-rose-700 shrink-0 transition">
+            View Curbs
+          </button>
+        </div>
+
+      </div>
+
+      <!-- 1. NATURAL TELEMETRY BAR (Desktop View >= md Only) -->
+      <section class="hidden md:grid md:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3.5 w-full min-w-0">
         
         <!-- Card 1: Regional AQI -->
         <div class="natural-glass p-2.5 sm:p-4 rounded-xl sm:rounded-2xl flex flex-col justify-between border-l-4 min-w-0 overflow-hidden" id="aqi-card-border" style="border-left-color: #EF4444;">
@@ -1515,33 +1573,34 @@
         <!-- Right: Forecast Curve + Source Attribution (5 Cols) -->
         <div class="lg:col-span-5 flex flex-col gap-4 sm:gap-6">
           
-          <div class="natural-glass p-4 sm:p-5 rounded-3xl flex flex-col shadow-xl shadow-earth-950/40">
-            <div class="flex items-center justify-between mb-3 pb-2 border-b border-earth-700/60">
-              <div>
-                <h2 class="text-sm sm:text-base font-bold text-white flex items-center gap-2">
-                  <i data-lucide="trending-up" class="w-4 h-4 text-sky-400"></i> Coupled 72-Hour Forecast
+          <div class="natural-glass p-3.5 sm:p-5 rounded-3xl flex flex-col shadow-xl shadow-earth-950/40">
+            <div class="flex items-center justify-between gap-2 mb-3 pb-2 border-b border-earth-700/60">
+              <div class="min-w-0 flex-1">
+                <h2 class="text-sm sm:text-base font-bold text-white flex items-center gap-1.5 truncate">
+                  <i data-lucide="trending-up" class="w-4 h-4 text-sky-400 shrink-0"></i> 
+                  <span class="truncate">Coupled 72-Hour Forecast</span>
                 </h2>
-                <p class="text-[11px] text-earth-300/75">Physics modulated with Boundary Layer & Inversion</p>
+                <p class="text-[10px] sm:text-[11px] text-earth-300/75 truncate">Physics modulated with Boundary Layer & Inversion</p>
               </div>
-              <span class="text-[10px] font-mono text-emerald-300 bg-emerald-950/90 px-2 py-1 rounded-lg border border-emerald-800" id="forecast-station-badge">Anand Vihar</span>
+              <span class="text-[10px] font-mono text-emerald-300 bg-emerald-950/90 px-2 py-1 rounded-lg border border-emerald-800 shrink-0 max-w-[125px] truncate text-right" id="forecast-station-badge">Punjabi Bagh</span>
             </div>
 
             <!-- Milestone Forecast Badges -->
-            <div class="grid grid-cols-3 gap-2 my-1.5">
-              <div class="p-2.5 rounded-2xl bg-earth-950/90 border border-earth-700 text-center">
-                <span class="text-[9px] font-bold text-earth-300 uppercase font-mono">+24h Lead</span>
-                <span class="text-xl sm:text-2xl font-black font-mono my-0.5 block" id="fc-24h-val">--</span>
-                <span class="text-[9px] px-1.5 py-0.5 rounded-full font-semibold inline-block truncate max-w-full" id="fc-24h-cat">Loading...</span>
+            <div class="grid grid-cols-3 gap-1.5 sm:gap-2 my-1.5">
+              <div class="p-2 sm:p-2.5 rounded-2xl bg-earth-950/90 border border-earth-700 text-center min-w-0 overflow-hidden">
+                <span class="text-[8px] sm:text-[9px] font-bold text-earth-300 uppercase font-mono truncate block">+24h Lead</span>
+                <span class="text-lg sm:text-2xl font-black font-mono my-0.5 block truncate" id="fc-24h-val">--</span>
+                <span class="text-[8px] sm:text-[9px] px-1.5 py-0.5 rounded-full font-semibold inline-block truncate max-w-full" id="fc-24h-cat">Loading...</span>
               </div>
-              <div class="p-2.5 rounded-2xl bg-earth-950/90 border border-emerald-700/80 text-center ring-1 ring-emerald-400/30">
-                <span class="text-[9px] font-bold text-emerald-400 uppercase font-mono">+48h Lead ⚡</span>
-                <span class="text-xl sm:text-2xl font-black font-mono text-emerald-300 my-0.5 block" id="fc-48h-val">--</span>
-                <span class="text-[9px] px-1.5 py-0.5 rounded-full font-semibold inline-block truncate max-w-full" id="fc-48h-cat">Loading...</span>
+              <div class="p-2 sm:p-2.5 rounded-2xl bg-earth-950/90 border border-emerald-700/80 text-center ring-1 ring-emerald-400/30 min-w-0 overflow-hidden">
+                <span class="text-[8px] sm:text-[9px] font-bold text-emerald-400 uppercase font-mono truncate block">+48h Lead ⚡</span>
+                <span class="text-lg sm:text-2xl font-black font-mono text-emerald-300 my-0.5 block truncate" id="fc-48h-val">--</span>
+                <span class="text-[8px] sm:text-[9px] px-1.5 py-0.5 rounded-full font-semibold inline-block truncate max-w-full" id="fc-48h-cat">Loading...</span>
               </div>
-              <div class="p-2.5 rounded-2xl bg-earth-950/90 border border-earth-700 text-center">
-                <span class="text-[9px] font-bold text-purple-300 uppercase font-mono">+72h Lead</span>
-                <span class="text-xl sm:text-2xl font-black font-mono my-0.5 block" id="fc-72h-val">--</span>
-                <span class="text-[9px] px-1.5 py-0.5 rounded-full font-semibold inline-block truncate max-w-full" id="fc-72h-cat">Loading...</span>
+              <div class="p-2 sm:p-2.5 rounded-2xl bg-earth-950/90 border border-earth-700 text-center min-w-0 overflow-hidden">
+                <span class="text-[8px] sm:text-[9px] font-bold text-purple-300 uppercase font-mono truncate block">+72h Lead</span>
+                <span class="text-lg sm:text-2xl font-black font-mono my-0.5 block truncate" id="fc-72h-val">--</span>
+                <span class="text-[8px] sm:text-[9px] px-1.5 py-0.5 rounded-full font-semibold inline-block truncate max-w-full" id="fc-72h-cat">Loading...</span>
               </div>
             </div>
 
@@ -2973,7 +3032,7 @@
   <nav class="md:hidden mobile-nav-bar pb-safe" aria-label="Mobile Navigation">
     <button onclick="switchTab('overview')" id="mob-tab-overview" class="mobile-nav-item active" title="Command Center">
       <svg class="svg-icon-line" viewBox="0 0 24 24" stroke="currentColor"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-      <span>Command</span>
+      <span>Overview</span>
     </button>
     <button onclick="switchTab('weather')" id="mob-tab-weather" class="mobile-nav-item" title="Live Weather">
       <svg class="svg-icon-line" viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
@@ -2981,27 +3040,15 @@
     </button>
     <button onclick="switchTab('grap')" id="mob-tab-grap" class="mobile-nav-item" title="Predictive Action Plan">
       <svg class="svg-icon-line" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-      <span>Predictive</span>
-    </button>
-    <button onclick="switchTab('copilot')" id="mob-tab-copilot" class="mobile-nav-item" title="VayuAI Assistant">
-      <svg class="svg-icon-line" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
-      <span>VayuAI</span>
-    </button>
-    <button onclick="switchTab('whatif')" id="mob-tab-whatif" class="mobile-nav-item" title="What-If Sim">
-      <svg class="svg-icon-line" viewBox="0 0 24 24" stroke="currentColor"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
-      <span>What-If</span>
-    </button>
-    <button onclick="switchTab('dispatches')" id="mob-tab-dispatches" class="mobile-nav-item" title="Dispatches Center">
-      <svg class="svg-icon-line" viewBox="0 0 24 24" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-      <span>Dispatches</span>
+      <span>GRAP</span>
     </button>
     <button onclick="switchTab('commute')" id="mob-tab-commute" class="mobile-nav-item" title="Safe Commute">
       <svg class="svg-icon-line" viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
       <span>Commute</span>
     </button>
-    <button onclick="openMobileAppModal()" id="mob-tab-install" class="mobile-nav-item mobile-nav-install" title="Download App">
-      <svg class="svg-icon-line animate-bounce" viewBox="0 0 24 24" stroke="currentColor"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
-      <span>Install</span>
+    <button onclick="switchTab('copilot')" id="mob-tab-copilot" class="mobile-nav-item" title="VayuAI Assistant">
+      <svg class="svg-icon-line" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+      <span>VayuAI</span>
     </button>
   </nav>
 
@@ -3150,7 +3197,7 @@
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         checkIfInstalled();
-        navigator.serviceWorker.register('/static/sw.js?v=6').then(reg => {
+        navigator.serviceWorker.register('/static/sw.js?v=8').then(reg => {
           reg.update();
         }).catch(err => console.log('SW registration error', err));
       });
@@ -4362,6 +4409,11 @@
         selectedStationId = station.id;
         const fcStationBadge = document.getElementById('forecast-station-badge');
         if (fcStationBadge) fcStationBadge.innerText = station.name;
+
+        // Hydrate 72-Hour Forecast Panel & Milestone Badges
+        if (typeof updateForecastFromEngine === 'function') {
+          updateForecastFromEngine(station);
+        }
 
         // Show animated toast banner
         if (showToast) {
@@ -5811,8 +5863,12 @@
     const VayuSettings = {
       language: localStorage.getItem('vayu_language') || 'en',
       theme: localStorage.getItem('vayu_theme') || 'dark',
+      pendingLanguage: null,
+      pendingTheme: null,
 
       init() {
+        this.pendingLanguage = this.language;
+        this.pendingTheme = this.theme;
         this.applyTheme(this.theme);
         this.applyLanguage(this.language);
         this.updateModalUI();
@@ -5820,6 +5876,7 @@
 
       setLanguage(lang) {
         this.language = lang;
+        this.pendingLanguage = lang;
         localStorage.setItem('vayu_language', lang);
         this.applyLanguage(lang);
         this.updateModalUI();
@@ -5827,8 +5884,52 @@
 
       setTheme(theme) {
         this.theme = theme;
+        this.pendingTheme = theme;
         localStorage.setItem('vayu_theme', theme);
         this.applyTheme(theme);
+        this.updateModalUI();
+      },
+
+      // Staged selection inside the Settings Modal (does NOT save or apply until "✓ Done" is clicked)
+      stageLanguage(lang) {
+        this.pendingLanguage = lang;
+        this.updateModalUI();
+      },
+
+      stageTheme(theme) {
+        this.pendingTheme = theme;
+        this.updateModalUI();
+      },
+
+      // Save & Apply when user clicks "✓ Done"
+      saveAndApply() {
+        const langToSave = this.pendingLanguage || this.language;
+        const themeToSave = this.pendingTheme || this.theme;
+
+        const langChanged = (langToSave !== this.language);
+        const themeChanged = (themeToSave !== this.theme);
+
+        this.language = langToSave;
+        this.theme = themeToSave;
+
+        localStorage.setItem('vayu_language', this.language);
+        localStorage.setItem('vayu_theme', this.theme);
+
+        if (themeChanged) {
+          this.applyTheme(this.theme);
+        }
+        if (langChanged) {
+          this.applyLanguage(this.language);
+        }
+
+        const modal = document.getElementById('settings-modal');
+        if (modal) modal.classList.add('hidden');
+      },
+
+      // Discard pending selections when dismissed via ✕ or background click
+      discardPending() {
+        this.pendingLanguage = this.language;
+        this.pendingTheme = this.theme;
         this.updateModalUI();
       },
 
@@ -5877,7 +5978,7 @@
 
         if (modalTitle) modalTitle.innerText = isEn ? "System Settings" : "सिस्टम सेटिंग्स";
         if (modalSub) modalSub.innerText = isEn ? "Language, AI conversational style & visual appearance" : "भाषा, AI बातचीत शैली और थीम सेटिंग्स";
-        if (activeLangBadge) activeLangBadge.innerText = isEn ? "ENGLISH ACTIVE" : "HINDI / HINGLISH ACTIVE";
+        if (activeLangBadge) activeLangBadge.innerText = isEn ? "ENGLISH ACTIVE" : "HINGLISH ACTIVE";
         if (modalDone) modalDone.innerText = isEn ? "✓ Done" : "✓ सहेजें";
         if (headerBtn) headerBtn.title = isEn ? "System Settings (Language & Theme)" : "सिस्टम सेटिंग्स (भाषा और थीम)";
 
@@ -5891,11 +5992,15 @@
       },
 
       updateModalUI() {
-        const isEn = this.language === 'en';
-        const isLight = this.theme === 'light';
+        const langToDisplay = this.pendingLanguage || this.language;
+        const themeToDisplay = this.pendingTheme || this.theme;
+
+        const isEn = langToDisplay === 'en';
+        const isLight = themeToDisplay === 'light';
 
         const optHinglish = document.getElementById('opt-lang-hinglish');
         const optEn = document.getElementById('opt-lang-en');
+        const activeLangBadge = document.getElementById('settings-active-lang-badge');
         if (optHinglish && optEn) {
           if (isEn) {
             optEn.classList.add('active');
@@ -5903,6 +6008,13 @@
           } else {
             optHinglish.classList.add('active');
             optEn.classList.remove('active');
+          }
+        }
+        if (activeLangBadge) {
+          if (langToDisplay !== this.language) {
+            activeLangBadge.innerText = isEn ? "ENGLISH (UNSAVED)" : "HINGLISH (UNSAVED)";
+          } else {
+            activeLangBadge.innerText = isEn ? "ENGLISH ACTIVE" : "HINGLISH ACTIVE";
           }
         }
 
@@ -5913,11 +6025,11 @@
           if (isLight) {
             optLight.classList.add('active');
             optDark.classList.remove('active');
-            if (activeThemeBadge) activeThemeBadge.innerText = "LIGHT MODE";
+            if (activeThemeBadge) activeThemeBadge.innerText = (themeToDisplay !== this.theme) ? "LIGHT (UNSAVED)" : "LIGHT MODE";
           } else {
             optDark.classList.add('active');
             optLight.classList.remove('active');
-            if (activeThemeBadge) activeThemeBadge.innerText = "DARK MODE";
+            if (activeThemeBadge) activeThemeBadge.innerText = (themeToDisplay !== this.theme) ? "DARK (UNSAVED)" : "DARK MODE";
           }
         }
       }
@@ -5927,13 +6039,22 @@
       const modal = document.getElementById('settings-modal');
       if (modal) {
         modal.classList.remove('hidden');
-        if (typeof VayuSettings !== 'undefined') VayuSettings.updateModalUI();
+        if (typeof VayuSettings !== 'undefined') {
+          VayuSettings.pendingLanguage = VayuSettings.language;
+          VayuSettings.pendingTheme = VayuSettings.theme;
+          VayuSettings.updateModalUI();
+        }
       }
     }
 
     function closeSettingsModal() {
       const modal = document.getElementById('settings-modal');
-      if (modal) modal.classList.add('hidden');
+      if (modal) {
+        modal.classList.add('hidden');
+        if (typeof VayuSettings !== 'undefined') {
+          VayuSettings.discardPending();
+        }
+      }
     }
 
     // ==========================================================================
@@ -6723,6 +6844,14 @@
       lucide.createIcons();
       VayuForecastEngine.init();
       VayuLocationService.init();
+
+      // Immediate zero-latency hydration of forecast & source attribution
+      if (typeof updateForecastFromEngine === 'function') {
+        updateForecastFromEngine();
+      }
+      if (typeof updateAttributionPanelFallback === 'function') {
+        updateAttributionPanelFallback();
+      }
       VayuSplashScreen.init();
       VayuPredictiveTimeline.render();
       VayuDispatchesCenter.render();
@@ -6774,6 +6903,10 @@
       if (target) {
         target.classList.remove('hidden');
         target.style.display = 'flex';
+      }
+
+      if (tabId === 'overview' && typeof VayuAtmosphericMap !== 'undefined' && typeof VayuAtmosphericMap.resumeWindAnimation === 'function') {
+        VayuAtmosphericMap.resumeWindAnimation();
       }
 
       updateNavTabStyles();
@@ -6972,6 +7105,8 @@
         document.getElementById('curr-inversion-val').innerHTML = `${inv} <span class="text-[10px] text-slate-400">°C</span>`;
         document.getElementById('curr-vi-val').innerHTML = `${vi} <span class="text-[10px] text-cyan-400">m²/s</span>`;
         updateInterStateGridFallback(step, aqiVal, pblh);
+        updateForecastFromEngine();
+        updateAttributionPanelFallback();
       }
     }
 
@@ -7014,6 +7149,31 @@
       const fires = snap.stubble_burning;
       document.getElementById('curr-fire-count').innerHTML = `${fires.total_active_fires} <span class="text-[10px] text-slate-400">fires</span>`;
       document.getElementById('stubble-share-badge').innerText = `Stubble: ${snap.source_attribution.stubble_burning}%`;
+
+      // Mobile Native Hero Card Sync
+      const mobAqi = document.getElementById('mob-hero-aqi-val');
+      if (mobAqi) {
+        mobAqi.innerText = snap.delhi_ncr_avg_aqi;
+        mobAqi.style.color = snap.category_color;
+      }
+      const mobCat = document.getElementById('mob-hero-category');
+      if (mobCat) {
+        mobCat.innerText = (snap.category || 'Evaluating').toUpperCase();
+        mobCat.style.backgroundColor = snap.category_color + '33';
+        mobCat.style.color = snap.category_color;
+      }
+      const mobStation = document.getElementById('mob-hero-station-name');
+      if (mobStation) {
+        mobStation.innerText = selectedStationId ? selectedStationId.replace(/_/g, ' ').toUpperCase() : "Punjabi Bagh, Delhi";
+      }
+      const mobTemp = document.getElementById('mob-hero-temp');
+      if (mobTemp && met) mobTemp.innerText = Math.round(met.temperature_c || 30) + '°C';
+      const mobWind = document.getElementById('mob-hero-wind');
+      if (mobWind && met) mobWind.innerText = Math.round(met.wind_speed_kmh || 10) + ' ' + (met.wind_direction_cardinal || 'NW');
+      const mobPm = document.getElementById('mob-hero-pm25');
+      if (mobPm && snap.stations && snap.stations.length) mobPm.innerText = Math.round(snap.stations[0].pm25 || 284);
+      const mobPbl = document.getElementById('mob-hero-pbl');
+      if (mobPbl && met) mobPbl.innerText = Math.round(met.boundary_layer_height_m || 1016) + 'm';
     }
 
     function updateMapElements(snap) {
@@ -7026,55 +7186,187 @@
 
     function selectStation(stId) {
       selectedStationId = stId;
-      document.getElementById('forecast-station-badge').innerText = stId;
+      let stObj = null;
+      if (typeof VayuForecastEngine !== 'undefined') {
+        stObj = VayuForecastEngine.stations.find(s => s.id === stId || s.name.toLowerCase() === stId.toLowerCase());
+      }
+      const fcStationBadge = document.getElementById('forecast-station-badge');
+      if (fcStationBadge) fcStationBadge.innerText = stObj ? stObj.name : stId;
+      if (stObj) {
+        updateForecastFromEngine(stObj);
+      }
       loadCurrentStepData(currentStep);
     }
 
+    function updateForecastFromEngine(station) {
+      if (!station) {
+        if (typeof VayuForecastEngine !== 'undefined') {
+          station = VayuForecastEngine.currentStation || VayuForecastEngine.stations[0];
+        }
+      }
+      if (!station) return;
+
+      const baseAQI = station.baseAQI || station.aqi || 431;
+      const stationName = station.name || "Punjabi Bagh";
+
+      let points = [];
+      if (typeof VayuForecastEngine !== 'undefined') {
+        points = VayuForecastEngine.generate72hForecast(baseAQI, stationName);
+      }
+
+      const pt24 = (points && points[24]) ? points[24] : { aqi: Math.round(baseAQI * 1.08) };
+      const pt48 = (points && points[48]) ? points[48] : { aqi: Math.round(baseAQI * 1.15) };
+      const pt72 = (points && points[71]) ? points[71] : { aqi: Math.round(baseAQI * 0.92) };
+
+      const meta24 = (typeof VayuForecastEngine !== 'undefined') ? VayuForecastEngine.getSeverityMeta(pt24.aqi) : { label: "Severe", color: "#f2966e" };
+      const meta48 = (typeof VayuForecastEngine !== 'undefined') ? VayuForecastEngine.getSeverityMeta(pt48.aqi) : { label: "Severe+", color: "#f2966e" };
+      const meta72 = (typeof VayuForecastEngine !== 'undefined') ? VayuForecastEngine.getSeverityMeta(pt72.aqi) : { label: "Very Poor", color: "#f2d666" };
+
+      // Update +24h Lead
+      const el24Val = document.getElementById('fc-24h-val');
+      const el24Cat = document.getElementById('fc-24h-cat');
+      if (el24Val) el24Val.innerText = pt24.aqi;
+      if (el24Cat) {
+        el24Cat.innerText = meta24.label;
+        el24Cat.style.backgroundColor = meta24.color + '33';
+        el24Cat.style.color = meta24.color;
+      }
+
+      // Update +48h Lead
+      const el48Val = document.getElementById('fc-48h-val');
+      const el48Cat = document.getElementById('fc-48h-cat');
+      if (el48Val) el48Val.innerText = pt48.aqi;
+      if (el48Cat) {
+        el48Cat.innerText = meta48.label;
+        el48Cat.style.backgroundColor = meta48.color + '33';
+        el48Cat.style.color = meta48.color;
+      }
+
+      // Update +72h Lead
+      const el72Val = document.getElementById('fc-72h-val');
+      const el72Cat = document.getElementById('fc-72h-cat');
+      if (el72Val) el72Val.innerText = pt72.aqi;
+      if (el72Cat) {
+        el72Cat.innerText = meta72.label;
+        el72Cat.style.backgroundColor = meta72.color + '33';
+        el72Cat.style.color = meta72.color;
+      }
+
+      // Update SVG Forecast Line & 90% Confidence Interval Polygon
+      const svgLine = document.getElementById('svg-fc-line');
+      const svgBand = document.getElementById('svg-ci-band');
+      if (svgLine && points && points.length > 0) {
+        const svgWidth = 440;
+        const svgHeight = 180;
+        const baseY = 210;
+        let linePoints = [];
+        let upperBand = [];
+        let lowerBand = [];
+
+        points.forEach((p, idx) => {
+          const x = 40 + (idx / Math.max(1, points.length - 1)) * svgWidth;
+          const aqiVal = p.aqi || baseAQI;
+          const y = baseY - (Math.min(500, aqiVal) / 500) * svgHeight;
+          const uncertainty = Math.round(16 + (idx / points.length) * 34);
+          const yUpper = baseY - (Math.min(500, aqiVal + uncertainty) / 500) * svgHeight;
+          const yLower = baseY - (Math.max(0, aqiVal - uncertainty) / 500) * svgHeight;
+
+          linePoints.push(`${x.toFixed(1)},${y.toFixed(1)}`);
+          upperBand.push(`${x.toFixed(1)},${yUpper.toFixed(1)}`);
+          lowerBand.unshift(`${x.toFixed(1)},${yLower.toFixed(1)}`);
+        });
+
+        svgLine.setAttribute('points', linePoints.join(' '));
+        if (svgBand) {
+          svgBand.setAttribute('points', upperBand.concat(lowerBand).join(' '));
+        }
+      }
+
+      // Physics Coupling Decomposition (+48h)
+      const stubbleVal = Math.round(pt48.aqi * 0.34);
+      const inversionVal = Math.round(pt48.aqi * 0.26);
+      const urbanVal = Math.max(45, pt48.aqi - stubbleVal - inversionVal);
+
+      const decStubble = document.getElementById('decomp-stubble');
+      const decInversion = document.getElementById('decomp-inversion');
+      const decUrban = document.getElementById('decomp-urban');
+
+      if (decStubble) decStubble.innerText = `+${stubbleVal} AQI`;
+      if (decInversion) decInversion.innerText = `+${inversionVal} AQI`;
+      if (decUrban) decUrban.innerText = `+${urbanVal} AQI`;
+
+      // Update Station Badge
+      const badge = document.getElementById('forecast-station-badge');
+      if (badge) badge.innerText = stationName;
+    }
+
+    function updateAttributionPanelFallback() {
+      const snap = {
+        source_attribution: {
+          stubble_burning: 34,
+          vehicular_emissions: 28,
+          road_construction_dust: 18,
+          industrial_energy: 12,
+          secondary_and_domestic: 8
+        }
+      };
+      updateAttributionPanel(snap);
+    }
+
     function updateForecastPanel(fc) {
-      const ms = fc.milestones;
-      
-      document.getElementById('fc-24h-val').innerText = ms["+24h"].forecast_aqi;
-      document.getElementById('fc-24h-cat').innerText = ms["+24h"].category;
-      document.getElementById('fc-24h-cat').style.backgroundColor = ms["+24h"].category_color + '33';
-      document.getElementById('fc-24h-cat').style.color = ms["+24h"].category_color;
+      if (!fc || !fc.milestones) {
+        updateForecastFromEngine();
+        return;
+      }
+      try {
+        const ms = fc.milestones;
+        
+        document.getElementById('fc-24h-val').innerText = ms["+24h"].forecast_aqi;
+        document.getElementById('fc-24h-cat').innerText = ms["+24h"].category;
+        document.getElementById('fc-24h-cat').style.backgroundColor = ms["+24h"].category_color + '33';
+        document.getElementById('fc-24h-cat').style.color = ms["+24h"].category_color;
 
-      document.getElementById('fc-48h-val').innerText = ms["+48h"].forecast_aqi;
-      document.getElementById('fc-48h-cat').innerText = ms["+48h"].category;
-      document.getElementById('fc-48h-cat').style.backgroundColor = ms["+48h"].category_color + '33';
-      document.getElementById('fc-48h-cat').style.color = ms["+48h"].category_color;
+        document.getElementById('fc-48h-val').innerText = ms["+48h"].forecast_aqi;
+        document.getElementById('fc-48h-cat').innerText = ms["+48h"].category;
+        document.getElementById('fc-48h-cat').style.backgroundColor = ms["+48h"].category_color + '33';
+        document.getElementById('fc-48h-cat').style.color = ms["+48h"].category_color;
 
-      document.getElementById('fc-72h-val').innerText = ms["+72h"].forecast_aqi;
-      document.getElementById('fc-72h-cat').innerText = ms["+72h"].category;
-      document.getElementById('fc-72h-cat').style.backgroundColor = ms["+72h"].category_color + '33';
-      document.getElementById('fc-72h-cat').style.color = ms["+72h"].category_color;
+        document.getElementById('fc-72h-val').innerText = ms["+72h"].forecast_aqi;
+        document.getElementById('fc-72h-cat').innerText = ms["+72h"].category;
+        document.getElementById('fc-72h-cat').style.backgroundColor = ms["+72h"].category_color + '33';
+        document.getElementById('fc-72h-cat').style.color = ms["+72h"].category_color;
 
-      const points = fc.hourly_forecast_trajectory || [];
-      const svgWidth = 440;
-      const svgHeight = 180;
-      const baseY = 210;
+        const points = fc.hourly_forecast_trajectory || [];
+        const svgWidth = 440;
+        const svgHeight = 180;
+        const baseY = 210;
 
-      let linePoints = [];
-      let upperBand = [];
-      let lowerBand = [];
+        let linePoints = [];
+        let upperBand = [];
+        let lowerBand = [];
 
-      points.forEach((p, idx) => {
-        const x = 40 + (idx / Math.max(1, points.length - 1)) * svgWidth;
-        const y = baseY - (Math.min(500, p.forecast_aqi) / 500) * svgHeight;
-        const yUpper = baseY - (Math.min(500, p.upper_bound_90ci) / 500) * svgHeight;
-        const yLower = baseY - (Math.min(500, p.lower_bound_90ci) / 500) * svgHeight;
+        points.forEach((p, idx) => {
+          const x = 40 + (idx / Math.max(1, points.length - 1)) * svgWidth;
+          const y = baseY - (Math.min(500, p.forecast_aqi) / 500) * svgHeight;
+          const yUpper = baseY - (Math.min(500, p.upper_bound_90ci) / 500) * svgHeight;
+          const yLower = baseY - (Math.min(500, p.lower_bound_90ci) / 500) * svgHeight;
 
-        linePoints.push(`${x},${y}`);
-        upperBand.push(`${x},${yUpper}`);
-        lowerBand.unshift(`${x},${yLower}`);
-      });
+          linePoints.push(`${x.toFixed(1)},${y.toFixed(1)}`);
+          upperBand.push(`${x.toFixed(1)},${yUpper.toFixed(1)}`);
+          lowerBand.unshift(`${x.toFixed(1)},${yLower.toFixed(1)}`);
+        });
 
-      document.getElementById('svg-fc-line').setAttribute('points', linePoints.join(' '));
-      document.getElementById('svg-ci-band').setAttribute('points', upperBand.concat(lowerBand).join(' '));
+        document.getElementById('svg-fc-line').setAttribute('points', linePoints.join(' '));
+        document.getElementById('svg-ci-band').setAttribute('points', upperBand.concat(lowerBand).join(' '));
 
-      const decomp = ms["+48h"].coupling_decomposition;
-      document.getElementById('decomp-stubble').innerText = `+${decomp.stubble_transport_impact_aqi} AQI`;
-      document.getElementById('decomp-inversion').innerText = `+${decomp.inversion_and_pblh_trapping_aqi} AQI`;
-      document.getElementById('decomp-urban').innerText = `+${decomp.baseline_local_urban_aqi} AQI`;
+        const decomp = ms["+48h"].coupling_decomposition;
+        document.getElementById('decomp-stubble').innerText = `+${decomp.stubble_transport_impact_aqi} AQI`;
+        document.getElementById('decomp-inversion').innerText = `+${decomp.inversion_and_pblh_trapping_aqi} AQI`;
+        document.getElementById('decomp-urban').innerText = `+${decomp.baseline_local_urban_aqi} AQI`;
+      } catch (err) {
+        console.warn("Forecast panel error, using client physics engine fallback:", err);
+        updateForecastFromEngine();
+      }
     }
 
     function updateAttributionPanel(snap) {
@@ -7927,7 +8219,12 @@
             minZoom: 6,
             maxZoom: 16,
             zoomControl: false,
-            attributionControl: false
+            attributionControl: false,
+            preferCanvas: true,
+            inertia: true,
+            inertiaDeceleration: 3000,
+            fadeAnimation: true,
+            markerZoomAnimation: true
           });
 
           const initialTheme = (typeof VayuSettings !== 'undefined' && VayuSettings.theme) ? VayuSettings.theme : (localStorage.getItem('vayu_theme') || 'dark');
@@ -8118,10 +8415,13 @@
         const setBtn = document.getElementById('btn-inspect-set-active');
         if (setBtn) {
           setBtn.onclick = () => {
-            if (typeof applyResolvedStation === 'function') {
-              applyResolvedStation(station);
+            if (typeof VayuLocationService !== 'undefined' && typeof VayuLocationService.applyResolvedStation === 'function') {
+              VayuLocationService.applyResolvedStation(station, 2.5, true);
             } else if (typeof selectStation === 'function') {
               selectStation(stId);
+            }
+            if (typeof updateForecastFromEngine === 'function') {
+              updateForecastFromEngine(station);
             }
           };
         }
@@ -8266,85 +8566,153 @@
         const ctx = canvas.getContext('2d');
         const self = this;
 
+        let canvasWidth = 0;
+        let canvasHeight = 0;
         function resizeCanvas() {
-          canvas.width = canvas.offsetWidth;
-          canvas.height = canvas.offsetHeight;
+          canvasWidth = canvas.offsetWidth;
+          canvasHeight = canvas.offsetHeight;
+          canvas.width = canvasWidth;
+          canvas.height = canvasHeight;
         }
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
 
-        // 160 dynamic particles flowing along the NW-to-SE atmospheric streamline
-        const particleCount = 160;
+        // Hardware-adaptive particle count for locked 60 FPS
+        const isMobile = window.innerWidth < 768;
+        const particleCount = isMobile ? 38 : 75;
         const particles = [];
 
         function resetParticle(p) {
-          // NW bounding box: Lat 29.8 to 32.2, Lon 74.0 to 76.8
-          p.lat = 30.0 + Math.random() * 2.2;
-          p.lon = 74.2 + Math.random() * 2.6;
-          p.speed = 0.012 + Math.random() * 0.018;
+          p.lat = 29.8 + Math.random() * 2.4;
+          p.lon = 74.2 + Math.random() * 2.8;
           p.life = 0;
-          p.maxLife = 60 + Math.random() * 90;
-          p.isSmoke = Math.random() < 0.65; // High fraction picks up smoke
+          p.maxLife = 50 + Math.random() * 70;
+          p.isSmoke = Math.random() < 0.62; // Fraction picking up stubble smoke
+
+          // Calculate initial container pixel coords once upon spawn
+          if (self.map && canvasWidth > 0) {
+            const pt = self.map.latLngToContainerPoint([p.lat, p.lon]);
+            p.x = pt.x;
+            p.y = pt.y;
+            p.prevX = pt.x;
+            p.prevY = pt.y;
+          } else {
+            p.x = Math.random() * canvasWidth;
+            p.y = Math.random() * (canvasHeight * 0.4);
+            p.prevX = p.x;
+            p.prevY = p.y;
+          }
+
+          // Container pixel velocity (NW to SE atmospheric drift)
+          const baseSpeed = isMobile ? (1.4 + Math.random() * 1.6) : (1.8 + Math.random() * 2.2);
+          p.vx = baseSpeed * 0.86;
+          p.vy = baseSpeed * 0.58;
         }
 
         for (let i = 0; i < particleCount; i++) {
           const p = {};
           resetParticle(p);
           p.life = Math.random() * p.maxLife;
-          p.lat -= (p.life * p.speed * 0.6);
-          p.lon += (p.life * p.speed * 0.8);
+          p.x += p.vx * p.life;
+          p.y += p.vy * p.life;
+          p.prevX = p.x;
+          p.prevY = p.y;
           particles.push(p);
         }
 
+        // Re-sync pixel coordinates when user finishes zooming/panning map
+        if (self.map) {
+          self.map.on('moveend zoomend', () => {
+            particles.forEach(p => {
+              if (self.map) {
+                const pt = self.map.latLngToContainerPoint([p.lat, p.lon]);
+                p.x = pt.x;
+                p.y = pt.y;
+                p.prevX = pt.x;
+                p.prevY = pt.y;
+              }
+            });
+          });
+        }
+
+        // Visibility & FPS throttle: pause requestAnimationFrame when map is offscreen
+        let isMapInView = true;
+        let animFrameId = null;
+
+        if (window.IntersectionObserver) {
+          const observer = new IntersectionObserver((entries) => {
+            isMapInView = entries[0].isIntersecting;
+            if (isMapInView && !animFrameId) {
+              animFrameId = requestAnimationFrame(drawWind);
+            }
+          }, { threshold: 0.05 });
+          observer.observe(canvas);
+        }
+
         function drawWind() {
-          if (!self.layersVisibility.wind) {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            requestAnimationFrame(drawWind);
-            return;
+          // Check if tab is overview and map is in viewport
+          const isOverviewActive = (typeof activeTab === 'undefined' || activeTab === 'overview');
+          if (!self.layersVisibility.wind || !isMapInView || !isOverviewActive) {
+            ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+            animFrameId = null;
+            return; // Sleep animation loop when not visible
           }
 
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
+          // Batched 2-pass drawing: exactly 2 draw calls per frame
+          ctx.lineWidth = 1.4;
+          ctx.lineCap = 'round';
+
+          // Smoke batch (orange)
+          ctx.beginPath();
+          ctx.strokeStyle = 'rgba(249, 115, 22, 0.65)';
+          let hasSmoke = false;
           particles.forEach(p => {
-            if (!self.map) return;
-            const pt1 = self.map.latLngToContainerPoint([p.lat, p.lon]);
+            if (p.isSmoke && p.x >= -20 && p.x <= canvasWidth + 20 && p.y >= -20 && p.y <= canvasHeight + 20) {
+              ctx.moveTo(p.prevX, p.prevY);
+              ctx.lineTo(p.x, p.y);
+              hasSmoke = true;
+            }
+          });
+          if (hasSmoke) ctx.stroke();
 
-            // NW wind direction vector: 312° (moving towards 132° SE)
-            const stepLat = -p.speed * 0.72;
-            const stepLon = p.speed * 0.88;
+          // Clean breeze batch (emerald/mint)
+          ctx.beginPath();
+          ctx.strokeStyle = 'rgba(110, 226, 163, 0.65)';
+          let hasBreeze = false;
+          particles.forEach(p => {
+            if (!p.isSmoke && p.x >= -20 && p.x <= canvasWidth + 20 && p.y >= -20 && p.y <= canvasHeight + 20) {
+              ctx.moveTo(p.prevX, p.prevY);
+              ctx.lineTo(p.x, p.y);
+              hasBreeze = true;
+            }
+          });
+          if (hasBreeze) ctx.stroke();
 
-            const nextLat = p.lat + stepLat;
-            const nextLon = p.lon + stepLon;
-            const pt2 = self.map.latLngToContainerPoint([nextLat, nextLon]);
-
-            p.lat = nextLat;
-            p.lon = nextLon;
+          // Kinematic state advance: ZERO Mercator / trigonometric projections per frame!
+          particles.forEach(p => {
+            p.prevX = p.x;
+            p.prevY = p.y;
+            p.x += p.vx;
+            p.y += p.vy;
             p.life++;
 
-            // Draw particle stream line
-            if (pt1.x >= -30 && pt1.x <= canvas.width + 30 && pt1.y >= -30 && pt1.y <= canvas.height + 30) {
-              const alpha = Math.sin((p.life / p.maxLife) * Math.PI) * 0.75;
-              ctx.beginPath();
-              ctx.moveTo(pt1.x, pt1.y);
-              ctx.lineTo(pt2.x, pt2.y);
-
-              if (p.isSmoke) {
-                ctx.strokeStyle = `rgba(249, 115, 22, ${alpha})`;
-                ctx.lineWidth = 1.6;
-              } else {
-                ctx.strokeStyle = `rgba(110, 226, 163, ${alpha})`;
-                ctx.lineWidth = 1.2;
-              }
-              ctx.stroke();
-            }
-
-            if (p.life >= p.maxLife || p.lat < 27.5 || p.lon > 78.5) {
+            if (p.life >= p.maxLife || p.x > canvasWidth + 40 || p.y > canvasHeight + 40) {
               resetParticle(p);
             }
           });
 
-          requestAnimationFrame(drawWind);
+          animFrameId = requestAnimationFrame(drawWind);
         }
+
+        // Expose trigger to resume animation when switching back to Overview tab
+        self.resumeWindAnimation = () => {
+          if (!animFrameId && self.layersVisibility.wind) {
+            animFrameId = requestAnimationFrame(drawWind);
+          }
+        };
+
         drawWind();
       },
 
