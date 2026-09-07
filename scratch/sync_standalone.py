@@ -64,6 +64,10 @@ with open("VayuCoupler_Windows_Offline_App.html", "w", encoding="utf-8") as f:
     f.write(standalone_html)
 print("✓ VayuCoupler_Windows_Offline_App.html in root updated")
 
+# Sync root index.html for zero-config Vercel deployment
+shutil.copyfile("backend/app/static/index.html", "index.html")
+print("✓ Root index.html synchronized for Vercel")
+
 # Update ZIP archives
 print("Generating updated ZIP archives...")
 
