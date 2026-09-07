@@ -3,6 +3,7 @@
   "outputDirectory": "backend/app/static",
   "cleanUrls": true,
   "rewrites": [
+    { "source": "/api/(.*)", "destination": "https://vayucoupler-9sfi.onrender.com/api/$1" },
     { "source": "/static/(.*)", "destination": "/$1" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
