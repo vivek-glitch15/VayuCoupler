@@ -1,12 +1,9 @@
 {
-  "framework": null,
-  "buildCommand": null,
-  "outputDirectory": ".",
   "cleanUrls": true,
   "rewrites": [
     {
-      "source": "/api/:path*",
-      "destination": "https://vayucoupler-9sfi.onrender.com/api/:path*"
+      "source": "/api/(.*)",
+      "destination": "/api/index.py"
     }
   ]
 }

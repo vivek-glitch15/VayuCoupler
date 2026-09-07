@@ -13,6 +13,7 @@ from typing import Optional
 
 from .data.adapter import ADAPTER
 from .data.stations import get_all_stations, get_station_by_id
+from .data.waqi_service import WAQI_SERVICE
 from .models.coupled_model import FORECASTER
 from .models.attribution import get_source_attribution
 from .engine.grap_trigger import GRAP_ENGINE
@@ -58,7 +59,46 @@ def health_check():
 
 @app.get("/api/stations")
 def get_stations():
-    return get_all_stations()
+    # Hydrate stations with real-time live WAQI / CPCB readings
+    return WAQI_SERVICE.get_live_stations()
+
+@app.get("/api/live/stations")
+def get_live_stations():
+    """
+    Returns all 58 Delhi NCR monitoring stations updated with real-time live WAQI / CPCB telemetry.
+    """
+    return WAQI_SERVICE.get_live_stations()
+
+@app.get("/api/live/station/{station_id}")
+def get_live_station(station_id: str):
+    """
+    Returns live AQI and pollutant telemetry for a single station.
+    """
+    return WAQI_SERVICE.get_live_station_by_id(station_id)
+
+@app.get("/api/live/geo")
+def get_live_geo(lat: float = Query(..., ge=-90, le=90), lon: float = Query(..., ge=-180, le=180)):
+    """
+    Returns real-time AQI and station telemetry for arbitrary coordinates from WAQI geo-feed.
+    """
+    res = WAQI_SERVICE.fetch_geo_feed(lat, lon)
+    if res:
+        return {"status": "SUCCESS", "data": res}
+    return {"status": "FALLBACK", "message": "Using closest Delhi-NCR station", "data": WAQI_SERVICE.get_live_stations()[0]}
+
+@app.get("/api/live/summary")
+def get_live_summary():
+    """
+    Returns live Delhi NCR regional AQI summary and GRAP stage.
+    """
+    return WAQI_SERVICE.get_delhi_summary()
+
+@app.get("/api/live/zones")
+def get_live_zones():
+    """
+    Returns live calculated AQI averages and station counts for the 7 Delhi NCR Regional Zones.
+    """
+    return WAQI_SERVICE.get_zones_summary()
 
 @app.get("/api/snapshot")
 def get_snapshot(step_hour: int = Query(default=72, ge=0, le=167)):

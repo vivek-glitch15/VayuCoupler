@@ -814,7 +814,7 @@
         </svg>
         <div class="absolute inset-0 flex flex-col items-center justify-center">
           <span class="text-[10px] font-mono-data text-[#8C948B]">LIVE GROUND AQI</span>
-          <span id="splash-aqi-number" class="text-5xl sm:text-6xl font-bold text-[#EEF0EC] font-serif-display my-0.5">431</span>
+          <span id="splash-aqi-number" class="text-5xl sm:text-6xl font-bold text-[#EEF0EC] font-serif-display my-0.5">163</span>
           <span id="splash-aqi-severity" class="text-[10px] font-mono-tag font-bold px-2.5 py-0.5 rounded-full badge-orange">SEVERE (GRAP IV)</span>
         </div>
       </div>
@@ -855,7 +855,7 @@
             <span>Local Air Quality Set to Your Location</span>
           </div>
           <div class="text-[11px] text-[#8b9390] truncate font-mono-data" id="toast-station-subtext">
-            Punjabi Bagh • 6.2 km away • AQI 431
+            Punjabi Bagh • 6.2 km away • AQI 163
           </div>
         </div>
       </div>
@@ -1095,9 +1095,9 @@
         </button>
 
         <!-- Live AQI Severity Pill -->
-        <div id="header-aqi-badge" class="px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-xl badge-red flex items-center gap-1 text-[11px] sm:text-xs font-mono-data font-bold shadow-sm shrink-0">
-          <span id="header-aqi-val">431</span>
-          <span class="text-[9px] uppercase text-[#f2966e] hidden sm:inline" id="header-aqi-severity">SEVERE</span>
+        <div id="header-aqi-badge" class="px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-xl badge-blue flex items-center gap-1 text-[11px] sm:text-xs font-mono-data font-bold shadow-sm shrink-0">
+          <span id="header-aqi-val">163</span>
+          <span class="text-[9px] uppercase text-[#7FD4FF] hidden sm:inline" id="header-aqi-severity">MODERATE</span>
         </div>
 
         <!-- GPS Re-detect Button -->
@@ -1362,6 +1362,10 @@
           </button>
           
           <div class="flex items-center gap-2">
+            <span id="mob-hero-live-badge" class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-950/80 text-emerald-300 border border-emerald-500/30 text-[10px] font-mono-tag font-bold"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> LIVE WAQI</span>
+            <button id="live-waqi-refresh-btn" onclick="VayuWaqiService.refresh()" title="Refresh live telemetry" class="p-1.5 rounded-lg bg-[#191C19] border border-[#262A26] hover:border-emerald-500/40 text-slate-300 hover:text-emerald-300 transition cursor-pointer flex items-center justify-center">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+            </button>
             <span id="mob-hero-category" class="text-[10px] font-bold px-2.5 py-1 rounded-full badge-orange font-mono-tag">SEVERE</span>
             <span class="text-[10px] font-mono-tag font-bold px-2.5 py-1 rounded-full badge-orange" id="mob-hero-grap-stage">GRAP IV</span>
           </div>
@@ -1370,16 +1374,19 @@
         <!-- Central AQI Number & MoES Official Advisory -->
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 py-1">
           <div>
-            <div class="text-[11px] font-mono-data text-[#8C948B]">COUPLED REAL-TIME NAQI</div>
+            <div class="flex items-center gap-2 text-[11px] font-mono-data text-[#8C948B]">
+              <span>COUPLED REAL-TIME NAQI</span>
+              <span id="live-source-subtext" class="text-[10px] text-emerald-400/90">• CPCB Ground Monitor</span>
+            </div>
             <div class="flex items-baseline gap-2.5">
-              <span id="mob-hero-aqi-val" class="text-5xl sm:text-6xl font-bold font-serif-display text-[#FF9D7F]">431</span>
+              <span id="mob-hero-aqi-val" class="text-5xl sm:text-6xl font-bold font-serif-display text-[#FF9D7F]">157</span>
               <!-- Desktop synced id element -->
-              <span id="curr-aqi-val" class="hidden">431</span>
-              <span id="curr-aqi-category-badge" class="hidden">Severe</span>
+              <span id="curr-aqi-val" class="hidden">157</span>
+              <span id="curr-aqi-category-badge" class="hidden">Moderate</span>
               <span class="text-xs font-mono-data text-[#8C948B]">NAQI</span>
             </div>
             <div id="mob-hero-advisory" class="text-xs text-[#EEF0EC] mt-1 font-sans-ui max-w-[70ch] leading-relaxed">
-              Hazardous air quality. Nocturnal temperature inversion trapping trans-boundary stubble smoke below 340m.
+              Air quality is moderate. Sensitive groups should limit prolonged outdoor exertion.
             </div>
           </div>
 
@@ -1454,34 +1461,34 @@
           <div onclick="filterStationsByZone('West Delhi'); openStationPickerModal();" class="surface-card p-3 rounded-xl border border-[#262A26] hover:border-[#383E38] transition cursor-pointer min-w-[140px] shrink-0 flex flex-col gap-1.5">
             <div class="flex items-center justify-between">
               <span class="text-xs font-semibold text-[#EEF0EC]">West Delhi</span>
-              <span id="zone-dot-west" class="w-2 h-2 rounded-full bg-[#FF9D7F]"></span>
+              <span id="zone-dot-west" class="w-2 h-2 rounded-full bg-[#7FD4FF]"></span>
             </div>
             <div class="flex items-baseline gap-1.5">
-              <span id="zone-aqi-west" class="text-xl font-bold font-serif-display text-[#FF9D7F]">431</span>
+              <span id="zone-aqi-west" class="text-xl font-bold font-serif-display text-[#7FD4FF]">187</span>
               <span class="text-[10px] font-mono-data text-[#8C948B]">AQI</span>
             </div>
-            <span class="text-[10px] font-mono-data text-[#8C948B]">8 stations</span>
+            <span class="text-[10px] font-mono-data text-[#8C948B]">5 stations</span>
           </div>
 
           <div onclick="filterStationsByZone('North Delhi'); openStationPickerModal();" class="surface-card p-3 rounded-xl border border-[#262A26] hover:border-[#383E38] transition cursor-pointer min-w-[140px] shrink-0 flex flex-col gap-1.5">
             <div class="flex items-center justify-between">
               <span class="text-xs font-semibold text-[#EEF0EC]">North Delhi</span>
-              <span id="zone-dot-north" class="w-2 h-2 rounded-full bg-[#FF9D7F]"></span>
+              <span id="zone-dot-north" class="w-2 h-2 rounded-full bg-[#FFE270]"></span>
             </div>
             <div class="flex items-baseline gap-1.5">
-              <span id="zone-aqi-north" class="text-xl font-bold font-serif-display text-[#FF9D7F]">424</span>
+              <span id="zone-aqi-north" class="text-xl font-bold font-serif-display text-[#FFE270]">256</span>
               <span class="text-[10px] font-mono-data text-[#8C948B]">AQI</span>
             </div>
-            <span class="text-[10px] font-mono-data text-[#8C948B]">7 stations</span>
+            <span class="text-[10px] font-mono-data text-[#8C948B]">14 stations</span>
           </div>
 
           <div onclick="filterStationsByZone('East Delhi'); openStationPickerModal();" class="surface-card p-3 rounded-xl border border-[#262A26] hover:border-[#383E38] transition cursor-pointer min-w-[140px] shrink-0 flex flex-col gap-1.5">
             <div class="flex items-center justify-between">
               <span class="text-xs font-semibold text-[#EEF0EC]">East Delhi</span>
-              <span id="zone-dot-east" class="w-2 h-2 rounded-full bg-[#FF9D7F]"></span>
+              <span id="zone-dot-east" class="w-2 h-2 rounded-full bg-[#7FD4FF]"></span>
             </div>
             <div class="flex items-baseline gap-1.5">
-              <span id="zone-aqi-east" class="text-xl font-bold font-serif-display text-[#FF9D7F]">438</span>
+              <span id="zone-aqi-east" class="text-xl font-bold font-serif-display text-[#7FD4FF]">177</span>
               <span class="text-[10px] font-mono-data text-[#8C948B]">AQI</span>
             </div>
             <span class="text-[10px] font-mono-data text-[#8C948B]">6 stations</span>
@@ -1490,49 +1497,49 @@
           <div onclick="filterStationsByZone('South Delhi'); openStationPickerModal();" class="surface-card p-3 rounded-xl border border-[#262A26] hover:border-[#383E38] transition cursor-pointer min-w-[140px] shrink-0 flex flex-col gap-1.5">
             <div class="flex items-center justify-between">
               <span class="text-xs font-semibold text-[#EEF0EC]">South Delhi</span>
-              <span id="zone-dot-south" class="w-2 h-2 rounded-full bg-[#FFE270]"></span>
+              <span id="zone-dot-south" class="w-2 h-2 rounded-full bg-[#7FD4FF]"></span>
             </div>
             <div class="flex items-baseline gap-1.5">
-              <span id="zone-aqi-south" class="text-xl font-bold font-serif-display text-[#FFE270]">386</span>
+              <span id="zone-aqi-south" class="text-xl font-bold font-serif-display text-[#7FD4FF]">151</span>
               <span class="text-[10px] font-mono-data text-[#8C948B]">AQI</span>
             </div>
-            <span class="text-[10px] font-mono-data text-[#8C948B]">9 stations</span>
+            <span class="text-[10px] font-mono-data text-[#8C948B]">11 stations</span>
           </div>
 
           <div onclick="filterStationsByZone('Central Delhi'); openStationPickerModal();" class="surface-card p-3 rounded-xl border border-[#262A26] hover:border-[#383E38] transition cursor-pointer min-w-[140px] shrink-0 flex flex-col gap-1.5">
             <div class="flex items-center justify-between">
               <span class="text-xs font-semibold text-[#EEF0EC]">Central Delhi</span>
-              <span id="zone-dot-central" class="w-2 h-2 rounded-full bg-[#FF9D7F]"></span>
+              <span id="zone-dot-central" class="w-2 h-2 rounded-full bg-[#7FD4FF]"></span>
             </div>
             <div class="flex items-baseline gap-1.5">
-              <span id="zone-aqi-central" class="text-xl font-bold font-serif-display text-[#FF9D7F]">412</span>
+              <span id="zone-aqi-central" class="text-xl font-bold font-serif-display text-[#7FD4FF]">122</span>
               <span class="text-[10px] font-mono-data text-[#8C948B]">AQI</span>
             </div>
-            <span class="text-[10px] font-mono-data text-[#8C948B]">5 stations</span>
+            <span class="text-[10px] font-mono-data text-[#8C948B]">7 stations</span>
           </div>
 
           <div onclick="filterStationsByZone('South West Delhi'); openStationPickerModal();" class="surface-card p-3 rounded-xl border border-[#262A26] hover:border-[#383E38] transition cursor-pointer min-w-[140px] shrink-0 flex flex-col gap-1.5">
             <div class="flex items-center justify-between">
               <span class="text-xs font-semibold text-[#EEF0EC]">SW Delhi</span>
-              <span id="zone-dot-sw" class="w-2 h-2 rounded-full bg-[#FF9D7F]"></span>
+              <span id="zone-dot-sw" class="w-2 h-2 rounded-full bg-[#7FD4FF]"></span>
             </div>
             <div class="flex items-baseline gap-1.5">
-              <span id="zone-aqi-sw" class="text-xl font-bold font-serif-display text-[#FF9D7F]">408</span>
+              <span id="zone-aqi-sw" class="text-xl font-bold font-serif-display text-[#7FD4FF]">132</span>
               <span class="text-[10px] font-mono-data text-[#8C948B]">AQI</span>
             </div>
-            <span class="text-[10px] font-mono-data text-[#8C948B]">6 stations</span>
+            <span class="text-[10px] font-mono-data text-[#8C948B]">4 stations</span>
           </div>
 
           <div onclick="filterStationsByZone('NCR'); openStationPickerModal();" class="surface-card p-3 rounded-xl border border-[#262A26] hover:border-[#383E38] transition cursor-pointer min-w-[140px] shrink-0 flex flex-col gap-1.5">
             <div class="flex items-center justify-between">
               <span class="text-xs font-semibold text-[#EEF0EC]">NCR Fringe</span>
-              <span id="zone-dot-ncr" class="w-2 h-2 rounded-full bg-[#FFE270]"></span>
+              <span id="zone-dot-ncr" class="w-2 h-2 rounded-full bg-[#7FD4FF]"></span>
             </div>
             <div class="flex items-baseline gap-1.5">
-              <span id="zone-aqi-ncr" class="text-xl font-bold font-serif-display text-[#FFE270]">394</span>
+              <span id="zone-aqi-ncr" class="text-xl font-bold font-serif-display text-[#7FD4FF]">173</span>
               <span class="text-[10px] font-mono-data text-[#8C948B]">AQI</span>
             </div>
-            <span class="text-[10px] font-mono-data text-[#8C948B]">15 stations</span>
+            <span class="text-[10px] font-mono-data text-[#8C948B]">11 stations</span>
           </div>
         </div>
       </section>
@@ -1683,7 +1690,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-[10px] font-bold font-mono text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded border border-emerald-800" id="inspect-station-id">DEL001</span>
                 <h3 class="text-sm font-bold text-white flex items-center gap-1.5" id="inspect-station-name">Punjabi Bagh</h3>
-                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold font-mono bg-rose-950 text-rose-300 border border-rose-700" id="inspect-station-category-badge">SEVERE</span>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold font-mono bg-amber-950 text-amber-300 border border-amber-700" id="inspect-station-category-badge">MODERATE</span>
               </div>
               <p class="text-[11px] text-earth-300/80 mt-0.5" id="inspect-station-desc">West Delhi • Commercial & Ring Road Corridor • DPCC</p>
             </div>
@@ -1691,7 +1698,7 @@
             <div class="flex flex-wrap items-center gap-4 text-xs font-mono">
               <div>
                 <span class="text-earth-400 text-[10px] block">Live AQI</span>
-                <b class="text-base text-rose-400" id="inspect-station-aqi">431</b>
+                <b class="text-base text-amber-300" id="inspect-station-aqi">163</b>
               </div>
               <div>
                 <span class="text-earth-400 text-[10px] block">PM2.5</span>
@@ -2312,7 +2319,7 @@
           <div class="p-3.5 rounded-2xl bg-[#0f110f] border border-[#1c1f1c] font-mono-data shrink-0">
             <div class="text-[10px] text-[#8b9390] uppercase tracking-wider">CURRENT SEVERITY</div>
             <div class="text-sm sm:text-base font-black text-[#f2966e] font-serif-display mt-0.5" id="dispatch-severity-headline">
-              Emergency — AQI 431
+              Moderate — AQI 163
             </div>
           </div>
         </div>
@@ -3437,7 +3444,7 @@
                 "zone": "West Delhi",
                 "lat": 28.6692,
                 "lon": 77.1314,
-                "baseAQI": 431,
+                "baseAQI": 163,
                 "pm25": 284,
                 "pm10": 410,
                 "dominant": "PM2.5",
@@ -4316,17 +4323,19 @@
             const found = this.stations.find(s => s.id === parsed.stationId);
             if (found) {
               this.currentStation = found;
-              this.currentAQI = found.baseAQI;
+              const aqiVal = found.aqi || found.baseAQI;
+              this.currentAQI = aqiVal;
               this.stationDistanceKm = parsed.distanceKm || 5.6;
-              this.generate72hForecast(found.baseAQI, found.name);
+              this.generate72hForecast(aqiVal, found.name);
               return;
             }
           } catch(e) {}
         }
 
         this.currentStation = this.stations[0]; // Punjabi Bagh default
-        this.currentAQI = this.currentStation.baseAQI;
-        this.generate72hForecast(this.currentStation.baseAQI, this.currentStation.name);
+        const defAQI = this.currentStation.aqi || this.currentStation.baseAQI;
+        this.currentAQI = defAQI;
+        this.generate72hForecast(defAQI, this.currentStation.name);
       },
 
       getGrapStage(aqi) {
@@ -4508,10 +4517,13 @@
       },
 
       applyResolvedStation(station, distanceKm, showToast = true) {
+        const stationAQI = station.aqi || station.baseAQI || 157;
         VayuForecastEngine.currentStation = station;
-        VayuForecastEngine.currentAQI = station.baseAQI;
+        VayuForecastEngine.currentAQI = stationAQI;
         VayuForecastEngine.stationDistanceKm = distanceKm;
-        VayuForecastEngine.generate72hForecast(station.baseAQI, station.name);
+        VayuForecastEngine.generate72hForecast(stationAQI, station.name);
+
+        const aqiMeta = VayuForecastEngine.getSeverityMeta(stationAQI);
 
         // Update Header location pill
         const textEl = document.getElementById('header-station-text');
@@ -4520,22 +4532,76 @@
         }
 
         // Update Header AQI badge
-        const aqiMeta = VayuForecastEngine.getSeverityMeta(station.baseAQI);
         const aqiValEl = document.getElementById('header-aqi-val');
         const aqiSevEl = document.getElementById('header-aqi-severity');
         const aqiBadge = document.getElementById('header-aqi-badge');
-        if (aqiValEl) aqiValEl.innerText = `AQI ${station.baseAQI}`;
+        if (aqiValEl) aqiValEl.innerText = `AQI ${stationAQI}`;
         if (aqiSevEl) aqiSevEl.innerText = aqiMeta.label.toUpperCase();
         if (aqiBadge) {
           aqiBadge.className = `px-2.5 py-1.5 rounded-xl ${aqiMeta.badgeClass} flex items-center gap-1.5 text-xs font-mono-data font-bold shadow-sm shrink-0`;
         }
 
+        // Update Hero AQI Panel (Primary visible mobile + desktop dashboard)
+        const mobHeroAqi = document.getElementById('mob-hero-aqi-val');
+        if (mobHeroAqi) {
+          mobHeroAqi.innerText = stationAQI;
+          mobHeroAqi.style.color = aqiMeta.color;
+        }
+
+        const mobHeroStation = document.getElementById('mob-hero-station-name');
+        if (mobHeroStation) {
+          mobHeroStation.innerText = `${station.name}, ${station.city || 'Delhi'}`;
+        }
+
+        const mobHeroCat = document.getElementById('mob-hero-category');
+        if (mobHeroCat) {
+          mobHeroCat.innerText = aqiMeta.label.toUpperCase();
+          mobHeroCat.className = `text-[10px] font-bold px-2.5 py-1 rounded-full ${aqiMeta.badgeClass} font-mono-tag`;
+          mobHeroCat.style.color = aqiMeta.color;
+          mobHeroCat.style.backgroundColor = aqiMeta.color + '22';
+        }
+
+        const mobHeroGrap = document.getElementById('mob-hero-grap-stage');
+        if (mobHeroGrap) {
+          mobHeroGrap.innerText = aqiMeta.stageCode;
+          mobHeroGrap.className = `text-[10px] font-mono-tag font-bold px-2.5 py-1 rounded-full ${aqiMeta.badgeClass}`;
+          mobHeroGrap.style.color = aqiMeta.color;
+          mobHeroGrap.style.backgroundColor = aqiMeta.color + '22';
+        }
+
+        const mobHeroAdvisory = document.getElementById('mob-hero-advisory');
+        if (mobHeroAdvisory) {
+          if (stationAQI >= 450) {
+            mobHeroAdvisory.innerText = "Hazardous air quality. Extreme emergency curbs active. Remain strictly indoors.";
+          } else if (stationAQI >= 401) {
+            mobHeroAdvisory.innerText = "Severe air quality. High particulate entrapment. BS-III/IV bans active; avoid outdoor activity.";
+          } else if (stationAQI >= 301) {
+            mobHeroAdvisory.innerText = "Very poor air quality. Prolonged exposure causes respiratory distress. N95 masks recommended.";
+          } else if (stationAQI >= 201) {
+            mobHeroAdvisory.innerText = "Poor air quality. Breathing discomfort to most people on prolonged exposure.";
+          } else if (stationAQI >= 101) {
+            mobHeroAdvisory.innerText = "Moderate air quality. Sensitive people may experience breathing discomfort.";
+          } else {
+            mobHeroAdvisory.innerText = "Good air quality. Minimal health impact; optimal for outdoor activities.";
+          }
+        }
+
+        // Live telemetry subtext
+        const liveSourceSubtext = document.getElementById('live-source-subtext');
+        if (liveSourceSubtext) {
+          if (station.is_live && station.live_source) {
+            liveSourceSubtext.innerText = `• Live: ${station.live_source.split(',')[0]} (${station.live_dist_km || 0}km)`;
+          } else {
+            liveSourceSubtext.innerText = `• CPCB Ground Monitor`;
+          }
+        }
+
         // Update Overview Cards
         const currAqiEl = document.getElementById('curr-aqi-val');
-        if (currAqiEl) currAqiEl.innerText = station.baseAQI;
+        if (currAqiEl) currAqiEl.innerText = stationAQI;
 
         const currPm25El = document.getElementById('curr-pm25-val');
-        if (currPm25El) currPm25El.innerText = station.pm25 || Math.round(station.baseAQI * 0.65);
+        if (currPm25El) currPm25El.innerText = station.pm25 || Math.round(stationAQI * 0.65);
 
         const currCatBadge = document.getElementById('curr-aqi-category-badge');
         if (currCatBadge) {
@@ -4551,6 +4617,10 @@
         if (currWindSpeed && station.windSpeed) {
           currWindSpeed.innerText = `${station.windSpeed} km/h`;
         }
+        const mobHeroTemp = document.getElementById('mob-hero-temp');
+        if (mobHeroTemp && station.temp) {
+          mobHeroTemp.innerText = `${Math.round(station.temp)}°C`;
+        }
 
         // Update Splash Screen elements if visible
         const splashName = document.getElementById('splash-station-name');
@@ -4561,13 +4631,13 @@
 
         if (splashName) splashName.innerText = station.name;
         if (splashDist) splashDist.innerText = `${distanceKm} km`;
-        if (splashAqiNumber) splashAqiNumber.innerText = station.baseAQI;
+        if (splashAqiNumber) splashAqiNumber.innerText = stationAQI;
         if (splashAqiSev) {
           splashAqiSev.innerText = aqiMeta.label.toUpperCase();
           splashAqiSev.className = `text-[10px] font-mono-tag font-bold px-2.5 py-0.5 rounded-full ${aqiMeta.badgeClass}`;
         }
         if (splashGaugeRing) {
-          const targetOffset = 314.159 - (Math.min(500, station.baseAQI) / 500) * 314.159;
+          const targetOffset = 314.159 - (Math.min(500, stationAQI) / 500) * 314.159;
           splashGaugeRing.style.strokeDashoffset = targetOffset.toString();
         }
 
@@ -4581,9 +4651,14 @@
           updateForecastFromEngine(station);
         }
 
+        // Re-render diurnal Clean Air windows based on live station AQI
+        if (typeof renderCleanAirWindows === 'function') {
+          renderCleanAirWindows();
+        }
+
         // Show animated toast banner
         if (showToast) {
-          this.showLocationToast(station.name, distanceKm, station.baseAQI);
+          this.showLocationToast(station.name, distanceKm, stationAQI);
         }
 
         // Refresh Predictive timeline and dispatches
@@ -4629,6 +4704,145 @@
       }
     };
 
+    // ==========================================================================
+    // 2.5 LIVE WAQI (WORLD AIR QUALITY INDEX) TELEMETRY ENGINE
+    // ==========================================================================
+    const VayuWaqiService = {
+      token: '64804e6a2aa6b6bea50aeb7ada6733af50cca796',
+      isLive: false,
+      lastUpdated: null,
+      stationsData: [],
+
+      async init() {
+        await this.fetchLiveStations();
+      },
+
+      async fetchLiveStations() {
+        try {
+          // 1. Try backend proxy endpoint first
+          let liveList = null;
+          try {
+            const res = await fetch('/api/live/stations');
+            if (res.ok) {
+              const data = await res.json();
+              if (Array.isArray(data) && data.length) {
+                liveList = data;
+              }
+            }
+          } catch (e) {
+            // Backend offline, will try direct WAQI endpoint
+          }
+
+          // 2. Fallback to direct client-side WAQI bounds API call
+          if (!liveList || !liveList.length) {
+            const directUrl = `https://api.waqi.info/map/bounds/?latlng=28.1,76.6,29.1,77.8&token=${this.token}`;
+            const res = await fetch(directUrl);
+            const json = await res.json();
+            if (json.status === 'ok' && json.data && json.data.length) {
+              liveList = this.mapWaqiToStations(json.data);
+            }
+          }
+
+          if (liveList && liveList.length) {
+            this.isLive = true;
+            this.lastUpdated = new Date();
+            this.stationsData = liveList;
+
+            // Merge live readings into VayuForecastEngine.stations
+            if (typeof VayuForecastEngine !== 'undefined') {
+              liveList.forEach(liveSt => {
+                const target = VayuForecastEngine.stations.find(s => s.id === liveSt.id || s.name.toLowerCase() === liveSt.name.toLowerCase());
+                if (target) {
+                  target.aqi = liveSt.aqi || liveSt.baseAQI;
+                  target.baseAQI = target.aqi;
+                  target.pm25 = liveSt.pm25 || Math.round(target.aqi * 0.65);
+                  target.pm10 = liveSt.pm10 || Math.round(target.aqi * 0.95);
+                  target.is_live = true;
+                  target.live_source = liveSt.live_source || liveSt.name;
+                  target.live_dist_km = liveSt.live_dist_km || 0;
+                }
+              });
+
+              // Re-apply to current station
+              const cur = VayuForecastEngine.currentStation;
+              if (cur) {
+                const updatedCur = VayuForecastEngine.stations.find(s => s.id === cur.id) || cur;
+                VayuLocationService.applyResolvedStation(updatedCur, VayuForecastEngine.stationDistanceKm || 5.6, false);
+              }
+            }
+
+            // Update interactive map if already initialized
+            if (typeof VayuAtmosphericMap !== 'undefined' && VayuAtmosphericMap.map) {
+              VayuAtmosphericMap.renderStations();
+            }
+
+            if (typeof renderRegionalZoneStrip === 'function') {
+              renderRegionalZoneStrip();
+            }
+
+            this.updateLiveIndicator(true);
+            console.log(`[VayuWaqiService] Hydrated ${liveList.length} stations with live WAQI data.`);
+          }
+        } catch (err) {
+          console.warn('[VayuWaqiService] Live data fetch failed, using baseline model:', err);
+          this.updateLiveIndicator(false);
+        }
+      },
+
+      mapWaqiToStations(waqiItems) {
+        if (typeof VayuForecastEngine === 'undefined') return [];
+        return VayuForecastEngine.stations.map(st => {
+          let minDist = Infinity;
+          let closest = null;
+          for (const w of waqiItems) {
+            const aqiNum = parseInt(w.aqi);
+            if (isNaN(aqiNum)) continue;
+            const d = VayuLocationService.calcHaversineDistance(st.lat, st.lon, w.lat, w.lon);
+            if (d < minDist) {
+              minDist = d;
+              closest = { ...w, aqi: aqiNum };
+            }
+          }
+
+          const liveAqi = closest ? closest.aqi : st.baseAQI;
+          return {
+            ...st,
+            aqi: liveAqi,
+            baseAQI: liveAqi,
+            pm25: Math.round(liveAqi * 0.65),
+            pm10: Math.round(liveAqi * 0.95),
+            is_live: !!closest,
+            live_source: closest ? (closest.station?.name || closest.name) : 'Estimated',
+            live_dist_km: closest ? minDist : 0
+          };
+        });
+      },
+
+      async refresh() {
+        const btn = document.getElementById('live-waqi-refresh-btn');
+        if (btn) btn.classList.add('animate-spin');
+        await this.fetchLiveStations();
+        setTimeout(() => {
+          if (btn) btn.classList.remove('animate-spin');
+        }, 600);
+      },
+
+      updateLiveIndicator(active) {
+        const badge = document.getElementById('mob-hero-live-badge');
+        if (badge) {
+          if (active) {
+            const timeStr = this.lastUpdated ? this.lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Live';
+            badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> LIVE WAQI (${timeStr})`;
+            badge.className = "flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-950/80 text-emerald-300 border border-emerald-500/30 text-[10px] font-mono-tag font-bold";
+          } else {
+            badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span> BASELINE`;
+            badge.className = "flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-950/80 text-amber-300 border border-amber-500/30 text-[10px] font-mono-tag font-bold";
+          }
+        }
+      }
+    };
+
+
     function dismissLocationToast() {
       const toast = document.getElementById('gps-location-toast');
       if (toast) toast.classList.add('hidden');
@@ -4656,9 +4870,27 @@
       const userCoords = VayuLocationService.lastUserCoords || { lat: 28.6315, lon: 77.2167 };
 
       const filtered = VayuForecastEngine.stations.filter(st => {
-        const matchZone = (currentSelectedZone === 'ALL') || 
-                          (currentSelectedZone === 'NCR' && st.zone.startsWith('NCR')) ||
-                          (st.zone === currentSelectedZone);
+        const zoneStr = st.zone || st.region || '';
+        let matchZone = false;
+        if (currentSelectedZone === 'ALL') {
+          matchZone = true;
+        } else if (currentSelectedZone === 'NCR') {
+          matchZone = zoneStr.startsWith('NCR') || !zoneStr.includes('Delhi');
+        } else if (currentSelectedZone === 'North Delhi') {
+          matchZone = zoneStr.includes('North');
+        } else if (currentSelectedZone === 'South Delhi') {
+          matchZone = zoneStr.includes('South') && !zoneStr.includes('West');
+        } else if (currentSelectedZone === 'South West Delhi' || currentSelectedZone === 'SW Delhi') {
+          matchZone = zoneStr.includes('South West') || zoneStr.includes('SW');
+        } else if (currentSelectedZone === 'West Delhi') {
+          matchZone = zoneStr.includes('West') && !zoneStr.includes('South') && !zoneStr.includes('North');
+        } else if (currentSelectedZone === 'East Delhi') {
+          matchZone = zoneStr.includes('East') && !zoneStr.includes('North') && !zoneStr.includes('South');
+        } else if (currentSelectedZone === 'Central Delhi') {
+          matchZone = zoneStr.includes('Central');
+        } else {
+          matchZone = zoneStr === currentSelectedZone;
+        }
         if (!matchZone) return false;
 
         if (!q) return true;
@@ -4676,7 +4908,8 @@
 
       list.innerHTML = filtered.map(st => {
         const isCurrent = VayuForecastEngine.currentStation && VayuForecastEngine.currentStation.id === st.id;
-        const meta = VayuForecastEngine.getSeverityMeta(st.baseAQI);
+        const stAQI = st.aqi || st.baseAQI;
+        const meta = VayuForecastEngine.getSeverityMeta(stAQI);
         const dist = VayuLocationService.calcHaversineDistance(userCoords.lat, userCoords.lon, st.lat, st.lon);
 
         return `
@@ -4684,21 +4917,23 @@
             <div class="flex items-center gap-3 min-w-0">
               <span class="w-3 h-3 rounded-full shrink-0 shadow-sm" style="background-color: ${meta.color}"></span>
               <div class="min-w-0">
-                <div class="font-bold text-xs sm:text-sm truncate text-white flex items-center gap-1.5 font-sans-ui">
+                <div class="font-bold text-xs sm:text-sm truncate text-white flex items-center gap-1.5 font-sans-ui flex-wrap">
                   <span>${st.name}</span>
+                  ${st.is_live ? '<span class="text-[9px] px-1.5 py-0.2 bg-emerald-950/80 text-emerald-400 border border-emerald-500/30 rounded font-mono-tag flex items-center gap-1"><span class="w-1 h-1 rounded-full bg-emerald-400 animate-ping"></span>LIVE</span>' : ''}
                   ${isCurrent ? '<span class="text-[9px] px-1.5 py-0.2 bg-[#6fe2a3]/20 text-[#6fe2a3] rounded font-mono-tag">ACTIVE</span>' : ''}
                 </div>
                 <div class="text-[10px] text-[#8b9390] font-mono-data mt-0.5 flex items-center gap-2 truncate">
                   <span class="text-[#cfdade]">${st.zone}</span>
                   <span>•</span>
-                  <span>${st.dominant}: ${st.pm25} µg/m³</span>
+                  <span>${st.dominant || 'PM2.5'}: ${st.pm25 || Math.round(stAQI * 0.65)} µg/m³</span>
                   <span>•</span>
                   <span class="text-[#6fe2a3]">${dist} km away</span>
+                  ${st.live_source ? `<span>•</span><span class="text-emerald-400 truncate max-w-[120px]">${st.live_source.split(',')[0]}</span>` : ''}
                 </div>
               </div>
             </div>
             <div class="text-right shrink-0 pl-2">
-              <div class="text-sm font-black font-mono-data" style="color: ${meta.color}">AQI ${st.baseAQI}</div>
+              <div class="text-sm font-black font-mono-data" style="color: ${meta.color}">AQI ${stAQI}</div>
               <span class="text-[9px] font-mono-tag uppercase ${meta.pillClass} px-2 py-0.5 rounded-full border inline-block mt-0.5">${meta.label}</span>
             </div>
           </button>
@@ -4738,6 +4973,67 @@
         }));
       }
       closeStationPickerModal();
+    }
+
+        function renderRegionalZoneStrip() {
+      const strip = document.getElementById('command-center-zone-strip');
+      if (!strip) return;
+
+      const stations = (typeof VayuForecastEngine !== 'undefined' && VayuForecastEngine.stations && VayuForecastEngine.stations.length)
+        ? VayuForecastEngine.stations
+        : [];
+
+      const zonesConfig = [
+        { id: 'West Delhi', label: 'West Delhi', filter: 'West Delhi', pred: (z) => z.includes('West') && !z.includes('South') && !z.includes('North') },
+        { id: 'North Delhi', label: 'North Delhi', filter: 'North Delhi', pred: (z) => z.includes('North') },
+        { id: 'East Delhi', label: 'East Delhi', filter: 'East Delhi', pred: (z) => z.includes('East') && !z.includes('North') && !z.includes('South') },
+        { id: 'South Delhi', label: 'South Delhi', filter: 'South Delhi', pred: (z) => z.includes('South') && !z.includes('West') },
+        { id: 'Central Delhi', label: 'Central Delhi', filter: 'Central Delhi', pred: (z) => z.includes('Central') },
+        { id: 'South West Delhi', label: 'SW Delhi', filter: 'South West Delhi', pred: (z) => z.includes('South West') || z.includes('SW') },
+        { id: 'NCR', label: 'NCR Fringe', filter: 'NCR', pred: (z) => z.startsWith('NCR') || !z.includes('Delhi') }
+      ];
+
+      strip.innerHTML = zonesConfig.map(zc => {
+        const matched = stations.filter(s => zc.pred(s.zone || s.region || ''));
+        const count = matched.length || (zc.id === 'West Delhi' ? 5 : zc.id === 'North Delhi' ? 14 : zc.id === 'East Delhi' ? 6 : zc.id === 'South Delhi' ? 11 : zc.id === 'Central Delhi' ? 7 : zc.id === 'South West Delhi' ? 4 : 11);
+        let avgAQI = 160;
+        if (matched.length > 0) {
+          const sum = matched.reduce((acc, s) => acc + (s.aqi || s.baseAQI || 160), 0);
+          avgAQI = Math.round(sum / matched.length);
+        } else if (zc.id === 'West Delhi') {
+          avgAQI = 187;
+        } else if (zc.id === 'North Delhi') {
+          avgAQI = 256;
+        } else if (zc.id === 'East Delhi') {
+          avgAQI = 177;
+        } else if (zc.id === 'South Delhi') {
+          avgAQI = 151;
+        } else if (zc.id === 'Central Delhi') {
+          avgAQI = 122;
+        } else if (zc.id === 'South West Delhi') {
+          avgAQI = 132;
+        } else {
+          avgAQI = 173;
+        }
+
+        const meta = (typeof VayuForecastEngine !== 'undefined' && VayuForecastEngine.getSeverityMeta)
+          ? VayuForecastEngine.getSeverityMeta(avgAQI)
+          : { color: avgAQI > 200 ? '#FFE270' : '#7FD4FF' };
+
+        return `
+          <div onclick="filterStationsByZone('${zc.filter}'); openStationPickerModal();" class="surface-card p-3 rounded-xl border border-[#262A26] hover:border-[#383E38] transition cursor-pointer min-w-[140px] shrink-0 flex flex-col gap-1.5 shadow-sm hover:shadow-md active:scale-[0.98]">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold text-[#EEF0EC]">${zc.label}</span>
+              <span class="w-2 h-2 rounded-full" style="background-color: ${meta.color}"></span>
+            </div>
+            <div class="flex items-baseline gap-1.5">
+              <span class="text-xl font-bold font-serif-display" style="color: ${meta.color}">${avgAQI}</span>
+              <span class="text-[10px] font-mono-data text-[#8C948B]">AQI</span>
+            </div>
+            <span class="text-[10px] font-mono-data text-[#8C948B]">${count} stations</span>
+          </div>
+        `;
+      }).join('');
     }
 
     function filterStationsList(query) {
@@ -6985,6 +7281,11 @@
       lucide.createIcons();
       VayuForecastEngine.init();
       VayuLocationService.init();
+      try {
+        await VayuWaqiService.init();
+      } catch (e) {
+        console.warn("WAQI Service init non-blocking fallback:", e);
+      }
 
       // Immediate zero-latency hydration of forecast & source attribution
       if (typeof updateForecastFromEngine === 'function') {
@@ -7366,6 +7667,26 @@
       try {
         const res = await fetch('/api/stations');
         stationsList = await res.json();
+        if (stationsList && stationsList.length && typeof VayuForecastEngine !== 'undefined') {
+          stationsList.forEach(liveSt => {
+            const target = VayuForecastEngine.stations.find(s => s.id === liveSt.id || s.name.toLowerCase() === liveSt.name.toLowerCase());
+            if (target) {
+              target.aqi = liveSt.aqi || liveSt.baseAQI;
+              target.baseAQI = target.aqi;
+              target.pm25 = liveSt.pm25 || Math.round(target.aqi * 0.65);
+              target.pm10 = liveSt.pm10 || Math.round(target.aqi * 0.95);
+              target.is_live = liveSt.is_live;
+              target.live_source = liveSt.live_source;
+              target.live_dist_km = liveSt.live_dist_km;
+            }
+          });
+          if (VayuForecastEngine.currentStation) {
+            const updated = VayuForecastEngine.stations.find(s => s.id === VayuForecastEngine.currentStation.id);
+            if (updated) {
+              VayuLocationService.applyResolvedStation(updated, VayuForecastEngine.stationDistanceKm || 5.6, false);
+            }
+          }
+        }
       } catch (e) {
         console.error("Failed to fetch stations", e);
       }
@@ -7498,31 +7819,41 @@
         stubbleBadge.innerText = `Stubble: ${snap.source_attribution.stubble_burning}%`;
       }
 
-      // Hero Card Live Sync
+      // Live Hero Card Sync with active station / regional telemetry
+      const activeSt = (typeof VayuForecastEngine !== 'undefined') ? VayuForecastEngine.currentStation : null;
+      const displayAQI = activeSt ? (activeSt.aqi || activeSt.baseAQI) : snap.delhi_ncr_avg_aqi;
+      const displayMeta = (typeof VayuForecastEngine !== 'undefined') ? VayuForecastEngine.getSeverityMeta(displayAQI) : { color: snap.category_color, label: snap.category, stageCode: 'GRAP' };
+
       const mobAqi = document.getElementById('mob-hero-aqi-val');
       if (mobAqi) {
-        mobAqi.innerText = snap.delhi_ncr_avg_aqi;
-        mobAqi.style.color = snap.category_color || '#FF9D7F';
+        mobAqi.innerText = displayAQI;
+        mobAqi.style.color = displayMeta.color || snap.category_color || '#FFE270';
       }
       const mobCat = document.getElementById('mob-hero-category');
       if (mobCat) {
-        mobCat.innerText = (snap.category || 'Evaluating').toUpperCase();
-        mobCat.style.backgroundColor = (snap.category_color || '#FF9D7F') + '22';
-        mobCat.style.color = snap.category_color || '#FF9D7F';
-        mobCat.style.borderColor = (snap.category_color || '#FF9D7F') + '44';
+        mobCat.innerText = (activeSt ? displayMeta.label : (snap.category || 'Evaluating')).toUpperCase();
+        mobCat.style.backgroundColor = (displayMeta.color || '#FFE270') + '22';
+        mobCat.style.color = displayMeta.color || '#FFE270';
+        mobCat.style.borderColor = (displayMeta.color || '#FFE270') + '44';
       }
       const mobGrap = document.getElementById('mob-hero-grap-stage');
       if (mobGrap) {
-        const stage = grap ? (grap.active_stage_name || grap.active_stage) : (snap.delhi_ncr_avg_aqi > 450 ? 'GRAP IV+' : (snap.delhi_ncr_avg_aqi > 400 ? 'GRAP IV' : (snap.delhi_ncr_avg_aqi > 300 ? 'GRAP III' : 'GRAP II')));
-        mobGrap.innerText = stage || 'GRAP IV';
+        const stage = grap ? (grap.active_stage_name || grap.active_stage) : displayMeta.stageCode;
+        mobGrap.innerText = stage || 'GRAP I';
+        mobGrap.style.backgroundColor = (displayMeta.color || '#FFE270') + '22';
+        mobGrap.style.color = displayMeta.color || '#FFE270';
+      }
+      const mobStation = document.getElementById('mob-hero-station-name');
+      if (mobStation) {
+        mobStation.innerText = activeSt ? `${activeSt.name}, ${activeSt.city || 'Delhi'}` : "Punjabi Bagh, Delhi";
       }
       const mobAdv = document.getElementById('mob-hero-advisory');
       if (mobAdv) {
-        if (snap.delhi_ncr_avg_aqi > 400) {
+        if (displayAQI > 400) {
           mobAdv.innerText = `Hazardous air quality. Nocturnal temperature inversion trapping trans-boundary stubble smoke below ${Math.round(met.boundary_layer_height_m || 340)}m.`;
-        } else if (snap.delhi_ncr_avg_aqi > 300) {
+        } else if (displayAQI > 300) {
           mobAdv.innerText = `Very Poor air quality. Significant inversion capping ground dispersion with elevated particulate accumulation.`;
-        } else if (snap.delhi_ncr_avg_aqi > 200) {
+        } else if (displayAQI > 200) {
           mobAdv.innerText = `Poor air quality. Daylight solar heating expanding boundary layer to ${Math.round(met.boundary_layer_height_m || 800)}m.`;
         } else {
           mobAdv.innerText = `Moderate / Favorable dispersion conditions across Delhi NCR corridor.`;
@@ -7532,18 +7863,38 @@
       if (mobTemp && met.temperature_c !== undefined) {
         mobTemp.innerText = Math.round(met.temperature_c) + '°C';
       }
+      const mobWind = document.getElementById('mob-hero-wind');
+      if (mobWind && met) {
+        mobWind.innerText = Math.round(met.wind_speed_kmh || 10) + ' ' + (met.wind_direction_cardinal || 'NW');
+      }
+      const mobPm = document.getElementById('mob-hero-pm25');
+      if (mobPm) {
+        mobPm.innerText = activeSt ? (activeSt.pm25 || Math.round(displayAQI * 0.65)) : Math.round(snap.stations?.[0]?.pm25 || 105);
+      }
+      const currPm = document.getElementById('curr-pm25-val');
+      if (currPm) {
+        currPm.innerText = activeSt ? (activeSt.pm25 || Math.round(displayAQI * 0.65)) : Math.round(snap.stations?.[0]?.pm25 || 105);
+      }
+      const mobPbl = document.getElementById('mob-hero-pbl');
+      if (mobPbl && met) {
+        mobPbl.innerText = Math.round(met.boundary_layer_height_m || 1016) + 'm';
+      }
 
       // Top Header Badge Sync
       const hdrAqi = document.getElementById('header-aqi-val');
-      if (hdrAqi) hdrAqi.innerText = snap.delhi_ncr_avg_aqi;
+      if (hdrAqi) hdrAqi.innerText = displayAQI;
       const hdrSev = document.getElementById('header-aqi-severity');
-      if (hdrSev) hdrSev.innerText = snap.category || 'SEVERE';
+      if (hdrSev) hdrSev.innerText = (activeSt ? displayMeta.label : (snap.category || 'MODERATE')).toUpperCase();
       const hdrBadge = document.getElementById('header-aqi-badge');
       if (hdrBadge) {
-        hdrBadge.className = `px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-xl ${snap.delhi_ncr_avg_aqi > 400 ? 'badge-red' : (snap.delhi_ncr_avg_aqi > 300 ? 'badge-orange' : (snap.delhi_ncr_avg_aqi > 200 ? 'badge-yellow' : 'badge-green'))} flex items-center gap-1 text-[11px] sm:text-xs font-mono-data font-bold shadow-sm shrink-0`;
+        hdrBadge.className = `px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-xl ${displayAQI > 400 ? 'badge-red' : (displayAQI > 300 ? 'badge-orange' : (displayAQI > 200 ? 'badge-yellow' : 'badge-green'))} flex items-center gap-1 text-[11px] sm:text-xs font-mono-data font-bold shadow-sm shrink-0`;
       }
 
-      updateZonesStrip(snap.delhi_ncr_avg_aqi);
+      if (typeof renderRegionalZoneStrip === 'function') {
+        renderRegionalZoneStrip();
+      } else if (typeof updateZonesStrip === 'function') {
+        updateZonesStrip(snap.delhi_ncr_avg_aqi);
+      }
     }
 
     function updateMapElements(snap) {
@@ -8498,7 +8849,7 @@
         badgeEl.textContent = curStation.name.split(',')[0].trim();
       }
 
-      const baseAQI = curStation.baseAQI || (typeof VayuForecastEngine !== 'undefined' && VayuForecastEngine.currentAQI) || 382;
+      const baseAQI = curStation.aqi || curStation.baseAQI || (typeof VayuForecastEngine !== 'undefined' && VayuForecastEngine.currentAQI) || 157;
 
       const hours = [
         { h: "06 AM", aqi: Math.round(baseAQI * 1.10), label: "AVOID", badge: "badge-red", color: isLight ? "#B91C1C" : "#FF9D7F" },
@@ -8715,7 +9066,7 @@
 
         stations.forEach(s => {
           const stId = s.id || s.station_id;
-          const aqi = s.baseAQI || s.aqi || 400;
+          const aqi = s.aqi || s.baseAQI || 400;
           const catColor = this.getCategoryColor(aqi);
           const isSelected = stId === currentActiveId || stId === selectedStationId;
 
@@ -8759,7 +9110,7 @@
         if (!station) return;
         const stId = station.id || station.station_id;
         selectedStationId = stId;
-        const aqi = station.baseAQI || station.aqi || 400;
+        const aqi = station.aqi || station.baseAQI || 400;
         const catName = this.getCategoryName(aqi);
         const catColor = this.getCategoryColor(aqi);
 
@@ -8776,7 +9127,8 @@
 
         if (idEl) idEl.innerText = stId;
         if (nameEl) nameEl.innerText = station.name;
-        if (descEl) descEl.innerText = `${station.zone || station.region || 'Delhi'} • ${station.city || 'Delhi'} • DPCC Continuous Monitor`;
+        const liveInfo = station.is_live && station.live_source ? ` • Live WAQI (${station.live_source.split(',')[0]})` : '';
+        if (descEl) descEl.innerText = `${station.zone || station.region || 'Delhi'} • ${station.city || 'Delhi'}${liveInfo} • DPCC/CPCB Monitor`;
         if (badgeEl) {
           badgeEl.innerText = catName;
           badgeEl.style.backgroundColor = catColor + '25';

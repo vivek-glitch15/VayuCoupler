@@ -2087,7 +2087,7 @@ html, body {
             <span>Local Air Quality Set to Your Location</span>
           </div>
           <div class="text-[11px] text-[#8b9390] truncate font-mono-data" id="toast-station-subtext">
-            Punjabi Bagh • 6.2 km away • AQI 431
+            Punjabi Bagh • 6.2 km away • AQI 163
           </div>
         </div>
       </div>
@@ -2349,7 +2349,7 @@ html, body {
 
         <!-- Live AQI Severity Pill -->
         <div id="header-aqi-badge" class="px-2.5 py-1.5 rounded-xl badge-red flex items-center gap-1.5 text-xs font-mono-data font-bold shadow-sm shrink-0">
-          <span id="header-aqi-val">AQI 431</span>
+          <span id="header-aqi-val">AQI 163</span>
           <span class="text-[9px] uppercase text-[#f2966e] hidden sm:inline" id="header-aqi-severity">SEVERE</span>
         </div>
 
@@ -2614,6 +2614,10 @@ html, body {
           </button>
           
           <div class="flex items-center gap-2">
+            <span id="mob-hero-live-badge" class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-950/80 text-emerald-300 border border-emerald-500/30 text-[10px] font-mono-tag font-bold"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> LIVE WAQI</span>
+            <button id="live-waqi-refresh-btn" onclick="VayuWaqiService.refresh()" title="Refresh live telemetry" class="p-1.5 rounded-lg bg-[#191C19] border border-[#262A26] hover:border-emerald-500/40 text-slate-300 hover:text-emerald-300 transition cursor-pointer flex items-center justify-center">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+            </button>
             <span id="mob-hero-category" class="text-[10px] font-bold px-2.5 py-1 rounded-full badge-orange font-mono-tag">SEVERE</span>
             <span class="text-[10px] font-mono-tag font-bold px-2.5 py-1 rounded-full badge-orange" id="mob-hero-grap-stage">GRAP IV</span>
           </div>
@@ -2622,15 +2626,18 @@ html, body {
         <!-- Central AQI Number & MoES Official Advisory -->
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 py-1">
           <div>
-            <div class="text-[11px] font-mono-data text-[#8C948B]">COUPLED REAL-TIME NAQI</div>
+            <div class="flex items-center gap-2 text-[11px] font-mono-data text-[#8C948B]">
+              <span>COUPLED REAL-TIME NAQI</span>
+              <span id="live-source-subtext" class="text-[10px] text-emerald-400/90">• CPCB Ground Monitor</span>
+            </div>
             <div class="flex items-baseline gap-2.5">
-              <span id="mob-hero-aqi-val" class="text-5xl sm:text-6xl font-bold font-serif-display text-[#FF9D7F]">431</span>
-              <span id="curr-aqi-val" class="hidden">431</span>
-              <span id="curr-aqi-category-badge" class="hidden">Severe</span>
+              <span id="mob-hero-aqi-val" class="text-5xl sm:text-6xl font-bold font-serif-display text-[#FF9D7F]">157</span>
+              <span id="curr-aqi-val" class="hidden">157</span>
+              <span id="curr-aqi-category-badge" class="hidden">Moderate</span>
               <span class="text-xs font-mono-data text-[#8C948B]">NAQI</span>
             </div>
             <div id="mob-hero-advisory" class="text-xs text-[#EEF0EC] mt-1 font-sans-ui max-w-[70ch] leading-relaxed">
-              Hazardous air quality. Nocturnal temperature inversion trapping trans-boundary stubble smoke below 340m.
+              Air quality is moderate. Sensitive groups should limit prolonged outdoor exertion.
             </div>
           </div>
 
@@ -2847,7 +2854,7 @@ html, body {
             <div class="flex flex-wrap items-center gap-4 text-xs font-mono">
               <div>
                 <span class="text-earth-400 text-[10px] block">Live AQI</span>
-                <b class="text-base text-rose-400" id="inspect-station-aqi">431</b>
+                <b class="text-base text-rose-400" id="inspect-station-aqi">163</b>
               </div>
               <div>
                 <span class="text-earth-400 text-[10px] block">PM2.5</span>
@@ -3463,7 +3470,7 @@ html, body {
           <div class="p-3.5 rounded-2xl bg-[#0f110f] border border-[#1c1f1c] font-mono-data shrink-0">
             <div class="text-[10px] text-[#8b9390] uppercase tracking-wider">CURRENT SEVERITY</div>
             <div class="text-sm sm:text-base font-black text-[#f2966e] font-serif-display mt-0.5" id="dispatch-severity-headline">
-              Emergency — AQI 431
+              Moderate — AQI 163
             </div>
           </div>
         </div>
@@ -4577,7 +4584,7 @@ html, body {
                 "zone": "West Delhi",
                 "lat": 28.6692,
                 "lon": 77.1314,
-                "baseAQI": 431,
+                "baseAQI": 163,
                 "pm25": 284,
                 "pm10": 410,
                 "dominant": "PM2.5",
@@ -5443,7 +5450,7 @@ html, body {
 ],
 
       currentStation: null,
-      currentAQI: 431,
+      currentAQI: 163,
       stationDistanceKm: 5.6,
       forecastArray: [],
 
@@ -5648,10 +5655,13 @@ html, body {
       },
 
       applyResolvedStation(station, distanceKm, showToast = true) {
+        const stationAQI = station.aqi || station.baseAQI || 157;
         VayuForecastEngine.currentStation = station;
-        VayuForecastEngine.currentAQI = station.baseAQI;
+        VayuForecastEngine.currentAQI = stationAQI;
         VayuForecastEngine.stationDistanceKm = distanceKm;
-        VayuForecastEngine.generate72hForecast(station.baseAQI, station.name);
+        VayuForecastEngine.generate72hForecast(stationAQI, station.name);
+
+        const aqiMeta = VayuForecastEngine.getSeverityMeta(stationAQI);
 
         // Update Header location pill
         const textEl = document.getElementById('header-station-text');
@@ -5660,22 +5670,76 @@ html, body {
         }
 
         // Update Header AQI badge
-        const aqiMeta = VayuForecastEngine.getSeverityMeta(station.baseAQI);
         const aqiValEl = document.getElementById('header-aqi-val');
         const aqiSevEl = document.getElementById('header-aqi-severity');
         const aqiBadge = document.getElementById('header-aqi-badge');
-        if (aqiValEl) aqiValEl.innerText = `AQI ${station.baseAQI}`;
+        if (aqiValEl) aqiValEl.innerText = `AQI ${stationAQI}`;
         if (aqiSevEl) aqiSevEl.innerText = aqiMeta.label.toUpperCase();
         if (aqiBadge) {
           aqiBadge.className = `px-2.5 py-1.5 rounded-xl ${aqiMeta.badgeClass} flex items-center gap-1.5 text-xs font-mono-data font-bold shadow-sm shrink-0`;
         }
 
+        // Update Hero AQI Panel (Primary visible mobile + desktop dashboard)
+        const mobHeroAqi = document.getElementById('mob-hero-aqi-val');
+        if (mobHeroAqi) {
+          mobHeroAqi.innerText = stationAQI;
+          mobHeroAqi.style.color = aqiMeta.color;
+        }
+
+        const mobHeroStation = document.getElementById('mob-hero-station-name');
+        if (mobHeroStation) {
+          mobHeroStation.innerText = `${station.name}, ${station.city || 'Delhi'}`;
+        }
+
+        const mobHeroCat = document.getElementById('mob-hero-category');
+        if (mobHeroCat) {
+          mobHeroCat.innerText = aqiMeta.label.toUpperCase();
+          mobHeroCat.className = `text-[10px] font-bold px-2.5 py-1 rounded-full ${aqiMeta.badgeClass} font-mono-tag`;
+          mobHeroCat.style.color = aqiMeta.color;
+          mobHeroCat.style.backgroundColor = aqiMeta.color + '22';
+        }
+
+        const mobHeroGrap = document.getElementById('mob-hero-grap-stage');
+        if (mobHeroGrap) {
+          mobHeroGrap.innerText = aqiMeta.stageCode;
+          mobHeroGrap.className = `text-[10px] font-mono-tag font-bold px-2.5 py-1 rounded-full ${aqiMeta.badgeClass}`;
+          mobHeroGrap.style.color = aqiMeta.color;
+          mobHeroGrap.style.backgroundColor = aqiMeta.color + '22';
+        }
+
+        const mobHeroAdvisory = document.getElementById('mob-hero-advisory');
+        if (mobHeroAdvisory) {
+          if (stationAQI >= 450) {
+            mobHeroAdvisory.innerText = "Hazardous air quality. Extreme emergency curbs active. Remain strictly indoors.";
+          } else if (stationAQI >= 401) {
+            mobHeroAdvisory.innerText = "Severe air quality. High particulate entrapment. BS-III/IV bans active; avoid outdoor activity.";
+          } else if (stationAQI >= 301) {
+            mobHeroAdvisory.innerText = "Very poor air quality. Prolonged exposure causes respiratory distress. N95 masks recommended.";
+          } else if (stationAQI >= 201) {
+            mobHeroAdvisory.innerText = "Poor air quality. Breathing discomfort to most people on prolonged exposure.";
+          } else if (stationAQI >= 101) {
+            mobHeroAdvisory.innerText = "Moderate air quality. Sensitive people may experience breathing discomfort.";
+          } else {
+            mobHeroAdvisory.innerText = "Good air quality. Minimal health impact; optimal for outdoor activities.";
+          }
+        }
+
+        // Live telemetry subtext
+        const liveSourceSubtext = document.getElementById('live-source-subtext');
+        if (liveSourceSubtext) {
+          if (station.is_live && station.live_source) {
+            liveSourceSubtext.innerText = `• Live: ${station.live_source.split(',')[0]} (${station.live_dist_km || 0}km)`;
+          } else {
+            liveSourceSubtext.innerText = `• CPCB Ground Monitor`;
+          }
+        }
+
         // Update Overview Cards
         const currAqiEl = document.getElementById('curr-aqi-val');
-        if (currAqiEl) currAqiEl.innerText = station.baseAQI;
+        if (currAqiEl) currAqiEl.innerText = stationAQI;
 
         const currPm25El = document.getElementById('curr-pm25-val');
-        if (currPm25El) currPm25El.innerText = station.pm25 || Math.round(station.baseAQI * 0.65);
+        if (currPm25El) currPm25El.innerText = station.pm25 || Math.round(stationAQI * 0.65);
 
         const currCatBadge = document.getElementById('curr-aqi-category-badge');
         if (currCatBadge) {
@@ -5691,6 +5755,10 @@ html, body {
         if (currWindSpeed && station.windSpeed) {
           currWindSpeed.innerText = `${station.windSpeed} km/h`;
         }
+        const mobHeroTemp = document.getElementById('mob-hero-temp');
+        if (mobHeroTemp && station.temp) {
+          mobHeroTemp.innerText = `${Math.round(station.temp)}°C`;
+        }
 
         // Update Splash Screen elements if visible
         const splashName = document.getElementById('splash-station-name');
@@ -5701,13 +5769,13 @@ html, body {
 
         if (splashName) splashName.innerText = station.name;
         if (splashDist) splashDist.innerText = `${distanceKm} km`;
-        if (splashAqiNumber) splashAqiNumber.innerText = station.baseAQI;
+        if (splashAqiNumber) splashAqiNumber.innerText = stationAQI;
         if (splashAqiSev) {
           splashAqiSev.innerText = aqiMeta.label.toUpperCase();
           splashAqiSev.className = `text-[10px] font-mono-tag font-bold px-2.5 py-0.5 rounded-full ${aqiMeta.badgeClass}`;
         }
         if (splashGaugeRing) {
-          const targetOffset = 314.159 - (Math.min(500, station.baseAQI) / 500) * 314.159;
+          const targetOffset = 314.159 - (Math.min(500, stationAQI) / 500) * 314.159;
           splashGaugeRing.style.strokeDashoffset = targetOffset.toString();
         }
 
@@ -5716,9 +5784,14 @@ html, body {
         const fcStationBadge = document.getElementById('forecast-station-badge');
         if (fcStationBadge) fcStationBadge.innerText = station.name;
 
+        // Re-render diurnal Clean Air windows based on live station AQI
+        if (typeof renderCleanAirWindows === 'function') {
+          renderCleanAirWindows();
+        }
+
         // Show animated toast banner
         if (showToast) {
-          this.showLocationToast(station.name, distanceKm, station.baseAQI);
+          this.showLocationToast(station.name, distanceKm, stationAQI);
         }
 
         // Refresh Predictive timeline and dispatches
@@ -5761,6 +5834,132 @@ html, body {
         this.toastTimeout = setTimeout(() => {
           toast.classList.add('hidden');
         }, 4400);
+      }
+    };
+
+    // ==========================================================================
+    // 2.5 LIVE WAQI (WORLD AIR QUALITY INDEX) TELEMETRY ENGINE
+    // ==========================================================================
+    const VayuWaqiService = {
+      token: '64804e6a2aa6b6bea50aeb7ada6733af50cca796',
+      isLive: false,
+      lastUpdated: null,
+      stationsData: [],
+
+      async init() {
+        await this.fetchLiveStations();
+      },
+
+      async fetchLiveStations() {
+        try {
+          let liveList = null;
+          try {
+            const res = await fetch('/api/live/stations');
+            if (res.ok) {
+              const data = await res.json();
+              if (Array.isArray(data) && data.length) {
+                liveList = data;
+              }
+            }
+          } catch (e) {}
+
+          if (!liveList || !liveList.length) {
+            const directUrl = `https://api.waqi.info/map/bounds/?latlng=28.1,76.6,29.1,77.8&token=${this.token}`;
+            const res = await fetch(directUrl);
+            const json = await res.json();
+            if (json.status === 'ok' && json.data && json.data.length) {
+              liveList = this.mapWaqiToStations(json.data);
+            }
+          }
+
+          if (liveList && liveList.length) {
+            this.isLive = true;
+            this.lastUpdated = new Date();
+            this.stationsData = liveList;
+
+            if (typeof VayuForecastEngine !== 'undefined') {
+              liveList.forEach(liveSt => {
+                const target = VayuForecastEngine.stations.find(s => s.id === liveSt.id || s.name.toLowerCase() === liveSt.name.toLowerCase());
+                if (target) {
+                  target.aqi = liveSt.aqi || liveSt.baseAQI;
+                  target.baseAQI = target.aqi;
+                  target.pm25 = liveSt.pm25 || Math.round(target.aqi * 0.65);
+                  target.pm10 = liveSt.pm10 || Math.round(target.aqi * 0.95);
+                  target.is_live = true;
+                  target.live_source = liveSt.live_source || liveSt.name;
+                  target.live_dist_km = liveSt.live_dist_km || 0;
+                }
+              });
+
+              const cur = VayuForecastEngine.currentStation;
+              if (cur) {
+                const updatedCur = VayuForecastEngine.stations.find(s => s.id === cur.id) || cur;
+                VayuLocationService.applyResolvedStation(updatedCur, VayuForecastEngine.stationDistanceKm || 5.6, false);
+              }
+            }
+
+            if (typeof VayuAtmosphericMap !== 'undefined' && VayuAtmosphericMap.map) {
+              VayuAtmosphericMap.renderStations();
+            }
+
+            this.updateLiveIndicator(true);
+          }
+        } catch (err) {
+          console.warn('[VayuWaqiService] Live fetch failed:', err);
+          this.updateLiveIndicator(false);
+        }
+      },
+
+      mapWaqiToStations(waqiItems) {
+        if (typeof VayuForecastEngine === 'undefined') return [];
+        return VayuForecastEngine.stations.map(st => {
+          let minDist = Infinity;
+          let closest = null;
+          for (const w of waqiItems) {
+            const aqiNum = parseInt(w.aqi);
+            if (isNaN(aqiNum)) continue;
+            const d = VayuLocationService.calcHaversineDistance(st.lat, st.lon, w.lat, w.lon);
+            if (d < minDist) {
+              minDist = d;
+              closest = { ...w, aqi: aqiNum };
+            }
+          }
+
+          const liveAqi = closest ? closest.aqi : st.baseAQI;
+          return {
+            ...st,
+            aqi: liveAqi,
+            baseAQI: liveAqi,
+            pm25: Math.round(liveAqi * 0.65),
+            pm10: Math.round(liveAqi * 0.95),
+            is_live: !!closest,
+            live_source: closest ? (closest.station?.name || closest.name) : 'Estimated',
+            live_dist_km: closest ? minDist : 0
+          };
+        });
+      },
+
+      async refresh() {
+        const btn = document.getElementById('live-waqi-refresh-btn');
+        if (btn) btn.classList.add('animate-spin');
+        await this.fetchLiveStations();
+        setTimeout(() => {
+          if (btn) btn.classList.remove('animate-spin');
+        }, 600);
+      },
+
+      updateLiveIndicator(active) {
+        const badge = document.getElementById('mob-hero-live-badge');
+        if (badge) {
+          if (active) {
+            const timeStr = this.lastUpdated ? this.lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Live';
+            badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> LIVE WAQI (${timeStr})`;
+            badge.className = "flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-950/80 text-emerald-300 border border-emerald-500/30 text-[10px] font-mono-tag font-bold";
+          } else {
+            badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span> BASELINE`;
+            badge.className = "flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-950/80 text-amber-300 border border-amber-500/30 text-[10px] font-mono-tag font-bold";
+          }
+        }
       }
     };
 
@@ -8076,6 +8275,11 @@ html, body {
       lucide.createIcons();
       VayuForecastEngine.init();
       VayuLocationService.init();
+      try {
+        await VayuWaqiService.init();
+      } catch (e) {
+        console.warn("WAQI init fallback:", e);
+      }
       VayuSplashScreen.init();
       VayuPredictiveTimeline.render();
       VayuDispatchesCenter.render();
@@ -8377,6 +8581,47 @@ html, body {
       const fires = snap.stubble_burning;
       document.getElementById('curr-fire-count').innerHTML = `${fires.total_active_fires} <span class="text-[10px] text-slate-400">fires</span>`;
       document.getElementById('stubble-share-badge').innerText = `Stubble: ${snap.source_attribution.stubble_burning}%`;
+
+      // Mobile Native Hero Card Sync
+      const activeSt = (typeof VayuForecastEngine !== 'undefined') ? VayuForecastEngine.currentStation : null;
+      const displayAQI = activeSt ? (activeSt.aqi || activeSt.baseAQI) : snap.delhi_ncr_avg_aqi;
+      const displayMeta = (typeof VayuForecastEngine !== 'undefined') ? VayuForecastEngine.getSeverityMeta(displayAQI) : { color: snap.category_color, label: snap.category, stageCode: 'GRAP' };
+
+      const mobAqi = document.getElementById('mob-hero-aqi-val');
+      if (mobAqi) {
+        mobAqi.innerText = displayAQI;
+        mobAqi.style.color = displayMeta.color;
+      }
+      const mobCat = document.getElementById('mob-hero-category');
+      if (mobCat) {
+        mobCat.innerText = (activeSt ? displayMeta.label : (snap.category || 'Evaluating')).toUpperCase();
+        mobCat.style.backgroundColor = displayMeta.color + '22';
+        mobCat.style.color = displayMeta.color;
+      }
+      const mobGrap = document.getElementById('mob-hero-grap-stage');
+      if (mobGrap) {
+        mobGrap.innerText = displayMeta.stageCode || 'GRAP';
+        mobGrap.style.backgroundColor = displayMeta.color + '22';
+        mobGrap.style.color = displayMeta.color;
+      }
+      const mobStation = document.getElementById('mob-hero-station-name');
+      if (mobStation) {
+        mobStation.innerText = activeSt ? `${activeSt.name}, ${activeSt.city || 'Delhi'}` : "Punjabi Bagh, Delhi";
+      }
+      const mobTemp = document.getElementById('mob-hero-temp');
+      if (mobTemp && met) mobTemp.innerText = Math.round(met.temperature_c || 30) + '°C';
+      const mobWind = document.getElementById('mob-hero-wind');
+      if (mobWind && met) mobWind.innerText = Math.round(met.wind_speed_kmh || 10) + ' ' + (met.wind_direction_cardinal || 'NW');
+      const mobPm = document.getElementById('mob-hero-pm25');
+      if (mobPm) {
+        mobPm.innerText = activeSt ? (activeSt.pm25 || Math.round(displayAQI * 0.65)) : Math.round(snap.stations?.[0]?.pm25 || 284);
+      }
+      const currPm = document.getElementById('curr-pm25-val');
+      if (currPm) {
+        currPm.innerText = activeSt ? (activeSt.pm25 || Math.round(displayAQI * 0.65)) : Math.round(snap.stations?.[0]?.pm25 || 284);
+      }
+      const mobPbl = document.getElementById('mob-hero-pbl');
+      if (mobPbl && met) mobPbl.innerText = Math.round(met.boundary_layer_height_m || 1016) + 'm';
     }
 
     function updateMapElements(snap) {

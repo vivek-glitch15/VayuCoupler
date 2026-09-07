@@ -19,3 +19,10 @@ ENV/
 .vscode/
 *.swp
 *.swo
+
+# Temporary and build artifacts
+scratch/
+android/.gradle/
+android/build/
+.vercel/
+

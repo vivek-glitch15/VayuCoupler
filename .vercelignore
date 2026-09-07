@@ -1,17 +1,16 @@
-backend/
-frontend/
+# Vercel Ignore Rules
+# Ignore heavy client build artifacts and non-production scripts
+android/
 scratch/
 docs/
-*.py
+*.zip
+*.apk
+*.pdf
 *.bat
 *.command
-*.zip
-*.txt
-*.pdf
-render.yaml
-DEPLOYMENT_GUIDE.md
+generate_guide_pdf.py
+generate_qa_pdf.py
+generate_icons.py
+Windows_User_Guide.txt
 PLAN.md
-README.md
-requirements.txt
-android/
-.github/
+DEPLOYMENT_GUIDE.md
