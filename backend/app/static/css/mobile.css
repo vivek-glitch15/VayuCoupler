@@ -444,6 +444,65 @@ html, body {
     padding: 8px !important;
     max-width: 100% !important;
   }
+
+  /* ==========================================================================
+     MOBILE HEADER & TOP BAR ANTI-CLUTTER
+     ========================================================================== */
+  header {
+    padding-top: max(env(safe-area-inset-top, 0px), 2px) !important;
+    background: rgba(7, 28, 38, 0.95) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+  }
+
+  header .max-w-\[1720px\] {
+    padding: 6px 10px !important;
+    gap: 6px !important;
+  }
+
+  /* Compact Station Location Pill */
+  #header-location-pill {
+    padding: 3px 8px !important;
+    font-size: 11px !important;
+    max-width: 130px !important;
+    border-radius: 10px !important;
+  }
+
+  #header-station-text {
+    max-width: 85px !important;
+    font-size: 11px !important;
+  }
+
+  #header-aqi-badge {
+    padding: 3px 6px !important;
+    font-size: 11px !important;
+    border-radius: 10px !important;
+  }
+
+  #header-settings-btn {
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 10px !important;
+  }
+
+  /* Compact Time-Travel Scrubber Bar on Mobile */
+  section.bg-earth-900\/90 {
+    padding: 6px 10px !important;
+    background: rgba(11, 12, 11, 0.92) !important;
+  }
+
+  #time-scrubber {
+    height: 4px !important;
+    margin: 4px 0 !important;
+  }
+
+  /* Standalone App (PWA & Android APK): Hide Web Install Prompt */
+  @media all and (display-mode: standalone) {
+    #mobile-quick-install-bar,
+    .mobile-nav-install {
+      display: none !important;
+    }
+  }
 }
 
 /* prefers-reduced-motion override */

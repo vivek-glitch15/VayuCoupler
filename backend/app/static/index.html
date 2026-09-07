@@ -959,57 +959,57 @@
     <div class="max-w-[1720px] mx-auto px-3 sm:px-6 py-2 sm:py-2.5 flex items-center justify-between gap-2 sm:gap-4 w-full">
       
       <!-- Identity -->
-      <div class="flex items-center gap-2 sm:gap-2.5 min-w-0">
-        <img src="/static/icon-192.png?v=6" class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl border border-[#1f3d30] shadow-lg object-cover ring-1 ring-[#6fe2a3]/30 shrink-0">
+      <div class="flex items-center gap-2 sm:gap-2.5 min-w-0 shrink-0">
+        <img src="/static/icon-192.png?v=6" class="w-7 h-7 sm:w-9 sm:h-9 rounded-xl border border-[#1f3d30] shadow-lg object-cover ring-1 ring-[#6fe2a3]/30 shrink-0">
         <div class="min-w-0">
-          <h1 class="text-sm sm:text-base font-bold text-white tracking-tight flex items-center gap-1.5 truncate font-serif-display">
+          <h1 class="text-xs sm:text-base font-bold text-white tracking-tight flex items-center gap-1.5 truncate font-serif-display">
             <span>VayuCoupler</span>
             <span class="hidden sm:inline text-xs text-[#8b9390] font-sans-ui font-normal">| Delhi-NCR</span>
             <span class="hidden sm:inline-flex items-center gap-1 text-[10px] font-bold text-[#6fe2a3] bg-[#10201a] px-2 py-0.5 rounded-full border border-[#1f3d30] shrink-0 font-mono-tag">
               <span class="w-1.5 h-1.5 rounded-full bg-[#6fe2a3] animate-pulse"></span> PREDICTIVE GRAP
             </span>
           </h1>
-          <div class="text-[10px] text-[#8b9390] font-medium truncate font-mono-data">MoES Atmospheric Coupled System</div>
+          <div class="text-[10px] text-[#8b9390] font-medium truncate font-mono-data hidden md:block">MoES Atmospheric Coupled System</div>
         </div>
       </div>
 
       <!-- Center / Location Pill & Live AQI Badge -->
-      <div class="flex items-center gap-1.5 sm:gap-2 min-w-0">
+      <div class="flex items-center gap-1 sm:gap-2 min-w-0">
         <!-- Clickable Location Pill (Opens Station Picker) -->
-        <button onclick="openStationPickerModal()" id="header-location-pill" class="px-2.5 py-1.5 rounded-xl bg-[#0f110f] hover:bg-[#141714] border border-[#1c1f1c] hover:border-[#6fe2a3]/40 text-[#f2f5f3] flex items-center gap-1.5 text-xs font-mono-data transition shadow-sm" title="Tap to select another station or refresh GPS">
-          <span class="w-2 h-2 rounded-full bg-[#6fe2a3] animate-pulse shrink-0"></span>
-          <span id="header-station-text" class="font-bold truncate max-w-[120px] sm:max-w-[180px]">Punjabi Bagh (6.2 km)</span>
-          <svg class="w-3 h-3 text-[#8b9390] svg-icon-line shrink-0" viewBox="0 0 24 24" stroke="currentColor"><path d="M6 9l6 6 6-6"/></svg>
+        <button onclick="openStationPickerModal()" id="header-location-pill" class="px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-xl bg-[#0f110f] hover:bg-[#141714] border border-[#1c1f1c] hover:border-[#6fe2a3]/40 text-[#f2f5f3] flex items-center gap-1 sm:gap-1.5 text-[11px] sm:text-xs font-mono-data transition shadow-sm" title="Tap to select another station or refresh GPS">
+          <span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#6fe2a3] animate-pulse shrink-0"></span>
+          <span id="header-station-text" class="font-bold truncate max-w-[90px] xs:max-w-[120px] sm:max-w-[180px]">Punjabi Bagh</span>
+          <svg class="w-2.5 h-2.5 sm:w-3 sm:h-3 text-[#8b9390] svg-icon-line shrink-0" viewBox="0 0 24 24" stroke="currentColor"><path d="M6 9l6 6 6-6"/></svg>
         </button>
 
         <!-- Live AQI Severity Pill -->
-        <div id="header-aqi-badge" class="px-2.5 py-1.5 rounded-xl badge-red flex items-center gap-1.5 text-xs font-mono-data font-bold shadow-sm shrink-0">
-          <span id="header-aqi-val">AQI 431</span>
+        <div id="header-aqi-badge" class="px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-xl badge-red flex items-center gap-1 text-[11px] sm:text-xs font-mono-data font-bold shadow-sm shrink-0">
+          <span id="header-aqi-val">431</span>
           <span class="text-[9px] uppercase text-[#f2966e] hidden sm:inline" id="header-aqi-severity">SEVERE</span>
         </div>
 
         <!-- GPS Re-detect Button -->
-        <button onclick="refreshGPSLocation()" class="w-8 h-8 rounded-xl bg-[#0f110f] hover:bg-[#141714] text-[#6fe2a3] border border-[#1c1f1c] flex items-center justify-center transition shadow-sm shrink-0" title="Detect Exact GPS Coordinates">
-          <svg class="w-3.5 h-3.5 svg-icon-line" viewBox="0 0 24 24" stroke="currentColor"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <button onclick="refreshGPSLocation()" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-[#0f110f] hover:bg-[#141714] text-[#6fe2a3] border border-[#1c1f1c] flex items-center justify-center transition shadow-sm shrink-0" title="Detect Exact GPS Coordinates">
+          <svg class="w-3 h-3 sm:w-3.5 sm:h-3.5 svg-icon-line" viewBox="0 0 24 24" stroke="currentColor"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
         </button>
       </div>
 
-      <!-- Actions: Fullscreen, Alert, Pause, Reset -->
+      <!-- Actions: Settings on mobile, full controls on desktop -->
       <div class="flex items-center gap-1 sm:gap-2 shrink-0">
-        <button onclick="toggleAppFullscreen()" class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-cyan-950/80 hover:bg-cyan-900 text-cyan-300 border border-cyan-700/80 flex items-center justify-center transition shadow-sm" title="Toggle 100% Fullscreen View">
+        <button onclick="toggleAppFullscreen()" class="hidden md:flex w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-cyan-950/80 hover:bg-cyan-900 text-cyan-300 border border-cyan-700/80 items-center justify-center transition shadow-sm" title="Toggle 100% Fullscreen View">
           <i data-lucide="maximize" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-cyan-400"></i>
         </button>
-        <button id="voice-alert-play-btn" onclick="playEmergencyAudio()" class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-emerald-950 hover:bg-emerald-900 text-emerald-300 border border-emerald-700 flex items-center justify-center transition shadow-sm" title="Play Voice Broadcast Alert">
+        <button id="voice-alert-play-btn" onclick="playEmergencyAudio()" class="hidden md:flex w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-emerald-950 hover:bg-emerald-900 text-emerald-300 border border-emerald-700 items-center justify-center transition shadow-sm" title="Play Voice Broadcast Alert">
           <i data-lucide="volume-2" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-400"></i>
         </button>
-        <button id="voice-pause-btn" onclick="pauseOrResumeVoiceAlert()" class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-amber-950 hover:bg-amber-900 text-amber-300 border border-amber-800/80 flex items-center justify-center transition shadow-sm" title="Pause / Resume Live Voice Alert">
+        <button id="voice-pause-btn" onclick="pauseOrResumeVoiceAlert()" class="hidden md:flex w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-amber-950 hover:bg-amber-900 text-amber-300 border border-amber-800/80 items-center justify-center transition shadow-sm" title="Pause / Resume Live Voice Alert">
           <i data-lucide="pause" id="voice-pause-icon" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-400"></i>
         </button>
-        <button onclick="resetSimulation()" class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-earth-850 hover:bg-earth-800 text-emerald-300 border border-earth-700 flex items-center justify-center transition shadow-sm" title="Reset Episode">
+        <button onclick="resetSimulation()" class="hidden md:flex w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-earth-850 hover:bg-earth-800 text-emerald-300 border border-earth-700 items-center justify-center transition shadow-sm" title="Reset Episode">
           <i data-lucide="rotate-ccw" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-400"></i>
         </button>
-        <button onclick="openSettingsModal()" id="header-settings-btn" class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 border border-slate-700/80 flex items-center justify-center transition shadow-sm shrink-0" title="System Settings (Language & Theme)">
-          <i data-lucide="settings" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-400"></i>
+        <button onclick="openSettingsModal()" id="header-settings-btn" class="w-7 h-7 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 border border-slate-700/80 flex items-center justify-center transition shadow-sm shrink-0" title="System Settings (Language & Theme)">
+          <i data-lucide="settings" class="w-3 h-3 sm:w-4 sm:h-4 text-emerald-400"></i>
         </button>
       </div>
 
@@ -1086,7 +1086,7 @@
       <!-- Presets Row (Wrapped in strict overflow-x-auto min-w-0) -->
       <div class="w-full md:w-auto min-w-0 overflow-x-auto pb-0.5 no-scrollbar">
         <div class="flex items-center gap-1.5 w-max text-[11px] font-medium">
-          <button id="live-voice-toggle-btn" onclick="toggleLiveVoiceAlerts()" class="px-2 py-1 rounded-lg bg-emerald-950/90 hover:bg-emerald-900 text-emerald-300 border border-emerald-700/80 text-[10px] sm:text-[11px] font-bold flex items-center gap-1 shadow-sm transition shrink-0" title="Toggle Continuous Live Spoken Alerts">
+          <button id="live-voice-toggle-btn" onclick="toggleLiveVoiceAlerts()" class="hidden md:flex px-2 py-1 rounded-lg bg-emerald-950/90 hover:bg-emerald-900 text-emerald-300 border border-emerald-700/80 text-[10px] sm:text-[11px] font-bold items-center gap-1 shadow-sm transition shrink-0" title="Toggle Continuous Live Spoken Alerts">
             <span id="voice-pulse-dot" class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
             <span id="voice-toggle-label">Live Voice: ON</span>
           </button>
