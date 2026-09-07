@@ -2602,99 +2602,95 @@ html, body {
     </div>
 
     <!-- === TAB 1: COMMAND CENTER (MAP + FORECAST + ATTRIBUTION) === -->
-    <div id="panel-overview" class="tab-panel flex flex-col gap-3 sm:gap-6 w-full min-w-0">
-
-      <!-- 1. NATURAL TELEMETRY BAR (Inside Command Center Tab Only) -->
-      <section class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3.5 w-full min-w-0">
-        
-        <!-- Card 1: Regional AQI -->
-        <div class="natural-glass p-2.5 sm:p-4 rounded-xl sm:rounded-2xl flex flex-col justify-between border-l-4 min-w-0 overflow-hidden" id="aqi-card-border" style="border-left-color: #EF4444;">
-          <div class="flex items-center justify-between text-[10px] sm:text-[11px] text-earth-300/80">
-            <span class="font-bold tracking-wider uppercase truncate">DELHI AQI</span>
-            <i data-lucide="activity" class="w-3.5 h-3.5 text-earth-300 shrink-0"></i>
-          </div>
-          <div class="my-1 sm:my-1.5 flex items-baseline gap-1.5 min-w-0">
-            <span class="text-xl sm:text-3xl font-black font-mono tracking-tight" id="curr-aqi-val">--</span>
-            <span class="text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded-full truncate" id="curr-aqi-category-badge">...</span>
-          </div>
-          <div class="text-[9px] sm:text-[11px] text-earth-300/70 flex items-center justify-between truncate">
-            <span>PM2.5: <b class="text-white" id="curr-pm25-val">--</b></span>
-            <span class="font-mono text-emerald-400 text-[9px]">NAQI</span>
+    \1
+      <!-- ================= 1. HERO AQI READING PANEL ================= -->
+      <section class="hero-card p-4 sm:p-5 rounded-[14px] border border-[#262A26] bg-[#131513] flex flex-col gap-3.5 w-full">
+        <!-- Top Row: Active Station & Status Badge -->
+        <div class="flex items-center justify-between gap-3 flex-wrap">
+          <button onclick="openStationPickerModal()" class="flex items-center gap-2 text-xs font-mono-data bg-[#191C19] hover:bg-[#1E221E] px-3 py-1.5 rounded-xl border border-[#262A26] text-[#EEF0EC] transition cursor-pointer active:scale-98">
+            <span class="w-2 h-2 rounded-full bg-[#8FFFB0] animate-pulse"></span>
+            <span id="mob-hero-station-name" class="font-bold text-xs truncate max-w-[200px] sm:max-w-none">Punjabi Bagh, Delhi</span>
+            <span class="text-[11px] text-[#8C948B]">Change station</span>
+          </button>
+          
+          <div class="flex items-center gap-2">
+            <span id="mob-hero-category" class="text-[10px] font-bold px-2.5 py-1 rounded-full badge-orange font-mono-tag">SEVERE</span>
+            <span class="text-[10px] font-mono-tag font-bold px-2.5 py-1 rounded-full badge-orange" id="mob-hero-grap-stage">GRAP IV</span>
           </div>
         </div>
 
-        <!-- Card 2: Ventilation Index -->
-        <div class="natural-glass p-2.5 sm:p-4 rounded-xl sm:rounded-2xl flex flex-col justify-between border-l-4 border-emerald-400 min-w-0 overflow-hidden">
-          <div class="flex items-center justify-between text-[10px] sm:text-[11px] text-earth-300/80">
-            <span class="font-bold tracking-wider uppercase text-emerald-400 truncate">VENTILATION</span>
-            <i data-lucide="gauge" class="w-3.5 h-3.5 text-emerald-400 shrink-0"></i>
-          </div>
-          <div class="my-1 sm:my-1.5 min-w-0">
-            <div class="text-lg sm:text-2xl font-black font-mono text-emerald-200 truncate" id="curr-vi-val">-- <span class="text-[9px] text-emerald-400">m²/s</span></div>
-            <div class="text-[9px] sm:text-[11px] font-semibold text-amber-400 mt-0.5 truncate" id="curr-vi-status">Evaluating...</div>
-          </div>
-          <div class="text-[8px] sm:text-[10px] text-earth-300/60 font-mono truncate">VI = Wind × PBLH</div>
-        </div>
-
-        <!-- Card 3: Boundary Layer Height (PBLH) -->
-        <div class="natural-glass p-2.5 sm:p-4 rounded-xl sm:rounded-2xl flex flex-col justify-between border-l-4 border-sky-400 min-w-0 overflow-hidden">
-          <div class="flex items-center justify-between text-[10px] sm:text-[11px] text-earth-300/80">
-            <span class="font-bold tracking-wider uppercase truncate">PBL HEIGHT</span>
-            <i data-lucide="layers" class="w-3.5 h-3.5 text-sky-400 shrink-0"></i>
-          </div>
-          <div class="my-1 sm:my-1.5 min-w-0">
-            <div class="text-lg sm:text-2xl font-black font-mono text-sky-100 truncate" id="curr-pblh-val">-- <span class="text-[9px] text-slate-400">m</span></div>
-            <div class="w-full bg-earth-950 h-1.5 rounded-full mt-1 overflow-hidden">
-              <div id="pblh-bar" class="bg-sky-400 h-full rounded-full transition-all duration-300" style="width: 50%;"></div>
+        <!-- Central AQI Number & MoES Official Advisory -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 py-1">
+          <div>
+            <div class="text-[11px] font-mono-data text-[#8C948B]">COUPLED REAL-TIME NAQI</div>
+            <div class="flex items-baseline gap-2.5">
+              <span id="mob-hero-aqi-val" class="text-5xl sm:text-6xl font-bold font-serif-display text-[#FF9D7F]">431</span>
+              <span id="curr-aqi-val" class="hidden">431</span>
+              <span id="curr-aqi-category-badge" class="hidden">Severe</span>
+              <span class="text-xs font-mono-data text-[#8C948B]">NAQI</span>
+            </div>
+            <div id="mob-hero-advisory" class="text-xs text-[#EEF0EC] mt-1 font-sans-ui max-w-[70ch] leading-relaxed">
+              Hazardous air quality. Nocturnal temperature inversion trapping trans-boundary stubble smoke below 340m.
             </div>
           </div>
-          <div class="text-[9px] text-earth-300/70 truncate" id="pblh-subtext">Ceiling: High</div>
+
+          <!-- Secondary Action Pill -->
+          <div class="flex items-center gap-2 shrink-0 self-start sm:self-center">
+            <button onclick="switchTab('grap')" class="px-3.5 py-2 rounded-xl bg-[#191C19] hover:bg-[#202520] border border-[#262A26] text-xs font-sans-ui text-[#EEF0EC] font-semibold transition cursor-pointer">
+              View response plan
+            </button>
+            <button onclick="switchTab('copilot')" class="px-3.5 py-2 rounded-xl bg-[#191C19] hover:bg-[#202520] border border-[#262A26] text-xs font-sans-ui text-[#7FD4FF] font-semibold transition cursor-pointer">
+              Ask VayuAI
+            </button>
+          </div>
         </div>
 
-        <!-- Card 4: Thermal Inversion -->
-        <div class="natural-glass p-2.5 sm:p-4 rounded-xl sm:rounded-2xl flex flex-col justify-between border-l-4 border-amber-400 min-w-0 overflow-hidden">
-          <div class="flex items-center justify-between text-[10px] sm:text-[11px] text-earth-300/80">
-            <span class="font-bold tracking-wider uppercase truncate">INVERSION (ΔT)</span>
-            <i data-lucide="thermometer" class="w-3.5 h-3.5 text-amber-400 shrink-0"></i>
+        <!-- Ground Meteorological Telemetry Strip -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 pt-3 border-t border-[#262A26] text-xs font-mono-data">
+          <!-- Temp -->
+          <div class="bg-[#191C19] p-2.5 rounded-xl border border-[#262A26]">
+            <div class="text-[10px] text-[#8C948B]">TEMPERATURE</div>
+            <div id="mob-hero-temp" class="text-sm font-bold text-[#EEF0EC] mt-0.5">24°C</div>
           </div>
-          <div class="my-1 sm:my-1.5 min-w-0">
-            <div class="text-lg sm:text-2xl font-black font-mono text-amber-200 truncate" id="curr-inversion-val">-- <span class="text-[9px] text-slate-400">°C</span></div>
-            <div class="text-[9px] sm:text-[11px] font-semibold text-earth-200 mt-0.5 truncate" id="curr-trapping-status">Trapping: 1.0x</div>
-          </div>
-          <div class="text-[9px] text-earth-300/70 truncate">Nocturnal Trapping</div>
-        </div>
-
-        <!-- Card 5: Wind Vector -->
-        <div class="natural-glass p-2.5 sm:p-4 rounded-xl sm:rounded-2xl flex flex-col justify-between border-l-4 border-teal-400 min-w-0 overflow-hidden">
-          <div class="flex items-center justify-between text-[10px] sm:text-[11px] text-earth-300/80">
-            <span class="font-bold tracking-wider uppercase truncate">WIND</span>
-            <i data-lucide="compass" class="w-3.5 h-3.5 text-teal-400 shrink-0"></i>
-          </div>
-          <div class="my-1 sm:my-1.5 flex items-center gap-1.5 min-w-0">
-            <div id="wind-compass-needle" class="w-6 h-6 rounded-full bg-earth-950 border border-teal-500/40 flex items-center justify-center text-teal-300 font-mono text-xs transition-transform duration-500 shrink-0">
-              <i data-lucide="navigation" class="w-3 h-3"></i>
-            </div>
-            <div class="min-w-0">
-              <div class="text-base sm:text-xl font-bold font-mono text-teal-100 truncate" id="curr-wind-speed">-- km/h</div>
-              <div class="text-[9px] text-earth-300 font-mono truncate" id="curr-wind-dir">NW (315°)</div>
+          <!-- Wind -->
+          <div class="bg-[#191C19] p-2.5 rounded-xl border border-[#262A26]">
+            <div class="text-[10px] text-[#8C948B]">WIND VECTOR</div>
+            <div class="flex items-center gap-1.5 mt-0.5">
+              <span id="curr-wind-speed" class="text-sm font-bold text-[#EEF0EC]">8.5 km/h</span>
+              <span id="curr-wind-dir" class="text-[10px] text-[#8C948B]">NW</span>
+              <span id="mob-hero-wind" class="hidden">8.5 NW</span>
+              <span id="wind-compass-needle" class="hidden"></span>
             </div>
           </div>
-          <div class="text-[9px] text-earth-300/70 truncate" id="wind-alignment-text">NW Corridor</div>
-        </div>
-
-        <!-- Card 6: Satellite Stubble Fires -->
-        <div class="natural-glass p-2.5 sm:p-4 rounded-xl sm:rounded-2xl flex flex-col justify-between border-l-4 border-orange-500 min-w-0 overflow-hidden">
-          <div class="flex items-center justify-between text-[10px] sm:text-[11px] text-earth-300/80">
-            <span class="font-bold tracking-wider uppercase truncate">FARM FIRES</span>
-            <i data-lucide="flame" class="w-3.5 h-3.5 text-orange-400 shrink-0"></i>
+          <!-- PM2.5 -->
+          <div class="bg-[#191C19] p-2.5 rounded-xl border border-[#262A26]">
+            <div class="text-[10px] text-[#8C948B]">PM2.5 SENSOR</div>
+            <div class="text-sm font-bold text-[#FF9D7F] mt-0.5"><span id="curr-pm25-val">284</span> <span class="text-[10px] text-[#8C948B]">μg/m³</span></div>
+            <span id="mob-hero-pm25" class="hidden">284</span>
           </div>
-          <div class="my-1 sm:my-1.5 min-w-0">
-            <div class="text-lg sm:text-2xl font-black font-mono text-orange-300 truncate" id="curr-fire-count">-- <span class="text-[9px] text-slate-400">fires</span></div>
-            <div class="text-[9px] text-orange-300/90 font-medium font-mono truncate" id="stubble-share-badge">Stubble: --%</div>
+          <!-- PBLH -->
+          <div class="bg-[#191C19] p-2.5 rounded-xl border border-[#262A26]">
+            <div class="text-[10px] text-[#8C948B]">PBL HEIGHT</div>
+            <div class="text-sm font-bold text-[#7FD4FF] mt-0.5" id="curr-pblh-val">340 m</div>
+            <span id="mob-hero-pbl" class="hidden">340m</span>
+            <div class="hidden" id="pblh-bar"></div>
+            <span class="hidden" id="pblh-subtext"></span>
           </div>
-          <div class="text-[9px] text-earth-300/70 truncate">Punjab & Haryana</div>
+          <!-- Ventilation Index -->
+          <div class="bg-[#191C19] p-2.5 rounded-xl border border-[#262A26]">
+            <div class="text-[10px] text-[#8C948B]">VENTILATION</div>
+            <div class="text-sm font-bold text-[#FFE270] mt-0.5" id="curr-vi-val">1,380 m²/s</div>
+            <span class="hidden" id="curr-vi-status">Evaluating</span>
+          </div>
+          <!-- Inversion / Fires -->
+          <div class="bg-[#191C19] p-2.5 rounded-xl border border-[#262A26]">
+            <div class="text-[10px] text-[#8C948B]">FARM FIRES</div>
+            <div class="text-sm font-bold text-[#FF9D7F] mt-0.5" id="curr-fire-count">1,420 fires</div>
+            <span class="hidden" id="curr-inversion-val"></span>
+            <span class="hidden" id="curr-trapping-status"></span>
+            <span class="hidden" id="stubble-share-badge"></span>
+          </div>
         </div>
-
       </section>
       
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
@@ -3242,7 +3238,7 @@ html, body {
     </div>
 
     <!-- === TAB: CLEAN AIR WINDOWS & OUTDOOR PLANNER === -->
-    <div id="panel-planner" class="tab-panel hidden flex flex-col gap-4">
+    <div id="panel-windows" data-alias="panel-planner" class="tab-panel hidden flex flex-col gap-4">
       <div class="natural-glass p-5 sm:p-6 rounded-3xl shadow-xl">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-earth-700/60">
           <div>
@@ -3251,7 +3247,7 @@ html, body {
             </h2>
             <p class="text-xs text-earth-300/80 mt-0.5">Atmospheric dispersion diurnal cycle: identifies the safest and most toxic outdoor exposure hours.</p>
           </div>
-          <span class="text-xs font-mono text-emerald-300 bg-emerald-950 px-2.5 py-1 rounded-lg border border-emerald-800">Next 24 Hours Guide</span>
+          <div class="flex items-center gap-2"><span id="windows-station-badge" class="text-xs font-mono font-bold text-sky-400 bg-sky-950/80 px-2.5 py-1 rounded-lg border border-sky-800/80 shrink-0">Punjabi Bagh</span><span class="text-xs font-mono text-emerald-300 bg-emerald-950 px-2.5 py-1 rounded-lg border border-emerald-800">Next 24 Hours Guide</span></div>
         </div>
 
         <!-- Circular/Grid Timeline -->
@@ -4338,35 +4334,27 @@ html, body {
   <nav class="md:hidden mobile-nav-bar pb-safe" aria-label="Mobile Navigation">
     <button onclick="switchTab('overview')" id="mob-tab-overview" class="mobile-nav-item active" title="Command Center">
       <svg class="svg-icon-line" viewBox="0 0 24 24" stroke="currentColor"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-      <span>Command</span>
+      <span>Overview</span>
     </button>
     <button onclick="switchTab('weather')" id="mob-tab-weather" class="mobile-nav-item" title="Live Weather">
       <svg class="svg-icon-line" viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
       <span>Weather</span>
     </button>
+    <button onclick="switchTab('windows')" id="mob-tab-windows" class="mobile-nav-item" title="Clean Windows">
+      <svg class="svg-icon-line" viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <span>Windows</span>
+    </button>
     <button onclick="switchTab('grap')" id="mob-tab-grap" class="mobile-nav-item" title="Predictive Action Plan">
       <svg class="svg-icon-line" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-      <span>Predictive</span>
-    </button>
-    <button onclick="switchTab('copilot')" id="mob-tab-copilot" class="mobile-nav-item" title="VayuAI Assistant">
-      <svg class="svg-icon-line" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
-      <span>VayuAI</span>
-    </button>
-    <button onclick="switchTab('whatif')" id="mob-tab-whatif" class="mobile-nav-item" title="What-If Sim">
-      <svg class="svg-icon-line" viewBox="0 0 24 24" stroke="currentColor"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
-      <span>What-If</span>
-    </button>
-    <button onclick="switchTab('dispatches')" id="mob-tab-dispatches" class="mobile-nav-item" title="Dispatches Center">
-      <svg class="svg-icon-line" viewBox="0 0 24 24" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-      <span>Dispatches</span>
+      <span>GRAP</span>
     </button>
     <button onclick="switchTab('commute')" id="mob-tab-commute" class="mobile-nav-item" title="Safe Commute">
       <svg class="svg-icon-line" viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
       <span>Commute</span>
     </button>
-    <button onclick="openMobileAppModal()" id="mob-tab-install" class="mobile-nav-item mobile-nav-install" title="Download App">
-      <svg class="svg-icon-line animate-bounce" viewBox="0 0 24 24" stroke="currentColor"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
-      <span>Install</span>
+    <button onclick="switchTab('copilot')" id="mob-tab-copilot" class="mobile-nav-item" title="VayuAI Assistant">
+      <svg class="svg-icon-line" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+      <span>VayuAI</span>
     </button>
   </nav>
 
@@ -8126,19 +8114,29 @@ html, body {
 
     function switchTab(tabId) {
       if (tabId === 'vayuai') tabId = 'copilot';
+      if (tabId === 'planner') tabId = 'windows';
       if (tabId === 'weather' && typeof VayuWeather !== 'undefined') VayuWeather.render();
       if (tabId === 'attribution' && typeof VayuAttributionEngine !== 'undefined') VayuAttributionEngine.render();
       if (tabId === 'grap' && typeof VayuPredictiveTimeline !== 'undefined') VayuPredictiveTimeline.render();
       if (tabId === 'dispatches' && typeof VayuDispatchesCenter !== 'undefined') VayuDispatchesCenter.render();
+      if (tabId === 'windows' && typeof renderCleanAirWindows === 'function') {
+        renderCleanAirWindows();
+      }
       activeTab = tabId;
       document.querySelectorAll('.tab-panel').forEach(p => {
         p.classList.add('hidden');
         p.style.display = 'none';
       });
-      const target = document.getElementById(`panel-${tabId}`);
+      const target = document.getElementById(`panel-${tabId}`) || 
+                     (tabId === 'windows' ? document.getElementById('panel-planner') : null) ||
+                     (tabId === 'planner' ? document.getElementById('panel-windows') : null);
       if (target) {
         target.classList.remove('hidden');
         target.style.display = 'flex';
+      }
+
+      if (tabId === 'overview' && typeof VayuAtmosphericMap !== 'undefined' && typeof VayuAtmosphericMap.resumeWindAnimation === 'function') {
+        VayuAtmosphericMap.resumeWindAnimation();
       }
 
       updateNavTabStyles();
