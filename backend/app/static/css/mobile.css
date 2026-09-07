@@ -21,15 +21,15 @@
   left: 0;
   right: 0;
   z-index: 50;
-  background: rgba(7, 28, 38, 0.96);
+  background: rgba(19, 21, 19, 0.96);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  border-top: 1px solid rgba(111, 226, 163, 0.2);
-  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.8);
-  padding: 6px 6px;
+  border-top: 1px solid var(--border, #262A26);
+  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.6);
+  padding: 6px 4px;
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 4px;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 2px;
 }
 
 /* Mobile Nav Item Button */
@@ -40,8 +40,8 @@
   justify-content: center;
   width: 100%;
   padding: 5px 2px;
-  border-radius: 12px;
-  color: var(--text-secondary, #8b9390);
+  border-radius: 14px;
+  color: var(--text-muted, #8C948B);
   font-size: 10px;
   font-family: 'Inter', sans-serif;
   font-weight: 500;
@@ -49,7 +49,7 @@
   background: transparent;
   border: 1px solid transparent;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.15s ease;
   user-select: none;
 }
 
@@ -59,32 +59,30 @@
   height: 19px;
   margin-bottom: 2px;
   stroke-width: 1.8px;
-  transition: transform 0.2s ease, color 0.2s ease;
+  transition: transform 0.15s ease, color 0.15s ease;
 }
 
-/* Active State: subtle green glow & border */
+/* Active State: signal blue or green indicator */
 .mobile-nav-item.active {
-  color: var(--accent-green, #6fe2a3);
+  color: var(--signal-green, #8FFFB0);
   font-weight: 600;
-  background: var(--green-bg, #10201a);
-  border: 1px solid var(--green-border, #1f3d30);
-  box-shadow: 0 0 14px rgba(111, 226, 163, 0.15);
+  background: rgba(143, 255, 176, 0.08);
+  border: 1px solid rgba(143, 255, 176, 0.22);
 }
 
 .mobile-nav-item.active svg {
-  transform: scale(1.1);
-  color: var(--accent-green, #6fe2a3);
+  color: var(--signal-green, #8FFFB0);
 }
 
 .mobile-nav-item:active {
-  transform: scale(0.94);
+  transform: scale(0.96);
 }
 
 /* Install Action Pill */
 .mobile-nav-install {
-  color: var(--accent-blue, #6ec8f2);
-  background: var(--blue-bg, #0f1a1f);
-  border: 1px solid var(--blue-border, #1f3a4a);
+  color: var(--signal-blue, #7FD4FF);
+  background: rgba(127, 212, 255, 0.08);
+  border: 1px solid rgba(127, 212, 255, 0.22);
   font-weight: 600;
 }
 
@@ -95,63 +93,33 @@
   position: fixed;
   inset: 0;
   z-index: 9999;
-  background-color: #060706;
-  background-image: 
-    radial-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-    radial-gradient(ellipse at 50% 30%, #201810 0%, #060706 70%);
-  background-size: 16px 16px, 100% 100%;
+  background-color: var(--bg, #0A0B0A);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
 #splash-screen.splash-fade-out {
   opacity: 0 !important;
-  transform: scale(1.04) !important;
+  transform: scale(0.98) !important;
   pointer-events: none;
-}
-
-/* Drifting Smog / Haze Particles */
-.haze-particle {
-  position: absolute;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(242, 150, 110, 0.12) 0%, rgba(242, 214, 102, 0.04) 50%, transparent 80%);
-  pointer-events: none;
-  animation: hazeDrift 10s infinite linear;
-}
-
-@keyframes hazeDrift {
-  0% {
-    transform: translateY(105vh) translateX(0) scale(0.8);
-    opacity: 0;
-  }
-  15% {
-    opacity: 0.6;
-  }
-  85% {
-    opacity: 0.5;
-  }
-  100% {
-    transform: translateY(-15vh) translateX(30px) scale(1.4);
-    opacity: 0;
-  }
 }
 
 /* Circular SVG Gauge in Splash */
 .splash-gauge-bg {
-  stroke: rgba(255, 255, 255, 0.06);
-  stroke-width: 9px;
+  stroke: var(--border, #262A26);
+  stroke-width: 8px;
   fill: none;
 }
 
 .splash-gauge-fill {
-  stroke-width: 9px;
+  stroke-width: 8px;
   stroke-linecap: round;
   fill: none;
-  transition: stroke-dashoffset 2s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: stroke-dashoffset 1.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* ==========================================================================
@@ -168,12 +136,12 @@
   top: 8px;
   bottom: 12px;
   width: 1px;
-  background: var(--border, #1c1f1c);
+  background: var(--border, #262A26);
 }
 
 .timeline-item {
   position: relative;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 .timeline-item:last-child {
@@ -187,7 +155,7 @@
   width: 19px;
   height: 19px;
   border-radius: 50%;
-  background: var(--surface, #0b0c0b);
+  background: var(--panel, #131513);
   border: 2px solid currentColor;
   display: flex;
   align-items: center;
@@ -211,29 +179,28 @@
   gap: 12px;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .agency-tile-grid {
     grid-template-columns: 1fr;
   }
 }
 
 .agency-tile {
-  background: var(--surface-2, #0f110f);
-  border: 1px solid var(--border, #1c1f1c);
-  border-radius: 16px;
+  background: var(--panel, #131513);
+  border: 1px solid var(--border, #262A26);
+  border-radius: 14px;
   padding: 14px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: border-color 0.15s ease, background 0.15s ease;
   user-select: none;
 }
 
 .agency-tile:hover {
-  border-color: rgba(110, 200, 242, 0.4);
-  transform: translateY(-2px);
-  background: #141714;
+  border-color: #383E38;
+  background: var(--panel-elevated, #191C19);
 }
 
 .agency-tile:active {
@@ -244,35 +211,34 @@
    VAYUAI ASSISTANT (Hub Layout & Glowing Orb)
    ========================================================================== */
 .vayuai-glowing-orb {
-  width: 76px;
-  height: 76px;
+  width: 72px;
+  height: 72px;
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #6fe2a3 0%, #6ec8f2 60%, rgba(11, 12, 11, 0.8) 100%);
-  box-shadow: 0 0 35px rgba(111, 226, 163, 0.35), 0 0 70px rgba(110, 200, 242, 0.18);
+  background: radial-gradient(circle at 35% 35%, rgba(127, 212, 255, 0.22) 0%, var(--panel-elevated, #191C19) 75%);
+  border: 1.5px solid var(--signal-blue, #7FD4FF);
+  box-shadow: 0 0 24px rgba(127, 212, 255, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  animation: orbFloat 4s ease-in-out infinite;
   cursor: pointer;
   user-select: none;
-  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .vayuai-glowing-orb:hover {
-  transform: translateY(-4px) scale(1.08);
-  box-shadow: 0 0 45px rgba(111, 226, 163, 0.6), 0 0 90px rgba(110, 200, 242, 0.35);
+  transform: scale(1.04);
+  box-shadow: 0 0 32px rgba(127, 212, 255, 0.35);
 }
 
 .vayuai-glowing-orb:active {
-  transform: scale(0.94);
+  transform: scale(0.96);
 }
 
 /* Active listening / Voice ripple waves */
 .vayuai-glowing-orb.orb-listening {
-  animation: orbPulseListening 1.2s ease-in-out infinite !important;
-  background: radial-gradient(circle at 35% 35%, #6fe2a3 0%, #38bdf8 50%, #f2966e 100%);
-  box-shadow: 0 0 55px rgba(111, 226, 163, 0.75), 0 0 110px rgba(110, 200, 242, 0.5), 0 0 0 8px rgba(111, 226, 163, 0.2);
+  border-color: var(--warning-orange, #FF9D7F) !important;
+  box-shadow: 0 0 32px rgba(255, 157, 127, 0.4) !important;
 }
 
 .vayuai-glowing-orb.orb-listening::before,
@@ -281,7 +247,7 @@
   position: absolute;
   inset: -8px;
   border-radius: 50%;
-  border: 2px solid rgba(111, 226, 163, 0.6);
+  border: 1.5px solid var(--warning-orange, #FF9D7F);
   animation: orbWave 1.8s cubic-bezier(0, 0.2, 0.8, 1) infinite;
   pointer-events: none;
 }
@@ -290,19 +256,9 @@
   animation-delay: 0.9s;
 }
 
-@keyframes orbPulseListening {
-  0%, 100% { transform: scale(1.04); box-shadow: 0 0 40px rgba(111, 226, 163, 0.6), 0 0 80px rgba(110, 200, 242, 0.35); }
-  50% { transform: scale(1.14); box-shadow: 0 0 65px rgba(111, 226, 163, 0.9), 0 0 130px rgba(110, 200, 242, 0.65); }
-}
-
 @keyframes orbWave {
-  0% { transform: scale(0.95); opacity: 0.9; }
-  100% { transform: scale(1.75); opacity: 0; }
-}
-
-@keyframes orbFloat {
-  0%, 100% { transform: translateY(0px) scale(1); }
-  50% { transform: translateY(-4px) scale(1.03); }
+  0% { transform: scale(0.95); opacity: 0.8; }
+  100% { transform: scale(1.6); opacity: 0; }
 }
 
 .vayuai-questions-grid {
@@ -319,13 +275,13 @@
 }
 
 .vayuai-question-card {
-  background: var(--surface-2, #0f110f);
-  border: 1px solid var(--border, #1c1f1c);
-  border-radius: 14px;
+  background: var(--panel, #131513);
+  border: 1px solid var(--border, #262A26);
+  border-radius: var(--radius, 14px);
   padding: 11px 12px;
   text-align: left;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: border-color 0.15s ease, background 0.15s ease;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -333,13 +289,12 @@
 }
 
 .vayuai-question-card:hover {
-  background: #131613;
-  border-color: rgba(111, 226, 163, 0.4);
-  transform: translateY(-1px);
+  background: var(--panel-elevated, #191C19);
+  border-color: var(--signal-blue, #7FD4FF);
 }
 
 .vayuai-question-card:active {
-  transform: scale(0.97);
+  transform: scale(0.98);
 }
 
 /* Speech Recognition Mic Animation */
@@ -354,7 +309,7 @@
   position: absolute;
   inset: -6px;
   border-radius: 50%;
-  border: 2px solid var(--accent-red, #f2966e);
+  border: 2px solid var(--warning-orange, #FF9D7F);
   opacity: 0;
   pointer-events: none;
 }
@@ -374,17 +329,17 @@
 
 /* Chat Messages */
 .chat-bubble-user {
-  background: var(--green-bg, #10201a);
-  border: 1px solid var(--green-border, #1f3d30);
-  color: var(--text-primary, #f2f5f3);
-  border-radius: 16px 16px 4px 16px;
+  background: var(--panel-elevated, #191C19);
+  border: 1px solid var(--border, #262A26);
+  color: var(--text-primary, #EEF0EC);
+  border-radius: var(--radius, 14px);
 }
 
 .chat-bubble-bot {
-  background: var(--surface-2, #0f110f);
-  border: 1px solid var(--blue-border, #1f3a4a);
-  color: var(--text-primary, #f2f5f3);
-  border-radius: 16px 16px 16px 4px;
+  background: var(--panel, #131513);
+  border: 1px solid var(--blue-border, rgba(127, 212, 255, 0.22));
+  color: var(--text-primary, #EEF0EC);
+  border-radius: var(--radius, 14px);
 }
 
 /* ==========================================================================
@@ -398,13 +353,12 @@
   z-index: 1000;
   width: 92%;
   max-width: 480px;
-  background: rgba(15, 17, 15, 0.96);
-  border: 1px solid var(--green-border, #1f3d30);
-  border-radius: 16px;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8), 0 0 20px rgba(111, 226, 163, 0.15);
-  backdrop-filter: blur(16px);
+  background: var(--panel, #131513);
+  border: 1px solid var(--border, #262A26);
+  border-radius: var(--radius, 14px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
   overflow: hidden;
-  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.25s ease;
 }
 
 .toast-progress-bar {
@@ -412,7 +366,7 @@
   bottom: 0;
   left: 0;
   height: 3px;
-  background: var(--accent-green, #6fe2a3);
+  background: var(--signal-green, #8FFFB0);
   width: 100%;
   transform-origin: left;
 }
@@ -509,11 +463,18 @@ html, body {
 
   /* Solid opaque dark backgrounds for lightning fast compositor rendering */
   html:not(.light-theme) .natural-glass,
-  html:not(.light-theme) .surface-card,
   html:not(.light-theme) .surface-panel {
-    background-color: #0c1211 !important;
-    border-color: rgba(44, 74, 69, 0.6) !important;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4) !important;
+    background-color: var(--panel, #131513) !important;
+    border-color: var(--border, #262A26) !important;
+    border-radius: var(--radius, 14px) !important;
+    box-shadow: none !important;
+  }
+
+  html:not(.light-theme) .surface-card {
+    background-color: var(--panel-elevated, #191C19) !important;
+    border-color: var(--border, #262A26) !important;
+    border-radius: var(--radius, 14px) !important;
+    box-shadow: none !important;
   }
 
   html.light-theme .natural-glass,

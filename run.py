@@ -21,4 +21,4 @@ if __name__ == "__main__":
     print("📊 API Documentation available at: http://127.0.0.1:8000/docs\n")
     
     port = int(os.environ.get("PORT", 8000))
-    uvicorn.run("app.main:app", host="0.0.0.0", port=port, reload=False, app_dir=backend_dir)
+    uvicorn.run("app.main:app", host="0.0.0.0", port=port, reload=True, app_dir=backend_dir)

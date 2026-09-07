@@ -14,16 +14,24 @@
   <link rel="apple-touch-icon" href="/static/apple-touch-icon.png?v=6">
   <link rel="icon" type="image/png" href="/static/icon-192.png?v=6">
   
-  <link rel="stylesheet" href="/static/css/styles.css?v=8">
-  <link rel="stylesheet" href="/static/css/mobile.css?v=8">
+  <link rel="stylesheet" href="/static/css/styles.css?v=12">
+  <link rel="stylesheet" href="/static/css/mobile.css?v=12">
 
   <script>
     (function() {
       try {
+        var params = new URLSearchParams(window.location.search);
+        var urlTheme = params.get('theme');
+        if (urlTheme) {
+          localStorage.setItem('vayu_theme', urlTheme);
+        }
         var t = localStorage.getItem('vayu_theme') || 'dark';
         if (t === 'light') {
           document.documentElement.classList.add('light-theme');
           document.documentElement.classList.remove('dark');
+        } else {
+          document.documentElement.classList.remove('light-theme');
+          document.documentElement.classList.add('dark');
         }
       } catch (e) {}
     })();
@@ -33,10 +41,10 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   
-  <!-- Fonts: Source Serif 4 (display/headlines), Inter (UI), IBM Plex Mono (data labels) -->
+  <!-- Fonts: Space Grotesk (headings & numeric AQI), Inter (UI/body), JetBrains Mono (data/timestamps) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@400;500;600;700;800&family=Source+Serif+4:ital,opsz,wght@0,8..60,600;0,8..60,700;0,8..60,900;1,8..60,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -46,36 +54,47 @@
       theme: {
         extend: {
           colors: {
-            bg: "#060706",
-            surface: "#0b0c0b",
-            "surface-2": "#0f110f",
-            border: "#1c1f1c",
-            "text-primary": "#f2f5f3",
-            "text-secondary": "#8b9390",
-            "text-tertiary": "#545a57",
-            "accent-green": "#6fe2a3",
-            "accent-blue": "#6ec8f2",
-            "accent-yellow": "#f2d666",
-            "accent-red": "#f2966e",
+            bg: "#0A0B0A",
+            panel: "#131513",
+            "panel-elevated": "#191C19",
+            border: "#262A26",
+            "text-primary": "#EEF0EC",
+            "text-muted": "#8C948B",
+            "signal-green": "#8FFFB0",
+            "signal-blue": "#7FD4FF",
+            "signal-yellow": "#FFE270",
+            "warning-orange": "#FF9D7F",
+            surface: "#131513",
+            "surface-2": "#191C19",
+            "accent-green": "#8FFFB0",
+            "accent-blue": "#7FD4FF",
+            "accent-yellow": "#FFE270",
+            "accent-red": "#FF9D7F",
             earth: {
-              950: "#060706",
-              900: "#0b0c0b",
-              850: "#0f110f",
-              800: "#151815",
-              750: "#1a1f1a",
-              700: "#1c1f1c",
-              600: "#2d332d",
-              500: "#6fe2a3",
-              400: "#6ec8f2",
-              300: "#a5f3fc",
-              200: "#cfdade",
-              100: "#f2f5f3"
+              950: "#0A0B0A",
+              900: "#131513",
+              850: "#191C19",
+              800: "#1E211E",
+              750: "#222622",
+              700: "#262A26",
+              600: "#363C36",
+              500: "#8FFFB0",
+              400: "#7FD4FF",
+              300: "#FFE270",
+              200: "#8C948B",
+              100: "#EEF0EC"
             }
           },
           fontFamily: {
-            serif: ['Source Serif 4', 'Georgia', 'serif'],
+            display: ['Space Grotesk', '-apple-system', 'sans-serif'],
+            heading: ['Space Grotesk', '-apple-system', 'sans-serif'],
+            serif: ['Space Grotesk', '-apple-system', 'sans-serif'],
             sans: ['Inter', '-apple-system', 'sans-serif'],
-            mono: ['IBM Plex Mono', 'monospace']
+            mono: ['JetBrains Mono', 'monospace']
+          },
+          borderRadius: {
+            'panel': '14px',
+            'card': '14px'
           }
         }
       }
@@ -89,31 +108,89 @@
     * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
 
     :root {
-      --bg: #060706;
-      --surface: #0b0c0b;
-      --surface-2: #0f110f;
-      --border: #1c1f1c;
-      --text-primary: #f2f5f3;
-      --text-secondary: #8b9390;
-      --accent-green: #6fe2a3;
-      --accent-blue: #6ec8f2;
-      --accent-yellow: #f2d666;
+      --bg: #0A0B0A;
+      --panel: #131513;
+      --panel-elevated: #191C19;
+      --border: #262A26;
+      --text-primary: #EEF0EC;
+      --text-muted: #8C948B;
+      --signal-green: #8FFFB0;
+      --signal-blue: #7FD4FF;
+      --signal-yellow: #FFE270;
+      --warning-orange: #FF9D7F;
+
+      --surface: #131513;
+      --surface-2: #191C19;
+      --accent-green: #8FFFB0;
+      --accent-blue: #7FD4FF;
+      --accent-yellow: #FFE270;
+      --accent-red: #FF9D7F;
+
+      --green-bg: rgba(143, 255, 176, 0.08);
+      --green-border: rgba(143, 255, 176, 0.22);
+      --blue-bg: rgba(127, 212, 255, 0.08);
+      --blue-border: rgba(127, 212, 255, 0.22);
+      --yellow-bg: rgba(255, 226, 112, 0.08);
+      --yellow-border: rgba(255, 226, 112, 0.22);
+      --orange-bg: rgba(255, 157, 127, 0.08);
+      --orange-border: rgba(255, 157, 127, 0.22);
+      --red-bg: rgba(255, 157, 127, 0.08);
+      --red-border: rgba(255, 157, 127, 0.22);
+
+      --radius: 14px;
     }
 
     body {
-      background-color: var(--bg, #060706);
-      background-image: 
-        radial-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-      background-size: 16px 16px;
-      background-attachment: fixed;
-      color: var(--text-primary, #f2f5f3);
+      background-color: var(--bg, #0A0B0A);
+      color: var(--text-primary, #EEF0EC);
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     }
-    
+
+    h1, h2, h3, h4, h5, h6,
+    .font-serif-display,
+    .font-headline,
+    .font-heading {
+      font-family: 'Space Grotesk', -apple-system, sans-serif !important;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .font-mono-data,
+    .font-mono-tag,
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace !important;
+      letter-spacing: 0;
+    }
+
+    .font-sans-ui,
+    .font-sans {
+      font-family: 'Inter', -apple-system, sans-serif !important;
+    }
+
+    p, .body-copy {
+      max-width: 75ch;
+    }
+
+    .surface-panel,
     .natural-glass {
-      background: var(--surface-2, #0f110f);
-      border: 1px solid var(--border, #1c1f1c);
-      box-shadow: none;
+      background: var(--panel, #131513) !important;
+      border: 1px solid var(--border, #262A26) !important;
+      border-radius: 14px !important;
+      box-shadow: none !important;
+    }
+
+    .surface-card {
+      background: var(--panel-elevated, #191C19) !important;
+      border: 1px solid var(--border, #262A26) !important;
+      border-radius: 14px !important;
+      box-shadow: none !important;
+    }
+
+    .hero-card {
+      background: var(--panel, #131513) !important;
+      border: 1px solid var(--border, #262A26) !important;
+      border-radius: 14px !important;
+      box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.5) !important;
     }
     
     .natural-glass-hover:hover {
@@ -123,7 +200,7 @@
 
     input[type=range] {
       -webkit-appearance: none;
-      background: var(--border, #1c1f1c);
+      background: var(--border, #262A26);
       border-radius: 9999px;
       height: 6px;
     }
@@ -132,8 +209,8 @@
       height: 18px;
       width: 18px;
       border-radius: 50%;
-      background: var(--accent-green, #6fe2a3);
-      border: 2px solid var(--surface, #0b0c0b);
+      background: var(--signal-green, #8FFFB0);
+      border: 2px solid var(--panel, #131513);
       cursor: pointer;
       transition: transform 0.15s ease;
     }
@@ -151,8 +228,8 @@
 
     .pb-safe { padding-bottom: env(safe-area-inset-bottom, 16px); }
     ::-webkit-scrollbar { width: 5px; height: 5px; }
-    ::-webkit-scrollbar-track { background: var(--bg, #060706); }
-    ::-webkit-scrollbar-thumb { background: var(--border, #1c1f1c); border-radius: 9999px; }
+    ::-webkit-scrollbar-track { background: var(--bg, #0A0B0A); }
+    ::-webkit-scrollbar-thumb { background: var(--border, #262A26); border-radius: 9999px; }
 
     /* ==========================================================================
        Tactile & High-Contrast Settings Modal Options
@@ -165,73 +242,71 @@
       gap: 10px;
       padding: 12px 14px;
       border-radius: 14px;
-      background: #141714;
-      border: 2px solid #2a322b;
+      background: var(--panel, #131513);
+      border: 1px solid var(--border, #262A26);
       cursor: pointer;
-      transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transition: all 0.2s ease;
       user-select: none;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+      box-shadow: none;
     }
 
     .setting-card-option:hover {
-      border-color: #445344;
-      background: #191f19;
-      transform: translateY(-1px);
+      border-color: #383E38;
+      background: var(--panel-elevated, #191C19);
     }
 
     .setting-card-option:active {
-      transform: scale(0.95);
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+      transform: scale(0.98);
     }
 
     .setting-card-option.active {
-      background: #0f241a !important;
-      border-color: #6fe2a3 !important;
-      box-shadow: 0 0 18px rgba(111, 226, 163, 0.28), 0 2px 8px rgba(0, 0, 0, 0.4) !important;
+      background: var(--panel-elevated, #191C19) !important;
+      border-color: var(--signal-green, #8FFFB0) !important;
+      box-shadow: 0 0 16px rgba(143, 255, 176, 0.2) !important;
     }
 
     .setting-opt-title {
-      color: #f2f5f3;
+      color: var(--text-primary, #EEF0EC);
       transition: color 0.2s ease;
     }
 
     .setting-card-option.active .setting-opt-title {
-      color: #6fe2a3 !important;
+      color: var(--signal-green, #8FFFB0) !important;
     }
 
     .setting-opt-desc {
-      color: #8b9390;
+      color: var(--text-muted, #8C948B);
       transition: color 0.2s ease;
     }
 
     .setting-card-option.active .setting-opt-desc {
-      color: #a7f3d0 !important;
+      color: var(--text-primary, #EEF0EC) !important;
     }
 
     .setting-check-indicator {
       width: 22px;
       height: 22px;
       border-radius: 50%;
-      border: 2px solid #3e483e;
+      border: 2px solid var(--border, #262A26);
       display: flex;
       align-items: center;
       justify-content: center;
       color: transparent;
       background: transparent;
-      transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transition: all 0.2s ease;
       flex-shrink: 0;
     }
 
     .setting-check-indicator svg {
       transform: scale(0);
-      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transition: transform 0.2s ease;
     }
 
     .setting-card-option.active .setting-check-indicator {
-      background: #6fe2a3;
-      border-color: #6fe2a3;
-      color: #060706;
-      box-shadow: 0 0 10px rgba(111, 226, 163, 0.5);
+      background: var(--signal-green, #8FFFB0);
+      border-color: var(--signal-green, #8FFFB0);
+      color: var(--bg, #0A0B0A);
+      box-shadow: 0 0 10px rgba(143, 255, 176, 0.4);
     }
 
     .setting-card-option.active .setting-check-indicator svg {
@@ -244,15 +319,15 @@
     .weather-metric-tab {
       position: relative;
       padding-bottom: 8px;
-      color: #8b9390;
+      color: var(--text-muted, #8C948B);
       transition: all 0.2s ease;
       cursor: pointer;
     }
     .weather-metric-tab:hover {
-      color: #f2f5f3;
+      color: var(--text-primary, #EEF0EC);
     }
     .weather-metric-tab.active {
-      color: #f2f5f3;
+      color: var(--text-primary, #EEF0EC);
       font-weight: 700;
     }
     .weather-metric-tab.active::after {
@@ -262,9 +337,8 @@
       left: 0;
       right: 0;
       height: 3px;
-      background: #f59e0b;
+      background: var(--signal-yellow, #FFE270);
       border-radius: 9999px;
-      box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
     }
 
     .weather-day-card {
@@ -275,49 +349,67 @@
       gap: 6px;
       padding: 12px 8px;
       border-radius: 14px;
-      background: #111411;
-      border: 1.5px solid #232a23;
+      background: var(--panel, #131513);
+      border: 1px solid var(--border, #262A26);
       cursor: pointer;
-      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transition: all 0.2s ease;
       text-align: center;
       user-select: none;
     }
     .weather-day-card:hover {
-      background: #182018;
-      border-color: #384638;
-      transform: translateY(-2px);
+      background: var(--panel-elevated, #191C19);
+      border-color: #383E38;
     }
     .weather-day-card:active {
-      transform: scale(0.95);
+      transform: scale(0.98);
     }
     .weather-day-card.active {
-      background: #19261e !important;
-      border-color: #6fe2a3 !important;
-      box-shadow: 0 0 16px rgba(111, 226, 163, 0.25) !important;
+      background: var(--panel-elevated, #191C19) !important;
+      border-color: var(--signal-green, #8FFFB0) !important;
+      box-shadow: 0 0 14px rgba(143, 255, 176, 0.2) !important;
     }
 
     /* ==========================================================================
        Complete Full-Application Light Mode (Daylight Pearl)
        ========================================================================== */
     html.light-theme {
-      --bg: #f6f8f7;
-      --surface: #ffffff;
-      --surface-2: #f0f4f2;
-      --border: #e2e8e5;
-      --text-primary: #0f172a;
-      --text-secondary: #475569;
-      --accent-green: #059669;
-      --accent-blue: #0284c7;
-      --accent-yellow: #d97706;
+      --bg:            #f8fafc;
+      --panel:         #ffffff;
+      --panel-elevated:#f1f5f9;
+      --border:        #cbd5e1;
+      --border-subtle: rgba(0, 0, 0, 0.08);
+
+      --surface:       #ffffff;
+      --surface-2:     #f1f5f9;
+
+      --text-primary:  #0f172a;
+      --text-secondary:#334155;
+      --text-muted:    #475569;
+      --text-tertiary: #64748b;
+
+      --signal-green:  #047857;
+      --signal-blue:   #0369a1;
+      --signal-yellow: #b45309;
+      --warning-orange:#b91c1c;
+
+      --accent-green:  #047857;
+      --accent-blue:   #0369a1;
+      --accent-yellow: #b45309;
+      --accent-red:    #b91c1c;
+
+      --green-bg:      #ecfdf5;  --green-border:  #a7f3d0;
+      --blue-bg:       #f0f9ff;  --blue-border:   #bae6fd;
+      --yellow-bg:     #fffbeb;  --yellow-border: #fde68a;
+      --red-bg:        #fef2f2;  --red-border:    #fecaca;
     }
 
     html.light-theme,
     html.light-theme body {
-      background-color: #f6f8f7 !important;
+      background-color: var(--bg, #f8fafc) !important;
       background-image: 
-        radial-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px),
-        radial-gradient(ellipse at 50% 0%, rgba(5, 150, 105, 0.05) 0%, transparent 60%) !important;
-      color: #0f172a !important;
+        radial-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+        radial-gradient(ellipse at 50% 0%, rgba(4, 120, 87, 0.05) 0%, transparent 60%) !important;
+      color: var(--text-primary, #0f172a) !important;
     }
 
     /* Header & Navigation */
@@ -335,14 +427,14 @@
     html.light-theme .bg-earth-800,
     html.light-theme .bg-earth-700 {
       background-color: #ffffff !important;
-      border-color: #e2e8e5 !important;
+      border-color: #cbd5e1 !important;
       color: #0f172a !important;
     }
 
     html.light-theme nav button {
       color: #475569 !important;
       background-color: #f8fafc !important;
-      border: 1px solid #e2e8e5 !important;
+      border: 1px solid #cbd5e1 !important;
     }
     html.light-theme nav button:hover {
       background-color: #f1f5f9 !important;
@@ -353,7 +445,7 @@
     html.light-theme nav button[class*="bg-cyan-950"] {
       background-color: #ecfdf5 !important;
       border-color: #a7f3d0 !important;
-      color: #059669 !important;
+      color: #047857 !important;
       font-weight: 700 !important;
     }
 
@@ -366,7 +458,7 @@
     html.light-theme #step-hour-badge {
       background-color: #ffffff !important;
       border-color: #cbd5e1 !important;
-      color: #059669 !important;
+      color: #047857 !important;
     }
     html.light-theme section.bg-earth-900\/90 button,
     html.light-theme section[class*="bg-earth-900"] button {
@@ -382,6 +474,8 @@
 
     /* Typography in Light Mode */
     html.light-theme .text-white,
+    html.light-theme .text-\[\#EEF0EC\],
+    html.light-theme .text-\[\#eef0ec\],
     html.light-theme .text-\[\#f2f5f3\],
     html.light-theme .text-slate-100,
     html.light-theme .text-slate-200,
@@ -391,19 +485,45 @@
       color: #0f172a !important;
     }
 
+    html.light-theme .text-\[\#8C948B\],
+    html.light-theme .text-\[\#8c948b\],
     html.light-theme .text-\[\#8b9390\],
     html.light-theme .text-slate-300,
     html.light-theme .text-slate-400,
     html.light-theme .text-slate-500,
     html.light-theme .text-earth-400 {
-      color: #64748b !important;
+      color: #475569 !important;
     }
 
     html.light-theme .text-\[\#545a57\] {
-      color: #94a3b8 !important;
+      color: #64748b !important;
+    }
+
+    /* Crisp High-Contrast Signals for Light Mode */
+    html.light-theme .text-\[\#8FFFB0\],
+    html.light-theme .text-\[\#8fffb0\] {
+      color: #047857 !important;
+    }
+
+    html.light-theme .text-\[\#7FD4FF\],
+    html.light-theme .text-\[\#7fd4ff\] {
+      color: #0369a1 !important;
+    }
+
+    html.light-theme .text-\[\#FFE270\],
+    html.light-theme .text-\[\#ffe270\] {
+      color: #b45309 !important;
+    }
+
+    html.light-theme .text-\[\#FF9D7F\],
+    html.light-theme .text-\[\#ff9d7f\] {
+      color: #b91c1c !important;
     }
 
     /* Borders in Light Mode */
+    html.light-theme .border-\[\#262A26\],
+    html.light-theme .border-\[\#262a26\],
+    html.light-theme .border-\[\#283028\],
     html.light-theme .border-\[\#1c1f1c\],
     html.light-theme .border-\[\#1f3d30\],
     html.light-theme .border-\[\#1f3a4a\],
@@ -416,26 +536,63 @@
     html.light-theme .border-earth-800,
     html.light-theme .border-slate-700,
     html.light-theme .border-slate-800 {
-      border-color: #e2e8e5 !important;
+      border-color: #cbd5e1 !important;
     }
 
     /* Surfaces, Panels and Cards in Light Mode */
+    html.light-theme .hero-card,
     html.light-theme .surface-panel,
     html.light-theme .surface-card,
     html.light-theme .natural-glass,
+    html.light-theme .bg-\[\#131513\],
     html.light-theme .bg-\[\#060706\],
     html.light-theme .bg-\[\#0b0c0b\],
     html.light-theme .bg-\[\#0f110f\],
-    html.light-theme .bg-\[\#10201a\],
     html.light-theme .bg-\[\#151815\],
     html.light-theme .bg-\[\#1c1f1c\],
     html.light-theme .bg-slate-900,
     html.light-theme .bg-slate-900\/90,
     html.light-theme .bg-slate-950 {
       background-color: #ffffff !important;
-      border-color: #e2e8e5 !important;
+      border-color: #cbd5e1 !important;
       color: #0f172a !important;
-      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 4px 18px -2px rgba(15, 23, 42, 0.06);
+    }
+
+    html.light-theme .bg-\[\#191C19\],
+    html.light-theme .bg-\[\#191c19\],
+    html.light-theme .bg-\[\#0A0B0A\],
+    html.light-theme .bg-\[\#0a0b0a\],
+    html.light-theme .bg-\[\#141714\],
+    html.light-theme .bg-\[\#10201a\] {
+      background-color: #f8fafc !important;
+      border-color: #cbd5e1 !important;
+      color: #0f172a !important;
+    }
+
+    html.light-theme .badge-green {
+      background-color: #ecfdf5 !important;
+      color: #047857 !important;
+      border-color: #a7f3d0 !important;
+    }
+
+    html.light-theme .badge-blue {
+      background-color: #f0f9ff !important;
+      color: #0369a1 !important;
+      border-color: #bae6fd !important;
+    }
+
+    html.light-theme .badge-yellow {
+      background-color: #fffbeb !important;
+      color: #b45309 !important;
+      border-color: #fde68a !important;
+    }
+
+    html.light-theme .badge-orange,
+    html.light-theme .badge-red {
+      background-color: #fef2f2 !important;
+      color: #b91c1c !important;
+      border-color: #fecaca !important;
     }
 
     html.light-theme .natural-glass {
@@ -640,72 +797,48 @@
 </head>
 <body class="min-h-screen text-[#f2f5f3] flex flex-col antialiased selection:bg-[#10201a] selection:text-[#6fe2a3] overflow-x-hidden max-w-full w-full">
   <!-- ================= 0. INTRO / COLD LAUNCH SPLASH SCREEN ================= -->
-  <div id="splash-screen" class="pb-safe">
-    <!-- Drifting Smog / Haze Particles (CSS Only) -->
-    <div class="haze-particle" style="width: 140px; height: 140px; left: 8%; animation-delay: 0s; animation-duration: 9s;"></div>
-    <div class="haze-particle" style="width: 90px; height: 90px; left: 32%; animation-delay: 2.2s; animation-duration: 11s;"></div>
-    <div class="haze-particle" style="width: 160px; height: 160px; left: 58%; animation-delay: 4.5s; animation-duration: 8.5s;"></div>
-    <div class="haze-particle" style="width: 110px; height: 110px; left: 78%; animation-delay: 1.5s; animation-duration: 10s;"></div>
-    <div class="haze-particle" style="width: 130px; height: 130px; left: 20%; animation-delay: 6s; animation-duration: 12s;"></div>
-
-    <!-- Central Content Box -->
+  <div id="splash-screen" class="pb-safe bg-[#0A0B0A]">
+    <!-- Central Authoritative Content Box -->
     <div class="flex flex-col items-center justify-center text-center max-w-sm px-6 z-10 relative cursor-pointer" onclick="VayuSplashScreen.handleUserTapSkip()">
-      <!-- App Mark (0.0-0.8s) -->
-      <div id="splash-app-mark" class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-[#6fe2a3] to-[#6ec8f2] p-0.5 shadow-2xl shadow-emerald-950/60 mb-3 transition-all duration-700 transform scale-90 opacity-0 flex items-center justify-center overflow-hidden">
-        <div class="w-full h-full bg-[#0b0c0b] rounded-[14px] flex items-center justify-center overflow-hidden p-1.5">
-          <img src="/static/icon-192.png?v=6" alt="VayuCoupler App Logo" class="w-full h-full object-cover rounded-[10px]" onerror="this.style.display='none'; document.getElementById('splash-app-fallback-svg').style.display='block';">
-          <svg id="splash-app-fallback-svg" class="hidden w-8 h-8 sm:w-10 sm:h-10 text-[#6fe2a3]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/>
-          </svg>
-        </div>
+      <!-- System Identity (MoES coupled forecasting) -->
+      <div id="splash-title-wrap" class="mb-4">
+        <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-[#EEF0EC] font-serif-display">VayuCoupler</h1>
+        <p class="text-xs text-[#8C948B] mt-0.5 font-sans-ui">Delhi-NCR Coupled Atmospheric Monitoring</p>
       </div>
 
-      <!-- Wordmark & Subtitle (0.7-1.3s) -->
-      <div id="splash-title-wrap" class="opacity-0 transition-all duration-700 transform translate-y-2 mb-4">
-        <h1 class="text-2xl sm:text-3xl font-black tracking-tight text-white font-serif-display">VayuCoupler</h1>
-        <p class="text-xs text-[#8b9390] mt-1 font-sans-ui">Delhi-NCR Coupled AQI Forecast</p>
-      </div>
-
-      <!-- Circular SVG Gauge & Live AQI Count-Up (1.3-3.2s) -->
-      <div id="splash-gauge-wrap" class="relative w-44 h-44 sm:w-48 sm:h-48 flex items-center justify-center mb-4 opacity-0 transition-all duration-700">
+      <!-- Circular SVG Gauge & Live AQI Count-Up (Immediate Primary View) -->
+      <div id="splash-gauge-wrap" class="relative w-44 h-44 sm:w-48 sm:h-48 flex items-center justify-center mb-4">
         <svg class="w-full h-full transform -rotate-90" viewBox="0 0 120 120">
-          <circle cx="60" cy="60" r="50" class="splash-gauge-bg"/>
-          <defs>
-            <linearGradient id="splashGaugeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#6fe2a3"/>
-              <stop offset="50%" stop-color="#f2d666"/>
-              <stop offset="100%" stop-color="#f2966e"/>
-            </linearGradient>
-          </defs>
-          <circle id="splash-gauge-ring" cx="60" cy="60" r="50" class="splash-gauge-fill" stroke="url(#splashGaugeGrad)" stroke-dasharray="314.159" stroke-dashoffset="314.159"/>
+          <circle cx="60" cy="60" r="50" class="splash-gauge-bg" stroke="#262A26" stroke-width="7" fill="none"/>
+          <circle id="splash-gauge-ring" cx="60" cy="60" r="50" class="splash-gauge-fill" stroke="#FF9D7F" stroke-width="7" stroke-linecap="round" fill="none" stroke-dasharray="314.159" stroke-dashoffset="314.159"/>
         </svg>
         <div class="absolute inset-0 flex flex-col items-center justify-center">
-          <span class="text-[9px] sm:text-[10px] font-mono-data text-[#8b9390] uppercase tracking-wider">Live Station AQI</span>
-          <span id="splash-aqi-number" class="text-4xl sm:text-5xl font-black text-white font-serif-display my-0.5">0</span>
-          <span id="splash-aqi-severity" class="text-[10px] font-mono-tag font-bold px-2.5 py-0.5 rounded-full badge-red">INITIALIZING</span>
+          <span class="text-[10px] font-mono-data text-[#8C948B]">LIVE GROUND AQI</span>
+          <span id="splash-aqi-number" class="text-5xl sm:text-6xl font-bold text-[#EEF0EC] font-serif-display my-0.5">431</span>
+          <span id="splash-aqi-severity" class="text-[10px] font-mono-tag font-bold px-2.5 py-0.5 rounded-full badge-orange">SEVERE (GRAP IV)</span>
         </div>
       </div>
 
-      <!-- Live GPS Location Line (~3.4s) -->
-      <div id="splash-location-line" class="text-xs text-[#8b9390] opacity-0 transition-all duration-600 mb-4 flex items-center gap-1.5 font-sans-ui">
-        <svg class="w-3.5 h-3.5 text-[#6fe2a3] svg-icon-line" viewBox="0 0 24 24" stroke="currentColor"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-        <span>Live at <b class="text-white" id="splash-station-name">Punjabi Bagh</b> · <span id="splash-station-dist">6.2 km</span> away</span>
+      <!-- Live Monitoring Station Line -->
+      <div id="splash-location-line" class="text-xs text-[#8C948B] mb-4 flex items-center gap-1.5 font-sans-ui">
+        <svg class="w-3.5 h-3.5 text-[#8FFFB0] svg-icon-line" viewBox="0 0 24 24" stroke="currentColor"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <span>Live ground sensor at <b class="text-[#EEF0EC]" id="splash-station-name">Punjabi Bagh</b> (<span id="splash-station-dist">6.2 km</span>)</span>
       </div>
 
-      <!-- Syncing 72-Hour Forecast Status & Progress Bar (~4.2s) -->
-      <div id="splash-status-wrap" class="w-full max-w-[210px] opacity-0 transition-all duration-600 flex flex-col items-center gap-1.5">
-        <div class="flex items-center justify-between w-full text-[9px] font-mono-data text-[#8b9390] uppercase tracking-wider">
-          <span>SYNCING 72-HOUR FORECAST</span>
-          <span id="splash-sync-pct">0%</span>
+      <!-- Syncing 72-Hour Forecast Status & Progress Bar -->
+      <div id="splash-status-wrap" class="w-full max-w-[210px] flex flex-col items-center gap-1.5">
+        <div class="flex items-center justify-between w-full text-[10px] font-mono-data text-[#8C948B]">
+          <span>72H COUPLED FORECAST</span>
+          <span id="splash-sync-pct">100%</span>
         </div>
-        <div class="w-full h-1 bg-[#151815] rounded-full overflow-hidden border border-[#1c1f1c]">
-          <div id="splash-progress-bar" class="h-full bg-gradient-to-r from-[#6fe2a3] to-[#6ec8f2] w-0 transition-all duration-100 ease-out"></div>
+        <div class="w-full h-1 bg-[#131513] rounded-full overflow-hidden border border-[#262A26]">
+          <div id="splash-progress-bar" class="h-full bg-[#7FD4FF] w-full transition-all duration-300 ease-out"></div>
         </div>
       </div>
 
-      <!-- Tap to skip prompt (activates once AQI finishes count-up) -->
-      <div id="splash-skip-hint" class="mt-4 text-[10px] font-mono-data text-[#545a57] opacity-0 transition-opacity duration-300">
-        Tap anywhere to enter →
+      <!-- Tap to skip prompt (without arrow) -->
+      <div id="splash-skip-hint" class="mt-4 text-[11px] font-mono-data text-[#8C948B]">
+        Tap anywhere to enter
       </div>
     </div>
   </div>
@@ -883,25 +1016,25 @@
       </div>
 
       <!-- Quick GPS Auto-Detect Button -->
-      <button onclick="refreshGPSLocation(); closeStationPickerModal();" class="p-2.5 rounded-xl bg-[#10201a] hover:bg-[#142921] border border-[#1f3d30] text-[#6fe2a3] flex items-center justify-between transition text-xs font-mono-data active:scale-98">
+      <button onclick="refreshGPSLocation(); closeStationPickerModal();" class="p-2.5 rounded-[12px] bg-[#8FFFB0]/10 hover:bg-[#8FFFB0]/15 border border-[#8FFFB0]/30 text-[#8FFFB0] flex items-center justify-between transition text-xs font-mono active:scale-98">
         <span class="flex items-center gap-2">
-          <span class="w-2 h-2 rounded-full bg-[#6fe2a3] animate-pulse"></span>
+          <span class="w-2 h-2 rounded-full bg-[#8FFFB0] animate-pulse"></span>
           <b>Use My Current GPS Location (Auto-Detect Nearest)</b>
         </span>
-        <span class="text-[11px] text-[#6fe2a3] bg-[#1a382c] px-2 py-0.5 rounded-md font-bold">DETECT NOW →</span>
+        <span class="text-[11px] text-[#8FFFB0] bg-[#8FFFB0]/15 px-2 py-0.5 rounded-md font-bold">DETECT NOW</span>
       </button>
 
       <!-- Search Input -->
       <div class="relative">
-        <input type="text" id="station-search-input" placeholder="Search any Delhi location (e.g. Rohini, Saket, Dwarka, ITO, Noida)..." oninput="filterStationsList(this.value)" class="w-full px-3.5 py-2.5 rounded-xl bg-[#0f110f] border border-[#1c1f1c] text-xs text-white placeholder-[#545a57] focus:outline-none focus:border-[#6fe2a3] font-sans-ui pr-8">
-        <span class="absolute right-3 top-2.5 text-xs text-[#545a57]">🔍</span>
+        <input type="text" id="station-search-input" placeholder="Search any Delhi location (Rohini, Saket, Dwarka, ITO, Noida)..." oninput="filterStationsList(this.value)" class="w-full px-3.5 py-2.5 rounded-[12px] bg-[#131513] border border-[#262A26] text-xs text-[#EEF0EC] placeholder-[#8C948B] focus:outline-none focus:border-[#7FD4FF] font-sans pr-8">
+        <span class="absolute right-3 top-2.5 text-xs text-[#8C948B]">🔍</span>
       </div>
 
       <!-- Zone Filter Pills -->
-      <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 text-[11px] font-mono-data" id="zone-filter-bar">
-        <button onclick="filterStationsByZone('ALL')" data-zone="ALL" class="zone-tab-btn active px-2.5 py-1 rounded-lg bg-[#151815] text-[#6fe2a3] border border-[#1f3d30] shrink-0 font-bold">ALL (58)</button>
-        <button onclick="filterStationsByZone('West Delhi')" data-zone="West Delhi" class="zone-tab-btn px-2.5 py-1 rounded-lg bg-[#0f110f] text-[#8b9390] border border-[#1c1f1c] hover:text-white shrink-0">West Delhi</button>
-        <button onclick="filterStationsByZone('South Delhi')" data-zone="South Delhi" class="zone-tab-btn px-2.5 py-1 rounded-lg bg-[#0f110f] text-[#8b9390] border border-[#1c1f1c] hover:text-white shrink-0">South Delhi</button>
+      <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 text-[11px] font-mono" id="zone-filter-bar">
+        <button onclick="filterStationsByZone('ALL')" data-zone="ALL" class="zone-tab-btn active px-2.5 py-1 rounded-lg bg-[#191C19] text-[#8FFFB0] border border-[#8FFFB0]/30 shrink-0 font-bold">ALL (58)</button>
+        <button onclick="filterStationsByZone('West Delhi')" data-zone="West Delhi" class="zone-tab-btn px-2.5 py-1 rounded-lg bg-[#131513] text-[#8C948B] border border-[#262A26] hover:text-[#EEF0EC] shrink-0">West Delhi</button>
+        <button onclick="filterStationsByZone('South Delhi')" data-zone="South Delhi" class="zone-tab-btn px-2.5 py-1 rounded-lg bg-[#131513] text-[#8C948B] border border-[#262A26] hover:text-[#EEF0EC] shrink-0">South Delhi</button>
         <button onclick="filterStationsByZone('Central Delhi')" data-zone="Central Delhi" class="zone-tab-btn px-2.5 py-1 rounded-lg bg-[#0f110f] text-[#8b9390] border border-[#1c1f1c] hover:text-white shrink-0">Central Delhi</button>
         <button onclick="filterStationsByZone('North Delhi')" data-zone="North Delhi" class="zone-tab-btn px-2.5 py-1 rounded-lg bg-[#0f110f] text-[#8b9390] border border-[#1c1f1c] hover:text-white shrink-0">North Delhi</button>
         <button onclick="filterStationsByZone('East Delhi')" data-zone="East Delhi" class="zone-tab-btn px-2.5 py-1 rounded-lg bg-[#0f110f] text-[#8b9390] border border-[#1c1f1c] hover:text-white shrink-0">East Delhi</button>
@@ -995,7 +1128,7 @@
     </div>
 
     <!-- Dedicated Navigation Row: Completely Separated from Left and Right Elements -->
-    <div class="hidden lg:block bg-earth-950/70 border-t border-earth-700/50 px-4 sm:px-6 py-1.5 overflow-x-auto no-scrollbar">
+    <div class="block bg-earth-950/70 border-t border-earth-700/50 px-3 sm:px-6 py-1.5 overflow-x-auto no-scrollbar touch-pan-x">
       <nav class="max-w-[1720px] mx-auto flex items-center gap-1.5 text-xs font-semibold whitespace-nowrap">
         <button onclick="switchTab('overview')" id="tab-overview" class="px-3.5 py-1.5 rounded-xl text-cyan-300 bg-cyan-950/90 border border-cyan-600/70 flex items-center gap-1.5 transition">
           <i data-lucide="layout-grid" class="w-4 h-4"></i> Command
@@ -1218,176 +1351,190 @@
     <!-- === TAB 1: COMMAND CENTER (MAP + FORECAST + ATTRIBUTION) === -->
     <div id="panel-overview" class="tab-panel flex flex-col gap-3 sm:gap-6 w-full min-w-0">
 
-      <!-- ================= MOBILE APP NATIVE HERO & GLANCE CARD (< md) ================= -->
-      <div class="md:hidden flex flex-col gap-3 w-full" id="mobile-hero-container">
-        
-        <!-- Main AQI Hero Card -->
-        <div class="natural-glass p-4 rounded-3xl border border-earth-700/80 shadow-2xl flex flex-col gap-3.5 relative overflow-hidden bg-gradient-to-b from-earth-900/90 to-earth-950/95">
+      <!-- ================= 1. HERO AQI READING PANEL ================= -->
+      <section class="hero-card p-4 sm:p-5 rounded-[14px] border border-[#262A26] bg-[#131513] flex flex-col gap-3.5 w-full">
+        <!-- Top Row: Active Station & Status Badge -->
+        <div class="flex items-center justify-between gap-3 flex-wrap">
+          <button onclick="openStationPickerModal()" class="flex items-center gap-2 text-xs font-mono-data bg-[#191C19] hover:bg-[#1E221E] px-3 py-1.5 rounded-xl border border-[#262A26] text-[#EEF0EC] transition cursor-pointer active:scale-98">
+            <span class="w-2 h-2 rounded-full bg-[#8FFFB0] animate-pulse"></span>
+            <span id="mob-hero-station-name" class="font-bold text-xs truncate max-w-[200px] sm:max-w-none">Punjabi Bagh, Delhi</span>
+            <span class="text-[11px] text-[#8C948B]">Change station</span>
+          </button>
           
-          <!-- Top Row: Location & Live Pulse -->
-          <div class="flex items-center justify-between">
-            <button onclick="openStationPickerModal()" class="flex items-center gap-1.5 text-xs text-earth-300 font-mono bg-earth-950/80 px-2.5 py-1 rounded-xl border border-earth-800">
-              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span id="mob-hero-station-name" class="font-bold text-white text-xs truncate max-w-[170px]">Punjabi Bagh, Delhi</span>
-              <svg class="w-3 h-3 text-earth-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
-            </button>
-            <span id="mob-hero-category" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-950 text-rose-300 border border-rose-800 uppercase font-mono tracking-wider">SEVERE</span>
+          <div class="flex items-center gap-2">
+            <span id="mob-hero-category" class="text-[10px] font-bold px-2.5 py-1 rounded-full badge-orange font-mono-tag">SEVERE</span>
+            <span class="text-[10px] font-mono-tag font-bold px-2.5 py-1 rounded-full badge-orange" id="mob-hero-grap-stage">GRAP IV</span>
           </div>
-
-          <!-- Central AQI Value & Gauge -->
-          <div class="flex items-center justify-between py-1">
-            <div>
-              <div class="text-[11px] font-mono text-earth-400 font-semibold uppercase tracking-wider">Real-Time Coupled AQI</div>
-              <div class="flex items-baseline gap-2">
-                <span id="mob-hero-aqi-val" class="text-5xl font-black font-mono tracking-tight text-rose-400">431</span>
-                <span class="text-xs font-mono text-earth-400 font-bold">NAQI</span>
-              </div>
-              <div id="mob-hero-advisory" class="text-xs text-earth-200 mt-1 font-medium leading-snug">
-                ⚠️ Hazardous air quality. Inversion trapping stubble smoke plume.
-              </div>
-            </div>
-            
-            <!-- Stage IV Circular Shield Badge -->
-            <div class="w-16 h-16 rounded-2xl bg-earth-950 border border-rose-600/60 flex flex-col items-center justify-center text-center shadow-lg shrink-0">
-              <span class="text-[9px] text-earth-400 font-mono font-bold">GRAP</span>
-              <span id="mob-hero-grap-stage" class="text-xl font-black text-rose-400 font-mono">IV</span>
-              <span class="text-[8px] text-rose-300 uppercase font-mono">CURBS</span>
-            </div>
-          </div>
-
-          <!-- Quick 4-Metric Glance Grid -->
-          <div class="grid grid-cols-4 gap-1.5 pt-2.5 border-t border-earth-700/60 text-center font-mono">
-            <div class="bg-earth-950/70 p-2 rounded-xl border border-earth-800/80">
-              <div class="text-[9px] text-earth-400">TEMP</div>
-              <div id="mob-hero-temp" class="text-xs font-bold text-white">30°C</div>
-            </div>
-            <div class="bg-earth-950/70 p-2 rounded-xl border border-earth-800/80">
-              <div class="text-[9px] text-earth-400">WIND</div>
-              <div id="mob-hero-wind" class="text-xs font-bold text-teal-300">10 NW</div>
-            </div>
-            <div class="bg-earth-950/70 p-2 rounded-xl border border-earth-800/80">
-              <div class="text-[9px] text-earth-400">PM2.5</div>
-              <div id="mob-hero-pm25" class="text-xs font-bold text-rose-300">284</div>
-            </div>
-            <div class="bg-earth-950/70 p-2 rounded-xl border border-earth-800/80">
-              <div class="text-[9px] text-earth-400">PBL</div>
-              <div id="mob-hero-pbl" class="text-xs font-bold text-sky-300">1016m</div>
-            </div>
-          </div>
-
         </div>
 
-        <!-- Pre-emptive Action Banner (Mobile) -->
-        <div class="bg-gradient-to-r from-rose-950/80 to-earth-900/90 border border-rose-700/60 p-3 rounded-2xl flex items-center justify-between shadow-lg">
-          <div class="flex items-center gap-2.5 min-w-0">
-            <span class="p-2 rounded-xl bg-rose-900/80 text-rose-300 border border-rose-700 shrink-0">
-              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            </span>
-            <div class="min-w-0">
-              <div class="text-xs font-bold text-white flex items-center gap-1.5">
-                <span>Predictive GRAP Stage IV Active</span>
-              </div>
-              <div class="text-[10px] text-rose-200 truncate">Odd-even, construction stop, diesel truck ban in force</div>
+        <!-- Central AQI Number & MoES Official Advisory -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 py-1">
+          <div>
+            <div class="text-[11px] font-mono-data text-[#8C948B]">COUPLED REAL-TIME NAQI</div>
+            <div class="flex items-baseline gap-2.5">
+              <span id="mob-hero-aqi-val" class="text-5xl sm:text-6xl font-bold font-serif-display text-[#FF9D7F]">431</span>
+              <!-- Desktop synced id element -->
+              <span id="curr-aqi-val" class="hidden">431</span>
+              <span id="curr-aqi-category-badge" class="hidden">Severe</span>
+              <span class="text-xs font-mono-data text-[#8C948B]">NAQI</span>
+            </div>
+            <div id="mob-hero-advisory" class="text-xs text-[#EEF0EC] mt-1 font-sans-ui max-w-[70ch] leading-relaxed">
+              Hazardous air quality. Nocturnal temperature inversion trapping trans-boundary stubble smoke below 340m.
             </div>
           </div>
-          <button onclick="switchTab('grap')" class="text-[11px] font-bold text-rose-300 bg-rose-900/70 hover:bg-rose-900 px-2.5 py-1.5 rounded-xl border border-rose-700 shrink-0 transition">
-            View Curbs
+
+          <!-- Secondary Action Pill -->
+          <div class="flex items-center gap-2 shrink-0 self-start sm:self-center">
+            <button onclick="switchTab('grap')" class="px-3.5 py-2 rounded-xl bg-[#191C19] hover:bg-[#202520] border border-[#262A26] text-xs font-sans-ui text-[#EEF0EC] font-semibold transition cursor-pointer">
+              View response plan
+            </button>
+            <button onclick="switchTab('copilot')" class="px-3.5 py-2 rounded-xl bg-[#191C19] hover:bg-[#202520] border border-[#262A26] text-xs font-sans-ui text-[#7FD4FF] font-semibold transition cursor-pointer">
+              Ask VayuAI
+            </button>
+          </div>
+        </div>
+
+        <!-- Ground Meteorological Telemetry Strip -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 pt-3 border-t border-[#262A26] text-xs font-mono-data">
+          <!-- Temp -->
+          <div class="bg-[#191C19] p-2.5 rounded-xl border border-[#262A26]">
+            <div class="text-[10px] text-[#8C948B]">TEMPERATURE</div>
+            <div id="mob-hero-temp" class="text-sm font-bold text-[#EEF0EC] mt-0.5">24°C</div>
+          </div>
+          <!-- Wind -->
+          <div class="bg-[#191C19] p-2.5 rounded-xl border border-[#262A26]">
+            <div class="text-[10px] text-[#8C948B]">WIND VECTOR</div>
+            <div class="flex items-center gap-1.5 mt-0.5">
+              <span id="curr-wind-speed" class="text-sm font-bold text-[#EEF0EC]">8.5 km/h</span>
+              <span id="curr-wind-dir" class="text-[10px] text-[#8C948B]">NW</span>
+              <span id="mob-hero-wind" class="hidden">8.5 NW</span>
+              <span id="wind-compass-needle" class="hidden"></span>
+            </div>
+          </div>
+          <!-- PM2.5 -->
+          <div class="bg-[#191C19] p-2.5 rounded-xl border border-[#262A26]">
+            <div class="text-[10px] text-[#8C948B]">PM2.5 SENSOR</div>
+            <div class="text-sm font-bold text-[#FF9D7F] mt-0.5"><span id="curr-pm25-val">284</span> <span class="text-[10px] text-[#8C948B]">μg/m³</span></div>
+            <span id="mob-hero-pm25" class="hidden">284</span>
+          </div>
+          <!-- PBLH -->
+          <div class="bg-[#191C19] p-2.5 rounded-xl border border-[#262A26]">
+            <div class="text-[10px] text-[#8C948B]">PBL HEIGHT</div>
+            <div class="text-sm font-bold text-[#7FD4FF] mt-0.5" id="curr-pblh-val">340 m</div>
+            <span id="mob-hero-pbl" class="hidden">340m</span>
+            <div class="hidden" id="pblh-bar"></div>
+            <span class="hidden" id="pblh-subtext"></span>
+          </div>
+          <!-- Ventilation Index -->
+          <div class="bg-[#191C19] p-2.5 rounded-xl border border-[#262A26]">
+            <div class="text-[10px] text-[#8C948B]">VENTILATION</div>
+            <div class="text-sm font-bold text-[#FFE270] mt-0.5" id="curr-vi-val">1,380 m²/s</div>
+            <span class="hidden" id="curr-vi-status">Evaluating</span>
+          </div>
+          <!-- Inversion / Fires -->
+          <div class="bg-[#191C19] p-2.5 rounded-xl border border-[#262A26]">
+            <div class="text-[10px] text-[#8C948B]">FARM FIRES</div>
+            <div class="text-sm font-bold text-[#FF9D7F] mt-0.5" id="curr-fire-count">1,420 fires</div>
+            <span class="hidden" id="curr-inversion-val"></span>
+            <span class="hidden" id="curr-trapping-status"></span>
+            <span class="hidden" id="stubble-share-badge"></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 2. HORIZONTAL ZONE BREAKDOWN STRIP ================= -->
+      <section class="w-full flex flex-col gap-2">
+        <div class="flex items-center justify-between px-0.5">
+          <span class="text-[11px] font-mono-data text-[#8C948B]">DELHI-NCR REGIONAL ZONES</span>
+          <button onclick="openStationPickerModal()" class="text-[11px] font-mono-data text-[#7FD4FF] hover:underline cursor-pointer">
+            View all 58 stations
           </button>
         </div>
-
-      </div>
-
-      <!-- 1. NATURAL TELEMETRY BAR (Desktop View >= md Only) -->
-      <section class="hidden md:grid md:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3.5 w-full min-w-0">
-        
-        <!-- Card 1: Regional AQI -->
-        <div class="natural-glass p-2.5 sm:p-4 rounded-xl sm:rounded-2xl flex flex-col justify-between border-l-4 min-w-0 overflow-hidden" id="aqi-card-border" style="border-left-color: #EF4444;">
-          <div class="flex items-center justify-between text-[10px] sm:text-[11px] text-earth-300/80">
-            <span class="font-bold tracking-wider uppercase truncate">DELHI AQI</span>
-            <i data-lucide="activity" class="w-3.5 h-3.5 text-earth-300 shrink-0"></i>
-          </div>
-          <div class="my-1 sm:my-1.5 flex items-baseline gap-1.5 min-w-0">
-            <span class="text-xl sm:text-3xl font-black font-mono tracking-tight" id="curr-aqi-val">--</span>
-            <span class="text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded-full truncate" id="curr-aqi-category-badge">...</span>
-          </div>
-          <div class="text-[9px] sm:text-[11px] text-earth-300/70 flex items-center justify-between truncate">
-            <span>PM2.5: <b class="text-white" id="curr-pm25-val">--</b></span>
-            <span class="font-mono text-emerald-400 text-[9px]">NAQI</span>
-          </div>
-        </div>
-
-        <!-- Card 2: Ventilation Index -->
-        <div class="natural-glass p-2.5 sm:p-4 rounded-xl sm:rounded-2xl flex flex-col justify-between border-l-4 border-emerald-400 min-w-0 overflow-hidden">
-          <div class="flex items-center justify-between text-[10px] sm:text-[11px] text-earth-300/80">
-            <span class="font-bold tracking-wider uppercase text-emerald-400 truncate">VENTILATION</span>
-            <i data-lucide="gauge" class="w-3.5 h-3.5 text-emerald-400 shrink-0"></i>
-          </div>
-          <div class="my-1 sm:my-1.5 min-w-0">
-            <div class="text-lg sm:text-2xl font-black font-mono text-emerald-200 truncate" id="curr-vi-val">-- <span class="text-[9px] text-emerald-400">m²/s</span></div>
-            <div class="text-[9px] sm:text-[11px] font-semibold text-amber-400 mt-0.5 truncate" id="curr-vi-status">Evaluating...</div>
-          </div>
-          <div class="text-[8px] sm:text-[10px] text-earth-300/60 font-mono truncate">VI = Wind × PBLH</div>
-        </div>
-
-        <!-- Card 3: Boundary Layer Height (PBLH) -->
-        <div class="natural-glass p-2.5 sm:p-4 rounded-xl sm:rounded-2xl flex flex-col justify-between border-l-4 border-sky-400 min-w-0 overflow-hidden">
-          <div class="flex items-center justify-between text-[10px] sm:text-[11px] text-earth-300/80">
-            <span class="font-bold tracking-wider uppercase truncate">PBL HEIGHT</span>
-            <i data-lucide="layers" class="w-3.5 h-3.5 text-sky-400 shrink-0"></i>
-          </div>
-          <div class="my-1 sm:my-1.5 min-w-0">
-            <div class="text-lg sm:text-2xl font-black font-mono text-sky-100 truncate" id="curr-pblh-val">-- <span class="text-[9px] text-slate-400">m</span></div>
-            <div class="w-full bg-earth-950 h-1.5 rounded-full mt-1 overflow-hidden">
-              <div id="pblh-bar" class="bg-sky-400 h-full rounded-full transition-all duration-300" style="width: 50%;"></div>
+        <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1" id="command-center-zone-strip">
+          <div onclick="filterStationsByZone('West Delhi'); openStationPickerModal();" class="surface-card p-3 rounded-xl border border-[#262A26] hover:border-[#383E38] transition cursor-pointer min-w-[140px] shrink-0 flex flex-col gap-1.5">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold text-[#EEF0EC]">West Delhi</span>
+              <span class="w-2 h-2 rounded-full bg-[#FF9D7F]"></span>
             </div>
-          </div>
-          <div class="text-[9px] text-earth-300/70 truncate" id="pblh-subtext">Ceiling: High</div>
-        </div>
-
-        <!-- Card 4: Thermal Inversion -->
-        <div class="natural-glass p-2.5 sm:p-4 rounded-xl sm:rounded-2xl flex flex-col justify-between border-l-4 border-amber-400 min-w-0 overflow-hidden">
-          <div class="flex items-center justify-between text-[10px] sm:text-[11px] text-earth-300/80">
-            <span class="font-bold tracking-wider uppercase truncate">INVERSION (ΔT)</span>
-            <i data-lucide="thermometer" class="w-3.5 h-3.5 text-amber-400 shrink-0"></i>
-          </div>
-          <div class="my-1 sm:my-1.5 min-w-0">
-            <div class="text-lg sm:text-2xl font-black font-mono text-amber-200 truncate" id="curr-inversion-val">-- <span class="text-[9px] text-slate-400">°C</span></div>
-            <div class="text-[9px] sm:text-[11px] font-semibold text-earth-200 mt-0.5 truncate" id="curr-trapping-status">Trapping: 1.0x</div>
-          </div>
-          <div class="text-[9px] text-earth-300/70 truncate">Nocturnal Trapping</div>
-        </div>
-
-        <!-- Card 5: Wind Vector -->
-        <div class="natural-glass p-2.5 sm:p-4 rounded-xl sm:rounded-2xl flex flex-col justify-between border-l-4 border-teal-400 min-w-0 overflow-hidden">
-          <div class="flex items-center justify-between text-[10px] sm:text-[11px] text-earth-300/80">
-            <span class="font-bold tracking-wider uppercase truncate">WIND</span>
-            <i data-lucide="compass" class="w-3.5 h-3.5 text-teal-400 shrink-0"></i>
-          </div>
-          <div class="my-1 sm:my-1.5 flex items-center gap-1.5 min-w-0">
-            <div id="wind-compass-needle" class="w-6 h-6 rounded-full bg-earth-950 border border-teal-500/40 flex items-center justify-center text-teal-300 font-mono text-xs transition-transform duration-500 shrink-0">
-              <i data-lucide="navigation" class="w-3 h-3"></i>
+            <div class="flex items-baseline gap-1.5">
+              <span class="text-xl font-bold font-serif-display text-[#FF9D7F]">431</span>
+              <span class="text-[10px] font-mono-data text-[#8C948B]">AQI</span>
             </div>
-            <div class="min-w-0">
-              <div class="text-base sm:text-xl font-bold font-mono text-teal-100 truncate" id="curr-wind-speed">-- km/h</div>
-              <div class="text-[9px] text-earth-300 font-mono truncate" id="curr-wind-dir">NW (315°)</div>
+            <span class="text-[10px] font-mono-data text-[#8C948B]">8 stations</span>
+          </div>
+
+          <div onclick="filterStationsByZone('North Delhi'); openStationPickerModal();" class="surface-card p-3 rounded-xl border border-[#262A26] hover:border-[#383E38] transition cursor-pointer min-w-[140px] shrink-0 flex flex-col gap-1.5">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold text-[#EEF0EC]">North Delhi</span>
+              <span class="w-2 h-2 rounded-full bg-[#FF9D7F]"></span>
             </div>
+            <div class="flex items-baseline gap-1.5">
+              <span class="text-xl font-bold font-serif-display text-[#FF9D7F]">424</span>
+              <span class="text-[10px] font-mono-data text-[#8C948B]">AQI</span>
+            </div>
+            <span class="text-[10px] font-mono-data text-[#8C948B]">7 stations</span>
           </div>
-          <div class="text-[9px] text-earth-300/70 truncate" id="wind-alignment-text">NW Corridor</div>
-        </div>
 
-        <!-- Card 6: Satellite Stubble Fires -->
-        <div class="natural-glass p-2.5 sm:p-4 rounded-xl sm:rounded-2xl flex flex-col justify-between border-l-4 border-orange-500 min-w-0 overflow-hidden">
-          <div class="flex items-center justify-between text-[10px] sm:text-[11px] text-earth-300/80">
-            <span class="font-bold tracking-wider uppercase truncate">FARM FIRES</span>
-            <i data-lucide="flame" class="w-3.5 h-3.5 text-orange-400 shrink-0"></i>
+          <div onclick="filterStationsByZone('East Delhi'); openStationPickerModal();" class="surface-card p-3 rounded-xl border border-[#262A26] hover:border-[#383E38] transition cursor-pointer min-w-[140px] shrink-0 flex flex-col gap-1.5">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold text-[#EEF0EC]">East Delhi</span>
+              <span class="w-2 h-2 rounded-full bg-[#FF9D7F]"></span>
+            </div>
+            <div class="flex items-baseline gap-1.5">
+              <span class="text-xl font-bold font-serif-display text-[#FF9D7F]">438</span>
+              <span class="text-[10px] font-mono-data text-[#8C948B]">AQI</span>
+            </div>
+            <span class="text-[10px] font-mono-data text-[#8C948B]">6 stations</span>
           </div>
-          <div class="my-1 sm:my-1.5 min-w-0">
-            <div class="text-lg sm:text-2xl font-black font-mono text-orange-300 truncate" id="curr-fire-count">-- <span class="text-[9px] text-slate-400">fires</span></div>
-            <div class="text-[9px] text-orange-300/90 font-medium font-mono truncate" id="stubble-share-badge">Stubble: --%</div>
-          </div>
-          <div class="text-[9px] text-earth-300/70 truncate">Punjab & Haryana</div>
-        </div>
 
+          <div onclick="filterStationsByZone('South Delhi'); openStationPickerModal();" class="surface-card p-3 rounded-xl border border-[#262A26] hover:border-[#383E38] transition cursor-pointer min-w-[140px] shrink-0 flex flex-col gap-1.5">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold text-[#EEF0EC]">South Delhi</span>
+              <span class="w-2 h-2 rounded-full bg-[#FFE270]"></span>
+            </div>
+            <div class="flex items-baseline gap-1.5">
+              <span class="text-xl font-bold font-serif-display text-[#FFE270]">386</span>
+              <span class="text-[10px] font-mono-data text-[#8C948B]">AQI</span>
+            </div>
+            <span class="text-[10px] font-mono-data text-[#8C948B]">9 stations</span>
+          </div>
+
+          <div onclick="filterStationsByZone('Central Delhi'); openStationPickerModal();" class="surface-card p-3 rounded-xl border border-[#262A26] hover:border-[#383E38] transition cursor-pointer min-w-[140px] shrink-0 flex flex-col gap-1.5">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold text-[#EEF0EC]">Central Delhi</span>
+              <span class="w-2 h-2 rounded-full bg-[#FF9D7F]"></span>
+            </div>
+            <div class="flex items-baseline gap-1.5">
+              <span class="text-xl font-bold font-serif-display text-[#FF9D7F]">412</span>
+              <span class="text-[10px] font-mono-data text-[#8C948B]">AQI</span>
+            </div>
+            <span class="text-[10px] font-mono-data text-[#8C948B]">5 stations</span>
+          </div>
+
+          <div onclick="filterStationsByZone('South West Delhi'); openStationPickerModal();" class="surface-card p-3 rounded-xl border border-[#262A26] hover:border-[#383E38] transition cursor-pointer min-w-[140px] shrink-0 flex flex-col gap-1.5">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold text-[#EEF0EC]">SW Delhi</span>
+              <span class="w-2 h-2 rounded-full bg-[#FF9D7F]"></span>
+            </div>
+            <div class="flex items-baseline gap-1.5">
+              <span class="text-xl font-bold font-serif-display text-[#FF9D7F]">408</span>
+              <span class="text-[10px] font-mono-data text-[#8C948B]">AQI</span>
+            </div>
+            <span class="text-[10px] font-mono-data text-[#8C948B]">6 stations</span>
+          </div>
+
+          <div onclick="filterStationsByZone('NCR'); openStationPickerModal();" class="surface-card p-3 rounded-xl border border-[#262A26] hover:border-[#383E38] transition cursor-pointer min-w-[140px] shrink-0 flex flex-col gap-1.5">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold text-[#EEF0EC]">NCR Fringe</span>
+              <span class="w-2 h-2 rounded-full bg-[#FFE270]"></span>
+            </div>
+            <div class="flex items-baseline gap-1.5">
+              <span class="text-xl font-bold font-serif-display text-[#FFE270]">394</span>
+              <span class="text-[10px] font-mono-data text-[#8C948B]">AQI</span>
+            </div>
+            <span class="text-[10px] font-mono-data text-[#8C948B]">15 stations</span>
+          </div>
+        </div>
       </section>
       
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
@@ -1833,37 +1980,37 @@
     <!-- === TAB: VAYU AI COPILOT === -->
     <!-- === TAB: VAYU AI ASSISTANT HUB === -->
     <div id="panel-copilot" class="tab-panel hidden flex flex-col gap-4 w-full max-w-full">
-      <div class="surface-panel p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-[#1c1f1c] shadow-xl flex flex-col">
+      <div class="surface-panel p-4 sm:p-6 rounded-[14px] border border-[#262A26] flex flex-col relative">
         
         <!-- HUB HOME VIEW (Default state) -->
         <div id="vayuai-hub-view" class="flex flex-col items-center text-center py-2">
           
           <!-- Centered Interactive Glowing Orb (Tap to Activate AI / Voice) -->
           <div class="mb-2 vayuai-glowing-orb" onclick="activateVayuAIGlowingOrb()" id="vayuai-hero-orb" role="button" tabindex="0" title="Tap to Activate Voice AI / Speak">
-            <svg class="w-9 h-9 text-[#060706] svg-icon-line" viewBox="0 0 24 24" stroke="currentColor">
+            <svg class="w-9 h-9 text-[#0A0B0A] svg-icon-line" viewBox="0 0 24 24" stroke="currentColor">
               <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
             </svg>
           </div>
-          <div class="mb-2 text-[11px] font-mono text-[#6fe2a3] flex items-center justify-center gap-1.5 cursor-pointer hover:underline" onclick="activateVayuAIGlowingOrb()" id="orb-status-pill">
-            <span class="w-1.5 h-1.5 rounded-full bg-[#6fe2a3] animate-ping"></span>
+          <div class="mb-2 text-[11px] font-mono text-[#7FD4FF] flex items-center justify-center gap-1.5 cursor-pointer hover:underline" onclick="activateVayuAIGlowingOrb()" id="orb-status-pill">
+            <span class="w-1.5 h-1.5 rounded-full bg-[#7FD4FF] animate-ping"></span>
             <span>Tap to speak / Activate VayuAI</span>
           </div>
 
-          <h2 class="text-2xl sm:text-3xl font-black text-white font-serif-display" id="vayuai-hub-title">Poocho VayuAI se</h2>
-          <p class="text-xs sm:text-sm text-[#8b9390] mt-1.5 max-w-md font-sans-ui leading-relaxed" id="vayuai-hub-subtitle">
+          <h2 class="text-2xl sm:text-3xl font-bold text-[#EEF0EC] font-space tracking-tight" id="vayuai-hub-title">Poocho VayuAI se</h2>
+          <p class="text-xs sm:text-sm text-[#8C948B] mt-1.5 max-w-md font-sans leading-relaxed" id="vayuai-hub-subtitle">
             Delhi-NCR ke 72-hour coupled forecast, meteorology physics aur GRAP rules par aadharit instant answers.
           </p>
 
-          <!-- Quick Inline Language & Theme Switcher Controls -->
-          <div class="mt-3.5 flex items-center gap-2 p-1 pl-1.5 rounded-full bg-[#060706] border border-[#1c1f1c] text-xs">
-            <button onclick="VayuSettings.setLanguage('hinglish')" id="vayuai-quick-hinglish" class="px-3 py-1 rounded-full text-[11px] font-mono-data font-bold transition bg-[#10201a] text-[#6fe2a3] border border-[#1f3d30]">
+          <!-- Quick Inline Language Switcher Controls -->
+          <div class="mt-3.5 flex items-center gap-2 p-1 pl-1.5 rounded-full bg-[#0A0B0A] border border-[#262A26] text-xs">
+            <button onclick="VayuSettings.setLanguage('hinglish')" id="vayuai-quick-hinglish" class="px-3 py-1 rounded-full text-[11px] font-mono font-bold transition bg-[#7FD4FF]/10 text-[#7FD4FF] border border-[#7FD4FF]/30">
               🇮🇳 Hinglish
             </button>
-            <button onclick="VayuSettings.setLanguage('en')" id="vayuai-quick-en" class="px-3 py-1 rounded-full text-[11px] font-mono-data font-medium transition text-[#8b9390] hover:text-white">
+            <button onclick="VayuSettings.setLanguage('en')" id="vayuai-quick-en" class="px-3 py-1 rounded-full text-[11px] font-mono font-medium transition text-[#8C948B] hover:text-[#EEF0EC]">
               🇬🇧 English
             </button>
-            <span class="w-[1px] h-3.5 bg-[#1c1f1c]"></span>
-            <button onclick="openSettingsModal()" class="px-2.5 py-1 text-[11px] text-[#8b9390] hover:text-[#6fe2a3] font-mono flex items-center gap-1 transition" title="Open Settings (Theme & Language)">
+            <span class="w-[1px] h-3.5 bg-[#262A26]"></span>
+            <button onclick="openSettingsModal()" class="px-2.5 py-1 text-[11px] text-[#8C948B] hover:text-[#7FD4FF] font-mono flex items-center gap-1 transition" title="Open Settings (Theme & Language)">
               <span>⚙️ Settings</span>
             </button>
           </div>
@@ -1871,8 +2018,8 @@
           <!-- 2-Column Grid of Question Cards (All 15 Preset Intents) -->
           <div class="w-full mt-6 text-left">
             <div class="flex items-center justify-between mb-2.5 px-1">
-              <span class="text-[11px] font-mono-data text-[#8b9390] uppercase tracking-wider" id="vayuai-queries-header">POPULAR QUERIES (15 INTENTS)</span>
-              <span class="text-[10px] font-mono-tag text-[#6fe2a3]">TAP TO ASK</span>
+              <span class="text-[11px] font-mono text-[#8C948B]" id="vayuai-queries-header">Popular queries (15 intents)</span>
+              <span class="text-[10px] font-mono text-[#7FD4FF]">Tap to ask</span>
             </div>
             <div class="vayuai-questions-grid" id="vayuai-questions-grid">
               <!-- Rendered dynamically via VayuAIAssistant -->
@@ -1882,52 +2029,53 @@
 
         <!-- CHAT THREAD VIEW (Transitions after query) -->
         <div id="vayuai-chat-thread" class="hidden flex flex-col gap-3 py-1">
-          <div class="flex items-center justify-between pb-3 border-b border-[#1c1f1c]">
+          <div class="flex items-center justify-between pb-3 border-b border-[#262A26]">
             <div class="flex items-center gap-2">
-              <div class="w-8 h-8 rounded-full bg-gradient-to-br from-[#6fe2a3] to-[#6ec8f2] flex items-center justify-center text-[#060706] font-bold text-xs">V</div>
+              <div class="w-8 h-8 rounded-full bg-[#7FD4FF]/15 border border-[#7FD4FF]/30 flex items-center justify-center text-[#7FD4FF] font-bold text-xs font-mono">V</div>
               <div>
-                <div class="text-xs font-bold text-white font-serif-display">VayuAI Assistant</div>
-                <div class="text-[10px] text-[#8b9390] font-mono-data">Google Gemini AI Grounded</div>
+                <div class="text-xs font-bold text-[#EEF0EC] font-space">VayuAI Assistant</div>
+                <div class="text-[10px] text-[#8C948B] font-mono">Google Gemini AI Grounded</div>
               </div>
             </div>
-            <button onclick="resetVayuAIChatToHub()" class="px-2.5 py-1 rounded-lg bg-[#0f110f] hover:bg-[#161a16] border border-[#1c1f1c] text-[#8b9390] hover:text-white text-[11px] font-mono transition flex items-center gap-1">
-              <span>← Back to Questions</span>
+            <button onclick="resetVayuAIChatToHub()" class="px-2.5 py-1 rounded-[10px] bg-[#191C19] hover:bg-[#262A26] border border-[#262A26] text-[#8C948B] hover:text-[#EEF0EC] text-[11px] font-mono transition flex items-center gap-1">
+              <span>Back to questions</span>
             </button>
           </div>
 
           <!-- Chat History -->
-          <div id="vayuai-chat-history" class="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-[#060706] border border-[#1c1f1c] min-h-[260px] max-h-[420px] overflow-y-auto flex flex-col gap-3 text-xs font-sans-ui">
+          <div id="vayuai-chat-history" class="p-3 sm:p-4 rounded-[14px] bg-[#0A0B0A] border border-[#262A26] min-h-[260px] max-h-[420px] overflow-y-auto flex flex-col gap-3 text-xs font-sans">
             <!-- Messages populated here -->
           </div>
         </div>
 
         <!-- Voice Speech Feedback Banner -->
-        <div id="vayuai-mic-feedback" class="hidden my-2 p-2.5 rounded-xl bg-[#1f150f] border border-[#4a2e20] text-xs flex items-center justify-between">
+        <div id="vayuai-mic-feedback" class="hidden my-2 p-2.5 rounded-[12px] bg-[#FF9D7F]/10 border border-[#FF9D7F]/30 text-xs flex items-center justify-between">
           <div class="flex items-center gap-2 min-w-0">
-            <span class="w-2 h-2 rounded-full bg-[#f2966e] animate-ping shrink-0"></span>
-            <span class="text-[#f2966e] font-mono-tag font-bold text-[10px] uppercase">SUN RAHA HOON...</span>
-            <span id="vayuai-live-speech-transcript" class="text-white italic truncate text-[11px]">Boliye...</span>
+            <span class="w-2 h-2 rounded-full bg-[#FF9D7F] animate-ping shrink-0"></span>
+            <span class="text-[#FF9D7F] font-mono font-bold text-[10px]">SUN RAHA HOON...</span>
+            <span id="vayuai-live-speech-transcript" class="text-[#EEF0EC] italic truncate text-[11px]">Boliye...</span>
           </div>
-          <span class="text-[9px] font-mono-tag px-2 py-0.5 rounded badge-yellow shrink-0">Hinglish detected</span>
+          <span class="text-[9px] font-mono px-2 py-0.5 rounded badge-yellow shrink-0">Hinglish detected</span>
         </div>
 
-        <!-- Pill-Shaped Input Bar with Speech Mic & Circular Send -->
-        <div class="mt-4 pt-3 border-t border-[#1c1f1c]">
-          <div class="flex items-center gap-2 p-1.5 pl-3.5 rounded-full bg-[#060706] border border-[#1c1f1c] focus-within:border-[#6fe2a3] transition shadow-inner">
-            <input type="text" id="vayuai-chat-input" placeholder="Apna sawaal likhein ya mic dabayein..." onkeydown="if(event.key==='Enter') sendVayuAICustomQuery()" class="flex-1 bg-transparent text-xs text-white placeholder-[#545a57] focus:outline-none min-w-0 font-sans-ui">
+        <!-- Pinned Bottom Input Bar with Speech Mic & Ask VayuAI Action Button -->
+        <div class="sticky bottom-0 bg-[#131513]/95 backdrop-blur-md mt-4 pt-3 pb-1 border-t border-[#262A26] z-10">
+          <div class="flex items-center gap-2 p-1.5 pl-3.5 rounded-full bg-[#0A0B0A] border border-[#262A26] focus-within:border-[#7FD4FF] transition">
+            <input type="text" id="vayuai-chat-input" placeholder="Apna sawaal likhein ya mic dabayein..." onkeydown="if(event.key==='Enter') sendVayuAICustomQuery()" class="flex-1 bg-transparent text-xs text-[#EEF0EC] placeholder-[#8C948B] focus:outline-none min-w-0 font-sans">
             
             <!-- Speech Mic Button -->
             <div class="mic-btn-container" id="vayuai-mic-container">
               <span class="mic-pulse-ring"></span>
               <span class="mic-pulse-ring"></span>
-              <button onclick="toggleVayuAISpeechRecognition()" id="vayuai-mic-btn" class="w-8 h-8 rounded-full bg-[#0f110f] hover:bg-[#161a16] text-[#6ec8f2] flex items-center justify-center transition border border-[#1c1f1c]" title="Voice input in Hindi / Hinglish">
+              <button onclick="toggleVayuAISpeechRecognition()" id="vayuai-mic-btn" class="w-8 h-8 rounded-full bg-[#191C19] hover:bg-[#262A26] text-[#7FD4FF] flex items-center justify-center transition border border-[#262A26]" title="Voice input in Hindi / Hinglish">
                 <svg class="w-4 h-4 svg-icon-line" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
               </button>
             </div>
 
-            <!-- Send Button -->
-            <button onclick="sendVayuAICustomQuery()" class="w-8 h-8 rounded-full bg-[#6fe2a3] hover:bg-[#5cd493] text-[#060706] flex items-center justify-center transition shadow-md shrink-0 active:scale-95" title="Send Question">
-              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            <!-- Send Action Button: "Ask VayuAI" -->
+            <button onclick="sendVayuAICustomQuery()" class="px-4 py-1.5 rounded-full bg-[#7FD4FF] hover:bg-[#68c3f0] text-[#0A0B0A] font-semibold text-xs transition shrink-0 active:scale-95 flex items-center gap-1.5" title="Ask VayuAI">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              <span>Ask VayuAI</span>
             </button>
           </div>
         </div>
@@ -1936,48 +2084,51 @@
     </div>
 
     <!-- === TAB: CLEAN AIR WINDOWS & OUTDOOR PLANNER === -->
-    <div id="panel-planner" class="tab-panel hidden flex flex-col gap-4">
-      <div class="natural-glass p-5 sm:p-6 rounded-3xl shadow-xl">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-earth-700/60">
+    <div id="panel-windows" data-alias="panel-planner" class="tab-panel hidden flex flex-col gap-4">
+      <div class="surface-panel p-5 sm:p-6 rounded-[14px] border border-[#262A26]">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#262A26]">
           <div>
-            <h2 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
-              <i data-lucide="clock" class="w-5 h-5 text-sky-400"></i> Daily Clean Air Windows & Safe Activity Planner
+            <h2 class="text-base sm:text-lg font-bold text-[#EEF0EC] flex items-center gap-2 font-space">
+              <i data-lucide="clock" class="w-5 h-5 text-[#7FD4FF]"></i> Daily Clean Air Windows & Safe Activity Planner
             </h2>
-            <p class="text-xs text-earth-300/80 mt-0.5">Atmospheric dispersion diurnal cycle: identifies the safest and most toxic outdoor exposure hours.</p>
+            <p class="text-xs text-[#8C948B] mt-0.5 font-sans">Atmospheric dispersion diurnal cycle: identifies the safest and most toxic outdoor exposure hours.</p>
           </div>
-          <span class="text-xs font-mono text-emerald-300 bg-emerald-950 px-2.5 py-1 rounded-lg border border-emerald-800">Next 24 Hours Guide</span>
+          <div class="flex items-center gap-2">
+            <span id="windows-station-badge" class="text-xs font-mono font-bold text-[#7FD4FF] bg-[#7FD4FF]/10 px-2.5 py-1 rounded-[8px] border border-[#7FD4FF]/30 shrink-0">Punjabi Bagh</span>
+            <span class="text-xs font-mono font-bold text-[#8FFFB0] bg-[#8FFFB0]/10 px-2.5 py-1 rounded-[8px] border border-[#8FFFB0]/30 shrink-0">Next 24 Hours Guide</span>
+          </div>
         </div>
 
-        <!-- Circular/Grid Timeline -->
+        <!-- Hourly Grid Timeline -->
         <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2.5 my-5" id="hourly-window-grid">
-          <!-- Rendered via JS -->
+          <!-- Rendered dynamically via renderCleanAirWindows() -->
         </div>
 
         <!-- Activity Recommendations -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5 mt-2">
-          <div class="p-3.5 rounded-2xl bg-earth-950 border border-earth-700">
-            <div class="flex items-center gap-2 text-rose-400 font-bold text-xs">
+          <div class="p-3.5 rounded-[12px] bg-[#191C19] border border-[#262A26]">
+            <div class="flex items-center gap-2 text-[#FF9D7F] font-bold text-xs font-space">
               <i data-lucide="ban" class="w-4 h-4"></i> High Danger (06:00 - 09:30 AM)
             </div>
-            <p class="text-[11px] text-earth-300/80 mt-1.5 leading-relaxed">
+            <p class="text-[11px] text-[#8C948B] mt-1.5 leading-relaxed font-sans">
               Nocturnal temperature inversion cap traps diesel soot and stubble smoke below 240m. Avoid morning jogging, cycling, and school assemblies.
             </p>
           </div>
 
-          <div class="p-3.5 rounded-2xl bg-earth-950 border border-emerald-800/80">
-            <div class="flex items-center gap-2 text-emerald-400 font-bold text-xs">
+          <div class="p-3.5 rounded-[12px] bg-[#191C19] border border-[#262A26]">
+            <div class="flex items-center gap-2 text-[#8FFFB0] font-bold text-xs font-space">
               <i data-lucide="check-circle" class="w-4 h-4"></i> Optimal Window (01:00 - 04:30 PM)
             </div>
-            <p class="text-[11px] text-earth-300/80 mt-1.5 leading-relaxed">
+            <p class="text-[11px] text-[#8C948B] mt-1.5 leading-relaxed font-sans">
               Solar heating expands boundary layer to 1100m+, diluting ground particulates. Best time for essential outdoor chores, ventilation, and transit.
             </p>
           </div>
 
-          <div class="p-3.5 rounded-2xl bg-earth-950 border border-amber-800/80">
-            <div class="flex items-center gap-2 text-amber-400 font-bold text-xs">
+          <div class="p-3.5 rounded-[12px] bg-[#191C19] border border-[#262A26]">
+            <div class="flex items-center gap-2 text-[#FFE270] font-bold text-xs font-space">
               <i data-lucide="alert-triangle" class="w-4 h-4"></i> Evening Accumulation (07:00 - 11:00 PM)
             </div>
-            <p class="text-[11px] text-earth-300/80 mt-1.5 leading-relaxed">
+            <p class="text-[11px] text-[#8C948B] mt-1.5 leading-relaxed font-sans">
               Traffic rush-hour coupled with falling ground temperatures re-triggers surface trapping. Keep air purifiers on and windows sealed.
             </p>
           </div>
@@ -2175,105 +2326,105 @@
 
     <!-- === TAB 4: WHAT-IF POLICY SIMULATOR === -->
     <div id="panel-whatif" class="tab-panel hidden flex flex-col gap-4 sm:gap-6">
-      <div class="natural-glass p-5 sm:p-6 rounded-3xl shadow-xl shadow-earth-950/40">
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-4 border-b border-earth-700/60">
+      <div class="surface-panel p-5 sm:p-6 rounded-[14px] border border-[#262A26]">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-4 border-b border-[#262A26]">
           <div>
-            <h2 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
-              <i data-lucide="sliders" class="w-5 h-5 text-emerald-400"></i> Counterfactual "What-If" Policy Impact Simulator
+            <h2 class="text-base sm:text-lg font-bold text-[#EEF0EC] flex items-center gap-2 font-space">
+              <i data-lucide="sliders" class="w-5 h-5 text-[#7FD4FF]"></i> Counterfactual "What-If" Policy Impact Simulator
             </h2>
-            <p class="text-xs text-earth-300/80 mt-1 max-w-3xl">
-              Demonstrate to judges how taking predictive actions 48h in advance prevents the peak smog disaster: test different intervention intensities and see the immediate simulated drop in peak AQI!
+            <p class="text-xs text-[#8C948B] mt-1 max-w-3xl font-sans leading-relaxed">
+              Demonstrate how predictive interventions 48h in advance prevent peak smog disasters. Test intervention intensities to simulate the immediate reduction in peak AQI.
             </p>
           </div>
-          <button onclick="runWhatIfAnalysis()" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-1.5 shadow-lg shadow-emerald-950/50 transition self-start md:self-auto">
+          <button onclick="runWhatIfAnalysis()" class="px-4 py-2.5 rounded-[10px] bg-[#8FFFB0] hover:bg-[#7ceaa0] text-[#0A0B0A] font-bold text-xs flex items-center gap-1.5 transition self-start md:self-auto font-sans">
             <i data-lucide="play" class="w-4 h-4"></i> Run Counterfactual Simulation
           </button>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 mt-5">
           <div class="lg:col-span-6 flex flex-col gap-4 sm:gap-5">
-            <div class="p-3.5 rounded-2xl bg-earth-950/80 border border-earth-700">
-              <div class="flex items-center justify-between text-xs font-semibold text-earth-100 mb-1">
+            <div class="p-3.5 rounded-[14px] bg-[#191C19] border border-[#262A26]">
+              <div class="flex items-center justify-between text-xs font-semibold text-[#EEF0EC] mb-1 font-sans">
                 <span>🌾 Upwind Stubble Burning Mitigation (CRM)</span>
-                <span class="text-orange-400 font-mono text-sm" id="slider-val-stubble">50%</span>
+                <span class="text-[#FFE270] font-mono text-sm" id="slider-val-stubble">50%</span>
               </div>
               <input type="range" min="0" max="100" value="50" id="slider-stubble" oninput="updateSliderVal('stubble', this.value)" class="w-full mt-1">
-              <p class="text-[10px] text-earth-300/70 mt-1">Accelerated Happy Seeder deployment + Bio-decomposer spraying</p>
+              <p class="text-[10px] text-[#8C948B] mt-1 font-sans">Accelerated Happy Seeder deployment + Bio-decomposer spraying</p>
             </div>
-            <div class="p-3.5 rounded-2xl bg-earth-950/80 border border-earth-700">
-              <div class="flex items-center justify-between text-xs font-semibold text-earth-100 mb-1">
+            <div class="p-3.5 rounded-[14px] bg-[#191C19] border border-[#262A26]">
+              <div class="flex items-center justify-between text-xs font-semibold text-[#EEF0EC] mb-1 font-sans">
                 <span>🚛 Heavy Freight Highway Bypass (EPE/WPE Diversion)</span>
-                <span class="text-rose-400 font-mono text-sm" id="slider-val-truck">40%</span>
+                <span class="text-[#FF9D7F] font-mono text-sm" id="slider-val-truck">40%</span>
               </div>
               <input type="range" min="0" max="100" value="40" id="slider-truck" oninput="updateSliderVal('truck', this.value)" class="w-full mt-1">
-              <p class="text-[10px] text-earth-300/70 mt-1">Borders checkposts divert 60k+ diesel trucks around city bowl</p>
+              <p class="text-[10px] text-[#8C948B] mt-1 font-sans">Border checkposts divert 60k+ diesel trucks around city bowl</p>
             </div>
-            <div class="p-3.5 rounded-2xl bg-earth-950/80 border border-earth-700">
-              <div class="flex items-center justify-between text-xs font-semibold text-earth-100 mb-1">
+            <div class="p-3.5 rounded-[14px] bg-[#191C19] border border-[#262A26]">
+              <div class="flex items-center justify-between text-xs font-semibold text-[#EEF0EC] mb-1 font-sans">
                 <span>🚜 Anti-Smog Guns & Hotspot Water Misting</span>
-                <span class="text-amber-400 font-mono text-sm" id="slider-val-dust">30%</span>
+                <span class="text-[#7FD4FF] font-mono text-sm" id="slider-val-dust">30%</span>
               </div>
               <input type="range" min="0" max="100" value="30" id="slider-dust" oninput="updateSliderVal('dust', this.value)" class="w-full mt-1">
-              <p class="text-[10px] text-earth-300/70 mt-1">Suppresses PM10 ground resuspension on unpaved corridors</p>
+              <p class="text-[10px] text-[#8C948B] mt-1 font-sans">Suppresses PM10 ground resuspension on unpaved corridors</p>
             </div>
-            <div class="p-3.5 rounded-2xl bg-earth-950/80 border border-earth-700">
-              <div class="flex items-center justify-between text-xs font-semibold text-earth-100 mb-1">
-                <span>🏭 Industrial Fuel Switching (Coal → PNG)</span>
-                <span class="text-purple-400 font-mono text-sm" id="slider-val-industry">20%</span>
+            <div class="p-3.5 rounded-[14px] bg-[#191C19] border border-[#262A26]">
+              <div class="flex items-center justify-between text-xs font-semibold text-[#EEF0EC] mb-1 font-sans">
+                <span>🏭 Industrial Fuel Switching (Coal to PNG)</span>
+                <span class="text-[#8FFFB0] font-mono text-sm" id="slider-val-industry">20%</span>
               </div>
               <input type="range" min="0" max="100" value="20" id="slider-industry" oninput="updateSliderVal('industry', this.value)" class="w-full mt-1">
-              <p class="text-[10px] text-earth-300/70 mt-1">Bawana, Narela, Faridabad industrial clusters switch to clean fuels</p>
+              <p class="text-[10px] text-[#8C948B] mt-1 font-sans">Bawana, Narela, Faridabad industrial clusters switch to clean fuels</p>
             </div>
 
             <!-- Simulation Quick Presets -->
-            <div class="mt-2 pt-3 border-t border-earth-700/60 flex flex-wrap items-center gap-1.5">
-              <span class="text-[10px] font-semibold text-slate-400">Presets:</span>
-              <button onclick="applyWhatIfPreset(100, 100, 100, 100)" class="px-2 py-0.5 rounded-lg bg-cyan-950/80 hover:bg-cyan-900 border border-cyan-600/60 text-cyan-300 text-[10px] font-bold transition">
-                🚀 100% Curbs
+            <div class="mt-2 pt-3 border-t border-[#262A26] flex flex-wrap items-center gap-1.5">
+              <span class="text-[10px] font-semibold text-[#8C948B] font-mono">Presets:</span>
+              <button onclick="applyWhatIfPreset(100, 100, 100, 100)" class="px-2 py-0.5 rounded-[8px] bg-[#7FD4FF]/10 hover:bg-[#7FD4FF]/20 border border-[#7FD4FF]/30 text-[#7FD4FF] text-[10px] font-bold transition font-mono">
+                100% Curbs
               </button>
-              <button onclick="applyWhatIfPreset(50, 40, 30, 20)" class="px-2 py-0.5 rounded-lg bg-earth-900 hover:bg-earth-800 border border-earth-700 text-slate-200 text-[10px] font-medium transition">
-                ⚖️ GRAP-III
+              <button onclick="applyWhatIfPreset(50, 40, 30, 20)" class="px-2 py-0.5 rounded-[8px] bg-[#191C19] hover:bg-[#262A26] border border-[#262A26] text-[#EEF0EC] text-[10px] font-medium transition font-mono">
+                GRAP-III
               </button>
-              <button onclick="applyWhatIfPreset(80, 20, 20, 10)" class="px-2 py-0.5 rounded-lg bg-orange-950/80 hover:bg-orange-900 border border-orange-600/60 text-orange-300 text-[10px] font-medium transition">
-                🌾 Stubble
+              <button onclick="applyWhatIfPreset(80, 20, 20, 10)" class="px-2 py-0.5 rounded-[8px] bg-[#FFE270]/10 hover:bg-[#FFE270]/20 border border-[#FFE270]/30 text-[#FFE270] text-[10px] font-medium transition font-mono">
+                Stubble focus
               </button>
-              <button onclick="applyWhatIfPreset(20, 80, 40, 20)" class="px-2 py-0.5 rounded-lg bg-rose-950/80 hover:bg-rose-900 border border-rose-600/60 text-rose-300 text-[10px] font-medium transition">
-                🚛 Freight
+              <button onclick="applyWhatIfPreset(20, 80, 40, 20)" class="px-2 py-0.5 rounded-[8px] bg-[#FF9D7F]/10 hover:bg-[#FF9D7F]/20 border border-[#FF9D7F]/30 text-[#FF9D7F] text-[10px] font-medium transition font-mono">
+                Freight bypass
               </button>
-              <button onclick="applyWhatIfPreset(0, 0, 0, 0)" class="px-2 py-0.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-400 text-[10px] font-medium transition">
-                🔄 Reset
+              <button onclick="applyWhatIfPreset(0, 0, 0, 0)" class="px-2 py-0.5 rounded-[8px] bg-[#191C19] hover:bg-[#262A26] border border-[#262A26] text-[#8C948B] text-[10px] font-medium transition font-mono">
+                Reset
               </button>
             </div>
           </div>
 
-          <div class="lg:col-span-6 natural-glass p-5 sm:p-6 rounded-3xl flex flex-col justify-between border border-cyan-500/40" id="whatif-results-box">
+          <div class="lg:col-span-6 surface-card p-5 sm:p-6 rounded-[14px] flex flex-col justify-between border border-[#262A26]" id="whatif-results-box">
             <div>
-              <span class="text-[10px] font-mono font-bold text-cyan-300 bg-cyan-950 px-2.5 py-1 rounded-lg border border-cyan-700 uppercase">Policy Evaluation Matrix</span>
-              <h3 class="text-base sm:text-lg font-bold text-white mt-2">Predicted Crisis Mitigation</h3>
+              <span class="text-[10px] font-mono font-bold text-[#7FD4FF] bg-[#7FD4FF]/10 px-2.5 py-1 rounded-[8px] border border-[#7FD4FF]/30">Policy Evaluation Matrix</span>
+              <h3 class="text-base sm:text-lg font-bold text-[#EEF0EC] mt-2 font-space">Predicted Crisis Mitigation</h3>
               <div class="grid grid-cols-2 gap-3 sm:gap-4 my-4 sm:my-6 font-mono">
-                <div class="p-3.5 sm:p-4 rounded-2xl bg-earth-950 border border-earth-700">
-                  <div class="text-[10px] sm:text-xs text-earth-300/70">UNCONTROLLED PEAK</div>
-                  <div class="text-2xl sm:text-3xl font-black text-rose-400 my-1" id="whatif-base-peak">480</div>
-                  <div class="text-[10px] text-rose-400/90 font-medium">Stage IV Emergency</div>
+                <div class="p-3.5 sm:p-4 rounded-[12px] bg-[#131513] border border-[#262A26]">
+                  <div class="text-[10px] sm:text-xs text-[#8C948B] font-mono">UNCONTROLLED PEAK</div>
+                  <div class="text-2xl sm:text-3xl font-bold text-[#FF9D7F] my-1 font-space" id="whatif-base-peak">480</div>
+                  <div class="text-[10px] text-[#FF9D7F] font-medium">Stage IV Emergency</div>
                 </div>
-                <div class="p-3.5 sm:p-4 rounded-2xl bg-cyan-950/80 border border-cyan-700">
-                  <div class="text-[10px] sm:text-xs text-cyan-300">PREDICTIVE POLICY</div>
-                  <div class="text-2xl sm:text-3xl font-black text-cyan-300 my-1" id="whatif-mitigated-peak">386</div>
-                  <div class="text-[10px] text-cyan-300 font-semibold" id="whatif-stage-label">Stage II Managed</div>
+                <div class="p-3.5 sm:p-4 rounded-[12px] bg-[#7FD4FF]/10 border border-[#7FD4FF]/30">
+                  <div class="text-[10px] sm:text-xs text-[#7FD4FF] font-mono">PREDICTIVE POLICY</div>
+                  <div class="text-2xl sm:text-3xl font-bold text-[#7FD4FF] my-1 font-space" id="whatif-mitigated-peak">386</div>
+                  <div class="text-[10px] text-[#7FD4FF] font-semibold" id="whatif-stage-label">Stage II Managed</div>
                 </div>
               </div>
-              <div class="p-3.5 sm:p-4 rounded-2xl bg-earth-950 border border-earth-700 flex items-center justify-between">
+              <div class="p-3.5 sm:p-4 rounded-[12px] bg-[#131513] border border-[#262A26] flex items-center justify-between">
                 <div>
-                  <div class="text-[10px] text-earth-300/70 font-mono uppercase">TOTAL AQI REDUCTION</div>
-                  <div class="text-lg sm:text-xl font-bold text-cyan-300 font-mono mt-0.5" id="whatif-avoided-pts">94 Points Avoided</div>
+                  <div class="text-[10px] text-[#8C948B] font-mono">TOTAL AQI REDUCTION</div>
+                  <div class="text-lg sm:text-xl font-bold text-[#7FD4FF] font-space mt-0.5" id="whatif-avoided-pts">94 Points Avoided</div>
                 </div>
                 <div class="text-right">
-                  <div class="text-[10px] text-earth-300/70 font-mono uppercase">CRISIS MITIGATION</div>
-                  <div class="text-lg sm:text-xl font-bold text-teal-300 font-mono mt-0.5" id="whatif-mitigation-pct">19.6%</div>
+                  <div class="text-[10px] text-[#8C948B] font-mono">CRISIS MITIGATION</div>
+                  <div class="text-lg sm:text-xl font-bold text-[#8FFFB0] font-space mt-0.5" id="whatif-mitigation-pct">19.6%</div>
                 </div>
               </div>
             </div>
-            <p class="text-[10px] text-earth-300/70 mt-3 italic">*Coupled calculations based on MoES atmospheric dispersion equation.</p>
+            <p class="text-[10px] text-[#8C948B] mt-3 italic font-sans">*Coupled calculations based on MoES atmospheric dispersion equation.</p>
           </div>
         </div>
       </div>
@@ -2833,7 +2984,7 @@
               <div class="text-xs text-earth-300 font-sans mt-0.5">High Particulate Inhalation</div>
             </div>
             <div class="text-[10px] text-earth-400 mt-3 pt-2 border-t border-earth-800 font-sans truncate" id="commute-std-route">
-              Route: Dwarka → Ring Road Arterials → Connaught Place
+              Route: Dwarka — Ring Road Arterials — Connaught Place
             </div>
           </div>
 
@@ -3038,6 +3189,10 @@
       <svg class="svg-icon-line" viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
       <span>Weather</span>
     </button>
+    <button onclick="switchTab('windows')" id="mob-tab-windows" class="mobile-nav-item" title="Clean Windows">
+      <svg class="svg-icon-line" viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <span>Windows</span>
+    </button>
     <button onclick="switchTab('grap')" id="mob-tab-grap" class="mobile-nav-item" title="Predictive Action Plan">
       <svg class="svg-icon-line" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
       <span>GRAP</span>
@@ -3197,8 +3352,19 @@
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         checkIfInstalled();
-        navigator.serviceWorker.register('/static/sw.js?v=8').then(reg => {
+        navigator.serviceWorker.register('/static/sw.js?v=12').then(reg => {
           reg.update();
+          reg.onupdatefound = () => {
+            const installing = reg.installing;
+            if (installing) {
+              installing.onstatechange = () => {
+                if (installing.state === 'installed' && navigator.serviceWorker.controller) {
+                  console.log('New VayuCoupler version available, refreshing...');
+                  window.location.reload();
+                }
+              };
+            }
+          };
         }).catch(err => console.log('SW registration error', err));
       });
     }
@@ -3228,7 +3394,7 @@
     function closeMobileAppModal() {
       document.getElementById('mobile-app-modal').classList.add('hidden');
     }
-    let currentStep = 72;
+    let currentStep = 48; // step 48 = "right now" (base_time was set 48h ago)
     let isPlaying = false;
     let playInterval = null;
     let activeTab = 'overview';
@@ -4173,17 +4339,17 @@
 
       getSeverityMeta(aqi) {
         if (aqi >= 450) {
-          return { label: "Emergency / Severe+", color: "#f2966e", badgeClass: "badge-red", pillClass: "bg-[#1f150f] text-[#f2966e] border-[#4a2e20]" };
+          return { label: "Emergency", stageCode: "GRAP IV", color: "#FF9D7F", badgeClass: "badge-red", pillClass: "bg-[#FF9D7F]/10 text-[#FF9D7F] border-[#FF9D7F]/30" };
         } else if (aqi >= 401) {
-          return { label: "Severe", color: "#f2966e", badgeClass: "badge-red", pillClass: "bg-[#1f150f] text-[#f2966e] border-[#4a2e20]" };
+          return { label: "Severe", stageCode: "GRAP IV", color: "#FF9D7F", badgeClass: "badge-red", pillClass: "bg-[#FF9D7F]/10 text-[#FF9D7F] border-[#FF9D7F]/30" };
         } else if (aqi >= 301) {
-          return { label: "Very Poor", color: "#f2d666", badgeClass: "badge-yellow", pillClass: "bg-[#1f1a0f] text-[#f2d666] border-[#4a4020]" };
+          return { label: "Very Poor", stageCode: "GRAP III", color: "#FFE270", badgeClass: "badge-yellow", pillClass: "bg-[#FFE270]/10 text-[#FFE270] border-[#FFE270]/30" };
         } else if (aqi >= 201) {
-          return { label: "Poor", color: "#f2d666", badgeClass: "badge-yellow", pillClass: "bg-[#1f1a0f] text-[#f2d666] border-[#4a4020]" };
+          return { label: "Poor", stageCode: "GRAP II", color: "#FFE270", badgeClass: "badge-yellow", pillClass: "bg-[#FFE270]/10 text-[#FFE270] border-[#FFE270]/30" };
         } else if (aqi >= 101) {
-          return { label: "Moderate", color: "#6ec8f2", badgeClass: "badge-blue", pillClass: "bg-[#0f1a1f] text-[#6ec8f2] border-[#1f3a4a]" };
+          return { label: "Moderate", stageCode: "GRAP I", color: "#7FD4FF", badgeClass: "badge-blue", pillClass: "bg-[#7FD4FF]/10 text-[#7FD4FF] border-[#7FD4FF]/30" };
         } else {
-          return { label: "Good / Satisfactory", color: "#6fe2a3", badgeClass: "badge-green", pillClass: "bg-[#10201a] text-[#6fe2a3] border-[#1f3d30]" };
+          return { label: "Good", stageCode: "Baseline", color: "#8FFFB0", badgeClass: "badge-green", pillClass: "bg-[#8FFFB0]/10 text-[#8FFFB0] border-[#8FFFB0]/30" };
         }
       },
 
@@ -4582,7 +4748,7 @@
     // ==========================================================================
     const VayuSplashScreen = {
       isDismissed: false,
-      canTapSkip: false,
+      canTapSkip: true,
 
       init() {
         const splash = document.getElementById('splash-screen');
@@ -4590,28 +4756,17 @@
 
         // Check prefers-reduced-motion
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-          splash.style.transition = 'opacity 0.4s ease';
-          setTimeout(() => {
-            splash.style.opacity = '0';
-            setTimeout(() => splash.remove(), 400);
-          }, 400);
+          splash.style.transition = 'opacity 0.3s ease';
+          splash.style.opacity = '0';
+          setTimeout(() => splash.remove(), 300);
           return;
         }
 
-        const appMark = document.getElementById('splash-app-mark');
-        const titleWrap = document.getElementById('splash-title-wrap');
-        const gaugeWrap = document.getElementById('splash-gauge-wrap');
         const gaugeRing = document.getElementById('splash-gauge-ring');
         const aqiNumber = document.getElementById('splash-aqi-number');
         const aqiSev = document.getElementById('splash-aqi-severity');
-        const locationLine = document.getElementById('splash-location-line');
-        const statusWrap = document.getElementById('splash-status-wrap');
-        const progressBar = document.getElementById('splash-progress-bar');
-        const syncPct = document.getElementById('splash-sync-pct');
-        const skipHint = document.getElementById('splash-skip-hint');
-
         const curSt = VayuForecastEngine.currentStation || VayuForecastEngine.stations[0];
-        const targetAQI = curSt.baseAQI; // Strictly match current station's live AQI
+        const targetAQI = curSt.baseAQI || 431;
         const sevMeta = VayuForecastEngine.getSeverityMeta(targetAQI);
 
         // Pre-fill location line with exact active station
@@ -4620,82 +4775,39 @@
         if (splashName) splashName.innerText = curSt.name;
         if (splashDist) splashDist.innerText = `${VayuForecastEngine.stationDistanceKm || 5.6} km`;
 
-        // Sequence:
-        // 0.0 - 0.8s: App mark fade & scale in
-        setTimeout(() => {
-          if (appMark) {
-            appMark.style.opacity = '1';
-            appMark.style.transform = 'scale(1)';
-          }
-        }, 80);
-
-        // 0.7 - 1.3s: Wordmark & subtitle fade up
-        setTimeout(() => {
-          if (titleWrap) {
-            titleWrap.style.opacity = '1';
-            titleWrap.style.transform = 'translateY(0)';
-          }
-        }, 700);
-
-        // 1.3 - 3.2s: Circular SVG gauge fills & number counts up
-        setTimeout(() => {
-          if (gaugeWrap) gaugeWrap.style.opacity = '1';
-
-          // Circular gauge perimeter = 2 * PI * 50 = 314.159
-          // Fill proportional to AQI (0 to 500)
-          const targetOffset = 314.159 - (Math.min(500, targetAQI) / 500) * 314.159;
-          if (gaugeRing) {
+        // Radial ring perimeter = 2 * PI * 50 = 314.159
+        const targetOffset = 314.159 - (Math.min(500, targetAQI) / 500) * 314.159;
+        if (gaugeRing) {
+          gaugeRing.style.stroke = sevMeta.color;
+          setTimeout(() => {
             gaugeRing.style.strokeDashoffset = targetOffset.toString();
+          }, 50);
+        }
+
+        // Fast count-up from 0 to targetAQI in ~800ms
+        let currentVal = 0;
+        const step = Math.max(1, Math.ceil(targetAQI / 28));
+        const countInterval = setInterval(() => {
+          currentVal += step;
+          if (currentVal >= targetAQI) {
+            currentVal = targetAQI;
+            clearInterval(countInterval);
+            if (aqiSev) {
+              aqiSev.innerText = `${sevMeta.label.toUpperCase()} (${sevMeta.stageCode})`;
+              aqiSev.className = `text-[10px] font-mono-tag font-bold px-2.5 py-0.5 rounded-full ${sevMeta.badgeClass}`;
+            }
           }
+          if (aqiNumber) aqiNumber.innerText = currentVal;
+        }, 28);
 
-          // Count up number from 0 to targetAQI
-          let currentVal = 0;
-          const stepTime = Math.max(10, Math.floor(1800 / targetAQI));
-          const countInterval = setInterval(() => {
-            currentVal += Math.ceil(targetAQI / 40);
-            if (currentVal >= targetAQI) {
-              currentVal = targetAQI;
-              clearInterval(countInterval);
-              if (aqiSev) {
-                aqiSev.innerText = sevMeta.label.toUpperCase();
-                aqiSev.className = `text-[10px] font-mono-tag font-bold px-2.5 py-0.5 rounded-full ${sevMeta.badgeClass}`;
-              }
-              // Allow early tap skip now
-              VayuSplashScreen.canTapSkip = true;
-              if (skipHint) skipHint.style.opacity = '0.9';
-            }
-            if (aqiNumber) aqiNumber.innerText = currentVal;
-          }, stepTime);
-        }, 1300);
-
-        // ~3.4s: Location line fades in
-        setTimeout(() => {
-          if (locationLine) locationLine.style.opacity = '1';
-        }, 3400);
-
-        // ~4.2s: Forecast sync status line + progress bar
-        setTimeout(() => {
-          if (statusWrap) statusWrap.style.opacity = '1';
-          let pct = 0;
-          const progressInterval = setInterval(() => {
-            pct += 5;
-            if (pct >= 100) {
-              pct = 100;
-              clearInterval(progressInterval);
-            }
-            if (progressBar) progressBar.style.width = pct + '%';
-            if (syncPct) syncPct.innerText = pct + '%';
-          }, 60);
-        }, 4200);
-
-        // ~5.6 - 6.4s: Smooth fade and scale out, reveal Command Center
+        // One deliberate transition moment from splash into app after ~2.3 seconds
         setTimeout(() => {
           this.dismissSplash();
-        }, 5800);
+        }, 2300);
       },
 
       handleUserTapSkip() {
-        if (this.canTapSkip && !this.isDismissed) {
+        if (!this.isDismissed) {
           this.dismissSplash();
         }
       },
@@ -4729,8 +4841,8 @@
           sector: 'Agriculture (Stubble Burning)',
           leadHours: 72,
           leadTag: '+72H LEAD',
-          severityColor: '#f2d666', // yellow/amber
-          badgeClass: 'badge-yellow',
+          severityColor: '#7FD4FF', // signal blue: informational/predictive
+          badgeClass: 'badge-blue',
           agency: 'CAQM & Dept of Agriculture (Punjab/Haryana)',
           actionText: 'Issue pre-emptive advisory to Punjab & Haryana Agriculture Dept. Deploy mobile bio-decomposer spray units to identified stubble-burning hotspots via satellite fire count.'
         },
@@ -4742,7 +4854,7 @@
           sector: 'Road Dust & Sanitation',
           leadHours: 48,
           leadTag: '+48H LEAD',
-          severityColor: '#f2d666',
+          severityColor: '#FFE270', // signal yellow: caution/moderate
           badgeClass: 'badge-yellow',
           agency: 'Municipal Bodies (MCD, NDMC) & PWD',
           actionText: 'Intensify mechanical sweeping and vacuum cleaning of arterial corridors. Initiate heavy recycled water sprinkling on unpaved shoulders twice daily.'
@@ -4755,7 +4867,7 @@
           sector: 'Construction & Hotspots',
           leadHours: 48,
           leadTag: '+48H LEAD',
-          severityColor: '#f2d666',
+          severityColor: '#FFE270', // signal yellow: caution/moderate
           badgeClass: 'badge-yellow',
           agency: 'DPCC & Urban Local Bodies',
           actionText: 'Pre-position anti-smog water mist guns at known Delhi hotspots (Anand Vihar, Wazirpur, RK Puram). Ready dust-suppression water tankers at all transit choke points.'
@@ -4768,7 +4880,7 @@
           sector: 'Power / Diesel Generators',
           leadHours: 36,
           leadTag: '+36H LEAD',
-          severityColor: '#f2d666',
+          severityColor: '#FFE270', // signal yellow: caution/moderate
           badgeClass: 'badge-yellow',
           agency: 'Power Discoms & Transport Dept',
           actionText: 'Restrict diesel generator sets across industrial & commercial complexes except essential lifeline services. Augment metro and electric bus headway frequencies.'
@@ -4781,8 +4893,8 @@
           sector: 'Construction / Private Vehicles',
           leadHours: 24,
           leadTag: '+24H LEAD',
-          severityColor: '#f2966e', // red
-          badgeClass: 'badge-red',
+          severityColor: '#FF9D7F', // warning orange: severe/urgent
+          badgeClass: 'badge-orange',
           agency: 'Delhi Traffic Police & CAQM',
           actionText: 'Enforce complete ban on non-essential construction and demolition activities. Enforce strict movement ban on BS-III Petrol and BS-IV Diesel 4-wheeler passenger vehicles.'
         },
@@ -4794,8 +4906,8 @@
           sector: 'City-wide Emergency Curbs',
           leadHours: 24,
           leadTag: '+12–24H LEAD',
-          severityColor: '#f2966e',
-          badgeClass: 'badge-red',
+          severityColor: '#FF9D7F', // warning orange: severe/urgent
+          badgeClass: 'badge-orange',
           agency: 'Chief Secretary GNCTD & Police',
           actionText: 'Ban entry of commercial diesel trucks into Delhi (except essential commodities). Evaluate odd-even vehicular rationing, transition schools to hybrid/online, and mandate 50% WFH.'
         }
@@ -4820,36 +4932,36 @@
 
           const statusBadge = isTriggered
             ? `<span class="px-2.5 py-0.5 rounded-full ${stage.badgeClass} font-mono-tag font-bold text-[10px] flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-current animate-ping"></span> TRIGGERED</span>`
-            : `<span class="px-2.5 py-0.5 rounded-full bg-[#0f110f] border border-[#1c1f1c] text-[#8b9390] font-mono-tag text-[10px]">MONITORING</span>`;
+            : `<span class="px-2.5 py-0.5 rounded-full bg-[#191C19] border border-[#262A26] text-[#8C948B] font-mono-tag text-[10px]">MONITORING</span>`;
 
           return `
             <div class="timeline-item">
-              <!-- Colored Node Dot on 1px vertical timeline -->
+              <!-- Colored Node Dot on 1px vertical timeline rail -->
               <div class="timeline-node-dot" style="color: ${stage.severityColor};">
                 <div class="timeline-node-dot-inner"></div>
               </div>
 
-              <!-- Content Box -->
-              <div class="surface-card p-4 rounded-xl border border-[#1c1f1c] hover:border-[#1f3d30] transition flex flex-col gap-2.5">
+              <!-- Content Panel -->
+              <div class="surface-panel p-4 sm:p-5 rounded-[14px] border border-[#262A26] bg-[#131513] hover:border-[#383E38] transition flex flex-col gap-2.5">
                 <!-- Top Row: Stage Name + Status Pill -->
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
                   <div class="flex items-center gap-2 flex-wrap">
-                    <span class="text-xs font-bold font-mono-data text-[#6fe2a3] px-2 py-0.5 rounded bg-[#10201a] border border-[#1f3d30]">${stage.leadTag}</span>
-                    <h3 class="text-sm sm:text-base font-bold text-white font-serif-display">${stage.stageName}</h3>
-                    <span class="text-[10px] font-mono-data text-[#8b9390]">(AQI ${stage.aqiMin}–${stage.aqiMax})</span>
+                    <span class="text-xs font-bold font-mono-data text-[#7FD4FF] px-2.5 py-0.5 rounded-lg bg-[#191C19] border border-[#262A26]">${stage.leadTag}</span>
+                    <h3 class="text-sm sm:text-base font-bold text-[#EEF0EC] font-serif-display">${stage.stageName}</h3>
+                    <span class="text-[10px] font-mono-data text-[#8C948B]">(AQI ${stage.aqiMin}–${stage.aqiMax})</span>
                   </div>
                   <div>${statusBadge}</div>
                 </div>
 
                 <!-- Sector & Responsible Agency Line -->
-                <div class="flex items-center justify-between text-xs text-[#8b9390] font-sans-ui flex-wrap gap-2">
-                  <span>Sector: <b class="text-[#cfdade]">${stage.sector}</b></span>
-                  <span class="text-[11px] font-mono-data text-[#8b9390]">${stage.agency}</span>
+                <div class="flex items-center justify-between text-xs text-[#8C948B] font-sans-ui flex-wrap gap-2">
+                  <span>Sector: <b class="text-[#EEF0EC]">${stage.sector}</b></span>
+                  <span class="text-[11px] font-mono-data text-[#8C948B]">${stage.agency}</span>
                 </div>
 
-                <!-- Inset Action Box (surface-2 background, 1px border) -->
-                <div class="p-3 rounded-xl bg-[#060706] border border-[#1c1f1c] text-xs text-[#f2f5f3] font-sans-ui leading-relaxed">
-                  <div class="text-[10px] font-mono-data text-[#6fe2a3] uppercase tracking-wider mb-1 font-semibold">TRIGGERED ACTION PROTOCOL:</div>
+                <!-- Inset Action Protocol Box (surface-2 background, 1px border) -->
+                <div class="p-3.5 rounded-xl bg-[#191C19] border border-[#262A26] text-xs text-[#EEF0EC] font-sans-ui leading-relaxed max-w-[80ch]">
+                  <div class="text-[10px] font-mono-data text-[#7FD4FF] mb-1 font-semibold">TRIGGERED ACTION PROTOCOL:</div>
                   ${stage.actionText}
                 </div>
               </div>
@@ -5004,30 +5116,45 @@
 
         grid.innerHTML = this.agencies.map((agency, index) => {
           const iconSvg = VayuIcons[agency.icon] || VayuIcons.shield;
+          const statusColor = agency.priority === 'EMERGENCY'
+            ? '#FF9D7F'
+            : agency.priority === 'HIGH'
+              ? '#FFE270'
+              : agency.priority === 'MODERATE'
+                ? '#7FD4FF'
+                : '#8FFFB0';
+          const badgeClass = agency.priority === 'EMERGENCY'
+            ? 'badge-orange'
+            : agency.priority === 'HIGH'
+              ? 'badge-yellow'
+              : agency.priority === 'MODERATE'
+                ? 'badge-blue'
+                : 'badge-green';
+
           return `
-            <div onclick="VayuDispatchesCenter.openProtocolModal(${index})" class="agency-tile">
+            <div onclick="VayuDispatchesCenter.openProtocolModal(${index})" class="agency-tile p-4 rounded-[14px] bg-[#131513] border border-[#262A26] hover:border-[#383E38] transition cursor-pointer flex flex-col justify-between">
               <div>
-                <!-- Top Row: Icon Box + Role Code -->
+                <!-- Top Row: Icon Box colored by agency current status + Role Code -->
                 <div class="flex items-center justify-between mb-2.5">
-                  <div class="w-9 h-9 rounded-xl bg-[#10201a] border border-[#1f3d30] text-[#6fe2a3] flex items-center justify-center">
+                  <div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style="background: ${statusColor}14; border: 1px solid ${statusColor}33; color: ${statusColor};">
                     ${iconSvg}
                   </div>
-                  <span class="text-[10px] font-mono-data text-[#8b9390] uppercase tracking-wider">${agency.roleCode}</span>
+                  <span class="text-[10px] font-mono-data text-[#8C948B]">${agency.roleCode}</span>
                 </div>
 
                 <!-- Agency Name -->
-                <h4 class="text-xs sm:text-sm font-bold text-white font-sans-ui line-clamp-2 leading-snug mb-1">
+                <h4 class="text-xs sm:text-sm font-bold text-[#EEF0EC] font-sans-ui line-clamp-2 leading-snug mb-1">
                   ${agency.name}
                 </h4>
               </div>
 
-              <!-- Bottom Row: Status Pill + Order Count in Green Mono -->
-              <div class="flex items-center justify-between pt-3 mt-2 border-t border-[#1c1f1c]">
-                <span class="text-[9px] font-mono-tag font-bold px-2 py-0.5 rounded-full ${agency.priorityBadge} uppercase">
+              <!-- Bottom Row: Status Pill + Mandated Order Count (No Arrow) -->
+              <div class="flex items-center justify-between pt-3 mt-2 border-t border-[#262A26]">
+                <span class="text-[9px] font-mono-tag font-bold px-2 py-0.5 rounded-full ${badgeClass}">
                   ${agency.priority}
                 </span>
-                <span class="text-[10px] font-mono-data font-semibold text-[#6fe2a3]">
-                  ${agency.orderCount} Orders →
+                <span class="text-[10px] font-mono-data font-semibold text-[#8C948B]">
+                  ${agency.orderCount} Mandated Orders
                 </span>
               </div>
             </div>
@@ -5042,37 +5169,51 @@
         if (!agency || !modal || !content) return;
 
         const iconSvg = VayuIcons[agency.icon] || VayuIcons.shield;
+        const statusColor = agency.priority === 'EMERGENCY'
+          ? '#FF9D7F'
+          : agency.priority === 'HIGH'
+            ? '#FFE270'
+            : agency.priority === 'MODERATE'
+              ? '#7FD4FF'
+              : '#8FFFB0';
+        const badgeClass = agency.priority === 'EMERGENCY'
+          ? 'badge-orange'
+          : agency.priority === 'HIGH'
+            ? 'badge-yellow'
+            : agency.priority === 'MODERATE'
+              ? 'badge-blue'
+              : 'badge-green';
 
         content.innerHTML = `
           <!-- Header -->
-          <div class="flex items-start gap-3 pb-4 border-b border-[#1c1f1c]">
-            <div class="w-11 h-11 rounded-2xl bg-[#10201a] border border-[#1f3d30] text-[#6fe2a3] flex items-center justify-center shrink-0 mt-0.5">
+          <div class="flex items-start gap-3 pb-4 border-b border-[#262A26]">
+            <div class="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 mt-0.5" style="background: ${statusColor}14; border: 1px solid ${statusColor}33; color: ${statusColor};">
               ${iconSvg}
             </div>
             <div class="min-w-0 pr-6">
               <div class="flex items-center gap-2 mb-1 flex-wrap">
-                <span class="text-[10px] font-mono-data text-[#8b9390] font-bold">${agency.roleCode}</span>
-                <span class="text-[10px] font-mono-tag font-bold px-2 py-0.5 rounded-full ${agency.priorityBadge}">${agency.priority} PRIORITY</span>
+                <span class="text-[10px] font-mono-data text-[#8C948B] font-bold">${agency.roleCode}</span>
+                <span class="text-[10px] font-mono-tag font-bold px-2 py-0.5 rounded-full ${badgeClass}">${agency.priority} PRIORITY</span>
               </div>
-              <h3 class="text-base font-bold text-white font-serif-display leading-tight">${agency.name}</h3>
-              <p class="text-[11px] text-[#8b9390] mt-1 font-mono-data">Issuing Authority: <span class="text-[#cfdade]">${agency.authority}</span></p>
+              <h3 class="text-base font-bold text-[#EEF0EC] font-serif-display leading-tight">${agency.name}</h3>
+              <p class="text-[11px] text-[#8C948B] mt-1 font-mono-data">Issuing Authority: <span class="text-[#EEF0EC]">${agency.authority}</span></p>
             </div>
           </div>
 
           <!-- Orders Checklist -->
           <div class="my-2">
-            <h4 class="text-[11px] font-bold font-mono-data text-[#8b9390] uppercase tracking-wider mb-2">MANDATED PRE-EMPTIVE ORDERS (CHECKLIST):</h4>
+            <h4 class="text-[11px] font-bold font-mono-data text-[#8C948B] mb-2">MANDATED PRE-EMPTIVE ORDERS:</h4>
             <div class="flex flex-col gap-2.5">
               ${agency.orders.map((ord, i) => `
-                <div class="p-3 rounded-xl bg-[#060706] border border-[#1c1f1c] flex items-start gap-2.5">
-                  <div class="w-5 h-5 rounded-lg bg-[#10201a] border border-[#1f3d30] text-[#6fe2a3] font-mono-data font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">
+                <div class="p-3 rounded-xl bg-[#191C19] border border-[#262A26] flex items-start gap-2.5">
+                  <div class="w-5 h-5 rounded-lg bg-[#131513] border border-[#262A26] text-[#7FD4FF] font-mono-data font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">
                     ${i + 1}
                   </div>
                   <div class="flex-1 min-w-0">
-                    <p class="text-xs text-[#f2f5f3] font-sans-ui leading-relaxed">${ord.text}</p>
-                    <div class="flex items-center justify-between mt-2 pt-1.5 border-t border-[#1c1f1c] text-[10px] font-mono-data">
-                      <span class="text-[#8b9390]">Deadline: <b class="text-[#6fe2a3]">${ord.deadline}</b></span>
-                      <span class="px-2 py-0.2 rounded ${ord.status === 'Completed' ? 'badge-green' : ord.status === 'In Progress' ? 'badge-blue' : 'badge-yellow'} font-bold">${ord.status}</span>
+                    <p class="text-xs text-[#EEF0EC] font-sans-ui leading-relaxed">${ord.text}</p>
+                    <div class="flex items-center justify-between mt-2 pt-1.5 border-t border-[#262A26] text-[10px] font-mono-data">
+                      <span class="text-[#8C948B]">Deadline: <b class="text-[#EEF0EC]">${ord.deadline}</b></span>
+                      <span class="px-2 py-0.5 rounded-full ${ord.status === 'Completed' ? 'badge-green' : ord.status === 'In Progress' ? 'badge-blue' : 'badge-yellow'} font-bold">${ord.status}</span>
                     </div>
                   </div>
                 </div>
@@ -5080,19 +5221,19 @@
             </div>
           </div>
 
-          <!-- Evidence Attachment Reference Box -->
-          <div class="p-3.5 rounded-xl bg-[#060706] border border-[#1c1f1c]">
-            <div class="text-[10px] font-mono-data text-[#8b9390] uppercase tracking-wider mb-1 flex items-center gap-1.5 font-semibold">
-              <span class="w-1.5 h-1.5 rounded-full bg-[#6fe2a3]"></span> OFFICIAL EVIDENCE & SENSOR GROUNDING
+          <!-- Evidence Grounding Reference Box -->
+          <div class="p-3.5 rounded-xl bg-[#191C19] border border-[#262A26]">
+            <div class="text-[10px] font-mono-data text-[#8C948B] mb-1 flex items-center gap-1.5 font-semibold">
+              <span class="w-1.5 h-1.5 rounded-full bg-[#8FFFB0]"></span> SENSOR & SATELLITE GROUNDING
             </div>
-            <p class="text-xs text-[#cfdade] font-mono-data leading-relaxed">
+            <p class="text-xs text-[#8C948B] font-mono-data leading-relaxed">
               ${agency.evidenceRef}
             </p>
           </div>
 
           <!-- Dispatch Action Button -->
           <div class="pt-2 flex justify-end">
-            <button onclick="simulateBroadcastAlert('${agency.name}'); closeProtocolModal();" class="px-4 py-2 rounded-xl bg-[#6fe2a3] hover:bg-[#5cd493] text-[#060706] font-bold text-xs font-sans-ui flex items-center gap-1.5 shadow-lg shadow-emerald-950/40 transition">
+            <button onclick="simulateBroadcastAlert('${agency.name}'); closeProtocolModal();" class="px-4 py-2 rounded-xl bg-[#191C19] hover:bg-[#202520] border border-[#262A26] text-[#EEF0EC] font-semibold text-xs font-sans-ui flex items-center gap-1.5 transition cursor-pointer">
               <svg class="w-3.5 h-3.5 svg-icon-line" viewBox="0 0 24 24" stroke="currentColor"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
               <span>Transmit Protocol Order</span>
             </button>
@@ -5198,7 +5339,7 @@
             : "Delhi-NCR ke 72-hour coupled forecast, meteorology physics aur GRAP rules par aadharit instant answers.";
         }
         if (headerEl) {
-          headerEl.innerText = lang === 'en' ? "FREQUENT INQUIRIES (15 INTENTS)" : "POPULAR QUERIES (15 INTENTS)";
+          headerEl.innerText = lang === 'en' ? "Frequent inquiries (15 intents)" : "Popular queries (15 intents)";
         }
 
         // Update quick toggle pill
@@ -5206,11 +5347,11 @@
         const quickE = document.getElementById('vayuai-quick-en');
         if (quickH && quickE) {
           if (lang === 'en') {
-            quickE.className = "px-3 py-1 rounded-full text-[11px] font-mono-data font-bold transition bg-[#10201a] text-[#6fe2a3] border border-[#1f3d30]";
-            quickH.className = "px-3 py-1 rounded-full text-[11px] font-mono-data font-medium transition text-[#8b9390] hover:text-white";
+            quickE.className = "px-3 py-1 rounded-full text-[11px] font-mono font-bold transition bg-[#7FD4FF]/10 text-[#7FD4FF] border border-[#7FD4FF]/30";
+            quickH.className = "px-3 py-1 rounded-full text-[11px] font-mono font-medium transition text-[#8C948B] hover:text-[#EEF0EC]";
           } else {
-            quickH.className = "px-3 py-1 rounded-full text-[11px] font-mono-data font-bold transition bg-[#10201a] text-[#6fe2a3] border border-[#1f3d30]";
-            quickE.className = "px-3 py-1 rounded-full text-[11px] font-mono-data font-medium transition text-[#8b9390] hover:text-white";
+            quickH.className = "px-3 py-1 rounded-full text-[11px] font-mono font-bold transition bg-[#7FD4FF]/10 text-[#7FD4FF] border border-[#7FD4FF]/30";
+            quickE.className = "px-3 py-1 rounded-full text-[11px] font-mono font-medium transition text-[#8C948B] hover:text-[#EEF0EC]";
           }
         }
 
@@ -5432,8 +5573,8 @@
                 confidence: data.confidence || 98,
                 tabLink: isWeather ? 'weather' : 'grap',
                 tabLinkLabel: isWeather 
-                  ? (currentLang === 'en' ? 'Open Full 7-Day Live Weather Radar & Synoptic Curves →' : 'Pura 7-Day Live Weather Radar aur Charts dekhein →')
-                  : (currentLang === 'en' ? 'View full action plan →' : 'Pura action plan dekhein →'),
+                  ? (currentLang === 'en' ? 'Open Full 7-Day Live Weather Radar & Synoptic Curves' : 'Pura 7-Day Live Weather Radar aur Charts dekhein')
+                  : (currentLang === 'en' ? 'View full action plan' : 'Pura action plan dekhein'),
                 showWeatherCard: isWeather,
                 weatherData: {
                   temp: currentTemp,
@@ -5463,56 +5604,56 @@
         // Render Bot Message
         history.innerHTML += `
           <div class="flex items-start gap-2.5 justify-start">
-            <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-[#6fe2a3] to-[#6ec8f2] flex items-center justify-center shrink-0 text-[#060706] text-xs font-black">V</div>
-            <div class="p-3.5 chat-bubble-bot max-w-sm sm:max-w-lg font-sans-ui text-xs leading-relaxed">
-              <div class="text-[#f2f5f3] leading-relaxed">${responseData.text}</div>
+            <div class="w-7 h-7 rounded-lg bg-[#7FD4FF]/15 border border-[#7FD4FF]/30 flex items-center justify-center shrink-0 text-[#7FD4FF] text-xs font-mono font-bold">V</div>
+            <div class="p-3.5 chat-bubble-bot max-w-sm sm:max-w-lg font-sans text-xs leading-relaxed">
+              <div class="text-[#EEF0EC] leading-relaxed">${responseData.text}</div>
               
               ${responseData.showWeatherCard && responseData.weatherData ? `
-                <div class="my-3 p-3 rounded-2xl bg-[#091712] border border-[#1f4233] flex flex-col gap-2.5 shadow-lg">
-                  <div class="flex items-center justify-between border-b border-[#173327] pb-2">
+                <div class="my-3 p-3 rounded-[12px] bg-[#191C19] border border-[#262A26] flex flex-col gap-2.5">
+                  <div class="flex items-center justify-between border-b border-[#262A26] pb-2">
                     <div class="flex items-center gap-2.5">
-                      <div class="w-9 h-9 rounded-xl bg-emerald-950 border border-emerald-700/80 flex items-center justify-center text-xl shadow-sm">
+                      <div class="w-9 h-9 rounded-xl bg-[#131513] border border-[#262A26] flex items-center justify-center text-xl">
                         🌦️
                       </div>
                       <div>
-                        <div class="text-sm font-bold text-white flex items-center gap-1.5 font-mono">
+                        <div class="text-sm font-bold text-[#EEF0EC] flex items-center gap-1.5 font-space">
                           <span>${responseData.weatherData.temp}°C</span>
-                          <span class="text-[10px] text-earth-300 font-sans font-normal">(Feels ${responseData.weatherData.feelsLike}°C)</span>
+                          <span class="text-[10px] text-[#8C948B] font-sans font-normal">(Feels ${responseData.weatherData.feelsLike}°C)</span>
                         </div>
-                        <div class="text-[11px] text-emerald-400 font-medium">${responseData.weatherData.condition}</div>
+                        <div class="text-[11px] text-[#7FD4FF] font-medium">${responseData.weatherData.condition}</div>
                       </div>
                     </div>
                     <div class="text-right font-mono text-[10px]">
-                      <span class="px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-800/80 font-bold">DELHI-NCR</span>
-                      <div class="text-earth-300 text-[10px] mt-0.5 font-semibold">Max: ${responseData.weatherData.high}°C | Min: ${responseData.weatherData.low}°C</div>
+                      <span class="px-2 py-0.5 rounded-full bg-[#131513] text-[#7FD4FF] border border-[#262A26] font-bold">DELHI-NCR</span>
+                      <div class="text-[#8C948B] text-[10px] mt-0.5 font-semibold">Max: ${responseData.weatherData.high}°C | Min: ${responseData.weatherData.low}°C</div>
                     </div>
                   </div>
                   <div class="grid grid-cols-3 gap-2 text-center font-mono text-[10px]">
-                    <div class="bg-[#0e241c] p-1.5 rounded-xl border border-[#1b3d2f]">
-                      <div class="text-sky-400 font-bold text-xs">🌧️ ${responseData.weatherData.precip}%</div>
-                      <div class="text-[9px] text-slate-300">Rain Chance</div>
+                    <div class="bg-[#131513] p-1.5 rounded-[10px] border border-[#262A26]">
+                      <div class="text-[#7FD4FF] font-bold text-xs">🌧️ ${responseData.weatherData.precip}%</div>
+                      <div class="text-[9px] text-[#8C948B]">Rain Chance</div>
                     </div>
-                    <div class="bg-[#0e241c] p-1.5 rounded-xl border border-[#1b3d2f]">
-                      <div class="text-teal-300 font-bold text-xs">💧 ${responseData.weatherData.humidity}%</div>
-                      <div class="text-[9px] text-slate-300">Humidity</div>
+                    <div class="bg-[#131513] p-1.5 rounded-[10px] border border-[#262A26]">
+                      <div class="text-[#8FFFB0] font-bold text-xs">💧 ${responseData.weatherData.humidity}%</div>
+                      <div class="text-[9px] text-[#8C948B]">Humidity</div>
                     </div>
-                    <div class="bg-[#0e241c] p-1.5 rounded-xl border border-[#1b3d2f]">
-                      <div class="text-amber-300 font-bold text-xs">💨 14 km/h</div>
-                      <div class="text-[9px] text-slate-300">NW Wind</div>
+                    <div class="bg-[#131513] p-1.5 rounded-[10px] border border-[#262A26]">
+                      <div class="text-[#FFE270] font-bold text-xs">💨 14 km/h</div>
+                      <div class="text-[9px] text-[#8C948B]">NW Wind</div>
                     </div>
                   </div>
                 </div>
               ` : ''}
 
               <!-- Mono Meta Line: Lead Time + Confidence -->
-              <div class="mt-2.5 pt-2 border-t border-[#1c1f1c] flex items-center justify-between text-[10px] font-mono-data text-[#8b9390]">
+              <div class="mt-2.5 pt-2 border-t border-[#262A26] flex items-center justify-between text-[10px] font-mono text-[#8C948B]">
                 <span>${responseData.leadMeta}</span>
-                <span class="text-[#6fe2a3] font-semibold">${responseData.confidence}% confidence</span>
+                <span class="text-[#7FD4FF] font-semibold">${responseData.confidence}% confidence</span>
               </div>
 
               <!-- Deep-Link to Action Plan / Weather Radar -->
-              <button onclick="switchTab('${responseData.tabLink || 'weather'}')" class="mt-2 text-[11px] font-mono-data font-semibold text-[#6fe2a3] hover:underline flex items-center gap-1">
-                <span>${responseData.tabLinkLabel || (currentLang === 'en' ? 'Open Live Weather Radar →' : 'Live Weather Radar dekhein →')}</span>
+              <button onclick="switchTab('${responseData.tabLink || 'weather'}')" class="mt-2 text-[11px] font-mono font-semibold text-[#7FD4FF] hover:underline flex items-center gap-1">
+                <span>${responseData.tabLinkLabel || (currentLang === 'en' ? 'Open Live Weather Radar' : 'Live Weather Radar dekhein')}</span>
               </button>
             </div>
           </div>
@@ -5570,7 +5711,7 @@
             leadMeta: `Coupled WRF-Chem & Open-Meteo Synoptic Grid (${currDay ? currDay.date : 'Today'})`,
             confidence: 97,
             tabLink: 'weather',
-            tabLinkLabel: isEn ? 'Open Full 7-Day Live Weather Radar & Synoptic Curves →' : 'Pura 7-Day Live Weather Radar aur Charts dekhein →',
+            tabLinkLabel: isEn ? 'Open Full 7-Day Live Weather Radar & Synoptic Curves' : 'Pura 7-Day Live Weather Radar aur Charts dekhein',
             showWeatherCard: true,
             weatherData: {
               temp: temp,
@@ -6890,16 +7031,22 @@
 
     function switchTab(tabId) {
       if (tabId === 'vayuai') tabId = 'copilot';
+      if (tabId === 'planner') tabId = 'windows';
       if (tabId === 'weather' && typeof VayuWeather !== 'undefined') VayuWeather.render();
       if (tabId === 'attribution' && typeof VayuAttributionEngine !== 'undefined') VayuAttributionEngine.render();
       if (tabId === 'grap' && typeof VayuPredictiveTimeline !== 'undefined') VayuPredictiveTimeline.render();
       if (tabId === 'dispatches' && typeof VayuDispatchesCenter !== 'undefined') VayuDispatchesCenter.render();
+      if (tabId === 'windows' && typeof renderCleanAirWindows === 'function') {
+        renderCleanAirWindows();
+      }
       activeTab = tabId;
       document.querySelectorAll('.tab-panel').forEach(p => {
         p.classList.add('hidden');
         p.style.display = 'none';
       });
-      const target = document.getElementById(`panel-${tabId}`);
+      const target = document.getElementById(`panel-${tabId}`) || 
+                     (tabId === 'windows' ? document.getElementById('panel-planner') : null) ||
+                     (tabId === 'planner' ? document.getElementById('panel-windows') : null);
       if (target) {
         target.classList.remove('hidden');
         target.style.display = 'flex';
@@ -6916,10 +7063,10 @@
 
     function updateNavTabStyles() {
       const isLight = document.documentElement.classList.contains('light-theme');
-      const allTabs = ['overview', 'weather', 'grap', 'attribution', 'commute', 'vayuai', 'copilot', 'windows', 'dispatches', 'health', 'whatif', 'interstate'];
+      const allTabs = ['overview', 'weather', 'grap', 'attribution', 'commute', 'vayuai', 'copilot', 'windows', 'planner', 'dispatches', 'health', 'whatif', 'interstate'];
       allTabs.forEach(t => {
         const btn = document.getElementById(`tab-${t}`);
-        const isCurrent = (t === activeTab) || (t === 'vayuai' && activeTab === 'copilot');
+        const isCurrent = (t === activeTab) || (t === 'vayuai' && activeTab === 'copilot') || (t === 'windows' && activeTab === 'windows') || (t === 'planner' && activeTab === 'windows');
         if (btn) {
           if (isLight) {
             if (isCurrent) {
@@ -6956,10 +7103,10 @@
       const stdRouteEl = document.getElementById('commute-std-route');
       const ecoRouteEl = document.getElementById('commute-eco-route');
       if (stdRouteEl) {
-        stdRouteEl.innerText = `Route: ${originName} → Ring Road Arterials → ${destName}`;
+        stdRouteEl.innerText = `Route: ${originName} — Ring Road Arterials — ${destName}`;
       }
       if (ecoRouteEl) {
-        ecoRouteEl.innerText = `Eco: ${originName} → Metro / Green Corridor → ${destName}`;
+        ecoRouteEl.innerText = `Eco: ${originName} — Metro / Green Corridor — ${destName}`;
       }
 
       let stdDose = 142;
@@ -7669,8 +7816,8 @@
 
       const box = document.getElementById('whatif-results-box');
       if (box) {
-        box.classList.add('ring-2', 'ring-cyan-400', 'transition', 'duration-300');
-        setTimeout(() => box.classList.remove('ring-2', 'ring-cyan-400'), 500);
+        box.classList.add('ring-2', 'ring-[#7FD4FF]', 'transition', 'duration-300');
+        setTimeout(() => box.classList.remove('ring-2', 'ring-[#7FD4FF]'), 500);
       }
 
       // Local atmospheric dispersion calculation (instant & offline resilient)
@@ -8116,23 +8263,37 @@
     // Clean Air Hourly Windows Render
     function renderCleanAirWindows() {
       const container = document.getElementById('hourly-window-grid');
+      if (!container) return;
+      const isLight = document.documentElement.classList.contains('light-theme');
+      
+      const curStation = (typeof VayuForecastEngine !== 'undefined' && VayuForecastEngine.currentStation) 
+        ? VayuForecastEngine.currentStation 
+        : { name: "Punjabi Bagh", baseAQI: 382 };
+
+      const badgeEl = document.getElementById('windows-station-badge');
+      if (badgeEl) {
+        badgeEl.textContent = curStation.name.split(',')[0].trim();
+      }
+
+      const baseAQI = curStation.baseAQI || (typeof VayuForecastEngine !== 'undefined' && VayuForecastEngine.currentAQI) || 382;
+
       const hours = [
-        { h: "06 AM", aqi: 420, cat: "Severe", color: "#991B1B", safe: false },
-        { h: "08 AM", aqi: 440, cat: "Severe", color: "#991B1B", safe: false },
-        { h: "10 AM", aqi: 350, cat: "Very Poor", color: "#EF4444", safe: false },
-        { h: "12 PM", aqi: 240, cat: "Poor", color: "#F97316", safe: "Fair" },
-        { h: "02 PM", aqi: 180, cat: "Moderate", color: "#10B981", safe: true },
-        { h: "04 PM", aqi: 195, cat: "Moderate", color: "#10B981", safe: true },
-        { h: "07 PM", aqi: 320, cat: "Very Poor", color: "#EF4444", safe: false },
-        { h: "10 PM", aqi: 390, cat: "Very Poor", color: "#EF4444", safe: false },
+        { h: "06 AM", aqi: Math.round(baseAQI * 1.10), label: "AVOID", badge: "badge-red", color: isLight ? "#B91C1C" : "#FF9D7F" },
+        { h: "08 AM", aqi: Math.round(baseAQI * 1.15), label: "AVOID", badge: "badge-red", color: isLight ? "#B91C1C" : "#FF9D7F" },
+        { h: "10 AM", aqi: Math.round(baseAQI * 0.90), label: "AVOID", badge: "badge-yellow", color: isLight ? "#B45309" : "#FFE270" },
+        { h: "12 PM", aqi: Math.round(baseAQI * 0.62), label: "FAIR", badge: "badge-yellow", color: isLight ? "#B45309" : "#FFE270" },
+        { h: "02 PM", aqi: Math.round(baseAQI * 0.46), label: "CLEAN WINDOW", badge: "badge-green", color: isLight ? "#047857" : "#8FFFB0" },
+        { h: "04 PM", aqi: Math.round(baseAQI * 0.50), label: "CLEAN WINDOW", badge: "badge-green", color: isLight ? "#047857" : "#8FFFB0" },
+        { h: "07 PM", aqi: Math.round(baseAQI * 0.84), label: "AVOID", badge: "badge-red", color: isLight ? "#B91C1C" : "#FF9D7F" },
+        { h: "10 PM", aqi: Math.round(baseAQI * 1.02), label: "AVOID", badge: "badge-red", color: isLight ? "#B91C1C" : "#FF9D7F" },
       ];
 
       container.innerHTML = hours.map(hr => `
-        <div class="p-3 rounded-2xl bg-earth-950 border ${hr.safe === true ? 'border-emerald-700' : 'border-earth-700'} text-center flex flex-col items-center">
-          <span class="text-[10px] font-mono text-earth-300">${hr.h}</span>
-          <span class="text-lg font-black font-mono my-0.5" style="color: ${hr.color}">${hr.aqi}</span>
-          <span class="text-[9px] px-1.5 py-0.5 rounded-full font-bold uppercase" style="background-color: ${hr.color}33; color: ${hr.color}">
-            ${hr.safe === true ? 'CLEAN WINDOW' : (hr.safe === 'Fair' ? 'FAIR' : 'AVOID')}
+        <div class="surface-card p-3 rounded-[12px] border border-[#262A26] text-center flex flex-col items-center justify-between gap-1 shadow-sm">
+          <span class="text-[11px] font-mono font-semibold text-[#8C948B]">${hr.h}</span>
+          <span class="text-xl font-bold font-space my-0.5" style="color: ${hr.color}">${hr.aqi}</span>
+          <span class="text-[9px] px-2 py-0.5 rounded-full font-mono font-bold uppercase ${hr.badge}">
+            ${hr.label}
           </span>
         </div>
       `).join('');

@@ -1,15 +1,15 @@
-const CACHE_NAME = 'vayucoupler-v8';
+const CACHE_NAME = 'vayucoupler-v12';
 const ASSETS = [
   '/',
   '/?source=pwa',
   '/static/index.html',
-  '/static/manifest.json?v=8',
-  '/static/css/styles.css?v=8',
-  '/static/css/mobile.css?v=8',
-  '/static/icon-192.png?v=8',
-  '/static/icon-512.png?v=8',
-  '/static/icon-maskable-512.png?v=8',
-  '/static/apple-touch-icon.png?v=8'
+  '/static/manifest.json?v=12',
+  '/static/css/styles.css?v=12',
+  '/static/css/mobile.css?v=12',
+  '/static/icon-192.png?v=12',
+  '/static/icon-512.png?v=12',
+  '/static/icon-maskable-512.png?v=12',
+  '/static/apple-touch-icon.png?v=12'
 ];
 
 self.addEventListener('install', (e) => {
@@ -35,9 +35,38 @@ self.addEventListener('activate', (e) => {
   self.clients.claim();
 });
 
+// Network-First for Navigation (HTML), Cache-First for static assets
 self.addEventListener('fetch', (e) => {
   if (e.request.method !== 'GET') return;
+
+  const isHtmlNavigation = e.request.mode === 'navigate' || 
+                           (e.request.headers.get('accept') && e.request.headers.get('accept').includes('text/html'));
+
+  if (isHtmlNavigation) {
+    e.respondWith(
+      fetch(e.request)
+        .then((response) => {
+          const responseClone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(e.request, responseClone));
+          return response;
+        })
+        .catch(() => caches.match(e.request).then((res) => res || caches.match('/')))
+    );
+    return;
+  }
+
+  // Assets: Stale-While-Revalidate
   e.respondWith(
-    fetch(e.request).catch(() => caches.match(e.request))
+    caches.match(e.request).then((cachedResponse) => {
+      const fetchPromise = fetch(e.request).then((networkResponse) => {
+        if (networkResponse && networkResponse.status === 200) {
+          const responseClone = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(e.request, responseClone));
+        }
+        return networkResponse;
+      }).catch(() => cachedResponse);
+
+      return cachedResponse || fetchPromise;
+    })
   );
 });

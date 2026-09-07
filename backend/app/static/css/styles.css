@@ -3,45 +3,48 @@
    Delhi-NCR Coupled AQI Forecasting & Government Response System
    ========================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,600;0,8..60,700;0,8..60,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@600;700&display=swap');
 
 :root {
-  /* Core Color Tokens */
-  --bg:            #060706;   /* page background, near-black */
-  --surface:       #0b0c0b;   /* app shell / phone background */
-  --surface-2:     #0f110f;   /* cards, tiles */
-  --border:        #1c1f1c;   /* hairline borders/dividers */
-  --border-subtle: rgba(255, 255, 255, 0.07);
+  /* Exact Design Tokens */
+  --bg:              #0A0B0A;
+  --panel:           #131513;
+  --panel-elevated:  #191C19;
+  --border:          #262A26;
+  --text-primary:    #EEF0EC;
+  --text-muted:      #8C948B;
 
-  --text-primary:  #f2f5f3;
-  --text-secondary:#8b9390;
-  --text-tertiary: #545a57;
+  /* Semantic Signal Colors — Never Decorative */
+  --signal-green:    #8FFFB0;   /* good / nominal / safe status only */
+  --signal-blue:     #7FD4FF;   /* informational / predictive / AI content only */
+  --signal-yellow:   #FFE270;   /* caution / moderate / pending status only */
+  --warning-orange:  #FF9D7F;   /* severe / urgent status only */
 
-  /* Accent Tokens */
-  --accent-green:  #6fe2a3;   /* primary accent — lead-time, "good", CTAs, logo */
-  --accent-blue:   #6ec8f2;   /* informational — live status, headers, monitoring */
-  --accent-yellow: #f2d666;   /* warning touch — moderate rise, high-priority badges */
-  --accent-red:    #f2966e;   /* emergency/severe only — used sparingly */
+  /* Component Aliases */
+  --surface:         var(--panel);
+  --surface-2:       var(--panel-elevated);
+  --accent-green:    var(--signal-green);
+  --accent-blue:     var(--signal-blue);
+  --accent-yellow:   var(--signal-yellow);
+  --accent-red:      var(--warning-orange);
+  --color-bg-base:   var(--bg);
+  --color-bg-surface:var(--panel);
+  --color-bg-card:   var(--panel-elevated);
+  --color-border:    var(--border);
 
-  /* Token Pairs (Tinted 1px border + background) */
-  --green-bg:      #10201a;  --green-border:  #1f3d30;
-  --blue-bg:       #0f1a1f;  --blue-border:   #1f3a4a;
-  --yellow-bg:     #1f1a0f;  --yellow-border: #4a4020;
-  --red-bg:        #1f150f;  --red-border:    #4a2e20;
+  /* Tinted Token Pairs for Badges & Status */
+  --green-bg:        rgba(143, 255, 176, 0.08);
+  --green-border:    rgba(143, 255, 176, 0.22);
+  --blue-bg:         rgba(127, 212, 255, 0.08);
+  --blue-border:     rgba(127, 212, 255, 0.22);
+  --yellow-bg:       rgba(255, 226, 112, 0.08);
+  --yellow-border:   rgba(255, 226, 112, 0.22);
+  --orange-bg:       rgba(255, 157, 127, 0.08);
+  --orange-border:   rgba(255, 157, 127, 0.22);
+  --red-bg:          rgba(255, 157, 127, 0.08);
+  --red-border:      rgba(255, 157, 127, 0.22);
 
-  /* Backwards compatibility aliases */
-  --color-bg-base: var(--bg);
-  --color-bg-surface: var(--surface);
-  --color-bg-card: var(--surface-2);
-  --color-border: var(--border);
-  --color-cyan-primary: var(--accent-green);
-  --color-cyan-electric: var(--accent-blue);
-  --color-aqi-good: var(--accent-green);
-  --color-aqi-sat: var(--accent-green);
-  --color-aqi-mod: var(--accent-yellow);
-  --color-aqi-poor: #e5935c;
-  --color-aqi-vpoor: #e2725b;
-  --color-aqi-severe: var(--accent-red);
+  --radius:          14px;
 }
 
 * {
@@ -51,11 +54,6 @@
 
 body {
   background-color: var(--bg);
-  background-image: 
-    radial-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
-    radial-gradient(ellipse at 50% 0%, rgba(110, 226, 163, 0.03) 0%, transparent 60%);
-  background-size: 16px 16px, 100% 100%;
-  background-attachment: fixed;
   color: var(--text-primary);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   margin: 0;
@@ -64,73 +62,86 @@ body {
 }
 
 /* Typography Hierarchy */
+h1, h2, h3, h4, h5, h6,
+.font-heading,
 .font-serif-display,
-.font-headline {
-  font-family: 'Source Serif 4', Georgia, serif;
-  letter-spacing: -0.015em;
+.font-headline,
+.aqi-val,
+.aqi-number {
+  font-family: 'Space Grotesk', -apple-system, sans-serif !important;
+  font-weight: 600;
+  letter-spacing: -0.02em;
 }
 
 .font-mono-data,
-.font-mono-tag {
-  font-family: 'IBM Plex Mono', monospace;
-  letter-spacing: -0.01em;
+.font-mono-tag,
+.font-mono {
+  font-family: 'JetBrains Mono', monospace !important;
+  letter-spacing: 0;
 }
 
-.font-sans-ui {
-  font-family: 'Inter', -apple-system, sans-serif;
+.font-sans-ui,
+.font-sans {
+  font-family: 'Inter', -apple-system, sans-serif !important;
 }
 
-/* Card & Surface Classes */
-.surface-panel {
-  background: var(--surface);
-  border: 1px solid var(--border);
+p, .body-copy {
+  max-width: 75ch;
+}
+
+/* Card & Surface Classes: rounded 14px, 1px hairline border, no drop shadows except hero card */
+.surface-panel,
+.surface-card,
+.natural-glass {
+  background: var(--panel) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius) !important;
+  box-shadow: none !important;
 }
 
 .surface-card {
-  background: var(--surface-2);
-  border: 1px solid var(--border);
+  background: var(--panel-elevated) !important;
 }
 
-.natural-glass {
-  background: rgba(15, 17, 15, 0.88);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--border);
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.7);
+.hero-card {
+  background: var(--panel) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius) !important;
+  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.5) !important;
 }
 
 .natural-glass-hover {
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: border-color 0.15s ease, background 0.15s ease;
 }
 .natural-glass-hover:hover {
-  background: rgba(20, 24, 20, 0.95);
-  border-color: rgba(111, 226, 163, 0.35);
-  transform: translateY(-1px);
+  background: var(--panel-elevated) !important;
+  border-color: #383E38 !important;
 }
 
-/* Token Badges & Pills (1px border + tinted background, never solid) */
+/* Semantic Badges & Pills (1px border + tinted background, never solid) */
 .badge-green {
-  background: var(--green-bg);
-  border: 1px solid var(--green-border);
-  color: var(--accent-green);
+  background: var(--green-bg) !important;
+  border: 1px solid var(--green-border) !important;
+  color: var(--signal-green) !important;
 }
 
 .badge-blue {
-  background: var(--blue-bg);
-  border: 1px solid var(--blue-border);
-  color: var(--accent-blue);
+  background: var(--blue-bg) !important;
+  border: 1px solid var(--blue-border) !important;
+  color: var(--signal-blue) !important;
 }
 
 .badge-yellow {
-  background: var(--yellow-bg);
-  border: 1px solid var(--yellow-border);
-  color: var(--accent-yellow);
+  background: var(--yellow-bg) !important;
+  border: 1px solid var(--yellow-border) !important;
+  color: var(--signal-yellow) !important;
 }
 
+.badge-orange,
 .badge-red {
-  background: var(--red-bg);
-  border: 1px solid var(--red-border);
-  color: var(--accent-red);
+  background: var(--orange-bg) !important;
+  border: 1px solid var(--orange-border) !important;
+  color: var(--warning-orange) !important;
 }
 
 /* Custom SVG Line Icon Helpers */
@@ -158,9 +169,9 @@ input[type=range]::-webkit-slider-thumb {
   height: 18px;
   width: 18px;
   border-radius: 50%;
-  background: var(--accent-green);
-  border: 2px solid #060706;
-  box-shadow: 0 0 10px rgba(111, 226, 163, 0.6);
+  background: var(--signal-green);
+  border: 2px solid var(--bg);
+  box-shadow: none;
   cursor: pointer;
   transition: transform 0.15s ease;
 }
@@ -204,8 +215,8 @@ input[type=range]::-webkit-slider-thumb:active {
   justify-content: center;
   border-radius: 9999px;
   color: #ffffff;
-  font-family: 'IBM Plex Mono', monospace;
-  font-weight: 800;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   user-select: none;
@@ -255,14 +266,14 @@ input[type=range]::-webkit-slider-thumb:active {
 
 .vayu-station-node.node-selected {
   transform: scale(1.25);
-  box-shadow: 0 0 0 3px #6fe2a3, 0 0 20px rgba(111, 226, 163, 0.8) !important;
+  box-shadow: 0 0 0 3px var(--signal-green, #8FFFB0), 0 0 20px rgba(143, 255, 176, 0.6) !important;
   z-index: 1001 !important;
   animation: selectedStationPulse 2s infinite;
 }
 
 @keyframes selectedStationPulse {
-  0%, 100% { box-shadow: 0 0 0 3px #6fe2a3, 0 0 15px rgba(111, 226, 163, 0.8); }
-  50% { box-shadow: 0 0 0 5px #6ec8f2, 0 0 25px rgba(110, 200, 242, 0.9); }
+  0%, 100% { box-shadow: 0 0 0 3px var(--signal-green, #8FFFB0), 0 0 15px rgba(143, 255, 176, 0.6); }
+  50% { box-shadow: 0 0 0 4px var(--signal-blue, #7FD4FF), 0 0 20px rgba(127, 212, 255, 0.6); }
 }
 
 /* Satellite Fire Hotspot Markers */
@@ -300,22 +311,21 @@ input[type=range]::-webkit-slider-thumb:active {
 
 /* Isobaric Contour Path & Labels */
 .isobar-label {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'JetBrains Mono', monospace;
   font-size: 9.5px;
   font-weight: 700;
-  fill: #f2d666;
+  fill: var(--signal-yellow, #FFE270);
   text-shadow: 0 0 6px rgba(0, 0, 0, 0.9);
-  letter-spacing: 0.5px;
+  letter-spacing: 0;
 }
 
 /* Leaflet Dark Custom Popup */
 .leaflet-popup-content-wrapper {
-  background: rgba(11, 12, 11, 0.95) !important;
-  color: #f2f5f3 !important;
-  border: 1px solid #1c1f1c !important;
-  border-radius: 16px !important;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8) !important;
-  backdrop-filter: blur(12px) !important;
+  background: var(--panel, #131513) !important;
+  color: var(--text-primary, #EEF0EC) !important;
+  border: 1px solid var(--border, #262A26) !important;
+  border-radius: var(--radius, 14px) !important;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6) !important;
   padding: 0 !important;
 }
 
@@ -325,28 +335,37 @@ input[type=range]::-webkit-slider-thumb:active {
 }
 
 .leaflet-popup-tip {
-  background: #0b0c0b !important;
-  border: 1px solid #1c1f1c !important;
+  background: var(--panel, #131513) !important;
+  border: 1px solid var(--border, #262A26) !important;
 }
 
 /* ==========================================================================
    Daylight Pearl / Light Mode Theme System
    ========================================================================== */
 html.light-theme {
-  --bg:            #f5f7f6;
-  --surface:       #ffffff;
-  --surface-2:     #f0f4f2;
-  --border:        #e2e8e5;
+  --bg:            #f8fafc;
+  --panel:         #ffffff;
+  --panel-elevated:#f1f5f9;
+  --border:        #cbd5e1;
   --border-subtle: rgba(0, 0, 0, 0.08);
 
+  --surface:       #ffffff;
+  --surface-2:     #f1f5f9;
+
   --text-primary:  #0f172a;
-  --text-secondary:#475569;
+  --text-secondary:#334155;
+  --text-muted:    #475569;
   --text-tertiary: #64748b;
 
-  --accent-green:  #059669;
-  --accent-blue:   #0284c7;
-  --accent-yellow: #d97706;
-  --accent-red:    #dc2626;
+  --signal-green:  #047857;
+  --signal-blue:   #0369a1;
+  --signal-yellow: #b45309;
+  --warning-orange:#b91c1c;
+
+  --accent-green:  #047857;
+  --accent-blue:   #0369a1;
+  --accent-yellow: #b45309;
+  --accent-red:    #b91c1c;
 
   --green-bg:      #ecfdf5;  --green-border:  #a7f3d0;
   --blue-bg:       #f0f9ff;  --blue-border:   #bae6fd;
@@ -356,10 +375,10 @@ html.light-theme {
 
 html.light-theme,
 html.light-theme body {
-  background-color: var(--bg, #f6f8f7) !important;
+  background-color: var(--bg, #f8fafc) !important;
   background-image: 
-    radial-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px),
-    radial-gradient(ellipse at 50% 0%, rgba(5, 150, 105, 0.05) 0%, transparent 60%) !important;
+    radial-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+    radial-gradient(ellipse at 50% 0%, rgba(4, 120, 87, 0.05) 0%, transparent 60%) !important;
   color: var(--text-primary, #0f172a) !important;
 }
 
@@ -380,7 +399,7 @@ html.light-theme .bg-earth-850,
 html.light-theme .bg-earth-800,
 html.light-theme .bg-earth-700 {
   background-color: #ffffff !important;
-  border-color: #e2e8e5 !important;
+  border-color: #cbd5e1 !important;
   color: #0f172a !important;
 }
 
@@ -388,7 +407,7 @@ html.light-theme .bg-earth-700 {
 html.light-theme nav button {
   color: #475569 !important;
   background-color: #f8fafc !important;
-  border: 1px solid #e2e8e5 !important;
+  border: 1px solid #cbd5e1 !important;
 }
 html.light-theme nav button:hover {
   background-color: #f1f5f9 !important;
@@ -399,7 +418,7 @@ html.light-theme nav button[class*="text-cyan-300"],
 html.light-theme nav button[class*="bg-cyan-950"] {
   background-color: #ecfdf5 !important;
   border-color: #a7f3d0 !important;
-  color: #059669 !important;
+  color: #047857 !important;
   font-weight: 700 !important;
 }
 
@@ -412,7 +431,7 @@ html.light-theme section[class*="bg-earth-900"] {
 html.light-theme #step-hour-badge {
   background-color: #ffffff !important;
   border-color: #cbd5e1 !important;
-  color: #059669 !important;
+  color: #047857 !important;
 }
 html.light-theme section.bg-earth-900\/90 button,
 html.light-theme section[class*="bg-earth-900"] button {
@@ -428,6 +447,8 @@ html.light-theme section[class*="bg-earth-900"] button:hover {
 
 /* Typography Overrides in Light Mode */
 html.light-theme .text-white,
+html.light-theme .text-\[\#EEF0EC\],
+html.light-theme .text-\[\#eef0ec\],
 html.light-theme .text-\[\#f2f5f3\],
 html.light-theme .text-slate-100,
 html.light-theme .text-slate-200,
@@ -437,19 +458,45 @@ html.light-theme .text-earth-300 {
   color: #0f172a !important;
 }
 
+html.light-theme .text-\[\#8C948B\],
+html.light-theme .text-\[\#8c948b\],
 html.light-theme .text-\[\#8b9390\],
 html.light-theme .text-slate-300,
 html.light-theme .text-slate-400,
 html.light-theme .text-slate-500,
 html.light-theme .text-earth-400 {
-  color: #64748b !important;
+  color: #475569 !important;
 }
 
 html.light-theme .text-\[\#545a57\] {
-  color: #94a3b8 !important;
+  color: #64748b !important;
+}
+
+/* Crisp High-Contrast Signals for Light Mode */
+html.light-theme .text-\[\#8FFFB0\],
+html.light-theme .text-\[\#8fffb0\] {
+  color: #047857 !important;
+}
+
+html.light-theme .text-\[\#7FD4FF\],
+html.light-theme .text-\[\#7fd4ff\] {
+  color: #0369a1 !important;
+}
+
+html.light-theme .text-\[\#FFE270\],
+html.light-theme .text-\[\#ffe270\] {
+  color: #b45309 !important;
+}
+
+html.light-theme .text-\[\#FF9D7F\],
+html.light-theme .text-\[\#ff9d7f\] {
+  color: #b91c1c !important;
 }
 
 /* Borders in Light Mode */
+html.light-theme .border-\[\#262A26\],
+html.light-theme .border-\[\#262a26\],
+html.light-theme .border-\[\#283028\],
 html.light-theme .border-\[\#1c1f1c\],
 html.light-theme .border-\[\#1f3d30\],
 html.light-theme .border-\[\#1f3a4a\],
@@ -462,26 +509,63 @@ html.light-theme .border-earth-700\/90,
 html.light-theme .border-earth-800,
 html.light-theme .border-slate-700,
 html.light-theme .border-slate-800 {
-  border-color: #e2e8e5 !important;
+  border-color: #cbd5e1 !important;
 }
 
 /* Surfaces, Panels and Cards in Light Mode */
+html.light-theme .hero-card,
 html.light-theme .surface-panel,
 html.light-theme .surface-card,
 html.light-theme .natural-glass,
+html.light-theme .bg-\[\#131513\],
 html.light-theme .bg-\[\#060706\],
 html.light-theme .bg-\[\#0b0c0b\],
 html.light-theme .bg-\[\#0f110f\],
-html.light-theme .bg-\[\#10201a\],
 html.light-theme .bg-\[\#151815\],
 html.light-theme .bg-\[\#1c1f1c\],
 html.light-theme .bg-slate-900,
 html.light-theme .bg-slate-900\/90,
 html.light-theme .bg-slate-950 {
   background-color: #ffffff !important;
-  border-color: #e2e8e5 !important;
+  border-color: #cbd5e1 !important;
   color: #0f172a !important;
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 18px -2px rgba(15, 23, 42, 0.06);
+}
+
+html.light-theme .bg-\[\#191C19\],
+html.light-theme .bg-\[\#191c19\],
+html.light-theme .bg-\[\#0A0B0A\],
+html.light-theme .bg-\[\#0a0b0a\],
+html.light-theme .bg-\[\#141714\],
+html.light-theme .bg-\[\#10201a\] {
+  background-color: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+html.light-theme .badge-green {
+  background-color: #ecfdf5 !important;
+  color: #047857 !important;
+  border-color: #a7f3d0 !important;
+}
+
+html.light-theme .badge-blue {
+  background-color: #f0f9ff !important;
+  color: #0369a1 !important;
+  border-color: #bae6fd !important;
+}
+
+html.light-theme .badge-yellow {
+  background-color: #fffbeb !important;
+  color: #b45309 !important;
+  border-color: #fde68a !important;
+}
+
+html.light-theme .badge-orange,
+html.light-theme .badge-red {
+  background-color: #fef2f2 !important;
+  color: #b91c1c !important;
+  border-color: #fecaca !important;
 }
 
 html.light-theme .natural-glass {
@@ -651,34 +735,34 @@ html.light-theme .mobile-nav-item.active {
 }
 
 .setting-card-option.active {
-  background: #0f241a !important;
-  border-color: #6fe2a3 !important;
-  box-shadow: 0 0 18px rgba(111, 226, 163, 0.28), 0 2px 8px rgba(0, 0, 0, 0.4) !important;
+  background: var(--panel-elevated, #191C19) !important;
+  border-color: var(--signal-green, #8FFFB0) !important;
+  box-shadow: 0 0 16px rgba(143, 255, 176, 0.2) !important;
 }
 
 .setting-opt-title {
-  color: #f2f5f3;
+  color: var(--text-primary, #EEF0EC);
   transition: color 0.2s ease;
 }
 
 .setting-card-option.active .setting-opt-title {
-  color: #6fe2a3 !important;
+  color: var(--signal-green, #8FFFB0) !important;
 }
 
 .setting-opt-desc {
-  color: #8b9390;
+  color: var(--text-muted, #8C948B);
   transition: color 0.2s ease;
 }
 
 .setting-card-option.active .setting-opt-desc {
-  color: #a7f3d0 !important;
+  color: var(--text-primary, #EEF0EC) !important;
 }
 
 .setting-check-indicator {
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  border: 2px solid #3e483e;
+  border: 2px solid var(--border, #262A26);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -694,10 +778,10 @@ html.light-theme .mobile-nav-item.active {
 }
 
 .setting-card-option.active .setting-check-indicator {
-  background: #6fe2a3;
-  border-color: #6fe2a3;
-  color: #060706;
-  box-shadow: 0 0 10px rgba(111, 226, 163, 0.5);
+  background: var(--signal-green, #8FFFB0);
+  border-color: var(--signal-green, #8FFFB0);
+  color: var(--bg, #0A0B0A);
+  box-shadow: 0 0 10px rgba(143, 255, 176, 0.4);
 }
 
 .setting-card-option.active .setting-check-indicator svg {
@@ -815,9 +899,9 @@ html.light-theme .weather-metric-tab.active::after {
   transform: scale(0.95);
 }
 .weather-day-card.active {
-  background: #19261e !important;
-  border-color: #6fe2a3 !important;
-  box-shadow: 0 0 16px rgba(111, 226, 163, 0.25) !important;
+  background: var(--panel-elevated, #191C19) !important;
+  border-color: var(--signal-green, #8FFFB0) !important;
+  box-shadow: 0 0 14px rgba(143, 255, 176, 0.2) !important;
 }
 
 html.light-theme .weather-day-card {
