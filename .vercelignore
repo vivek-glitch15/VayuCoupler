@@ -1,0 +1,14 @@
+backend/
+frontend/
+scratch/
+docs/
+*.py
+*.bat
+*.command
+*.zip
+*.txt
+*.pdf
+render.yaml
+DEPLOYMENT_GUIDE.md
+PLAN.md
+README.md
