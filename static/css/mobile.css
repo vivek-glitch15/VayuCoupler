@@ -516,3 +516,29 @@ html, body {
     animation: none !important;
   }
 }
+
+/* Light Theme Mobile Navigation Bar & Elements */
+html.light-theme .mobile-nav-bar {
+  background: rgba(255, 255, 255, 0.96) !important;
+  border-top: 1px solid #cbd5e1 !important;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08) !important;
+}
+
+html.light-theme .mobile-nav-item {
+  color: #475569 !important;
+}
+
+html.light-theme .mobile-nav-item svg {
+  color: #475569 !important;
+}
+
+html.light-theme .mobile-nav-item.active {
+  color: #047857 !important;
+  background: #ecfdf5 !important;
+  border: 1px solid #a7f3d0 !important;
+}
+
+html.light-theme .mobile-nav-item.active svg {
+  color: #047857 !important;
+}
+

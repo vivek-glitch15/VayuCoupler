@@ -897,5 +897,551 @@ html.light-theme #attrib-stations-grid .bg-earth-950\/70 {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
 }
 
+/* ==========================================================================
+   COMPREHENSIVE HIGH-CONTRAST LIGHT MODE SYSTEM (ALL TABS & METRICS)
+   Fixes washed-out / bleached colors across Overview, Weather, GRAP, Commute,
+   Dispatches, What-If, VayuAI, Health, and Navigation.
+   ========================================================================== */
+
+/* 1. Global High-Contrast Color Replacements in Light Mode */
+html.light-theme .text-emerald-100,
+html.light-theme .text-emerald-200,
+html.light-theme .text-emerald-300 {
+  color: #047857 !important; /* Deep Emerald 700 */
+}
+
+html.light-theme .text-emerald-400,
+html.light-theme .text-emerald-500 {
+  color: #065f46 !important; /* Deep Emerald 800 */
+}
+
+html.light-theme .text-teal-100,
+html.light-theme .text-teal-200,
+html.light-theme .text-teal-300 {
+  color: #0f766e !important; /* Deep Teal 700 */
+}
+
+html.light-theme .text-teal-400,
+html.light-theme .text-teal-500 {
+  color: #115e59 !important; /* Deep Teal 800 */
+}
+
+html.light-theme .text-cyan-100,
+html.light-theme .text-cyan-200,
+html.light-theme .text-cyan-300 {
+  color: #0369a1 !important; /* Sky / Cyan 700 */
+}
+
+html.light-theme .text-cyan-400,
+html.light-theme .text-cyan-500 {
+  color: #075985 !important; /* Sky / Cyan 800 */
+}
+
+html.light-theme .text-sky-100,
+html.light-theme .text-sky-200,
+html.light-theme .text-sky-300 {
+  color: #0284c7 !important; /* Sky 600/700 */
+}
+
+html.light-theme .text-sky-400,
+html.light-theme .text-sky-500 {
+  color: #0369a1 !important; /* Sky 700 */
+}
+
+html.light-theme .text-amber-100,
+html.light-theme .text-amber-200,
+html.light-theme .text-amber-300 {
+  color: #b45309 !important; /* Amber 700 */
+}
+
+html.light-theme .text-amber-400,
+html.light-theme .text-amber-500 {
+  color: #92400e !important; /* Amber 800 */
+}
+
+html.light-theme .text-yellow-100,
+html.light-theme .text-yellow-200,
+html.light-theme .text-yellow-300,
+html.light-theme .text-yellow-400 {
+  color: #b45309 !important; /* Deep Amber */
+}
+
+html.light-theme .text-orange-100,
+html.light-theme .text-orange-200,
+html.light-theme .text-orange-300 {
+  color: #c2410c !important; /* Orange 700 */
+}
+
+html.light-theme .text-orange-400,
+html.light-theme .text-orange-500 {
+  color: #9a3412 !important; /* Orange 800 */
+}
+
+html.light-theme .text-rose-200,
+html.light-theme .text-rose-300 {
+  color: #be123c !important; /* Rose 700 */
+}
+
+html.light-theme .text-rose-400,
+html.light-theme .text-rose-500 {
+  color: #9f1239 !important; /* Rose 800 */
+}
+
+html.light-theme .text-purple-300,
+html.light-theme .text-purple-400 {
+  color: #7e22ce !important; /* Purple 700 */
+}
+
+html.light-theme .text-\[\#6fe2a3\] {
+  color: #047857 !important;
+}
+
+html.light-theme .text-\[\#6ec8f2\] {
+  color: #0284c7 !important;
+}
+
+html.light-theme .text-\[\#f2d666\] {
+  color: #b45309 !important;
+}
+
+html.light-theme .text-\[\#f2966e\] {
+  color: #c2410c !important;
+}
+
+html.light-theme [class*="text-earth-300"] {
+  color: #475569 !important;
+}
+
+html.light-theme [class*="text-earth-400"] {
+  color: #64748b !important;
+}
+
+/* 2. Overview Tab: 6 Telemetry Cards & Metric Numbers */
+html.light-theme #panel-overview .natural-glass span[class*="tracking-wider"] {
+  color: #334155 !important;
+  font-weight: 700 !important;
+}
+
+html.light-theme #curr-aqi-val {
+  color: #0f172a !important;
+}
+
+html.light-theme #curr-pm25-val {
+  color: #0f172a !important;
+}
+
+html.light-theme #curr-vi-val {
+  color: #047857 !important;
+  font-weight: 900 !important;
+}
+
+html.light-theme #curr-vi-val span {
+  color: #065f46 !important;
+}
+
+html.light-theme #curr-vi-status {
+  color: #b45309 !important;
+  font-weight: 700 !important;
+}
+
+html.light-theme #curr-pblh-val {
+  color: #0369a1 !important;
+  font-weight: 900 !important;
+}
+
+html.light-theme #curr-pblh-val span {
+  color: #475569 !important;
+}
+
+html.light-theme #pblh-subtext {
+  color: #475569 !important;
+}
+
+html.light-theme #curr-inversion-val {
+  color: #b45309 !important;
+  font-weight: 900 !important;
+}
+
+html.light-theme #curr-inversion-val span {
+  color: #475569 !important;
+}
+
+html.light-theme #curr-trapping-status {
+  color: #92400e !important;
+}
+
+html.light-theme #curr-wind-speed {
+  color: #0f766e !important;
+  font-weight: 900 !important;
+}
+
+html.light-theme #curr-wind-dir {
+  color: #475569 !important;
+}
+
+html.light-theme #wind-alignment-text {
+  color: #475569 !important;
+}
+
+html.light-theme #curr-fire-count {
+  color: #c2410c !important;
+  font-weight: 900 !important;
+}
+
+html.light-theme #curr-fire-count span {
+  color: #475569 !important;
+}
+
+html.light-theme #stubble-share-badge {
+  color: #c2410c !important;
+  font-weight: 700 !important;
+}
+
+/* Map Header & Subtitle in Light Mode */
+html.light-theme #panel-overview h2 {
+  color: #0f172a !important;
+}
+
+html.light-theme #panel-overview p {
+  color: #475569 !important;
+}
+
+/* 3. Scrubber Timeline & Badge Overrides in Light Mode */
+html.light-theme section.bg-earth-900\/90,
+html.light-theme section[class*="bg-earth-900"] {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04) !important;
+}
+
+html.light-theme #step-hour-badge {
+  background-color: #ecfdf5 !important;
+  border-color: #a7f3d0 !important;
+  color: #065f46 !important;
+  font-weight: 800 !important;
+}
+
+html.light-theme #step-hour-badge span {
+  color: #047857 !important;
+}
+
+html.light-theme section.bg-earth-900\/90 button,
+html.light-theme section[class*="bg-earth-900"] button {
+  background-color: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  color: #1e293b !important;
+  font-weight: 600 !important;
+}
+
+html.light-theme section.bg-earth-900\/90 button:hover,
+html.light-theme section[class*="bg-earth-900"] button:hover {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+
+/* 4. Mobile Native Hero & Glance Card in Light Mode */
+html.light-theme #mobile-hero-container .natural-glass {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.06) !important;
+}
+
+html.light-theme #mobile-hero-container button[onclick*="openStationPickerModal"] {
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+html.light-theme #mob-hero-station-name {
+  color: #0f172a !important;
+}
+
+html.light-theme #mob-hero-aqi-number {
+  color: #0f172a !important;
+}
+
+html.light-theme #mobile-hero-container .grid-cols-4 > div {
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
+
+html.light-theme #mob-hero-temp {
+  color: #0f172a !important;
+}
+
+html.light-theme #mob-hero-wind {
+  color: #0f766e !important;
+}
+
+html.light-theme #mob-hero-pm25 {
+  color: #be123c !important;
+}
+
+html.light-theme #mob-hero-pbl {
+  color: #0369a1 !important;
+}
+
+/* Mobile Action Banner (GRAP Stage IV) */
+html.light-theme #mobile-hero-container div[class*="from-rose-950"] {
+  background: #fff1f2 !important;
+  border-color: #fecdd3 !important;
+  color: #9f1239 !important;
+}
+
+html.light-theme #mobile-hero-container div[class*="from-rose-950"] .text-white {
+  color: #881337 !important;
+}
+
+html.light-theme #mobile-hero-container div[class*="from-rose-950"] .text-rose-200 {
+  color: #9f1239 !important;
+}
+
+html.light-theme #mobile-hero-container div[class*="from-rose-950"] button {
+  background: #f43f5e !important;
+  color: #ffffff !important;
+  border-color: #e11d48 !important;
+}
+
+/* 5. Weather Tab Overrides in Light Mode */
+html.light-theme #weather-main-temp {
+  color: #0f172a !important;
+}
+
+html.light-theme #weather-location-title span:first-child {
+  color: #0f172a !important;
+}
+
+html.light-theme #weather-day-name {
+  color: #334155 !important;
+}
+
+html.light-theme #weather-condition-desc {
+  color: #475569 !important;
+}
+
+html.light-theme #weather-precip-val,
+html.light-theme #weather-humidity-val,
+html.light-theme #weather-wind-val {
+  color: #0f172a !important;
+}
+
+html.light-theme #panel-weather .bg-\[\#0a0d0a\] {
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+}
+
+html.light-theme #panel-weather .weather-metric-tab {
+  color: #64748b !important;
+}
+
+html.light-theme #panel-weather .weather-metric-tab.active {
+  color: #0f172a !important;
+}
+
+/* 6. Predictive GRAP Tab Overrides in Light Mode */
+html.light-theme #grap-max-lead-gained {
+  color: #047857 !important;
+}
+
+html.light-theme #panel-grap .timeline-track-line {
+  background: #cbd5e1 !important;
+}
+
+html.light-theme #panel-grap .timeline-node-dot {
+  background: #ffffff !important;
+}
+
+html.light-theme #panel-grap .surface-card {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+}
+
+html.light-theme #panel-grap .surface-card div[class*="bg-[#060706]"] {
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+  color: #1e293b !important;
+}
+
+html.light-theme #panel-grap .surface-card .text-\[\#cfdade\] {
+  color: #0f172a !important;
+}
+
+html.light-theme #panel-grap h3 {
+  color: #0f172a !important;
+}
+
+/* 7. Stakeholder Action Dispatches in Light Mode */
+html.light-theme .agency-tile {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+}
+
+html.light-theme .agency-tile:hover {
+  background: #f8fafc !important;
+  border-color: #94a3b8 !important;
+}
+
+html.light-theme .agency-tile h4 {
+  color: #0f172a !important;
+}
+
+html.light-theme .agency-tile div.bg-\[\#10201a\] {
+  background: #ecfdf5 !important;
+  border-color: #a7f3d0 !important;
+  color: #047857 !important;
+}
+
+html.light-theme .agency-tile span.text-\[\#6fe2a3\] {
+  color: #047857 !important;
+}
+
+html.light-theme #dispatch-severity-headline {
+  color: #be123c !important;
+}
+
+html.light-theme #dispatch-lead-time-text {
+  color: #047857 !important;
+}
+
+/* 8. Counterfactual What-If Simulator in Light Mode */
+html.light-theme #panel-whatif .bg-earth-950\/80,
+html.light-theme #panel-whatif .bg-earth-950 {
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
+
+html.light-theme #panel-whatif span.text-earth-100 {
+  color: #0f172a !important;
+}
+
+html.light-theme #slider-val-stubble {
+  color: #c2410c !important;
+}
+
+html.light-theme #slider-val-truck {
+  color: #be123c !important;
+}
+
+html.light-theme #slider-val-dust {
+  color: #b45309 !important;
+}
+
+html.light-theme #slider-val-industry {
+  color: #7e22ce !important;
+}
+
+html.light-theme #whatif-results-box {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+}
+
+html.light-theme #whatif-results-box h3 {
+  color: #0f172a !important;
+}
+
+html.light-theme #whatif-base-peak {
+  color: #be123c !important;
+}
+
+html.light-theme #whatif-mitigated-peak {
+  color: #047857 !important;
+}
+
+html.light-theme #whatif-results-box .bg-cyan-950\/80,
+html.light-theme #whatif-results-box .bg-cyan-950 {
+  background: #ecfdf5 !important;
+  border-color: #a7f3d0 !important;
+}
+
+html.light-theme #whatif-results-box .text-cyan-300 {
+  color: #065f46 !important;
+}
+
+/* 9. Clean Air Commute & Route Shield in Light Mode */
+html.light-theme #panel-commute .natural-glass {
+  border-color: #cbd5e1 !important;
+}
+
+html.light-theme #commute-std-dose {
+  color: #be123c !important;
+}
+
+html.light-theme #commute-eco-dose {
+  color: #047857 !important;
+}
+
+html.light-theme #commute-saved-pct {
+  color: #047857 !important;
+}
+
+html.light-theme #commute-timing-rec {
+  color: #92400e !important;
+}
+
+html.light-theme #panel-commute .bg-cyan-950\/70,
+html.light-theme #panel-commute .bg-cyan-950 {
+  background: #ecfdf5 !important;
+  border-color: #a7f3d0 !important;
+}
+
+html.light-theme #panel-commute .text-cyan-300,
+html.light-theme #panel-commute .text-cyan-200 {
+  color: #065f46 !important;
+}
+
+html.light-theme #panel-commute select {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+/* 10. Vulnerable Cohorts Health Tab in Light Mode */
+html.light-theme #panel-health .natural-glass {
+  border-color: #cbd5e1 !important;
+}
+
+html.light-theme #panel-health div[class*="bg-earth-950"] {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+}
+
+html.light-theme #panel-health .text-white {
+  color: #0f172a !important;
+}
+
+html.light-theme #panel-health .text-cyan-300 {
+  color: #0369a1 !important;
+}
+
+/* 11. VayuAI Assistant in Light Mode */
+html.light-theme #vayuai-hub-title {
+  color: #0f172a !important;
+}
+
+html.light-theme #vayuai-hub-subtitle {
+  color: #475569 !important;
+}
+
+html.light-theme #orb-status-pill {
+  color: #047857 !important;
+}
+
+html.light-theme #panel-copilot div.bg-\[\#060706\] {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+}
+
+html.light-theme #vayuai-quick-en {
+  color: #475569 !important;
+}
+
+html.light-theme #vayuai-chat-history {
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+}
+
 
 

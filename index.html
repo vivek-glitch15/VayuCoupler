@@ -14,8 +14,8 @@
   <link rel="apple-touch-icon" href="/static/apple-touch-icon.png?v=6">
   <link rel="icon" type="image/png" href="/static/icon-192.png?v=6">
   
-  <link rel="stylesheet" href="/static/css/styles.css?v=6">
-  <link rel="stylesheet" href="/static/css/mobile.css?v=6">
+  <link rel="stylesheet" href="/static/css/styles.css?v=7">
+  <link rel="stylesheet" href="/static/css/mobile.css?v=7">
 
   <script>
     (function() {
@@ -734,7 +734,7 @@
   </div>
 
   <!-- ================= APPLICATION SETTINGS MODAL (LANGUAGE & THEME) ================= -->
-  <div id="settings-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-3 sm:p-4">
+  <div id="settings-modal" onclick="if(event.target === this) closeSettingsModal()" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-3 sm:p-4">
     <div class="surface-panel p-4 sm:p-6 rounded-2xl max-w-md w-full border border-[#1c1f1c] shadow-2xl relative flex flex-col gap-4 max-h-[90vh] overflow-y-auto">
       
       <!-- Modal Header -->
@@ -768,7 +768,7 @@
         
         <div class="grid grid-cols-2 gap-2.5 mt-1">
           <!-- Hinglish Option -->
-          <div onclick="VayuSettings.setLanguage('hinglish')" id="opt-lang-hinglish" class="setting-card-option active" role="button" tabindex="0">
+          <div onclick="VayuSettings.stageLanguage('hinglish')" id="opt-lang-hinglish" class="setting-card-option active" role="button" tabindex="0">
             <div class="flex items-center gap-2.5 min-w-0 flex-1">
               <span class="text-xl shrink-0">🇮🇳</span>
               <div class="min-w-0 flex-1">
@@ -784,7 +784,7 @@
           </div>
 
           <!-- English Option -->
-          <div onclick="VayuSettings.setLanguage('en')" id="opt-lang-en" class="setting-card-option" role="button" tabindex="0">
+          <div onclick="VayuSettings.stageLanguage('en')" id="opt-lang-en" class="setting-card-option" role="button" tabindex="0">
             <div class="flex items-center gap-2.5 min-w-0 flex-1">
               <span class="text-xl shrink-0">🇬🇧</span>
               <div class="min-w-0 flex-1">
@@ -813,7 +813,7 @@
         
         <div class="grid grid-cols-2 gap-2.5 mt-1">
           <!-- Dark Mode Option -->
-          <div onclick="VayuSettings.setTheme('dark')" id="opt-theme-dark" class="setting-card-option active" role="button" tabindex="0">
+          <div onclick="VayuSettings.stageTheme('dark')" id="opt-theme-dark" class="setting-card-option active" role="button" tabindex="0">
             <div class="flex items-center gap-2.5 min-w-0 flex-1">
               <span class="text-xl shrink-0">🌙</span>
               <div class="min-w-0 flex-1">
@@ -829,7 +829,7 @@
           </div>
 
           <!-- Light Mode Option -->
-          <div onclick="VayuSettings.setTheme('light')" id="opt-theme-light" class="setting-card-option" role="button" tabindex="0">
+          <div onclick="VayuSettings.stageTheme('light')" id="opt-theme-light" class="setting-card-option" role="button" tabindex="0">
             <div class="flex items-center gap-2.5 min-w-0 flex-1">
               <span class="text-xl shrink-0">☀️</span>
               <div class="min-w-0 flex-1">
@@ -858,8 +858,8 @@
         <span class="text-[10px] font-mono-tag px-2 py-0.5 rounded bg-[#1f3d30] text-[#6fe2a3] font-bold shrink-0">ACTIVE</span>
       </div>
 
-      <!-- Action Footer -->
-      <button onclick="closeSettingsModal()" id="settings-modal-done-btn" class="w-full py-2.5 rounded-xl bg-[#6fe2a3] hover:bg-[#5cd493] text-[#060706] font-bold text-xs transition shadow-md active:scale-98">
+      <!-- Action Footer: Only saves and applies when Done is clicked -->
+      <button onclick="VayuSettings.saveAndApply()" id="settings-modal-done-btn" class="w-full py-2.5 rounded-xl bg-[#6fe2a3] hover:bg-[#5cd493] text-[#060706] font-bold text-xs transition shadow-md active:scale-98">
         ✓ Done
       </button>
 
@@ -5857,8 +5857,12 @@
     const VayuSettings = {
       language: localStorage.getItem('vayu_language') || 'en',
       theme: localStorage.getItem('vayu_theme') || 'dark',
+      pendingLanguage: null,
+      pendingTheme: null,
 
       init() {
+        this.pendingLanguage = this.language;
+        this.pendingTheme = this.theme;
         this.applyTheme(this.theme);
         this.applyLanguage(this.language);
         this.updateModalUI();
@@ -5866,6 +5870,7 @@
 
       setLanguage(lang) {
         this.language = lang;
+        this.pendingLanguage = lang;
         localStorage.setItem('vayu_language', lang);
         this.applyLanguage(lang);
         this.updateModalUI();
@@ -5873,8 +5878,52 @@
 
       setTheme(theme) {
         this.theme = theme;
+        this.pendingTheme = theme;
         localStorage.setItem('vayu_theme', theme);
         this.applyTheme(theme);
+        this.updateModalUI();
+      },
+
+      // Staged selection inside the Settings Modal (does NOT save or apply until "✓ Done" is clicked)
+      stageLanguage(lang) {
+        this.pendingLanguage = lang;
+        this.updateModalUI();
+      },
+
+      stageTheme(theme) {
+        this.pendingTheme = theme;
+        this.updateModalUI();
+      },
+
+      // Save & Apply when user clicks "✓ Done"
+      saveAndApply() {
+        const langToSave = this.pendingLanguage || this.language;
+        const themeToSave = this.pendingTheme || this.theme;
+
+        const langChanged = (langToSave !== this.language);
+        const themeChanged = (themeToSave !== this.theme);
+
+        this.language = langToSave;
+        this.theme = themeToSave;
+
+        localStorage.setItem('vayu_language', this.language);
+        localStorage.setItem('vayu_theme', this.theme);
+
+        if (themeChanged) {
+          this.applyTheme(this.theme);
+        }
+        if (langChanged) {
+          this.applyLanguage(this.language);
+        }
+
+        const modal = document.getElementById('settings-modal');
+        if (modal) modal.classList.add('hidden');
+      },
+
+      // Discard pending selections when dismissed via ✕ or background click
+      discardPending() {
+        this.pendingLanguage = this.language;
+        this.pendingTheme = this.theme;
         this.updateModalUI();
       },
 
@@ -5923,7 +5972,7 @@
 
         if (modalTitle) modalTitle.innerText = isEn ? "System Settings" : "सिस्टम सेटिंग्स";
         if (modalSub) modalSub.innerText = isEn ? "Language, AI conversational style & visual appearance" : "भाषा, AI बातचीत शैली और थीम सेटिंग्स";
-        if (activeLangBadge) activeLangBadge.innerText = isEn ? "ENGLISH ACTIVE" : "HINDI / HINGLISH ACTIVE";
+        if (activeLangBadge) activeLangBadge.innerText = isEn ? "ENGLISH ACTIVE" : "HINGLISH ACTIVE";
         if (modalDone) modalDone.innerText = isEn ? "✓ Done" : "✓ सहेजें";
         if (headerBtn) headerBtn.title = isEn ? "System Settings (Language & Theme)" : "सिस्टम सेटिंग्स (भाषा और थीम)";
 
@@ -5937,11 +5986,15 @@
       },
 
       updateModalUI() {
-        const isEn = this.language === 'en';
-        const isLight = this.theme === 'light';
+        const langToDisplay = this.pendingLanguage || this.language;
+        const themeToDisplay = this.pendingTheme || this.theme;
+
+        const isEn = langToDisplay === 'en';
+        const isLight = themeToDisplay === 'light';
 
         const optHinglish = document.getElementById('opt-lang-hinglish');
         const optEn = document.getElementById('opt-lang-en');
+        const activeLangBadge = document.getElementById('settings-active-lang-badge');
         if (optHinglish && optEn) {
           if (isEn) {
             optEn.classList.add('active');
@@ -5949,6 +6002,13 @@
           } else {
             optHinglish.classList.add('active');
             optEn.classList.remove('active');
+          }
+        }
+        if (activeLangBadge) {
+          if (langToDisplay !== this.language) {
+            activeLangBadge.innerText = isEn ? "ENGLISH (UNSAVED)" : "HINGLISH (UNSAVED)";
+          } else {
+            activeLangBadge.innerText = isEn ? "ENGLISH ACTIVE" : "HINGLISH ACTIVE";
           }
         }
 
@@ -5959,11 +6019,11 @@
           if (isLight) {
             optLight.classList.add('active');
             optDark.classList.remove('active');
-            if (activeThemeBadge) activeThemeBadge.innerText = "LIGHT MODE";
+            if (activeThemeBadge) activeThemeBadge.innerText = (themeToDisplay !== this.theme) ? "LIGHT (UNSAVED)" : "LIGHT MODE";
           } else {
             optDark.classList.add('active');
             optLight.classList.remove('active');
-            if (activeThemeBadge) activeThemeBadge.innerText = "DARK MODE";
+            if (activeThemeBadge) activeThemeBadge.innerText = (themeToDisplay !== this.theme) ? "DARK (UNSAVED)" : "DARK MODE";
           }
         }
       }
@@ -5973,13 +6033,22 @@
       const modal = document.getElementById('settings-modal');
       if (modal) {
         modal.classList.remove('hidden');
-        if (typeof VayuSettings !== 'undefined') VayuSettings.updateModalUI();
+        if (typeof VayuSettings !== 'undefined') {
+          VayuSettings.pendingLanguage = VayuSettings.language;
+          VayuSettings.pendingTheme = VayuSettings.theme;
+          VayuSettings.updateModalUI();
+        }
       }
     }
 
     function closeSettingsModal() {
       const modal = document.getElementById('settings-modal');
-      if (modal) modal.classList.add('hidden');
+      if (modal) {
+        modal.classList.add('hidden');
+        if (typeof VayuSettings !== 'undefined') {
+          VayuSettings.discardPending();
+        }
+      }
     }
 
     // ==========================================================================
