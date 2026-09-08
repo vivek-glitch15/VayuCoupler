@@ -2320,25 +2320,23 @@
     /* High-Performance 60/120fps Splash Screen Animations */
     #splash-screen {
       animation: vayuSplashAutohide 0.4s ease 1.7s forwards;
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      background: radial-gradient(circle at 50% 45%, #131915 0%, #0A0B0A 70%) !important;
     }
     @keyframes vayuSplashAutohide {
       0% { opacity: 1; pointer-events: auto; }
       99% { opacity: 0; pointer-events: none; }
       100% { opacity: 0; pointer-events: none; display: none !important; visibility: hidden !important; }
     }
+    #splash-gauge-wrap {
+      border-radius: 9999px;
+      overflow: visible;
+    }
+    #splash-gauge-wrap svg {
+      overflow: visible !important;
+    }
     .splash-gauge-fill {
-      transition: stroke-dashoffset 0.85s cubic-bezier(0.16, 1, 0.3, 1), stroke 0.3s ease, filter 0.3s ease;
+      transition: stroke-dashoffset 0.85s cubic-bezier(0.16, 1, 0.3, 1), stroke 0.3s ease;
       will-change: stroke-dashoffset, stroke;
-    }
-    @keyframes vayuRadarPulse {
-      0% { transform: scale(0.88); opacity: 0.75; }
-      50% { transform: scale(1.18); opacity: 0.25; }
-      100% { transform: scale(1.35); opacity: 0; }
-    }
-    .splash-radar-pulse {
-      animation: vayuRadarPulse 2s cubic-bezier(0.2, 0.8, 0.4, 1) infinite;
     }
     @keyframes vayuBarGlow {
       0%, 100% { filter: drop-shadow(0 0 4px rgba(111, 226, 163, 0.6)); }
@@ -2353,9 +2351,6 @@
 <body class="min-h-screen text-[#f2f5f3] flex flex-col antialiased selection:bg-[#10201a] selection:text-[#6fe2a3] overflow-x-hidden max-w-full w-full">
   <!-- ================= 0. INTRO / COLD LAUNCH SPLASH SCREEN ================= -->
   <div id="splash-screen" class="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#0A0B0A] pb-safe cursor-pointer transition-all duration-300 select-none" onclick="if(window.VayuSplashScreen&&window.VayuSplashScreen.dismissSplash){window.VayuSplashScreen.dismissSplash(true);}this.style.opacity='0';this.style.pointerEvents='none';this.style.display='none';try{this.remove();}catch(e){}">
-    <!-- Ambient Backdrop Aura -->
-    <div class="absolute w-96 h-96 rounded-full bg-[#6fe2a3]/5 blur-3xl pointer-events-none -top-12"></div>
-    <div class="absolute w-96 h-96 rounded-full bg-[#38bdf8]/5 blur-3xl pointer-events-none -bottom-12"></div>
 
     <!-- Central Authoritative Content Box -->
     <div id="splash-content-box" class="flex flex-col items-center justify-center text-center max-w-sm px-6 z-10 relative cursor-pointer transform transition-all duration-300 will-change-transform">
@@ -2369,15 +2364,16 @@
       </div>
 
       <!-- Circular SVG Gauge & Live AQI Count-Up (Immediate Primary View) -->
-      <div id="splash-gauge-wrap" class="relative w-48 h-48 sm:w-52 sm:h-52 flex items-center justify-center mb-4">
-        <!-- Pulse Echo Ring -->
-        <div class="absolute inset-2 rounded-full border border-[#6fe2a3]/20 splash-radar-pulse pointer-events-none"></div>
-
-        <svg class="w-full h-full transform -rotate-90" viewBox="0 0 120 120">
-          <circle cx="60" cy="60" r="50" class="splash-gauge-bg" stroke="#181B18" stroke-width="7" fill="none"/>
-          <circle id="splash-gauge-ring" cx="60" cy="60" r="50" class="splash-gauge-fill" stroke="#6fe2a3" stroke-width="7" stroke-linecap="round" fill="none" stroke-dasharray="314.159" stroke-dashoffset="314.159"/>
+      <div id="splash-gauge-wrap" class="relative w-48 h-48 sm:w-52 sm:h-52 rounded-full flex items-center justify-center mb-4">
+        <svg class="w-full h-full transform -rotate-90 overflow-visible" viewBox="0 0 140 140" style="overflow: visible;">
+          <!-- Background track -->
+          <circle cx="70" cy="70" r="50" class="splash-gauge-bg" stroke="#181B18" stroke-width="7" fill="none"/>
+          <!-- Luminous Vector Halo Underlay (Zero rectangular clipping) -->
+          <circle id="splash-gauge-glow" cx="70" cy="70" r="50" stroke="#6fe2a3" stroke-width="12" stroke-linecap="round" fill="none" opacity="0.22" stroke-dasharray="314.159" stroke-dashoffset="314.159" style="transition: stroke-dashoffset 0.85s cubic-bezier(0.16, 1, 0.3, 1), stroke 0.3s ease; will-change: stroke-dashoffset, stroke;"/>
+          <!-- Active Foreground Arc -->
+          <circle id="splash-gauge-ring" cx="70" cy="70" r="50" class="splash-gauge-fill" stroke="#6fe2a3" stroke-width="7" stroke-linecap="round" fill="none" stroke-dasharray="314.159" stroke-dashoffset="314.159"/>
         </svg>
-        <div class="absolute inset-0 flex flex-col items-center justify-center">
+        <div class="absolute inset-0 flex flex-col items-center justify-center rounded-full">
           <span class="text-[9px] tracking-wider uppercase font-mono-data text-[#8C948B]">LIVE GROUND AQI</span>
           <span id="splash-aqi-number" class="text-5xl sm:text-6xl font-bold text-[#EEF0EC] font-serif-display my-0.5 tabular-nums">0</span>
           <span id="splash-aqi-severity" class="text-[10px] font-mono-tag font-bold px-2.5 py-0.5 rounded-full badge-green transition-all duration-300">CALIBRATING</span>
@@ -6745,11 +6741,17 @@
 
         // Radial ring perimeter = 2 * PI * 50 = 314.159
         const targetOffset = 314.159 - (Math.min(500, targetAQI) / 500) * 314.159;
+        const gaugeGlow = document.getElementById('splash-gauge-glow');
         if (gaugeRing) {
           gaugeRing.style.stroke = sevMeta.color;
-          gaugeRing.style.filter = `drop-shadow(0 0 12px ${sevMeta.color}90)`;
           requestAnimationFrame(() => {
             if (gaugeRing) gaugeRing.style.strokeDashoffset = targetOffset.toString();
+          });
+        }
+        if (gaugeGlow) {
+          gaugeGlow.style.stroke = sevMeta.color;
+          requestAnimationFrame(() => {
+            if (gaugeGlow) gaugeGlow.style.strokeDashoffset = targetOffset.toString();
           });
         }
 
@@ -6776,6 +6778,8 @@
           const liveMeta = (typeof VayuForecastEngine !== 'undefined' && VayuForecastEngine.getSeverityMeta) 
             ? VayuForecastEngine.getSeverityMeta(currentAQI) 
             : sevMeta;
+          if (gaugeRing) gaugeRing.style.stroke = liveMeta.color;
+          if (gaugeGlow) gaugeGlow.style.stroke = liveMeta.color;
           if (aqiSev && progress < 1) {
             aqiSev.textContent = `${liveMeta.label.toUpperCase()}`;
             aqiSev.className = `text-[10px] font-mono-tag font-bold px-2.5 py-0.5 rounded-full ${liveMeta.badgeClass}`;
