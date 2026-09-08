@@ -2347,145 +2347,174 @@
       animation: vayuBarGlow 1.8s ease-in-out infinite;
     }
 
-    /* DARK MODE SPLASH SCREEN (Explicit Overrides) */
-    html:not(.light-theme) #splash-screen,
-    html.dark #splash-screen {
+    /* ==========================================================================
+       ICONIC MOES ATMOSPHERIC COCKPIT SPLASH SCREEN (PERMANENT JET BLACK LOOK)
+       Guaranteed 100% immune to light mode overrides
+       ========================================================================== */
+    #splash-screen,
+    html.light-theme #splash-screen,
+    html.dark #splash-screen,
+    html #splash-screen {
+      animation: vayuSplashAutohide 0.4s ease 1.7s forwards;
       background: radial-gradient(circle at 50% 45%, #131915 0%, #0A0B0A 70%) !important;
+      background-color: #0A0B0A !important;
       color: #EEF0EC !important;
     }
-    html:not(.light-theme) #splash-screen #splash-title-h1,
+
+    /* Force all splash elements to maintain pristine black cockpit appearance even in light theme */
+    #splash-screen #splash-title-h1,
+    html.light-theme #splash-screen #splash-title-h1,
     html.dark #splash-screen #splash-title-h1 {
       color: #EEF0EC !important;
+      text-shadow: 0 0 20px rgba(111, 226, 163, 0.25) !important;
     }
-    html:not(.light-theme) #splash-screen #splash-subtitle,
+
+    #splash-screen #splash-subtitle,
+    html.light-theme #splash-screen #splash-subtitle,
     html.dark #splash-screen #splash-subtitle {
       color: #8C948B !important;
     }
-    html:not(.light-theme) #splash-screen #splash-moes-badge,
+
+    #splash-screen #splash-moes-badge,
+    html.light-theme #splash-screen #splash-moes-badge,
     html.dark #splash-screen #splash-moes-badge {
       background-color: #10201a !important;
       border: 1px solid #1f3d30 !important;
       color: #6fe2a3 !important;
+      box-shadow: none !important;
     }
-    html:not(.light-theme) #splash-screen #splash-moes-badge span,
+    #splash-screen #splash-moes-badge span,
+    html.light-theme #splash-screen #splash-moes-badge span,
     html.dark #splash-screen #splash-moes-badge span {
       background-color: #6fe2a3 !important;
     }
-    html:not(.light-theme) #splash-screen .splash-gauge-bg,
+
+    #splash-screen .splash-gauge-bg,
+    html.light-theme #splash-screen .splash-gauge-bg,
     html.dark #splash-screen .splash-gauge-bg {
       stroke: #181B18 !important;
     }
-    html:not(.light-theme) #splash-screen #splash-aqi-label,
+
+    #splash-screen #splash-gauge-glow,
+    html.light-theme #splash-screen #splash-gauge-glow,
+    html.dark #splash-screen #splash-gauge-glow {
+      opacity: 0.22 !important;
+    }
+
+    #splash-screen #splash-aqi-label,
+    html.light-theme #splash-screen #splash-aqi-label,
     html.dark #splash-screen #splash-aqi-label {
       color: #8C948B !important;
+      letter-spacing: 0.1em !important;
     }
-    html:not(.light-theme) #splash-screen #splash-aqi-number,
+
+    #splash-screen #splash-aqi-number,
+    html.light-theme #splash-screen #splash-aqi-number,
     html.dark #splash-screen #splash-aqi-number {
       color: #EEF0EC !important;
+      text-shadow: 0 0 24px rgba(255, 255, 255, 0.15) !important;
     }
-    html:not(.light-theme) #splash-screen #splash-location-line,
+
+    /* Severity Badges inside Splash Screen: Always Dark Cockpit Neon Style */
+    #splash-screen .badge-green,
+    html.light-theme #splash-screen .badge-green {
+      background-color: rgba(143, 255, 176, 0.15) !important;
+      color: #8FFFB0 !important;
+      border: 1px solid rgba(143, 255, 176, 0.35) !important;
+      font-weight: bold !important;
+    }
+    #splash-screen .badge-blue,
+    html.light-theme #splash-screen .badge-blue {
+      background-color: rgba(127, 212, 255, 0.15) !important;
+      color: #7FD4FF !important;
+      border: 1px solid rgba(127, 212, 255, 0.35) !important;
+      font-weight: bold !important;
+    }
+    #splash-screen .badge-yellow,
+    html.light-theme #splash-screen .badge-yellow {
+      background-color: rgba(255, 226, 112, 0.15) !important;
+      color: #FFE270 !important;
+      border: 1px solid rgba(255, 226, 112, 0.35) !important;
+      font-weight: bold !important;
+    }
+    #splash-screen .badge-orange,
+    html.light-theme #splash-screen .badge-orange {
+      background-color: rgba(255, 157, 127, 0.15) !important;
+      color: #FF9D7F !important;
+      border: 1px solid rgba(255, 157, 127, 0.35) !important;
+      font-weight: bold !important;
+    }
+    #splash-screen .badge-red,
+    html.light-theme #splash-screen .badge-red {
+      background-color: rgba(255, 157, 127, 0.2) !important;
+      color: #FF9D7F !important;
+      border: 1px solid rgba(255, 157, 127, 0.4) !important;
+      font-weight: bold !important;
+    }
+
+    #splash-screen #splash-location-line,
+    html.light-theme #splash-screen #splash-location-line,
     html.dark #splash-screen #splash-location-line {
       background-color: #131613 !important;
       border: 1px solid #262A26 !important;
       color: #8C948B !important;
+      box-shadow: none !important;
     }
-    html:not(.light-theme) #splash-screen #splash-station-name,
+
+    #splash-screen #splash-station-name,
+    html.light-theme #splash-screen #splash-station-name,
     html.dark #splash-screen #splash-station-name {
       color: #EEF0EC !important;
+      font-weight: bold !important;
     }
-    html:not(.light-theme) #splash-screen #splash-sync-label,
+
+    #splash-screen #splash-station-dist,
+    html.light-theme #splash-screen #splash-station-dist,
+    html.dark #splash-screen #splash-station-dist {
+      color: #8C948B !important;
+    }
+
+    #splash-screen #splash-sync-label,
+    html.light-theme #splash-screen #splash-sync-label,
     html.dark #splash-screen #splash-sync-label {
       color: #8C948B !important;
     }
-    html:not(.light-theme) #splash-screen #splash-sync-pct,
+
+    #splash-screen #splash-sync-pct,
+    html.light-theme #splash-screen #splash-sync-pct,
     html.dark #splash-screen #splash-sync-pct {
       color: #38bdf8 !important;
     }
-    html:not(.light-theme) #splash-screen #splash-progress-track,
+
+    #splash-screen #splash-progress-track,
+    html.light-theme #splash-screen #splash-progress-track,
     html.dark #splash-screen #splash-progress-track {
       background-color: #131513 !important;
       border: 1px solid #262A26 !important;
     }
-    html:not(.light-theme) #splash-screen #splash-skip-hint,
+
+    #splash-screen #splash-progress-bar,
+    html.light-theme #splash-screen #splash-progress-bar,
+    html.dark #splash-screen #splash-progress-bar {
+      background: linear-gradient(90deg, #38bdf8, #6fe2a3) !important;
+    }
+
+    #splash-screen #splash-skip-hint,
+    html.light-theme #splash-screen #splash-skip-hint,
     html.dark #splash-screen #splash-skip-hint {
       color: #6E766D !important;
     }
-
-    /* LIGHT MODE SPLASH SCREEN (Daylight Pearl Theme) */
-    html.light-theme #splash-screen {
-      background: radial-gradient(circle at 50% 45%, #ffffff 0%, #f8fafc 55%, #e2e8f0 100%) !important;
-      color: #0f172a !important;
-    }
-    html.light-theme #splash-screen #splash-title-h1 {
-      color: #0f172a !important;
-      text-shadow: 0 1px 2px rgba(15, 23, 42, 0.08) !important;
-    }
-    html.light-theme #splash-screen #splash-subtitle {
-      color: #475569 !important;
-      font-weight: 500 !important;
-    }
-    html.light-theme #splash-screen #splash-moes-badge {
-      background-color: #ecfdf5 !important;
-      border: 1.5px solid #a7f3d0 !important;
-      color: #047857 !important;
-      box-shadow: 0 1px 3px rgba(4, 120, 87, 0.1) !important;
-    }
-    html.light-theme #splash-screen #splash-moes-badge span {
-      background-color: #059669 !important;
-    }
-    html.light-theme #splash-screen .splash-gauge-bg {
-      stroke: #e2e8f0 !important;
-    }
-    html.light-theme #splash-screen #splash-gauge-glow {
-      opacity: 0.16 !important;
-    }
-    html.light-theme #splash-screen #splash-aqi-label {
-      color: #64748b !important;
-      font-weight: 700 !important;
-    }
-    html.light-theme #splash-screen #splash-aqi-number {
-      color: #0f172a !important;
-    }
-    html.light-theme #splash-screen #splash-location-line {
-      background-color: #ffffff !important;
-      border: 1.5px solid #cbd5e1 !important;
-      color: #475569 !important;
-      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06) !important;
-    }
-    html.light-theme #splash-screen #splash-station-name {
-      color: #0f172a !important;
-      font-weight: 700 !important;
-    }
-    html.light-theme #splash-screen #splash-station-dist {
-      color: #64748b !important;
-    }
-    html.light-theme #splash-screen #splash-sync-label {
-      color: #475569 !important;
-      font-weight: 600 !important;
-    }
-    html.light-theme #splash-screen #splash-sync-pct {
-      color: #0284c7 !important;
-      font-weight: 700 !important;
-    }
-    html.light-theme #splash-screen #splash-progress-track {
-      background-color: #e2e8f0 !important;
-      border: 1.5px solid #cbd5e1 !important;
-    }
-    html.light-theme #splash-screen #splash-progress-bar {
-      background: linear-gradient(90deg, #0284c7, #10b981) !important;
-    }
-    html.light-theme #splash-screen #splash-skip-hint {
-      color: #64748b !important;
-    }
-    html.light-theme #splash-screen #splash-skip-hint:hover {
-      color: #0f172a !important;
+    #splash-screen #splash-skip-hint:hover,
+    html.light-theme #splash-screen #splash-skip-hint:hover,
+    html.dark #splash-screen #splash-skip-hint:hover {
+      color: #EEF0EC !important;
     }
 
   </style>
 </head>
 <body class="min-h-screen text-[#f2f5f3] flex flex-col antialiased selection:bg-[#10201a] selection:text-[#6fe2a3] overflow-x-hidden max-w-full w-full">
   <!-- ================= 0. INTRO / COLD LAUNCH SPLASH SCREEN ================= -->
-  <div id="splash-screen" class="fixed inset-0 z-[9999] flex flex-col items-center justify-center pb-safe cursor-pointer transition-all duration-300 select-none" onclick="if(window.VayuSplashScreen&&window.VayuSplashScreen.dismissSplash){window.VayuSplashScreen.dismissSplash(true);}this.style.opacity='0';this.style.pointerEvents='none';this.style.display='none';try{this.remove();}catch(e){}">
+  <div id="splash-screen" class="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#0A0B0A] pb-safe cursor-pointer transition-all duration-300 select-none" onclick="if(window.VayuSplashScreen&&window.VayuSplashScreen.dismissSplash){window.VayuSplashScreen.dismissSplash(true);}this.style.opacity='0';this.style.pointerEvents='none';this.style.display='none';try{this.remove();}catch(e){}">
 
     <!-- Central Authoritative Content Box -->
     <div id="splash-content-box" class="flex flex-col items-center justify-center text-center max-w-sm px-6 z-10 relative cursor-pointer transform transition-all duration-300 will-change-transform">
@@ -5157,7 +5186,7 @@
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         checkIfInstalled();
-        navigator.serviceWorker.register('/static/sw.js?v=20').then(reg => {
+        navigator.serviceWorker.register('/static/sw.js?v=22').then(reg => {
           reg.update();
           reg.onupdatefound = () => {
             const installing = reg.installing;
@@ -6885,9 +6914,17 @@
         const aqiSev = document.getElementById('splash-aqi-severity');
         const syncPct = document.getElementById('splash-sync-pct');
         const progBar = document.getElementById('splash-progress-bar');
+        const getSplashCockpitMeta = (aqi) => {
+          if (aqi >= 401) return { color: '#FF9D7F', label: 'Severe', stageCode: 'GRAP IV', badgeClass: 'badge-red' };
+          if (aqi >= 301) return { color: '#FFE270', label: 'Very Poor', stageCode: 'GRAP III', badgeClass: 'badge-orange' };
+          if (aqi >= 201) return { color: '#FFE270', label: 'Poor', stageCode: 'GRAP II', badgeClass: 'badge-yellow' };
+          if (aqi >= 101) return { color: '#7FD4FF', label: 'Moderate', stageCode: 'GRAP I', badgeClass: 'badge-blue' };
+          return { color: '#8FFFB0', label: 'Good', stageCode: 'Baseline', badgeClass: 'badge-green' };
+        };
+
         const curSt = (typeof VayuForecastEngine !== 'undefined' && (VayuForecastEngine.currentStation || (VayuForecastEngine.stations && VayuForecastEngine.stations[0]))) || { baseAQI: 431, name: 'Punjabi Bagh' };
         const targetAQI = curSt.baseAQI || 431;
-        const sevMeta = (typeof VayuForecastEngine !== 'undefined' && VayuForecastEngine.getSeverityMeta) ? VayuForecastEngine.getSeverityMeta(targetAQI) : { color: '#f2966e', label: 'Severe', stageCode: 'GRAP IV', badgeClass: 'badge-orange' };
+        const sevMeta = getSplashCockpitMeta(targetAQI);
 
         // Pre-fill location line with exact active station
         const splashName = document.getElementById('splash-station-name');
@@ -6931,9 +6968,7 @@
           if (progBar) progBar.style.width = `${pct}%`;
 
           // Live severity color morphing
-          const liveMeta = (typeof VayuForecastEngine !== 'undefined' && VayuForecastEngine.getSeverityMeta) 
-            ? VayuForecastEngine.getSeverityMeta(currentAQI) 
-            : sevMeta;
+          const liveMeta = getSplashCockpitMeta(currentAQI);
           if (gaugeRing) gaugeRing.style.stroke = liveMeta.color;
           if (gaugeGlow) gaugeGlow.style.stroke = liveMeta.color;
           if (aqiSev && progress < 1) {
