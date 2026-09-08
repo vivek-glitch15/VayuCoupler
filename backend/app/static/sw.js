@@ -2,7 +2,6 @@ const CACHE_NAME = 'vayucoupler-v27';
 const ASSETS = [
   '/',
   '/?source=pwa',
-  '/static/index.html',
   '/static/manifest.json?v=27',
   '/static/css/styles.css?v=27',
   '/static/css/mobile.css?v=27',

@@ -5603,7 +5603,7 @@
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         checkIfInstalled();
-        navigator.serviceWorker.register('/static/sw.js?v=26').then(reg => {
+        navigator.serviceWorker.register('/static/sw.js?v=27').then(reg => {
           reg.update();
           reg.onupdatefound = () => {
             const installing = reg.installing;
@@ -7330,6 +7330,7 @@
         const aqiNumber = document.getElementById('splash-aqi-number');
         const aqiSev = document.getElementById('splash-aqi-severity');
         const syncPct = document.getElementById('splash-sync-pct');
+        const progBar = document.getElementById('splash-progress-bar');
         const isLight = document.documentElement.classList.contains('light-theme');
         const getSplashCockpitMeta = (aqi) => {
           if (isLight) {
