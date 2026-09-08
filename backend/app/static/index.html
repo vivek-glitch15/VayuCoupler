@@ -2339,7 +2339,7 @@
 </head>
 <body class="min-h-screen text-[#f2f5f3] flex flex-col antialiased selection:bg-[#10201a] selection:text-[#6fe2a3] overflow-x-hidden max-w-full w-full">
   <!-- ================= 0. INTRO / COLD LAUNCH SPLASH SCREEN ================= -->
-  <div id="splash-screen" class="pb-safe bg-[#0A0B0A]">
+  <div id="splash-screen" class="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#0A0B0A] pb-safe cursor-pointer transition-opacity duration-300" onclick="VayuSplashScreen.handleUserTapSkip()">
     <!-- Central Authoritative Content Box -->
     <div class="flex flex-col items-center justify-center text-center max-w-sm px-6 z-10 relative cursor-pointer" onclick="VayuSplashScreen.handleUserTapSkip()">
       <!-- System Identity (MoES coupled forecasting) -->
@@ -6277,10 +6277,13 @@
             // Backend offline, will try direct WAQI endpoint
           }
 
-          // 2. Fallback to direct client-side WAQI bounds API call
+          // 2. Fallback to direct client-side WAQI bounds API call (with 2500ms timeout)
           if (!liveList || !liveList.length) {
+            const controller = new AbortController();
+            const tid = setTimeout(() => controller.abort(), 2500);
             const directUrl = `https://api.waqi.info/map/bounds/?latlng=28.1,76.6,29.1,77.8&token=${this.token}`;
-            const res = await fetch(directUrl);
+            const res = await fetch(directUrl, { signal: controller.signal });
+            clearTimeout(tid);
             const json = await res.json();
             if (json.status === 'ok' && json.data && json.data.length) {
               liveList = this.mapWaqiToStations(json.data);
@@ -6624,9 +6627,9 @@
           }, 50);
         }
 
-        // Fast count-up from 0 to targetAQI in ~800ms
+        // Fast snappy count-up from 0 to targetAQI in ~350ms
         let currentVal = 0;
-        const step = Math.max(1, Math.ceil(targetAQI / 28));
+        const step = Math.max(1, Math.ceil(targetAQI / 18));
         const countInterval = setInterval(() => {
           currentVal += step;
           if (currentVal >= targetAQI) {
@@ -6638,12 +6641,12 @@
             }
           }
           if (aqiNumber) aqiNumber.innerText = currentVal;
-        }, 28);
+        }, 18);
 
-        // One deliberate transition moment from splash into app after ~2.3 seconds
+        // Fast transition into app after ~850ms
         setTimeout(() => {
           this.dismissSplash();
-        }, 2300);
+        }, 850);
       },
 
       handleUserTapSkip() {
@@ -6652,17 +6655,23 @@
         }
       },
 
-      dismissSplash() {
+      dismissSplash(immediate = false) {
         if (this.isDismissed) return;
         this.isDismissed = true;
 
         const splash = document.getElementById('splash-screen');
         if (splash) {
-          splash.classList.add('splash-fade-out');
-          setTimeout(() => {
+          if (immediate) {
             splash.style.display = 'none';
-            splash.remove();
-          }, 850);
+            if (splash.parentNode) splash.parentNode.removeChild(splash);
+          } else {
+            splash.style.opacity = '0';
+            splash.style.pointerEvents = 'none';
+            setTimeout(() => {
+              splash.style.display = 'none';
+              if (splash.parentNode) splash.parentNode.removeChild(splash);
+            }, 300);
+          }
         }
       }
     };
@@ -7929,7 +7938,7 @@
         if (typeof updateNavTabStyles === 'function') {
           updateNavTabStyles();
         }
-        if (typeof VayuWeather !== 'undefined' && VayuWeather.renderChart) {
+        if (typeof VayuWeather !== 'undefined' && VayuWeather.forecastDays && VayuWeather.forecastDays.length && VayuWeather.renderChart) {
           VayuWeather.renderChart();
         }
         if (typeof updateZonesStrip === 'function') {
@@ -8314,8 +8323,10 @@
       renderChart() {
         const container = document.getElementById('weather-curve-container');
         if (!container) return;
+        if (!this.forecastDays || !this.forecastDays.length) return;
 
         const day = this.forecastDays[this.selectedDayIndex] || this.forecastDays[0];
+        if (!day) return;
         const hourly = day.hourly || [];
         if (hourly.length === 0) return;
 
@@ -8837,40 +8848,70 @@
       }
     };
 
-    document.addEventListener('DOMContentLoaded', async () => {
-      VayuSettings.init();
-      lucide.createIcons();
-      VayuForecastEngine.init();
-      VayuLocationService.init();
+    let backendAvailable = null; // null = unverified, false = static/offline, true = online
+    let scrubDebounceTimer = null;
+    let whatIfDebounceTimer = null;
+
+    async function checkBackendAvailability() {
+      if (backendAvailable !== null) return backendAvailable;
       try {
-        await VayuWaqiService.init();
+        const controller = new AbortController();
+        const tid = setTimeout(() => controller.abort(), 1200);
+        const res = await fetch('/api/health', { signal: controller.signal });
+        clearTimeout(tid);
+        backendAvailable = res.ok;
       } catch (e) {
-        console.warn("WAQI Service init non-blocking fallback:", e);
+        backendAvailable = false;
+      }
+      return backendAvailable;
+    }
+
+    function initVayuApp() {
+      try {
+        VayuForecastEngine.init();
+        VayuLocationService.init();
+        VayuWeather.init();
+        VayuSettings.init();
+        lucide.createIcons();
+
+        // Zero-latency instant hydration of all telemetry & models locally
+        applyStepDataLocally(currentStep);
+        if (typeof updateForecastFromEngine === 'function') {
+          updateForecastFromEngine();
+        }
+        if (typeof updateAttributionPanelFallback === 'function') {
+          updateAttributionPanelFallback();
+        }
+        VayuSplashScreen.init();
+        VayuPredictiveTimeline.render();
+        VayuDispatchesCenter.render();
+        VayuAttributionEngine.render();
+        VayuAIAssistant.init();
+        if (typeof VayuAtmosphericMap !== 'undefined') {
+          VayuAtmosphericMap.init();
+        }
+        runWhatIfAnalysis();
+        renderCleanAirWindows();
+        calcCommuteRoute();
+      } catch (err) {
+        console.error("VayuCoupler init error:", err);
       }
 
-      // Immediate zero-latency hydration of forecast & source attribution
-      if (typeof updateForecastFromEngine === 'function') {
-        updateForecastFromEngine();
-      }
-      if (typeof updateAttributionPanelFallback === 'function') {
-        updateAttributionPanelFallback();
-      }
-      VayuSplashScreen.init();
-      VayuPredictiveTimeline.render();
-      VayuDispatchesCenter.render();
-      VayuWeather.init();
-      VayuAttributionEngine.render();
-      VayuAIAssistant.init();
-      await fetchStations();
-      await loadCurrentStepData(currentStep);
-      if (typeof VayuAtmosphericMap !== 'undefined') {
-        VayuAtmosphericMap.init();
-      }
-      runWhatIfAnalysis();
-      renderCleanAirWindows();
-      calcCommuteRoute();
-      if (window.location.search.includes('nosplash')) {
-        VayuSplashScreen.dismissSplash();
+      // Non-blocking background sync for remote services (zero UI stall)
+      setTimeout(async () => {
+        try {
+          await checkBackendAvailability();
+          if (backendAvailable) {
+            await fetchStations();
+            await loadCurrentStepData(currentStep);
+          }
+          // WAQI live background refresh
+          VayuWaqiService.init().catch(() => {});
+        } catch (e) {}
+      }, 60);
+
+      if (window.location.href.includes('nosplash')) {
+        VayuSplashScreen.dismissSplash(true);
       }
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.has('test_ask')) {
@@ -8889,7 +8930,13 @@
         const hashTab = window.location.hash.replace('#', '');
         if (hashTab) switchTab(hashTab);
       }
-    });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initVayuApp);
+    } else {
+      initVayuApp();
+    }
 
     function switchTab(tabId) {
       if (tabId === 'vayuai') tabId = 'copilot';
@@ -8914,13 +8961,21 @@
         target.style.display = 'flex';
       }
 
-      if (tabId === 'overview' && typeof VayuAtmosphericMap !== 'undefined' && typeof VayuAtmosphericMap.resumeWindAnimation === 'function') {
-        VayuAtmosphericMap.resumeWindAnimation();
+      if (tabId === 'overview' && typeof VayuAtmosphericMap !== 'undefined') {
+        if (typeof VayuAtmosphericMap.resumeWindAnimation === 'function') {
+          VayuAtmosphericMap.resumeWindAnimation();
+        }
+        setTimeout(() => {
+          if (VayuAtmosphericMap.map) VayuAtmosphericMap.map.invalidateSize();
+        }, 50);
       }
 
       updateNavTabStyles();
-      if (window.lucide) lucide.createIcons();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (window.lucide) {
+        if (target) lucide.createIcons({ root: target });
+        else lucide.createIcons();
+      }
+      window.scrollTo(0, 0);
     }
 
     function updateNavTabStyles() {
@@ -9214,8 +9269,15 @@
       const badge = document.getElementById('step-hour-badge');
       if (badge) badge.innerText = `Hour: ${currentStep} / 167`;
       applyStepDataLocally(currentStep);
-      loadCurrentStepData(currentStep);
       checkLiveVoiceAlert(currentStep);
+
+      // Only query remote backend when explicitly confirmed online, with debouncing
+      if (backendAvailable === true) {
+        if (scrubDebounceTimer) clearTimeout(scrubDebounceTimer);
+        scrubDebounceTimer = setTimeout(() => {
+          loadCurrentStepData(currentStep);
+        }, 300);
+      }
     }
 
     function setScrubberStep(step) {
@@ -9231,8 +9293,17 @@
     }
 
     async function fetchStations() {
+      if (backendAvailable === false) return;
       try {
-        const res = await fetch('/api/stations');
+        const controller = new AbortController();
+        const tid = setTimeout(() => controller.abort(), 1800);
+        const res = await fetch('/api/stations', { signal: controller.signal });
+        clearTimeout(tid);
+        if (!res.ok) {
+          backendAvailable = false;
+          return;
+        }
+        backendAvailable = true;
         stationsList = await res.json();
         if (stationsList && stationsList.length && typeof VayuForecastEngine !== 'undefined') {
           stationsList.forEach(liveSt => {
@@ -9255,20 +9326,35 @@
           }
         }
       } catch (e) {
-        console.error("Failed to fetch stations", e);
+        backendAvailable = false;
+        console.warn("Backend stations offline, using embedded MoES station network.");
       }
     }
 
     async function loadCurrentStepData(step) {
+      if (backendAvailable === false) {
+        applyStepDataLocally(step);
+        return;
+      }
       try {
+        const controller = new AbortController();
+        const tid = setTimeout(() => controller.abort(), 1800);
         const [snapRes, fcRes, stFcRes, grapRes, dispRes] = await Promise.all([
-          fetch(`/api/snapshot?step_hour=${step}`),
-          fetch(`/api/forecast/regional?step_hour=${step}`),
-          fetch(`/api/forecast/station/${selectedStationId}?step_hour=${step}`),
-          fetch(`/api/grap/triggers?step_hour=${step}`),
-          fetch(`/api/dispatches?step_hour=${step}`)
+          fetch(`/api/snapshot?step_hour=${step}`, { signal: controller.signal }),
+          fetch(`/api/forecast/regional?step_hour=${step}`, { signal: controller.signal }),
+          fetch(`/api/forecast/station/${selectedStationId}?step_hour=${step}`, { signal: controller.signal }),
+          fetch(`/api/grap/triggers?step_hour=${step}`, { signal: controller.signal }),
+          fetch(`/api/dispatches?step_hour=${step}`, { signal: controller.signal })
         ]);
+        clearTimeout(tid);
 
+        if (!snapRes.ok || !fcRes.ok) {
+          backendAvailable = false;
+          applyStepDataLocally(step);
+          return;
+        }
+
+        backendAvailable = true;
         snapshotData = await snapRes.json();
         regionalForecast = await fcRes.json();
         const stationFc = await stFcRes.json();
@@ -9283,9 +9369,13 @@
         updateDispatchesView(dispatchesData);
         updateInterStateGrid(snapshotData, grapTriggers);
 
-        if (window.lucide) lucide.createIcons();
+        if (window.lucide) {
+          const actPanel = document.getElementById(`panel-${activeTab}`);
+          if (actPanel) lucide.createIcons({ root: actPanel });
+          else lucide.createIcons();
+        }
       } catch (e) {
-        console.warn("API offline or running in standalone static mode. Using coupled physics engine fallback.", e);
+        backendAvailable = false;
         applyStepDataLocally(step);
       }
     }
@@ -10010,51 +10100,48 @@
         stageEl.innerText = stageLabel;
       }
 
-      const box = document.getElementById('whatif-results-box');
-      if (box) {
-        box.classList.remove('ring-2', 'ring-emerald-500', 'ring-[#7FD4FF]');
-        void box.offsetWidth;
-        box.classList.add('ring-2', 'ring-emerald-500', 'transition', 'duration-300');
-        setTimeout(() => box.classList.remove('ring-2', 'ring-emerald-500', 'ring-[#7FD4FF]'), 600);
-      }
-
       if (isManualClick) {
+        const box = document.getElementById('whatif-results-box');
+        if (box) {
+          box.classList.add('ring-2', 'ring-emerald-500');
+          setTimeout(() => box.classList.remove('ring-2', 'ring-emerald-500'), 400);
+        }
         const badge = document.getElementById('whatif-status-badge');
         if (badge) {
-          badge.classList.add('scale-105', 'transition', 'duration-200');
+          badge.classList.add('scale-105');
           setTimeout(() => badge.classList.remove('scale-105'), 400);
         }
       }
 
-      try {
-        const res = await fetch('/api/what-if', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            step_hour: (typeof currentStep !== 'undefined' ? currentStep : 72),
-            stubble_reduction_pct: stubble,
-            truck_reduction_pct: truck,
-            dust_reduction_pct: dust,
-            industry_switch_pct: industry
-          })
-        });
-        if (res.ok) {
-          const data = await res.json();
-          if (baseEl && data.baseline_uncontrolled?.peak_risk_aqi) {
-            baseEl.innerText = data.baseline_uncontrolled.peak_risk_aqi;
-          }
-          if (mitEl && data.counterfactual_mitigated?.peak_risk_aqi) {
-            mitEl.innerText = data.counterfactual_mitigated.peak_risk_aqi;
-          }
-          if (ptsEl && data.counterfactual_mitigated?.total_aqi_points_prevented !== undefined) {
-            ptsEl.innerText = `${data.counterfactual_mitigated.total_aqi_points_prevented} Points Avoided`;
-          }
-          if (pctEl && data.counterfactual_mitigated?.percentage_crisis_mitigation !== undefined) {
-            pctEl.innerText = `${data.counterfactual_mitigated.percentage_crisis_mitigation}%`;
-          }
-        }
-      } catch (e) {
-        // Offline / static resilient calculation already applied above
+      // If backend is confirmed online, debounce server-side what-if validation (no raw input spam)
+      if (backendAvailable === true) {
+        if (whatIfDebounceTimer) clearTimeout(whatIfDebounceTimer);
+        whatIfDebounceTimer = setTimeout(async () => {
+          try {
+            const controller = new AbortController();
+            const tid = setTimeout(() => controller.abort(), 1800);
+            const res = await fetch('/api/what-if', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              signal: controller.signal,
+              body: JSON.stringify({
+                step_hour: (typeof currentStep !== 'undefined' ? currentStep : 72),
+                stubble_reduction_pct: stubble,
+                truck_reduction_pct: truck,
+                dust_reduction_pct: dust,
+                industry_switch_pct: industry
+              })
+            });
+            clearTimeout(tid);
+            if (res.ok) {
+              const data = await res.json();
+              if (baseEl && data.baseline_uncontrolled?.peak_risk_aqi) baseEl.innerText = data.baseline_uncontrolled.peak_risk_aqi;
+              if (mitEl && data.counterfactual_mitigated?.peak_risk_aqi) mitEl.innerText = data.counterfactual_mitigated.peak_risk_aqi;
+              if (ptsEl && data.counterfactual_mitigated?.total_aqi_points_prevented !== undefined) ptsEl.innerText = `${data.counterfactual_mitigated.total_aqi_points_prevented} Points Avoided`;
+              if (pctEl && data.counterfactual_mitigated?.percentage_crisis_mitigation !== undefined) pctEl.innerText = `${data.counterfactual_mitigated.percentage_crisis_mitigation}%`;
+            }
+          } catch (e) {}
+        }, 400);
       }
     }
     window.runWhatIfAnalysis = runWhatIfAnalysis;

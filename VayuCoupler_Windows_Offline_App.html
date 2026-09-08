@@ -7006,7 +7006,7 @@ html.light-theme,
     // ==========================================================================
     const VayuSplashScreen = {
       isDismissed: false,
-      canTapSkip: false,
+      canTapSkip: true,
 
       init() {
         const splash = document.getElementById('splash-screen');
@@ -7014,28 +7014,17 @@ html.light-theme,
 
         // Check prefers-reduced-motion
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-          splash.style.transition = 'opacity 0.4s ease';
-          setTimeout(() => {
-            splash.style.opacity = '0';
-            setTimeout(() => splash.remove(), 400);
-          }, 400);
+          splash.style.transition = 'opacity 0.3s ease';
+          splash.style.opacity = '0';
+          setTimeout(() => splash.remove(), 300);
           return;
         }
 
-        const appMark = document.getElementById('splash-app-mark');
-        const titleWrap = document.getElementById('splash-title-wrap');
-        const gaugeWrap = document.getElementById('splash-gauge-wrap');
         const gaugeRing = document.getElementById('splash-gauge-ring');
         const aqiNumber = document.getElementById('splash-aqi-number');
         const aqiSev = document.getElementById('splash-aqi-severity');
-        const locationLine = document.getElementById('splash-location-line');
-        const statusWrap = document.getElementById('splash-status-wrap');
-        const progressBar = document.getElementById('splash-progress-bar');
-        const syncPct = document.getElementById('splash-sync-pct');
-        const skipHint = document.getElementById('splash-skip-hint');
-
         const curSt = VayuForecastEngine.currentStation || VayuForecastEngine.stations[0];
-        const targetAQI = curSt.baseAQI; // Strictly match current station's live AQI
+        const targetAQI = curSt.baseAQI || 431;
         const sevMeta = VayuForecastEngine.getSeverityMeta(targetAQI);
 
         // Pre-fill location line with exact active station
@@ -7044,97 +7033,60 @@ html.light-theme,
         if (splashName) splashName.innerText = curSt.name;
         if (splashDist) splashDist.innerText = `${VayuForecastEngine.stationDistanceKm || 5.6} km`;
 
-        // Sequence:
-        // 0.0 - 0.8s: App mark fade & scale in
-        setTimeout(() => {
-          if (appMark) {
-            appMark.style.opacity = '1';
-            appMark.style.transform = 'scale(1)';
-          }
-        }, 80);
-
-        // 0.7 - 1.3s: Wordmark & subtitle fade up
-        setTimeout(() => {
-          if (titleWrap) {
-            titleWrap.style.opacity = '1';
-            titleWrap.style.transform = 'translateY(0)';
-          }
-        }, 700);
-
-        // 1.3 - 3.2s: Circular SVG gauge fills & number counts up
-        setTimeout(() => {
-          if (gaugeWrap) gaugeWrap.style.opacity = '1';
-
-          // Circular gauge perimeter = 2 * PI * 50 = 314.159
-          // Fill proportional to AQI (0 to 500)
-          const targetOffset = 314.159 - (Math.min(500, targetAQI) / 500) * 314.159;
-          if (gaugeRing) {
+        // Radial ring perimeter = 2 * PI * 50 = 314.159
+        const targetOffset = 314.159 - (Math.min(500, targetAQI) / 500) * 314.159;
+        if (gaugeRing) {
+          gaugeRing.style.stroke = sevMeta.color;
+          setTimeout(() => {
             gaugeRing.style.strokeDashoffset = targetOffset.toString();
+          }, 50);
+        }
+
+        // Fast snappy count-up from 0 to targetAQI in ~350ms
+        let currentVal = 0;
+        const step = Math.max(1, Math.ceil(targetAQI / 18));
+        const countInterval = setInterval(() => {
+          currentVal += step;
+          if (currentVal >= targetAQI) {
+            currentVal = targetAQI;
+            clearInterval(countInterval);
+            if (aqiSev) {
+              aqiSev.innerText = `${sevMeta.label.toUpperCase()} (${sevMeta.stageCode})`;
+              aqiSev.className = `text-[10px] font-mono-tag font-bold px-2.5 py-0.5 rounded-full ${sevMeta.badgeClass}`;
+            }
           }
+          if (aqiNumber) aqiNumber.innerText = currentVal;
+        }, 18);
 
-          // Count up number from 0 to targetAQI
-          let currentVal = 0;
-          const stepTime = Math.max(10, Math.floor(1800 / targetAQI));
-          const countInterval = setInterval(() => {
-            currentVal += Math.ceil(targetAQI / 40);
-            if (currentVal >= targetAQI) {
-              currentVal = targetAQI;
-              clearInterval(countInterval);
-              if (aqiSev) {
-                aqiSev.innerText = sevMeta.label.toUpperCase();
-                aqiSev.className = `text-[10px] font-mono-tag font-bold px-2.5 py-0.5 rounded-full ${sevMeta.badgeClass}`;
-              }
-              // Allow early tap skip now
-              VayuSplashScreen.canTapSkip = true;
-              if (skipHint) skipHint.style.opacity = '0.9';
-            }
-            if (aqiNumber) aqiNumber.innerText = currentVal;
-          }, stepTime);
-        }, 1300);
-
-        // ~3.4s: Location line fades in
-        setTimeout(() => {
-          if (locationLine) locationLine.style.opacity = '1';
-        }, 3400);
-
-        // ~4.2s: Forecast sync status line + progress bar
-        setTimeout(() => {
-          if (statusWrap) statusWrap.style.opacity = '1';
-          let pct = 0;
-          const progressInterval = setInterval(() => {
-            pct += 5;
-            if (pct >= 100) {
-              pct = 100;
-              clearInterval(progressInterval);
-            }
-            if (progressBar) progressBar.style.width = pct + '%';
-            if (syncPct) syncPct.innerText = pct + '%';
-          }, 60);
-        }, 4200);
-
-        // ~5.6 - 6.4s: Smooth fade and scale out, reveal Command Center
+        // Fast transition into app after ~850ms
         setTimeout(() => {
           this.dismissSplash();
-        }, 5800);
+        }, 850);
       },
 
       handleUserTapSkip() {
-        if (this.canTapSkip && !this.isDismissed) {
+        if (!this.isDismissed) {
           this.dismissSplash();
         }
       },
 
-      dismissSplash() {
+      dismissSplash(immediate = false) {
         if (this.isDismissed) return;
         this.isDismissed = true;
 
         const splash = document.getElementById('splash-screen');
         if (splash) {
-          splash.classList.add('splash-fade-out');
-          setTimeout(() => {
+          if (immediate) {
             splash.style.display = 'none';
-            splash.remove();
-          }, 850);
+            if (splash.parentNode) splash.parentNode.removeChild(splash);
+          } else {
+            splash.style.opacity = '0';
+            splash.style.pointerEvents = 'none';
+            setTimeout(() => {
+              splash.style.display = 'none';
+              if (splash.parentNode) splash.parentNode.removeChild(splash);
+            }, 300);
+          }
         }
       }
     };
@@ -8323,7 +8275,7 @@ html.light-theme,
         if (typeof updateNavTabStyles === 'function') {
           updateNavTabStyles();
         }
-        if (typeof VayuWeather !== 'undefined' && VayuWeather.renderChart) {
+        if (typeof VayuWeather !== 'undefined' && VayuWeather.forecastDays && VayuWeather.forecastDays.length && VayuWeather.renderChart) {
           VayuWeather.renderChart();
         }
         if (typeof updateZonesStrip === 'function') {
@@ -8688,8 +8640,10 @@ html.light-theme,
       renderChart() {
         const container = document.getElementById('weather-curve-container');
         if (!container) return;
+        if (!this.forecastDays || !this.forecastDays.length) return;
 
         const day = this.forecastDays[this.selectedDayIndex] || this.forecastDays[0];
+        if (!day) return;
         const hourly = day.hourly || [];
         if (hourly.length === 0) return;
 
@@ -9211,32 +9165,70 @@ html.light-theme,
       }
     };
 
-    document.addEventListener('DOMContentLoaded', async () => {
-      VayuSettings.init();
-      lucide.createIcons();
-      VayuForecastEngine.init();
-      VayuLocationService.init();
+    let backendAvailable = null; // null = unverified, false = static/offline, true = online
+    let scrubDebounceTimer = null;
+    let whatIfDebounceTimer = null;
+
+    async function checkBackendAvailability() {
+      if (backendAvailable !== null) return backendAvailable;
       try {
-        await VayuWaqiService.init();
+        const controller = new AbortController();
+        const tid = setTimeout(() => controller.abort(), 1200);
+        const res = await fetch('/api/health', { signal: controller.signal });
+        clearTimeout(tid);
+        backendAvailable = res.ok;
       } catch (e) {
-        console.warn("WAQI init fallback:", e);
+        backendAvailable = false;
       }
-      VayuSplashScreen.init();
-      VayuPredictiveTimeline.render();
-      VayuDispatchesCenter.render();
-      VayuWeather.init();
-      VayuAttributionEngine.render();
-      VayuAIAssistant.init();
-      await fetchStations();
-      await loadCurrentStepData(currentStep);
-      if (typeof VayuAtmosphericMap !== 'undefined') {
-        VayuAtmosphericMap.init();
+      return backendAvailable;
+    }
+
+    function initVayuApp() {
+      try {
+        VayuForecastEngine.init();
+        VayuLocationService.init();
+        VayuWeather.init();
+        VayuSettings.init();
+        lucide.createIcons();
+
+        // Zero-latency instant hydration of all telemetry & models locally
+        applyStepDataLocally(currentStep);
+        if (typeof updateForecastFromEngine === 'function') {
+          updateForecastFromEngine();
+        }
+        if (typeof updateAttributionPanelFallback === 'function') {
+          updateAttributionPanelFallback();
+        }
+        VayuSplashScreen.init();
+        VayuPredictiveTimeline.render();
+        VayuDispatchesCenter.render();
+        VayuAttributionEngine.render();
+        VayuAIAssistant.init();
+        if (typeof VayuAtmosphericMap !== 'undefined') {
+          VayuAtmosphericMap.init();
+        }
+        runWhatIfAnalysis();
+        renderCleanAirWindows();
+        calcCommuteRoute();
+      } catch (err) {
+        console.error("VayuCoupler init error:", err);
       }
-      runWhatIfAnalysis();
-      renderCleanAirWindows();
-      calcCommuteRoute();
-      if (window.location.search.includes('nosplash')) {
-        VayuSplashScreen.dismissSplash();
+
+      // Non-blocking background sync for remote services (zero UI stall)
+      setTimeout(async () => {
+        try {
+          await checkBackendAvailability();
+          if (backendAvailable) {
+            await fetchStations();
+            await loadCurrentStepData(currentStep);
+          }
+          // WAQI live background refresh
+          VayuWaqiService.init().catch(() => {});
+        } catch (e) {}
+      }, 60);
+
+      if (window.location.href.includes('nosplash')) {
+        VayuSplashScreen.dismissSplash(true);
       }
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.has('test_ask')) {
@@ -9255,7 +9247,13 @@ html.light-theme,
         const hashTab = window.location.hash.replace('#', '');
         if (hashTab) switchTab(hashTab);
       }
-    });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initVayuApp);
+    } else {
+      initVayuApp();
+    }
 
     function switchTab(tabId) {
       if (tabId === 'vayuai') tabId = 'copilot';
@@ -9280,13 +9278,21 @@ html.light-theme,
         target.style.display = 'flex';
       }
 
-      if (tabId === 'overview' && typeof VayuAtmosphericMap !== 'undefined' && typeof VayuAtmosphericMap.resumeWindAnimation === 'function') {
-        VayuAtmosphericMap.resumeWindAnimation();
+      if (tabId === 'overview' && typeof VayuAtmosphericMap !== 'undefined') {
+        if (typeof VayuAtmosphericMap.resumeWindAnimation === 'function') {
+          VayuAtmosphericMap.resumeWindAnimation();
+        }
+        setTimeout(() => {
+          if (VayuAtmosphericMap.map) VayuAtmosphericMap.map.invalidateSize();
+        }, 50);
       }
 
       updateNavTabStyles();
-      if (window.lucide) lucide.createIcons();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (window.lucide) {
+        if (target) lucide.createIcons({ root: target });
+        else lucide.createIcons();
+      }
+      window.scrollTo(0, 0);
     }
 
     function updateNavTabStyles() {
@@ -9410,9 +9416,18 @@ html.light-theme,
 
     function onScrubChange(val) {
       currentStep = parseInt(val);
-      document.getElementById('step-hour-badge').innerText = `Hour: ${currentStep} / 167`;
-      loadCurrentStepData(currentStep);
+      const badge = document.getElementById('step-hour-badge');
+      if (badge) badge.innerText = `Hour: ${currentStep} / 167`;
+      applyStepDataLocally(currentStep);
       checkLiveVoiceAlert(currentStep);
+
+      // Only query remote backend when explicitly confirmed online, with debouncing
+      if (backendAvailable === true) {
+        if (scrubDebounceTimer) clearTimeout(scrubDebounceTimer);
+        scrubDebounceTimer = setTimeout(() => {
+          loadCurrentStepData(currentStep);
+        }, 300);
+      }
     }
 
     function setScrubberStep(step) {
@@ -9428,30 +9443,68 @@ html.light-theme,
     }
 
     async function fetchStations() {
+      if (backendAvailable === false) return;
       try {
-        const res = await fetch('/api/stations');
+        const controller = new AbortController();
+        const tid = setTimeout(() => controller.abort(), 1800);
+        const res = await fetch('/api/stations', { signal: controller.signal });
+        clearTimeout(tid);
+        if (!res.ok) {
+          backendAvailable = false;
+          return;
+        }
+        backendAvailable = true;
         stationsList = await res.json();
+        if (stationsList && stationsList.length && typeof VayuForecastEngine !== 'undefined') {
+          stationsList.forEach(liveSt => {
+            const target = VayuForecastEngine.stations.find(s => s.id === liveSt.id || s.name.toLowerCase() === liveSt.name.toLowerCase());
+            if (target) {
+              target.aqi = liveSt.aqi || liveSt.baseAQI;
+              target.baseAQI = target.aqi;
+              target.pm25 = liveSt.pm25 || Math.round(target.aqi * 0.65);
+              target.pm10 = liveSt.pm10 || Math.round(target.aqi * 0.95);
+              target.is_live = liveSt.is_live;
+              target.live_source = liveSt.live_source;
+              target.live_dist_km = liveSt.live_dist_km;
+            }
+          });
+          if (VayuForecastEngine.currentStation) {
+            const updated = VayuForecastEngine.stations.find(s => s.id === VayuForecastEngine.currentStation.id);
+            if (updated) {
+              VayuLocationService.applyResolvedStation(updated, VayuForecastEngine.stationDistanceKm || 5.6, false);
+            }
+          }
+        }
       } catch (e) {
-        console.error("Failed to fetch stations", e);
+        backendAvailable = false;
+        console.warn("Backend stations offline, using embedded MoES station network.");
       }
     }
 
-    function updateSliderVal(type, val) {
-      const el = document.getElementById(`slider-val-${type}`);
-      if (el) el.innerText = `${val}%`;
-      runWhatIfAnalysis();
-    }
-
     async function loadCurrentStepData(step) {
+      if (backendAvailable === false) {
+        applyStepDataLocally(step);
+        return;
+      }
       try {
+        const controller = new AbortController();
+        const tid = setTimeout(() => controller.abort(), 1800);
         const [snapRes, fcRes, stFcRes, grapRes, dispRes] = await Promise.all([
-          fetch(`/api/snapshot?step_hour=${step}`),
-          fetch(`/api/forecast/regional?step_hour=${step}`),
-          fetch(`/api/forecast/station/${selectedStationId}?step_hour=${step}`),
-          fetch(`/api/grap/triggers?step_hour=${step}`),
-          fetch(`/api/dispatches?step_hour=${step}`)
+          fetch(`/api/snapshot?step_hour=${step}`, { signal: controller.signal }),
+          fetch(`/api/forecast/regional?step_hour=${step}`, { signal: controller.signal }),
+          fetch(`/api/forecast/station/${selectedStationId}?step_hour=${step}`, { signal: controller.signal }),
+          fetch(`/api/grap/triggers?step_hour=${step}`, { signal: controller.signal }),
+          fetch(`/api/dispatches?step_hour=${step}`, { signal: controller.signal })
         ]);
+        clearTimeout(tid);
 
+        if (!snapRes.ok || !fcRes.ok) {
+          backendAvailable = false;
+          applyStepDataLocally(step);
+          return;
+        }
+
+        backendAvailable = true;
         snapshotData = await snapRes.json();
         regionalForecast = await fcRes.json();
         const stationFc = await stFcRes.json();
@@ -9466,20 +9519,14 @@ html.light-theme,
         updateDispatchesView(dispatchesData);
         updateInterStateGrid(snapshotData, grapTriggers);
 
-        lucide.createIcons();
+        if (window.lucide) {
+          const actPanel = document.getElementById(`panel-${activeTab}`);
+          if (actPanel) lucide.createIcons({ root: actPanel });
+          else lucide.createIcons();
+        }
       } catch (e) {
-        console.warn("API offline or running in standalone static mode. Using coupled physics engine fallback.", e);
-        // Fallback coupled calculation for 100% offline standalone compatibility
-        const aqiVal = Math.round(220 + (step > 60 ? (step - 60) * 3.8 : 0));
-        const pblh = Math.max(220, Math.round(1400 - (step > 40 ? (step - 40) * 12 : 0)));
-        const inv = (Math.sin(step / 12) * 2.5 + 2.5).toFixed(1);
-        const vi = Math.round((pblh * 3.5));
-        
-        document.getElementById('curr-aqi-val').innerText = aqiVal;
-        document.getElementById('curr-pblh-val').innerHTML = `${pblh} <span class="text-[10px] text-slate-400">m</span>`;
-        document.getElementById('curr-inversion-val').innerHTML = `${inv} <span class="text-[10px] text-slate-400">°C</span>`;
-        document.getElementById('curr-vi-val').innerHTML = `${vi} <span class="text-[10px] text-cyan-400">m²/s</span>`;
-        updateInterStateGridFallback(step, aqiVal, pblh);
+        backendAvailable = false;
+        applyStepDataLocally(step);
       }
     }
 
