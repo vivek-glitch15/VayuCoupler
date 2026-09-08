@@ -2452,7 +2452,7 @@
         </div>
         <div class="min-w-0">
           <div class="text-xs font-bold text-white flex items-center gap-1.5 truncate font-sans-ui">
-            <span>Local Air Quality Set to Your Location</span>
+            <span id="toast-title-text">Local Air Quality Set to Your Location</span>
           </div>
           <div class="text-[11px] text-[#8b9390] truncate font-mono-data" id="toast-station-subtext">
             Punjabi Bagh • 6.2 km away • AQI 163
@@ -6339,14 +6339,19 @@
         }
       },
 
-      showLocationToast(stationName, distanceKm, aqi) {
+      showLocationToast(stationName, distanceKm, aqi, customTitle = null) {
         const toast = document.getElementById('gps-location-toast');
         const subtext = document.getElementById('toast-station-subtext');
+        const titleEl = document.getElementById('toast-title-text');
         const pBar = document.getElementById('toast-progress-bar');
         if (!toast || !subtext) return;
 
+        if (titleEl) {
+          titleEl.innerText = customTitle || "Local Air Quality Set to Your Location";
+        }
         subtext.innerText = `${stationName} • ${distanceKm} km away • AQI ${aqi}`;
         toast.classList.remove('hidden');
+        toast.style.display = 'block';
 
         if (pBar) {
           pBar.style.transition = 'none';
@@ -6360,6 +6365,7 @@
         if (this.toastTimeout) clearTimeout(this.toastTimeout);
         this.toastTimeout = setTimeout(() => {
           toast.classList.add('hidden');
+          toast.style.display = 'none';
         }, 4400);
       }
     };
@@ -11599,17 +11605,78 @@
         const btnGps = document.getElementById('btn-zoom-gps');
         if (btnGps) {
           btnGps.onclick = () => {
-            if (navigator.geolocation) {
-              navigator.geolocation.getCurrentPosition(
-                pos => {
-                  if (this.map) this.map.flyTo([pos.coords.latitude, pos.coords.longitude], 12, { duration: 1.2 });
-                },
-                err => {
-                  alert("GPS Location not available. Showing Delhi NCT Center.");
-                  if (this.map) this.map.flyTo([28.62, 77.15], 11);
-                }
-              );
+            const originalHtml = btnGps.innerHTML;
+            btnGps.innerHTML = '<span class="animate-pulse text-[#38bdf8]">📡 Locating...</span>';
+
+            const restoreBtn = () => {
+              btnGps.innerHTML = originalHtml;
+            };
+
+            const handleGpsFallback = () => {
+              const activeStation = (typeof VayuForecastEngine !== 'undefined' && VayuForecastEngine.currentStation)
+                || { lat: 28.67, lon: 77.13, name: "Punjabi Bagh" };
+              const targetLat = activeStation.lat || 28.62;
+              const targetLon = activeStation.lon || 77.15;
+
+              if (this.map) {
+                this.map.flyTo([targetLat, targetLon], 11, { duration: 1.2 });
+              }
+
+              if (typeof VayuForecastEngine !== 'undefined' && VayuForecastEngine.showLocationToast) {
+                VayuForecastEngine.showLocationToast(
+                  activeStation.name,
+                  (VayuForecastEngine.stationDistanceKm || 5.6),
+                  (activeStation.aqi || 157),
+                  "GPS Unavailable • Showing Active Station"
+                );
+              }
+            };
+
+            if (!navigator.geolocation) {
+              restoreBtn();
+              handleGpsFallback();
+              return;
             }
+
+            navigator.geolocation.getCurrentPosition(
+              pos => {
+                restoreBtn();
+                const lat = pos.coords.latitude;
+                const lon = pos.coords.longitude;
+
+                if (this.map) {
+                  if (!this.userGpsMarker) {
+                    const gpsIcon = L.divIcon({
+                      className: 'user-gps-marker',
+                      html: '<div class="relative flex items-center justify-center w-7 h-7"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#38bdf8] opacity-75"></span><span class="relative inline-flex rounded-full h-3.5 w-3.5 bg-[#38bdf8] border-2 border-white shadow-lg"></span></div>',
+                      iconSize: [28, 28],
+                      iconAnchor: [14, 14]
+                    });
+                    this.userGpsMarker = L.marker([lat, lon], { icon: gpsIcon, zIndexOffset: 1000 }).addTo(this.map);
+                    this.userGpsMarker.bindPopup('<div class="text-xs font-bold text-white font-sans-ui p-1">📍 You Are Here</div>');
+                  } else {
+                    this.userGpsMarker.setLatLng([lat, lon]);
+                  }
+                  this.map.flyTo([lat, lon], 12, { duration: 1.2 });
+                }
+
+                if (typeof VayuForecastEngine !== 'undefined') {
+                  let nearest = VayuForecastEngine.stations[0];
+                  let minDist = Infinity;
+                  VayuForecastEngine.stations.forEach(st => {
+                    const d = VayuForecastEngine.calcHaversineDistance(lat, lon, st.lat, st.lon);
+                    if (d < minDist) { minDist = d; nearest = st; }
+                  });
+                  VayuForecastEngine.applyResolvedStation(nearest, minDist, true);
+                }
+              },
+              err => {
+                restoreBtn();
+                console.warn("GPS Location unavailable:", err.message);
+                handleGpsFallback();
+              },
+              { enableHighAccuracy: false, timeout: 6000, maximumAge: 60000 }
+            );
           };
         }
 
