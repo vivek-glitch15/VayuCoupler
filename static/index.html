@@ -986,13 +986,100 @@
     html.light-theme #attrib-sectors-container .text-white {
       color: #0f172a !important;
     }
+    /* Attribution Stations Grid in Light Theme */
+    html.light-theme #attrib-stations-grid > div,
+    html.light-theme #attrib-stations-grid .bg-earth-950\/70 {
+      background-color: #ffffff !important;
+      border: 1.5px solid #cbd5e1 !important;
+      box-shadow: 0 3px 10px rgba(15, 23, 42, 0.05) !important;
+    }
+    html.light-theme #attrib-stations-grid > div:hover {
+      border-color: #059669 !important;
+      box-shadow: 0 6px 16px rgba(5, 150, 105, 0.1) !important;
+    }
+    /* Station Name Title */
+    html.light-theme #attrib-stations-grid .font-bold.text-xs,
     html.light-theme #attrib-stations-grid .text-white {
       color: #0f172a !important;
+      font-weight: 800 !important;
+      font-size: 13px !important;
     }
-    html.light-theme #attrib-stations-grid .bg-earth-950\/70 {
-      background: #ffffff !important;
-      border-color: #cbd5e1 !important;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+    /* Station AQI Badges */
+    html.light-theme #attrib-stations-grid .bg-rose-950,
+    html.light-theme #attrib-stations-grid .bg-red-950 {
+      background-color: #fee2e2 !important;
+      border: 1.5px solid #ef4444 !important;
+      color: #991b1b !important;
+      font-weight: 800 !important;
+    }
+    html.light-theme #attrib-stations-grid .bg-amber-950 {
+      background-color: #fff7ed !important;
+      border: 1.5px solid #f97316 !important;
+      color: #c2410c !important;
+      font-weight: 800 !important;
+    }
+    /* Labels (Primary:, Secondary:, Atmospheric Risk:) */
+    html.light-theme #attrib-stations-grid .text-slate-400 {
+      color: #475569 !important;
+      font-weight: 700 !important;
+    }
+    /* Primary Source Value */
+    html.light-theme #attrib-stations-grid .text-orange-300 {
+      color: #c2410c !important;
+      font-weight: 800 !important;
+    }
+    /* Secondary Source Value */
+    html.light-theme #attrib-stations-grid .text-amber-300 {
+      color: #b45309 !important;
+      font-weight: 700 !important;
+    }
+    /* Atmospheric Risk Value */
+    html.light-theme #attrib-stations-grid .text-slate-300 {
+      color: #0f172a !important;
+      font-weight: 600 !important;
+    }
+    /* Status Dot and Text at bottom */
+    html.light-theme #attrib-stations-grid .text-emerald-400 {
+      color: #047857 !important;
+      font-weight: 800 !important;
+    }
+    html.light-theme #attrib-stations-grid .bg-emerald-400 {
+      background-color: #059669 !important;
+    }
+    /* Receptor Footnote */
+    html.light-theme #attrib-stations-grid .text-earth-400 {
+      color: #475569 !important;
+      font-weight: 600 !important;
+    }
+    /* Card Divider Lines */
+    html.light-theme #attrib-stations-grid .border-earth-800 {
+      border-color: #e2e8f0 !important;
+    }
+
+    /* Attribution Upper Panels & Thermal Telemetry */
+    html.light-theme #attrib-punjab-fires {
+      color: #c2410c !important;
+      font-weight: 900 !important;
+    }
+    html.light-theme #attrib-haryana-fires {
+      color: #b45309 !important;
+      font-weight: 900 !important;
+    }
+    html.light-theme #panel-attribution .text-sky-400 {
+      color: #0284c7 !important;
+      font-weight: 900 !important;
+    }
+    html.light-theme #panel-attribution span[class*="bg-orange-950"] {
+      background-color: #fff7ed !important;
+      border: 1.5px solid #fed7aa !important;
+      color: #c2410c !important;
+      font-weight: 700 !important;
+    }
+    html.light-theme #panel-attribution span[class*="bg-emerald-950"] {
+      background-color: #ecfdf5 !important;
+      border: 1.5px solid #a7f3d0 !important;
+      color: #047857 !important;
+      font-weight: 700 !important;
     }
 
     /* VayuAI Assistant Chat in Light Mode */
@@ -8620,9 +8707,13 @@
           const secondary = isEn ? st.secondaryEn : st.secondaryHi;
           const wind = isEn ? st.windEn : st.windHi;
           
-          let aqiBadgeBg = 'bg-red-950 text-red-300 border-red-800';
-          if (st.aqi >= 400) aqiBadgeBg = 'bg-rose-950 text-rose-300 border-rose-800 font-black';
-          else if (st.aqi < 350) aqiBadgeBg = 'bg-amber-950 text-amber-300 border-amber-800';
+          const isLight = document.documentElement.classList.contains('light-theme');
+          let aqiBadgeBg = isLight ? 'bg-red-100 text-red-800 border-red-300 font-bold' : 'bg-red-950 text-red-300 border-red-800';
+          if (st.aqi >= 400) {
+            aqiBadgeBg = isLight ? 'bg-rose-100 text-rose-800 border-rose-300 font-black' : 'bg-rose-950 text-rose-300 border-rose-800 font-black';
+          } else if (st.aqi < 350) {
+            aqiBadgeBg = isLight ? 'bg-amber-100 text-amber-800 border-amber-300 font-bold' : 'bg-amber-950 text-amber-300 border-amber-800';
+          }
 
           return `
             <div class="p-3.5 rounded-2xl bg-earth-950/70 border border-earth-700/60 flex flex-col justify-between gap-2 shadow-sm hover:border-emerald-700/60 transition">
