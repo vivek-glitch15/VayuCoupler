@@ -3475,7 +3475,7 @@ html.light-theme,
               <span>Weather</span>
               <span class="text-xs font-mono font-normal text-amber-300 bg-amber-950/80 px-2 py-0.5 rounded-full border border-amber-800/80">LIVE RADAR</span>
             </div>
-            <div class="text-sm sm:text-base font-semibold text-earth-200 mt-0.5" id="weather-day-name">Friday</div>
+            <div class="text-sm sm:text-base font-semibold text-earth-200 mt-0.5" id="weather-day-name">Tuesday, 8 Sep</div>
             <div class="text-xs text-earth-300/80" id="weather-condition-desc">Cloudy • Delhi-NCR Real-Time Meteorology</div>
             <div class="mt-2 flex items-center gap-2">
               <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
@@ -3511,7 +3511,7 @@ html.light-theme,
           <div class="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-earth-300">
             <span class="flex items-center gap-1.5">
               <i data-lucide="calendar" class="w-3.5 h-3.5 text-amber-400"></i>
-              <span>8-Day Daily Forecast Outlook</span>
+              <span>7-Day Daily Forecast Outlook</span>
             </span>
             <span class="text-[10px] text-earth-400 font-mono normal-case">Tap day card to view hourly chart</span>
           </div>
@@ -8249,139 +8249,57 @@ html.light-theme,
       unit: 'C',      // 'C' | 'F'
       selectedDayIndex: 0,
       
-      // 8-Day Forecast Data for Delhi-NCR (coupled meteorological ground + WRF simulation)
-      forecastDays: [
-        { day: 'Fri', fullDay: 'Friday', fullDayHi: 'शुक्रवार', date: '7 Sep', icon: 'cloudy',
-          conditionEn: 'Cloudy', conditionHi: 'घने बादल',
-          descEn: 'Cloudy • Delhi-NCR Real-Time Weather',
-          descHi: 'घने बादल • दिल्ली-एनसीआर वास्तविक समय मौसम',
-          tempMax: 30, tempMin: 25, precip: 26, humidity: 84, windSpeed: 10, windDir: 'NW',
-          hourly: [
-            { time: '10 am', temp: 29, precip: 20, wind: 8 },
-            { time: '1 pm', temp: 30, precip: 26, wind: 10 },
-            { time: '4 pm', temp: 28, precip: 35, wind: 12 },
-            { time: '7 pm', temp: 27, precip: 30, wind: 9 },
-            { time: '10 pm', temp: 26, precip: 15, wind: 7 },
-            { time: '1 am', temp: 26, precip: 10, wind: 6 },
-            { time: '4 am', temp: 25, precip: 5, wind: 7 },
-            { time: '7 am', temp: 25, precip: 5, wind: 8 }
-          ]
-        },
-        { day: 'Sat', fullDay: 'Saturday', fullDayHi: 'शनिवार', date: '8 Sep', icon: 'rain',
-          conditionEn: 'Scattered Showers', conditionHi: 'हल्की बारिश',
-          descEn: 'Rain & Gusty Winds • Light Showers',
-          descHi: 'तेज हवाएं व बारिश • हल्की वर्षा',
-          tempMax: 26, tempMin: 24, precip: 78, humidity: 91, windSpeed: 16, windDir: 'E',
-          hourly: [
-            { time: '10 am', temp: 25, precip: 60, wind: 12 },
-            { time: '1 pm', temp: 26, precip: 78, wind: 16 },
-            { time: '4 pm', temp: 25, precip: 85, wind: 15 },
-            { time: '7 pm', temp: 24, precip: 70, wind: 14 },
-            { time: '10 pm', temp: 24, precip: 45, wind: 11 },
-            { time: '1 am', temp: 23, precip: 30, wind: 9 },
-            { time: '4 am', temp: 23, precip: 20, wind: 8 },
-            { time: '7 am', temp: 24, precip: 25, wind: 10 }
-          ]
-        },
-        { day: 'Sun', fullDay: 'Sunday', fullDayHi: 'रविवार', date: '9 Sep', icon: 'partly-cloudy',
-          conditionEn: 'Partly Cloudy', conditionHi: 'आंशिक बादल',
-          descEn: 'Pleasant & Breezy • Partly Cloudy',
-          descHi: 'सुहावना मौसम • आंशिक रूप से बादल',
-          tempMax: 31, tempMin: 24, precip: 15, humidity: 72, windSpeed: 12, windDir: 'WNW',
-          hourly: [
-            { time: '10 am', temp: 28, precip: 15, wind: 10 },
-            { time: '1 pm', temp: 31, precip: 15, wind: 12 },
-            { time: '4 pm', temp: 30, precip: 10, wind: 14 },
-            { time: '7 pm', temp: 28, precip: 5, wind: 11 },
-            { time: '10 pm', temp: 26, precip: 5, wind: 8 },
-            { time: '1 am', temp: 25, precip: 0, wind: 7 },
-            { time: '4 am', temp: 24, precip: 0, wind: 6 },
-            { time: '7 am', temp: 25, precip: 5, wind: 8 }
-          ]
-        },
-        { day: 'Mon', fullDay: 'Monday', fullDayHi: 'सोमवार', date: '10 Sep', icon: 'sunny',
-          conditionEn: 'Sunny / Clear', conditionHi: 'साफ़ धूप',
-          descEn: 'Sunny & Warm • Clear Skies',
-          descHi: 'तेज धूप व गर्मी • साफ़ आकाश',
-          tempMax: 34, tempMin: 26, precip: 5, humidity: 58, windSpeed: 9, windDir: 'NW',
-          hourly: [
-            { time: '10 am', temp: 30, precip: 5, wind: 8 },
-            { time: '1 pm', temp: 34, precip: 5, wind: 9 },
-            { time: '4 pm', temp: 33, precip: 0, wind: 10 },
-            { time: '7 pm', temp: 30, precip: 0, wind: 8 },
-            { time: '10 pm', temp: 28, precip: 0, wind: 7 },
-            { time: '1 am', temp: 27, precip: 0, wind: 6 },
-            { time: '4 am', temp: 26, precip: 0, wind: 6 },
-            { time: '7 am', temp: 27, precip: 0, wind: 7 }
-          ]
-        },
-        { day: 'Tue', fullDay: 'Tuesday', fullDayHi: 'मंगलवार', date: '11 Sep', icon: 'sunny',
-          conditionEn: 'Clear Sky', conditionHi: 'साफ़ मौसम',
-          descEn: 'Dry Northwesterly Wind • Sunny',
-          descHi: 'उत्तर-पश्चिमी शुष्क हवा • साफ़ मौसम',
-          tempMax: 34, tempMin: 26, precip: 5, humidity: 55, windSpeed: 11, windDir: 'NW',
-          hourly: [
-            { time: '10 am', temp: 30, precip: 5, wind: 9 },
-            { time: '1 pm', temp: 34, precip: 5, wind: 11 },
-            { time: '4 pm', temp: 33, precip: 0, wind: 12 },
-            { time: '7 pm', temp: 30, precip: 0, wind: 9 },
-            { time: '10 pm', temp: 28, precip: 0, wind: 7 },
-            { time: '1 am', temp: 27, precip: 0, wind: 6 },
-            { time: '4 am', temp: 26, precip: 0, wind: 6 },
-            { time: '7 am', temp: 27, precip: 0, wind: 8 }
-          ]
-        },
-        { day: 'Wed', fullDay: 'Wednesday', fullDayHi: 'बुधवार', date: '12 Sep', icon: 'partly-cloudy',
-          conditionEn: 'Mostly Sunny', conditionHi: 'अधिकांशतः धूप',
-          descEn: 'Warm & Light Haze • Mostly Sunny',
-          descHi: 'हल्की धुंध व गर्मी • अधिकांशतः धूप',
-          tempMax: 35, tempMin: 26, precip: 10, humidity: 62, windSpeed: 8, windDir: 'W',
-          hourly: [
-            { time: '10 am', temp: 31, precip: 10, wind: 7 },
-            { time: '1 pm', temp: 35, precip: 10, wind: 8 },
-            { time: '4 pm', temp: 34, precip: 5, wind: 9 },
-            { time: '7 pm', temp: 31, precip: 5, wind: 8 },
-            { time: '10 pm', temp: 29, precip: 0, wind: 6 },
-            { time: '1 am', temp: 28, precip: 0, wind: 5 },
-            { time: '4 am', temp: 26, precip: 0, wind: 5 },
-            { time: '7 am', temp: 27, precip: 5, wind: 6 }
-          ]
-        },
-        { day: 'Thu', fullDay: 'Thursday', fullDayHi: 'गुरुवार', date: '13 Sep', icon: 'partly-cloudy',
-          conditionEn: 'Partly Cloudy', conditionHi: 'आंशिक बादल',
-          descEn: 'Mild Inversion • Partly Cloudy',
-          descHi: 'हल्का व्युत्क्रमण • आंशिक बादल',
-          tempMax: 36, tempMin: 26, precip: 12, humidity: 64, windSpeed: 7, windDir: 'NW',
-          hourly: [
-            { time: '10 am', temp: 32, precip: 10, wind: 6 },
-            { time: '1 pm', temp: 36, precip: 12, wind: 7 },
-            { time: '4 pm', temp: 34, precip: 10, wind: 8 },
-            { time: '7 pm', temp: 31, precip: 5, wind: 7 },
-            { time: '10 pm', temp: 29, precip: 5, wind: 6 },
-            { time: '1 am', temp: 28, precip: 0, wind: 5 },
-            { time: '4 am', temp: 26, precip: 0, wind: 5 },
-            { time: '7 am', temp: 28, precip: 5, wind: 6 }
-          ]
-        },
-        { day: 'Fri', fullDay: 'Next Friday', fullDayHi: 'अगला शुक्रवार', date: '14 Sep', icon: 'partly-cloudy',
-          conditionEn: 'Hazy Sun', conditionHi: 'धूप व धुंध',
-          descEn: 'Stagnant Airflow • Hazy Sunshine',
-          descHi: 'स्थिर वायु प्रवाह • धुंध व धूप',
-          tempMax: 33, tempMin: 26, precip: 15, humidity: 68, windSpeed: 8, windDir: 'W',
-          hourly: [
-            { time: '10 am', temp: 30, precip: 15, wind: 7 },
-            { time: '1 pm', temp: 33, precip: 15, wind: 8 },
-            { time: '4 pm', temp: 32, precip: 10, wind: 9 },
-            { time: '7 pm', temp: 29, precip: 5, wind: 7 },
-            { time: '10 pm', temp: 28, precip: 5, wind: 6 },
-            { time: '1 am', temp: 27, precip: 0, wind: 5 },
-            { time: '4 am', temp: 26, precip: 0, wind: 6 },
-            { time: '7 am', temp: 27, precip: 5, wind: 7 }
-          ]
+      getInitialForecastDays() {
+        const dayNamesEn = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        const fullDayNamesEn = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const fullDayNamesHi = ['रविवार', 'सोमवार', 'मंगलवार', 'बुधवार', 'गुरुवार', 'शुक्रवार', 'शनिवार'];
+        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+        const now = new Date();
+        const days = [];
+
+        for (let i = 0; i < 7; i++) {
+          const d = new Date(now);
+          d.setDate(now.getDate() + i);
+
+          const dayIdx = d.getDay();
+          const dateNum = d.getDate();
+          const monthStr = monthNames[d.getMonth()];
+
+          days.push({
+            day: dayNamesEn[dayIdx],
+            fullDay: fullDayNamesEn[dayIdx],
+            fullDayHi: fullDayNamesHi[dayIdx],
+            date: `${dateNum} ${monthStr}`,
+            rawDate: d.toISOString().split('T')[0],
+            icon: i === 0 ? 'sunny' : (i % 2 === 0 ? 'partly-cloudy' : 'sunny'),
+            conditionEn: 'Sunny / Clear',
+            conditionHi: 'साफ़ मौसम',
+            descEn: 'Delhi-NCR Real-Time Weather Forecast',
+            descHi: 'दिल्ली-एनसीआर मौसम पूर्वानुमान',
+            tempMax: 38 - Math.round(i * 0.8),
+            tempMin: 27 - Math.round(i * 0.4),
+            precip: 5,
+            humidity: 45,
+            windSpeed: 14,
+            windDir: 'NNW',
+            hourly: [
+              { time: '10 am', temp: 34, precip: 5, wind: 10 },
+              { time: '1 pm', temp: 38, precip: 2, wind: 14 },
+              { time: '4 pm', temp: 37, precip: 2, wind: 15 },
+              { time: '7 pm', temp: 33, precip: 2, wind: 10 },
+              { time: '10 pm', temp: 31, precip: 5, wind: 8 },
+              { time: '1 am', temp: 28, precip: 5, wind: 8 },
+              { time: '4 am', temp: 27, precip: 5, wind: 7 },
+              { time: '7 am', temp: 28, precip: 5, wind: 8 }
+            ]
+          });
         }
-      ],
+        return days;
+      },
 
       init() {
+        this.forecastDays = this.getInitialForecastDays();
         this.tryFetchLiveDelhiWeather();
         this.render();
       },
@@ -8418,12 +8336,26 @@ html.light-theme,
       syncLiveWeatherApiData(data) {
         if (!data || !data.current) return;
         const cur = data.current;
+        const dayNamesEn = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        const fullDayNamesEn = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const fullDayNamesHi = ['रविवार', 'सोमवार', 'मंगलवार', 'बुधवार', 'गुरुवार', 'शुक्रवार', 'शनिवार'];
+        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+        const getIconFromText = (txt) => {
+          const t = (txt || '').toLowerCase();
+          if (t.includes('rain') || t.includes('drizzle') || t.includes('shower')) return 'rain';
+          if (t.includes('partly') || t.includes('scattered')) return 'partly-cloudy';
+          if (t.includes('cloud') || t.includes('overcast') || t.includes('fog') || t.includes('mist')) return 'cloudy';
+          return 'sunny';
+        };
+
         const today = this.forecastDays[0];
         today.tempMax = Math.round(cur.temp_c);
         today.humidity = Math.round(cur.humidity);
         today.precip = Math.round(data.forecast?.forecastday?.[0]?.day?.daily_chance_of_rain ?? (cur.precip_mm > 0 ? 30 : 5));
         today.windSpeed = Math.round(cur.wind_kph || 12);
-        today.windDir = cur.wind_dir || 'NW';
+        today.windDir = cur.wind_dir || 'NNW';
+        today.icon = getIconFromText(cur.condition?.text);
         if (cur.condition && cur.condition.text) {
           today.conditionEn = cur.condition.text;
           today.descEn = `${cur.condition.text} • Live Telemetry (WeatherAPI)`;
@@ -8431,16 +8363,30 @@ html.light-theme,
 
         // Sync multi-day forecast cards from WeatherAPI
         if (data.forecast && Array.isArray(data.forecast.forecastday)) {
-          data.forecast.forecastday.forEach((fday, idx) => {
+          data.forecast.forecastday.slice(0, 7).forEach((fday, idx) => {
             if (this.forecastDays[idx]) {
               const target = this.forecastDays[idx];
+              if (fday.date) {
+                const parts = fday.date.split('-');
+                if (parts.length === 3) {
+                  const dObj = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+                  const dIdx = dObj.getDay();
+                  target.day = dayNamesEn[dIdx];
+                  target.fullDay = fullDayNamesEn[dIdx];
+                  target.fullDayHi = fullDayNamesHi[dIdx];
+                  target.date = `${dObj.getDate()} ${monthNames[dObj.getMonth()]}`;
+                }
+              }
               if (fday.day) {
                 target.tempMax = Math.round(fday.day.maxtemp_c);
                 target.tempMin = Math.round(fday.day.mintemp_c);
                 target.precip = Math.round(fday.day.daily_chance_of_rain || target.precip);
+                target.humidity = Math.round(fday.day.avghumidity || target.humidity);
+                target.windSpeed = Math.round(fday.day.maxwind_kph || target.windSpeed);
                 if (fday.day.condition && fday.day.condition.text) {
                   target.conditionEn = fday.day.condition.text;
                   target.descEn = `${fday.day.condition.text} • Live Forecast`;
+                  target.icon = getIconFromText(fday.day.condition.text);
                 }
               }
               // Sync hourly samples if present
@@ -8677,6 +8623,7 @@ html.light-theme,
           return `
             <div onclick="VayuWeather.selectDay(${idx})" class="weather-day-card ${isActive ? 'active' : ''}">
               <div class="text-[11px] font-bold ${isActive ? 'text-amber-400' : 'text-slate-300'}">${d.day}</div>
+              <div class="text-[9px] font-mono font-medium ${isActive ? 'text-amber-500' : 'text-slate-400'} -mt-0.5">${d.date}</div>
               <div class="my-1 flex items-center justify-center">
                 ${this.getWeatherSvg(d.icon, 'w-7 h-7')}
               </div>
