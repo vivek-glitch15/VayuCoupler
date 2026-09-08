@@ -405,71 +405,145 @@
 
     html.light-theme,
     html.light-theme body {
-      background-color: var(--bg, #f8fafc) !important;
+      background-color: #f1f5f9 !important;
       background-image: 
-        radial-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px),
-        radial-gradient(ellipse at 50% 0%, rgba(4, 120, 87, 0.05) 0%, transparent 60%) !important;
-      color: var(--text-primary, #0f172a) !important;
-    }
-
-    /* Header & Navigation */
-    html.light-theme header,
-    html.light-theme header > div,
-    html.light-theme .bg-earth-950,
-    html.light-theme .bg-earth-950\/70,
-    html.light-theme .bg-earth-950\/80,
-    html.light-theme .bg-earth-950\/90,
-    html.light-theme .bg-earth-950\/95,
-    html.light-theme .bg-earth-900,
-    html.light-theme .bg-earth-900\/90,
-    html.light-theme .bg-earth-900\/80,
-    html.light-theme .bg-earth-850,
-    html.light-theme .bg-earth-800,
-    html.light-theme .bg-earth-700 {
-      background-color: #ffffff !important;
-      border-color: #cbd5e1 !important;
+        radial-gradient(rgba(148, 163, 184, 0.2) 1px, transparent 1px),
+        radial-gradient(ellipse at 50% 0%, rgba(16, 185, 129, 0.05) 0%, transparent 60%) !important;
       color: #0f172a !important;
     }
 
+    /* Header & Top Bar */
+    html.light-theme header {
+      background-color: #ffffff !important;
+      border-bottom: 1.5px solid #cbd5e1 !important;
+      box-shadow: 0 2px 10px -2px rgba(15, 23, 42, 0.06) !important;
+    }
+    html.light-theme header > div {
+      background-color: transparent !important;
+    }
+
+    /* Main Navigation Buttons */
     html.light-theme nav button {
-      color: #475569 !important;
+      color: #334155 !important;
       background-color: #f8fafc !important;
-      border: 1px solid #cbd5e1 !important;
+      border: 1.5px solid #cbd5e1 !important;
+      font-weight: 600 !important;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
     }
     html.light-theme nav button:hover {
       background-color: #f1f5f9 !important;
+      border-color: #94a3b8 !important;
       color: #0f172a !important;
     }
     html.light-theme nav button.active,
     html.light-theme nav button[class*="text-cyan-300"],
     html.light-theme nav button[class*="bg-cyan-950"] {
       background-color: #ecfdf5 !important;
-      border-color: #a7f3d0 !important;
+      border-color: #059669 !important;
       color: #047857 !important;
+      font-weight: 700 !important;
+      box-shadow: 0 0 10px rgba(5, 150, 105, 0.15) !important;
+    }
+
+    /* Scrubber Section Bar */
+    html.light-theme section.bg-earth-900\/90,
+    html.light-theme section[class*="bg-earth-900"] {
+      background-color: #ffffff !important;
+      border-bottom: 1.5px solid #cbd5e1 !important;
+      box-shadow: 0 2px 6px -1px rgba(15, 23, 42, 0.04) !important;
+    }
+    html.light-theme #step-hour-badge {
+      background-color: #ecfdf5 !important;
+      border: 1.5px solid #a7f3d0 !important;
+      color: #047857 !important;
+      font-weight: 800 !important;
+    }
+
+    /* Scrubber Preset Buttons in Light Mode (High-contrast rich badges) */
+    html.light-theme #preset-btn-d1 {
+      background-color: #f8fafc !important;
+      border: 1.5px solid #cbd5e1 !important;
+      color: #1e293b !important;
+      font-weight: 700 !important;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+    }
+    html.light-theme #preset-btn-d1:hover {
+      background-color: #f1f5f9 !important;
+      border-color: #94a3b8 !important;
+    }
+
+    html.light-theme #preset-btn-d3 {
+      background-color: #fffbeb !important;
+      border: 1.5px solid #f59e0b !important;
+      color: #92400e !important;
+      font-weight: 700 !important;
+      box-shadow: 0 1px 3px rgba(245, 158, 11, 0.18) !important;
+    }
+    html.light-theme #preset-btn-d3:hover {
+      background-color: #fef3c7 !important;
+      border-color: #d97706 !important;
+    }
+
+    html.light-theme #preset-btn-d4 {
+      background-color: #fef2f2 !important;
+      border: 1.5px solid #ef4444 !important;
+      color: #991b1b !important;
+      font-weight: 700 !important;
+      box-shadow: 0 1px 3px rgba(239, 68, 68, 0.18) !important;
+    }
+    html.light-theme #preset-btn-d4:hover {
+      background-color: #fee2e2 !important;
+      border-color: #dc2626 !important;
+    }
+
+    html.light-theme #preset-btn-d5 {
+      background-color: #faf5ff !important;
+      border: 1.5px solid #a855f7 !important;
+      color: #6b21a8 !important;
+      font-weight: 700 !important;
+      box-shadow: 0 1px 3px rgba(168, 85, 247, 0.18) !important;
+    }
+    html.light-theme #preset-btn-d5:hover {
+      background-color: #f3e8ff !important;
+      border-color: #9333ea !important;
+    }
+
+    html.light-theme #preset-btn-d7 {
+      background-color: #f0fdf4 !important;
+      border: 1.5px solid #10b981 !important;
+      color: #065f46 !important;
+      font-weight: 700 !important;
+      box-shadow: 0 1px 3px rgba(16, 185, 129, 0.18) !important;
+    }
+    html.light-theme #preset-btn-d7:hover {
+      background-color: #dcfce7 !important;
+      border-color: #059669 !important;
+    }
+
+    html.light-theme #live-voice-toggle-btn {
+      background-color: #ecfdf5 !important;
+      border: 1.5px solid #059669 !important;
+      color: #065f46 !important;
       font-weight: 700 !important;
     }
 
-    /* Scrubber Bar */
-    html.light-theme section.bg-earth-900\/90,
-    html.light-theme section[class*="bg-earth-900"] {
-      background-color: #f1f5f9 !important;
-      border-color: #cbd5e1 !important;
-    }
-    html.light-theme #step-hour-badge {
-      background-color: #ffffff !important;
-      border-color: #cbd5e1 !important;
-      color: #047857 !important;
-    }
-    html.light-theme section.bg-earth-900\/90 button,
-    html.light-theme section[class*="bg-earth-900"] button {
-      background-color: #ffffff !important;
-      border-color: #cbd5e1 !important;
+    /* Timeline track labels in light mode */
+    html.light-theme .text-earth-300\/70,
+    html.light-theme .text-earth-300\/90 {
       color: #334155 !important;
+      font-weight: 600 !important;
     }
-    html.light-theme section.bg-earth-900\/90 button:hover,
-    html.light-theme section[class*="bg-earth-900"] button:hover {
-      background-color: #f8fafc !important;
-      color: #0f172a !important;
+    html.light-theme .text-amber-400 {
+      color: #b45309 !important;
+      font-weight: 700 !important;
+    }
+    html.light-theme .text-rose-400 {
+      color: #b91c1c !important;
+      font-weight: 700 !important;
+    }
+    html.light-theme .text-emerald-300 {
+      color: #047857 !important;
+      font-weight: 700 !important;
     }
 
     /* Typography in Light Mode */
@@ -492,32 +566,37 @@
     html.light-theme .text-slate-400,
     html.light-theme .text-slate-500,
     html.light-theme .text-earth-400 {
-      color: #475569 !important;
+      color: #334155 !important;
+      font-weight: 600 !important;
     }
 
     html.light-theme .text-\[\#545a57\] {
-      color: #64748b !important;
+      color: #475569 !important;
     }
 
-    /* Crisp High-Contrast Signals for Light Mode */
+    /* High-contrast telemetry signals */
     html.light-theme .text-\[\#8FFFB0\],
     html.light-theme .text-\[\#8fffb0\] {
       color: #047857 !important;
+      font-weight: 700 !important;
     }
 
     html.light-theme .text-\[\#7FD4FF\],
     html.light-theme .text-\[\#7fd4ff\] {
-      color: #0369a1 !important;
+      color: #0284c7 !important;
+      font-weight: 700 !important;
     }
 
     html.light-theme .text-\[\#FFE270\],
     html.light-theme .text-\[\#ffe270\] {
       color: #b45309 !important;
+      font-weight: 700 !important;
     }
 
     html.light-theme .text-\[\#FF9D7F\],
     html.light-theme .text-\[\#ff9d7f\] {
       color: #b91c1c !important;
+      font-weight: 700 !important;
     }
 
     /* Borders in Light Mode */
@@ -539,7 +618,7 @@
       border-color: #cbd5e1 !important;
     }
 
-    /* Surfaces, Panels and Cards in Light Mode */
+    /* PRIMARY SURFACES, PANELS & CARDS (Elevated clean white) */
     html.light-theme .hero-card,
     html.light-theme .surface-panel,
     html.light-theme .surface-card,
@@ -554,49 +633,175 @@
     html.light-theme .bg-slate-900\/90,
     html.light-theme .bg-slate-950 {
       background-color: #ffffff !important;
-      border-color: #cbd5e1 !important;
+      border: 1.5px solid #cbd5e1 !important;
       color: #0f172a !important;
-      box-shadow: 0 4px 18px -2px rgba(15, 23, 42, 0.06);
+      box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.07), 0 2px 4px -1px rgba(15, 23, 42, 0.04) !important;
     }
 
+    /* NESTED METRIC BOXES & SUB-CONTAINERS (Crisp Slate-50 contrast boxes) */
     html.light-theme .bg-\[\#191C19\],
     html.light-theme .bg-\[\#191c19\],
     html.light-theme .bg-\[\#0A0B0A\],
     html.light-theme .bg-\[\#0a0b0a\],
     html.light-theme .bg-\[\#141714\],
-    html.light-theme .bg-\[\#10201a\] {
+    html.light-theme .bg-\[\#10201a\],
+    html.light-theme .bg-earth-950,
+    html.light-theme .bg-earth-950\/70,
+    html.light-theme .bg-earth-950\/80,
+    html.light-theme .bg-earth-950\/90,
+    html.light-theme .bg-earth-950\/95,
+    html.light-theme .bg-earth-900,
+    html.light-theme .bg-earth-850,
+    html.light-theme .bg-earth-800 {
       background-color: #f8fafc !important;
-      border-color: #cbd5e1 !important;
+      border: 1.5px solid #cbd5e1 !important;
       color: #0f172a !important;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04) !important;
     }
 
-    html.light-theme .badge-green {
-      background-color: #ecfdf5 !important;
+    /* ALL TEXT BOXES, INPUTS, TEXTAREAS, SELECTS & SEARCH BOXES */
+    html.light-theme input[type="text"],
+    html.light-theme input[type="search"],
+    html.light-theme input[type="number"],
+    html.light-theme select,
+    html.light-theme textarea {
+      background-color: #ffffff !important;
+      border: 1.5px solid #94a3b8 !important;
+      color: #0f172a !important;
+      font-weight: 500 !important;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05) !important;
+    }
+    html.light-theme input:focus,
+    html.light-theme select:focus,
+    html.light-theme textarea:focus {
+      border-color: #059669 !important;
+      outline: none !important;
+      box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.18) !important;
+    }
+    html.light-theme input::placeholder,
+    html.light-theme textarea::placeholder {
+      color: #64748b !important;
+      opacity: 1 !important;
+    }
+
+    /* HERO METRIC BOXES SPECIFIC TUNING */
+    html.light-theme .hero-card .bg-\[\#191C19\],
+    html.light-theme .hero-card .bg-\[\#191c19\] {
+      background-color: #f8fafc !important;
+      border: 1.5px solid #cbd5e1 !important;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05) !important;
+    }
+    html.light-theme .hero-card .bg-\[\#191C19\]:hover,
+    html.light-theme .hero-card .bg-\[\#191c19\]:hover {
+      background-color: #f1f5f9 !important;
+      border-color: #94a3b8 !important;
+    }
+
+    /* HERO METRIC LABELS */
+    html.light-theme .hero-card .text-\[\#8C948B\],
+    html.light-theme .hero-card .text-\[\#8c948b\] {
+      color: #334155 !important;
+      font-weight: 700 !important;
+      letter-spacing: 0.05em !important;
+    }
+
+    /* HIGH CONTRAST NUMBERS FOR HERO METRICS */
+    html.light-theme #curr-pbl-val,
+    html.light-theme [id*="pbl-val"] {
+      color: #0284c7 !important;
+      font-weight: 800 !important;
+    }
+    html.light-theme #curr-vent-val,
+    html.light-theme [id*="vent-val"] {
       color: #047857 !important;
+      font-weight: 800 !important;
+    }
+    html.light-theme #curr-fires-val,
+    html.light-theme [id*="fires-val"] {
+      color: #c2410c !important;
+      font-weight: 800 !important;
+    }
+    html.light-theme #curr-pm25-val,
+    html.light-theme [id*="pm25-val"] {
+      color: #b91c1c !important;
+      font-weight: 800 !important;
+    }
+    html.light-theme #mob-hero-temp,
+    html.light-theme #curr-wind-speed {
+      color: #0f172a !important;
+      font-weight: 800 !important;
+    }
+
+    /* REGIONAL ZONE CARDS */
+    html.light-theme #command-center-zone-strip .surface-card {
+      background-color: #ffffff !important;
+      border: 1.5px solid #cbd5e1 !important;
+      box-shadow: 0 2px 8px -2px rgba(15, 23, 42, 0.08) !important;
+    }
+    html.light-theme #command-center-zone-strip .surface-card:hover {
+      background-color: #f8fafc !important;
+      border-color: #059669 !important;
+      box-shadow: 0 4px 12px -2px rgba(5, 150, 105, 0.16) !important;
+    }
+    html.light-theme #command-center-zone-strip .surface-card span.text-\[\#EEF0EC\] {
+      color: #0f172a !important;
+      font-weight: 700 !important;
+    }
+    html.light-theme #command-center-zone-strip .surface-card span.text-\[\#8C948B\] {
+      color: #475569 !important;
+      font-weight: 600 !important;
+    }
+    html.light-theme [id^="zone-aqi-"] {
+      font-weight: 800 !important;
+    }
+
+    /* HERO LIVE NAQI PILL & SOURCE */
+    html.light-theme #hero-source-badge,
+    html.light-theme #hero-live-badge-wrap,
+    html.light-theme [class*="bg-emerald-950\/90"],
+    html.light-theme [class*="bg-emerald-950"] {
+      background-color: #ecfdf5 !important;
       border-color: #a7f3d0 !important;
+      color: #047857 !important;
+    }
+    html.light-theme #hero-live-indicator,
+    html.light-theme #hero-live-station-label {
+      color: #047857 !important;
+      font-weight: 700 !important;
+    }
+
+    /* BADGES (High contrast for light background) */
+    html.light-theme .badge-green {
+      background-color: #dcfce7 !important;
+      color: #065f46 !important;
+      border-color: #86efac !important;
+      font-weight: 700 !important;
     }
 
     html.light-theme .badge-blue {
-      background-color: #f0f9ff !important;
+      background-color: #e0f2fe !important;
       color: #0369a1 !important;
-      border-color: #bae6fd !important;
+      border-color: #7dd3fc !important;
+      font-weight: 700 !important;
     }
 
     html.light-theme .badge-yellow {
-      background-color: #fffbeb !important;
-      color: #b45309 !important;
-      border-color: #fde68a !important;
+      background-color: #fef3c7 !important;
+      color: #92400e !important;
+      border-color: #fcd34d !important;
+      font-weight: 700 !important;
     }
 
     html.light-theme .badge-orange,
     html.light-theme .badge-red {
-      background-color: #fef2f2 !important;
-      color: #b91c1c !important;
-      border-color: #fecaca !important;
+      background-color: #fee2e2 !important;
+      color: #991b1b !important;
+      border-color: #fca5a5 !important;
+      font-weight: 700 !important;
     }
 
     html.light-theme .natural-glass {
-      background: rgba(255, 255, 255, 0.96) !important;
+      background: rgba(255, 255, 255, 0.98) !important;
       backdrop-filter: blur(20px);
     }
 
@@ -607,40 +812,29 @@
       background-color: #f1f5f9 !important;
     }
 
-    html.light-theme input[type="text"],
-    html.light-theme select,
-    html.light-theme textarea {
-      background-color: #ffffff !important;
-      border-color: #cbd5e1 !important;
-      color: #0f172a !important;
-    }
-
-    html.light-theme input::placeholder {
-      color: #94a3b8 !important;
-    }
-
     /* Modals in Light Mode */
     html.light-theme #settings-modal,
     html.light-theme #station-picker-modal {
-      background: rgba(15, 23, 42, 0.45) !important;
+      background: rgba(15, 23, 42, 0.5) !important;
       backdrop-filter: blur(8px) !important;
     }
 
     html.light-theme #settings-modal .surface-panel,
     html.light-theme #station-picker-modal .surface-panel {
       background-color: #ffffff !important;
-      border-color: #e2e8e5 !important;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+      border: 1.5px solid #cbd5e1 !important;
+      box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.25) !important;
     }
 
     html.light-theme #settings-modal-title,
     html.light-theme #settings-lang-label,
     html.light-theme #settings-theme-label {
       color: #0f172a !important;
+      font-weight: 700 !important;
     }
 
     html.light-theme #settings-modal-subtitle {
-      color: #64748b !important;
+      color: #475569 !important;
     }
 
     html.light-theme #settings-modal div.bg-\[\#10201a\] {
@@ -658,11 +852,11 @@
       color: #065f46 !important;
     }
 
-    /* Light Theme Settings Cards */
+    /* Settings Cards */
     html.light-theme .setting-card-option {
       background: #ffffff !important;
       border: 2px solid #cbd5e1 !important;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05) !important;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
     }
 
     html.light-theme .setting-card-option:hover {
@@ -685,7 +879,7 @@
     }
 
     html.light-theme .setting-opt-desc {
-      color: #64748b !important;
+      color: #475569 !important;
     }
 
     html.light-theme .setting-card-option.active .setting-opt-desc {
@@ -703,28 +897,30 @@
       box-shadow: 0 0 8px rgba(5, 150, 105, 0.3) !important;
     }
 
-    /* Light Theme Weather Styles */
+    /* Weather Tab Styles */
     html.light-theme .weather-metric-tab {
-      color: #64748b;
+      color: #475569 !important;
+      font-weight: 600 !important;
     }
     html.light-theme .weather-metric-tab:hover {
-      color: #0f172a;
+      color: #0f172a !important;
     }
     html.light-theme .weather-metric-tab.active {
-      color: #0f172a;
+      color: #0f172a !important;
+      font-weight: 700 !important;
     }
     html.light-theme .weather-metric-tab.active::after {
-      background: #d97706;
+      background: #d97706 !important;
     }
 
     html.light-theme .weather-day-card {
       background: #ffffff !important;
-      border: 1.5px solid #e2e8f0 !important;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
+      border: 1.5px solid #cbd5e1 !important;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
     }
     html.light-theme .weather-day-card:hover {
       background: #f8fafc !important;
-      border-color: #cbd5e1 !important;
+      border-color: #94a3b8 !important;
     }
     html.light-theme .weather-day-card.active {
       background: #ecfdf5 !important;
@@ -733,54 +929,59 @@
     }
     html.light-theme .weather-day-card span.text-white {
       color: #0f172a !important;
+      font-weight: 700 !important;
     }
     html.light-theme .weather-day-card .text-slate-300 {
-      color: #475569 !important;
+      color: #334155 !important;
     }
     html.light-theme .weather-day-card .text-slate-400 {
-      color: #64748b !important;
+      color: #475569 !important;
     }
     html.light-theme #panel-weather .bg-\[\#0a0d0a\] {
       background: #f8fafc !important;
-      border-color: #e2e8f0 !important;
+      border-color: #cbd5e1 !important;
     }
     html.light-theme #weather-main-temp {
       color: #0f172a !important;
+      font-weight: 800 !important;
     }
     html.light-theme #weather-precip-val,
     html.light-theme #weather-humidity-val,
     html.light-theme #weather-wind-val {
       color: #0f172a !important;
+      font-weight: 700 !important;
     }
     html.light-theme #weather-location-title span:first-child {
       color: #0f172a !important;
     }
     html.light-theme #weather-day-name {
-      color: #334155 !important;
+      color: #1e293b !important;
+      font-weight: 700 !important;
     }
     html.light-theme #weather-condition-desc {
-      color: #64748b !important;
+      color: #475569 !important;
     }
     html.light-theme #unit-c-btn.text-white,
     html.light-theme #unit-f-btn.text-white {
       color: #0f172a !important;
     }
 
-    /* Attribution Light Theme Rules */
+    /* Attribution Tab Styles */
     html.light-theme #panel-attribution .bg-earth-950\/70,
     html.light-theme #panel-attribution .bg-earth-950\/60,
     html.light-theme #panel-attribution .bg-earth-950\/80 {
       background: #f8fafc !important;
-      border-color: #e2e8f0 !important;
+      border-color: #cbd5e1 !important;
     }
     html.light-theme #panel-attribution .bg-earth-900 {
       background: #e2e8f0 !important;
     }
     html.light-theme #attrib-main-title {
       color: #0f172a !important;
+      font-weight: 700 !important;
     }
     html.light-theme #attrib-main-subtitle {
-      color: #64748b !important;
+      color: #475569 !important;
     }
     html.light-theme #attrib-sectors-container .text-white {
       color: #0f172a !important;
@@ -790,9 +991,129 @@
     }
     html.light-theme #attrib-stations-grid .bg-earth-950\/70 {
       background: #ffffff !important;
-      border-color: #e2e8f0 !important;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+      border-color: #cbd5e1 !important;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
     }
+
+    /* VayuAI Assistant Chat in Light Mode */
+    html.light-theme #ai-chat-messages .bg-\[\#1c1f1c\] {
+      background-color: #f1f5f9 !important;
+      border: 1.5px solid #cbd5e1 !important;
+      color: #0f172a !important;
+    }
+    html.light-theme #ai-chat-messages .bg-\[\#141714\] {
+      background-color: #f0fdf4 !important;
+      border: 1.5px solid #bbf7d0 !important;
+      color: #064e3b !important;
+    }
+    html.light-theme .ai-quick-prompt-btn,
+    html.light-theme [onclick*="sendVayuAIPrompt"] {
+      background-color: #ffffff !important;
+      border: 1.5px solid #cbd5e1 !important;
+      color: #334155 !important;
+    }
+    html.light-theme .ai-quick-prompt-btn:hover,
+    html.light-theme [onclick*="sendVayuAIPrompt"]:hover {
+      background-color: #ecfdf5 !important;
+      border-color: #059669 !important;
+      color: #047857 !important;
+    }
+
+    /* Clean Air Windows in Light Mode */
+    html.light-theme #panel-windows .bg-\[\#10201a\] {
+      background-color: #ecfdf5 !important;
+      border: 1.5px solid #a7f3d0 !important;
+      color: #064e3b !important;
+    }
+    html.light-theme #panel-windows .bg-\[\#191c19\] {
+      background-color: #f8fafc !important;
+      border: 1.5px solid #cbd5e1 !important;
+    }
+
+  
+    /* VayuAI Question Card & Hub Styling */
+    .vayuai-question-card {
+      background-color: #141714;
+      border: 1px solid #262A26;
+      border-radius: 12px;
+      padding: 12px 14px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+    .vayuai-question-card:hover {
+      border-color: #383E38;
+      background-color: #191c19;
+      transform: translateY(-1px);
+    }
+    html.light-theme .vayuai-question-card {
+      background-color: #ffffff !important;
+      border: 1.5px solid #cbd5e1 !important;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04) !important;
+    }
+    html.light-theme .vayuai-question-card:hover {
+      background-color: #f8fafc !important;
+      border-color: #059669 !important;
+      box-shadow: 0 4px 14px rgba(5, 150, 105, 0.12) !important;
+      transform: translateY(-1px);
+    }
+    html.light-theme .vayuai-question-card span.text-\[\#EEF0EC\],
+    html.light-theme .vayuai-question-card span:last-child {
+      color: #0f172a !important;
+      font-weight: 600 !important;
+    }
+
+    /* Commute Eco-Shield in Light Theme */
+    html.light-theme #panel-commute .shadow-cyan-950 {
+      background: linear-gradient(135deg, #ecfdf5 0%, #f0fdfa 100%) !important;
+      border: 2px solid #059669 !important;
+      box-shadow: 0 4px 14px rgba(5, 150, 105, 0.15) !important;
+    }
+    html.light-theme #panel-commute .shadow-cyan-950 .text-cyan-300,
+    html.light-theme #panel-commute .shadow-cyan-950 [class*="text-cyan-300"] {
+      color: #047857 !important;
+    }
+    html.light-theme #panel-commute .shadow-cyan-950 .text-cyan-200,
+    html.light-theme #panel-commute .shadow-cyan-950 [class*="text-cyan-200"] {
+      color: #065f46 !important;
+    }
+    html.light-theme #panel-commute .shadow-cyan-950 .bg-cyan-500 {
+      background-color: #059669 !important;
+      color: #ffffff !important;
+    }
+
+    /* Attribution Descriptions in Light Mode */
+    html.light-theme #attrib-transboundary-desc,
+    html.light-theme #attrib-internal-desc,
+    html.light-theme #panel-attribution p.text-earth-300\/80,
+    html.light-theme #panel-attribution [class*="text-earth-300"] {
+      color: #475569 !important;
+      font-weight: 500 !important;
+    }
+
+    /* Hero Action Buttons in Light Mode */
+    html.light-theme .hero-card button[onclick*="switchTab('grap')"] {
+      background-color: #f8fafc !important;
+      border: 1.5px solid #cbd5e1 !important;
+      color: #0f172a !important;
+      font-weight: 700 !important;
+    }
+    html.light-theme .hero-card button[onclick*="switchTab('grap')"]:hover {
+      background-color: #f1f5f9 !important;
+      border-color: #94a3b8 !important;
+    }
+    html.light-theme .hero-card button[onclick*="switchTab('copilot')"] {
+      background-color: #ecfdf5 !important;
+      border: 1.5px solid #059669 !important;
+      color: #047857 !important;
+      font-weight: 700 !important;
+    }
+    html.light-theme .hero-card button[onclick*="switchTab('copilot')"]:hover {
+      background-color: #d1fae5 !important;
+    }
+
   </style>
 </head>
 <body class="min-h-screen text-[#f2f5f3] flex flex-col antialiased selection:bg-[#10201a] selection:text-[#6fe2a3] overflow-x-hidden max-w-full w-full">
@@ -1187,10 +1508,10 @@
       <!-- Slider & Day Labels -->
       <div class="flex-1 w-full flex flex-col gap-0.5 min-w-0">
         <div class="flex items-center justify-between text-[9px] sm:text-[10px] font-mono text-earth-300/70 w-full min-w-0">
-          <span class="truncate">D1: Fresh</span>
-          <span class="text-amber-400 font-semibold truncate"><span class="hidden sm:inline">Day 3: Inversion </span>Warning (T-72h)</span>
-          <span class="text-rose-400 font-bold truncate"><span class="hidden sm:inline">Day 5: </span>Peak Smog</span>
-          <span class="text-emerald-300 truncate"><span class="hidden sm:inline">Day 7: </span>Dispersal</span>
+          <span class="shrink-0 font-medium">Day 1: Fresh</span>
+          <span class="text-amber-400 font-semibold shrink-0">Day 3: Warning ⚡</span>
+          <span class="text-rose-400 font-bold shrink-0">Day 5: Peak Smog</span>
+          <span class="text-emerald-300 font-semibold shrink-0">Day 7: Recovery 🍃</span>
         </div>
         <input type="range" min="0" max="167" value="72" id="time-scrubber" oninput="onScrubChange(this.value)" class="w-full accent-emerald-500 cursor-pointer">
       </div>
@@ -1202,11 +1523,11 @@
             <span id="voice-pulse-dot" class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
             <span id="voice-toggle-label">Live Voice: ON</span>
           </button>
-          <button onclick="setScrubberStep(24)" class="px-2 py-1 rounded-lg bg-earth-850 hover:bg-earth-800 text-earth-200 border border-earth-700 shrink-0 text-[10px] sm:text-[11px]">T-24h</button>
-          <button onclick="setScrubberStep(72)" class="px-2 py-1 rounded-lg bg-amber-950/80 hover:bg-amber-900 text-amber-200 border border-amber-800/80 font-semibold shrink-0 text-[10px] sm:text-[11px]">T-72h ⚡</button>
-          <button onclick="setScrubberStep(96)" class="px-2 py-1 rounded-lg bg-rose-950/80 hover:bg-rose-900 text-rose-200 border border-rose-800/80 font-bold shrink-0 text-[10px] sm:text-[11px]">T-96h 🚨</button>
-          <button onclick="setScrubberStep(120)" class="px-2 py-1 rounded-lg bg-purple-950/80 hover:bg-purple-900 text-purple-200 border border-purple-800/80 font-bold shrink-0 text-[10px] sm:text-[11px]">Peak Smog</button>
-          <button onclick="setScrubberStep(156)" class="px-2 py-1 rounded-lg bg-emerald-950/80 hover:bg-emerald-900 text-emerald-200 border border-emerald-800/80 shrink-0 text-[10px] sm:text-[11px]">Recovery</button>
+          <button onclick="setScrubberStep(24)" id="preset-btn-d1" class="preset-scrubber-btn px-2.5 py-1 rounded-lg bg-earth-850 hover:bg-earth-800 text-earth-200 border border-earth-700 shrink-0 text-[10px] sm:text-[11px] font-medium transition" title="Day 1 (Hour 24) · Fresh & Normal Baseline">Day 1: Fresh</button>
+          <button onclick="setScrubberStep(72)" id="preset-btn-d3" class="preset-scrubber-btn px-2.5 py-1 rounded-lg bg-amber-950/80 hover:bg-amber-900 text-amber-200 border border-amber-800/80 font-semibold shrink-0 text-[10px] sm:text-[11px] transition" title="Day 3 (Hour 72) · Inversion Early Warning (72h prior)">Day 3: Warning ⚡</button>
+          <button onclick="setScrubberStep(96)" id="preset-btn-d4" class="preset-scrubber-btn px-2.5 py-1 rounded-lg bg-rose-950/80 hover:bg-rose-900 text-rose-200 border border-rose-800/80 font-bold shrink-0 text-[10px] sm:text-[11px] transition" title="Day 4 (Hour 96) · Rapid PM2.5 Spike & Pre-Crisis">Day 4: Severe 🚨</button>
+          <button onclick="setScrubberStep(120)" id="preset-btn-d5" class="preset-scrubber-btn px-2.5 py-1 rounded-lg bg-purple-950/80 hover:bg-purple-900 text-purple-200 border border-purple-800/80 font-bold shrink-0 text-[10px] sm:text-[11px] transition" title="Day 5 (Hour 120) · Peak Winter Smog Crisis">Day 5: Peak Smog</button>
+          <button onclick="setScrubberStep(156)" id="preset-btn-d7" class="preset-scrubber-btn px-2.5 py-1 rounded-lg bg-emerald-950/80 hover:bg-emerald-900 text-emerald-200 border border-emerald-800/80 font-semibold shrink-0 text-[10px] sm:text-[11px] transition" title="Day 7 (Hour 156) · Clean Air Recovery & Dispersal">Day 7: Recovery 🍃</button>
         </div>
       </div>
 
@@ -4347,18 +4668,19 @@
       },
 
       getSeverityMeta(aqi) {
+        const isLight = typeof document !== 'undefined' && document.documentElement && document.documentElement.classList.contains('light-theme');
         if (aqi >= 450) {
-          return { label: "Emergency", stageCode: "GRAP IV", color: "#FF9D7F", badgeClass: "badge-red", pillClass: "bg-[#FF9D7F]/10 text-[#FF9D7F] border-[#FF9D7F]/30" };
+          return { label: "Emergency", stageCode: "GRAP IV", color: isLight ? "#b91c1c" : "#FF9D7F", badgeClass: "badge-red", pillClass: "bg-[#FF9D7F]/10 text-[#FF9D7F] border-[#FF9D7F]/30" };
         } else if (aqi >= 401) {
-          return { label: "Severe", stageCode: "GRAP IV", color: "#FF9D7F", badgeClass: "badge-red", pillClass: "bg-[#FF9D7F]/10 text-[#FF9D7F] border-[#FF9D7F]/30" };
+          return { label: "Severe", stageCode: "GRAP IV", color: isLight ? "#b91c1c" : "#FF9D7F", badgeClass: "badge-red", pillClass: "bg-[#FF9D7F]/10 text-[#FF9D7F] border-[#FF9D7F]/30" };
         } else if (aqi >= 301) {
-          return { label: "Very Poor", stageCode: "GRAP III", color: "#FFE270", badgeClass: "badge-yellow", pillClass: "bg-[#FFE270]/10 text-[#FFE270] border-[#FFE270]/30" };
+          return { label: "Very Poor", stageCode: "GRAP III", color: isLight ? "#c2410c" : "#FFE270", badgeClass: "badge-yellow", pillClass: "bg-[#FFE270]/10 text-[#FFE270] border-[#FFE270]/30" };
         } else if (aqi >= 201) {
-          return { label: "Poor", stageCode: "GRAP II", color: "#FFE270", badgeClass: "badge-yellow", pillClass: "bg-[#FFE270]/10 text-[#FFE270] border-[#FFE270]/30" };
+          return { label: "Poor", stageCode: "GRAP II", color: isLight ? "#b45309" : "#FFE270", badgeClass: "badge-yellow", pillClass: "bg-[#FFE270]/10 text-[#FFE270] border-[#FFE270]/30" };
         } else if (aqi >= 101) {
-          return { label: "Moderate", stageCode: "GRAP I", color: "#7FD4FF", badgeClass: "badge-blue", pillClass: "bg-[#7FD4FF]/10 text-[#7FD4FF] border-[#7FD4FF]/30" };
+          return { label: "Moderate", stageCode: "GRAP I", color: isLight ? "#0284c7" : "#7FD4FF", badgeClass: "badge-blue", pillClass: "bg-[#7FD4FF]/10 text-[#7FD4FF] border-[#7FD4FF]/30" };
         } else {
-          return { label: "Good", stageCode: "Baseline", color: "#8FFFB0", badgeClass: "badge-green", pillClass: "bg-[#8FFFB0]/10 text-[#8FFFB0] border-[#8FFFB0]/30" };
+          return { label: "Good", stageCode: "Baseline", color: isLight ? "#047857" : "#8FFFB0", badgeClass: "badge-green", pillClass: "bg-[#8FFFB0]/10 text-[#8FFFB0] border-[#8FFFB0]/30" };
         }
       },
 
@@ -6388,6 +6710,13 @@
         if (typeof VayuWeather !== 'undefined' && VayuWeather.renderChart) {
           VayuWeather.renderChart();
         }
+        if (typeof updateZonesStrip === 'function') {
+          const heroVal = parseInt(document.getElementById('mob-hero-aqi-val')?.innerText || '104', 10);
+          updateZonesStrip(heroVal);
+        }
+        if (typeof VayuForecastEngine !== 'undefined' && VayuForecastEngine.currentStation && typeof renderCoupledEpisodeMetrics === 'function') {
+          renderCoupledEpisodeMetrics(currentStep || 72);
+        }
       },
 
       applyLanguage(lang) {
@@ -7483,6 +7812,7 @@
 
     function updateZonesStrip(baseAqi) {
       const aqi = baseAqi || 431;
+      const isLight = document.documentElement.classList.contains('light-theme');
       const zones = [
         { id: 'west', ratio: 1.0 },
         { id: 'north', ratio: 0.98 },
@@ -7498,7 +7828,12 @@
         if (valEl) {
           const zAqi = Math.round(aqi * z.ratio);
           valEl.innerText = zAqi;
-          const color = zAqi > 400 ? '#FF9D7F' : (zAqi > 300 ? '#FFE270' : '#8FFFB0');
+          let color;
+          if (isLight) {
+            color = zAqi > 400 ? '#b91c1c' : (zAqi > 300 ? '#c2410c' : (zAqi > 200 ? '#b45309' : (zAqi > 100 ? '#0284c7' : '#047857')));
+          } else {
+            color = zAqi > 400 ? '#FF9D7F' : (zAqi > 300 ? '#FFE270' : '#8FFFB0');
+          }
           valEl.style.color = color;
           if (dotEl) dotEl.style.backgroundColor = color;
         }
