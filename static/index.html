@@ -1824,6 +1824,337 @@
       font-weight: 800 !important;
     }
 
+  
+    /* --- 13. HEADER ACTION BUTTONS & NAVIGATION (IMAGE 1 & 2 FIXES) --- */
+    html.light-theme header button[onclick*="toggleAppFullscreen"] {
+      background-color: #f0f9ff !important;
+      border: 1.5px solid #bae6fd !important;
+      color: #0284c7 !important;
+    }
+    html.light-theme header button[onclick*="toggleAppFullscreen"]:hover {
+      background-color: #e0f2fe !important;
+      border-color: #0284c7 !important;
+    }
+    html.light-theme header button[onclick*="toggleAppFullscreen"] i,
+    html.light-theme header button[onclick*="toggleAppFullscreen"] svg {
+      color: #0284c7 !important;
+    }
+
+    html.light-theme #voice-alert-play-btn {
+      background-color: #ecfdf5 !important;
+      border: 1.5px solid #a7f3d0 !important;
+      color: #047857 !important;
+    }
+    html.light-theme #voice-alert-play-btn:hover {
+      background-color: #d1fae5 !important;
+      border-color: #059669 !important;
+    }
+    html.light-theme #voice-alert-play-btn i,
+    html.light-theme #voice-alert-play-btn svg {
+      color: #047857 !important;
+    }
+
+    html.light-theme #voice-pause-btn {
+      background-color: #fff7ed !important;
+      border: 1.5px solid #fed7aa !important;
+      color: #c2410c !important;
+    }
+    html.light-theme #voice-pause-btn:hover {
+      background-color: #ffedd5 !important;
+      border-color: #ea580c !important;
+    }
+    html.light-theme #voice-pause-btn i,
+    html.light-theme #voice-pause-btn svg {
+      color: #c2410c !important;
+    }
+
+    html.light-theme header button[onclick*="resetSimulation"] {
+      background-color: #f8fafc !important;
+      border: 1.5px solid #cbd5e1 !important;
+      color: #0f766e !important;
+    }
+    html.light-theme header button[onclick*="resetSimulation"]:hover {
+      background-color: #f1f5f9 !important;
+      border-color: #0f766e !important;
+    }
+    html.light-theme header button[onclick*="resetSimulation"] i,
+    html.light-theme header button[onclick*="resetSimulation"] svg {
+      color: #0f766e !important;
+    }
+
+    html.light-theme #header-settings-btn {
+      background-color: #f8fafc !important;
+      border: 1.5px solid #cbd5e1 !important;
+      color: #334155 !important;
+    }
+    html.light-theme #header-settings-btn:hover {
+      background-color: #f1f5f9 !important;
+      border-color: #334155 !important;
+    }
+    html.light-theme #header-settings-btn i,
+    html.light-theme #header-settings-btn svg {
+      color: #334155 !important;
+    }
+
+    /* Header Center Location Pill & GPS Button */
+    html.light-theme #header-location-pill {
+      background-color: #ffffff !important;
+      border: 1.5px solid #cbd5e1 !important;
+      color: #0f172a !important;
+    }
+    html.light-theme #header-location-pill:hover {
+      border-color: #059669 !important;
+      background-color: #f8fafc !important;
+    }
+    html.light-theme #header-station-text {
+      color: #0f172a !important;
+      font-weight: 700 !important;
+    }
+    html.light-theme header button[onclick*="refreshGPSLocation"] {
+      background-color: #f8fafc !important;
+      border: 1.5px solid #cbd5e1 !important;
+      color: #059669 !important;
+    }
+    html.light-theme header button[onclick*="refreshGPSLocation"]:hover {
+      background-color: #ecfdf5 !important;
+      border-color: #059669 !important;
+    }
+
+    /* Header Navigation Strip & Tabs */
+    html.light-theme header .bg-earth-950\/70,
+    html.light-theme header > div:last-child {
+      background-color: #ffffff !important;
+      border-top: 1px solid #e2e8f0 !important;
+    }
+    html.light-theme nav button {
+      color: #334155 !important;
+      background-color: #f8fafc !important;
+      border: 1.5px solid #cbd5e1 !important;
+      font-weight: 700 !important;
+      font-size: 12px !important;
+      padding: 6px 14px !important;
+      transition: all 0.2s ease !important;
+    }
+    html.light-theme nav button:hover {
+      background-color: #f1f5f9 !important;
+      border-color: #94a3b8 !important;
+      color: #0f172a !important;
+    }
+    html.light-theme nav button.active,
+    html.light-theme nav button[class*="active"],
+    html.light-theme nav button[class*="bg-cyan-950"],
+    html.light-theme nav button[class*="bg-emerald-50"] {
+      background-color: #ecfdf5 !important;
+      border: 1.5px solid #059669 !important;
+      color: #065f46 !important;
+      font-weight: 800 !important;
+      box-shadow: 0 1px 4px rgba(5, 150, 105, 0.15) !important;
+    }
+    html.light-theme nav button.active i,
+    html.light-theme nav button.active svg,
+    html.light-theme nav button[class*="bg-cyan-950"] i,
+    html.light-theme nav button[class*="bg-cyan-950"] svg,
+    html.light-theme nav button[class*="bg-emerald-50"] i,
+    html.light-theme nav button[class*="bg-emerald-50"] svg {
+      color: #059669 !important;
+    }
+
+    /* Map Overlays & Floating Docks in Light Mode */
+    html.light-theme .absolute.bottom-11.sm\:bottom-10,
+    html.light-theme div[class*="bottom-11"][class*="bg-earth-950"] {
+      background-color: rgba(255, 255, 255, 0.96) !important;
+      border: 1.5px solid #cbd5e1 !important;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.12) !important;
+    }
+    html.light-theme #layer-toggle-wind,
+    html.light-theme #layer-toggle-pressure,
+    html.light-theme #layer-toggle-plume,
+    html.light-theme #layer-toggle-stations {
+      background-color: #ecfdf5 !important;
+      border: 1.5px solid #10b981 !important;
+      color: #047857 !important;
+      font-weight: 700 !important;
+    }
+    html.light-theme #layer-toggle-fires {
+      background-color: #fff7ed !important;
+      border: 1.5px solid #f97316 !important;
+      color: #c2410c !important;
+      font-weight: 700 !important;
+    }
+    html.light-theme div[class*="bottom-0"][class*="bg-earth-950"] {
+      background-color: rgba(255, 255, 255, 0.96) !important;
+      border-top: 1.5px solid #cbd5e1 !important;
+      color: #0f172a !important;
+    }
+    html.light-theme #btn-map-play-forecast {
+      background-color: #ecfdf5 !important;
+      border: 1.5px solid #10b981 !important;
+      color: #047857 !important;
+      font-weight: 800 !important;
+    }
+    html.light-theme #map-timeline-label {
+      color: #0f172a !important;
+      font-weight: 700 !important;
+    }
+    html.light-theme #btn-zoom-delhi {
+      background-color: #ecfdf5 !important;
+      border: 1.5px solid #10b981 !important;
+      color: #047857 !important;
+      font-weight: 700 !important;
+    }
+    html.light-theme #btn-zoom-punjab,
+    html.light-theme #btn-zoom-regional,
+    html.light-theme #btn-zoom-gps {
+      background-color: #ffffff !important;
+      border: 1.5px solid #cbd5e1 !important;
+      color: #334155 !important;
+      font-weight: 600 !important;
+    }
+    html.light-theme #btn-map-zoom-in,
+    html.light-theme #btn-map-zoom-out,
+    html.light-theme #btn-map-reset {
+      background-color: #ffffff !important;
+      border: 1.5px solid #cbd5e1 !important;
+      color: #0f172a !important;
+    }
+
+    /* GRAP Timeline (TAB 3) */
+    html.light-theme #panel-grap .surface-panel {
+      background: #ffffff !important;
+      border-color: #cbd5e1 !important;
+    }
+    html.light-theme #panel-grap .timeline-track-line {
+      background-color: #cbd5e1 !important;
+    }
+    html.light-theme #panel-grap .surface-panel.p-4,
+    html.light-theme #panel-grap div[class*="rounded-[14px]"] {
+      background: #ffffff !important;
+      border: 1.5px solid #cbd5e1 !important;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05) !important;
+    }
+    html.light-theme #panel-grap .bg-\[\#0f110f\] {
+      background-color: #f8fafc !important;
+      border: 1.5px solid #cbd5e1 !important;
+    }
+    html.light-theme #panel-grap .bg-\[\#191C19\] {
+      background-color: #f8fafc !important;
+      border: 1.5px solid #cbd5e1 !important;
+      color: #0f172a !important;
+    }
+    html.light-theme #panel-grap .text-\[\#7FD4FF\] {
+      color: #0284c7 !important;
+      font-weight: 800 !important;
+    }
+    html.light-theme #panel-grap .text-\[\#8b9390\],
+    html.light-theme #panel-grap .text-\[\#8C948B\] {
+      color: #475569 !important;
+    }
+    html.light-theme #panel-grap h2.text-white,
+    html.light-theme #panel-grap h3.text-white {
+      color: #0f172a !important;
+      font-weight: 800 !important;
+    }
+    html.light-theme #panel-grap p {
+      color: #334155 !important;
+    }
+
+    /* Orders / Dispatches (TAB 4) */
+    html.light-theme #panel-dispatches .surface-panel {
+      background: #ffffff !important;
+      border-color: #cbd5e1 !important;
+    }
+    html.light-theme #panel-dispatches .bg-\[\#0f110f\] {
+      background-color: #fff7ed !important;
+      border: 1.5px solid #fed7aa !important;
+    }
+    html.light-theme #dispatch-severity-headline {
+      color: #c2410c !important;
+      font-weight: 800 !important;
+    }
+    html.light-theme #panel-dispatches h2.text-white {
+      color: #0f172a !important;
+      font-weight: 800 !important;
+    }
+    html.light-theme #panel-dispatches p.text-\[\#8b9390\] {
+      color: #475569 !important;
+    }
+    html.light-theme #panel-dispatches .agency-tile {
+      background-color: #ffffff !important;
+      border: 1.5px solid #cbd5e1 !important;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04) !important;
+    }
+    html.light-theme #panel-dispatches .agency-tile:hover {
+      background-color: #f8fafc !important;
+      border-color: #94a3b8 !important;
+    }
+    html.light-theme #panel-dispatches .agency-tile h4 {
+      color: #0f172a !important;
+      font-weight: 700 !important;
+    }
+    html.light-theme #panel-dispatches .agency-tile span.text-\[\#8C948B\] {
+      color: #475569 !important;
+      font-weight: 600 !important;
+    }
+    html.light-theme #panel-dispatches .agency-tile .border-t {
+      border-top-color: #e2e8f0 !important;
+    }
+
+    /* CAQM Gazette Panel */
+    html.light-theme #panel-caqm .natural-glass {
+      background: #ffffff !important;
+      border: 1.5px solid #cbd5e1 !important;
+    }
+    html.light-theme #panel-caqm h2.text-white {
+      color: #0f172a !important;
+      font-weight: 800 !important;
+    }
+    html.light-theme #panel-caqm p.text-earth-300 {
+      color: #475569 !important;
+    }
+    html.light-theme #panel-caqm .bg-earth-850,
+    html.light-theme #panel-caqm .bg-earth-900,
+    html.light-theme #panel-caqm .bg-earth-950 {
+      background-color: #f8fafc !important;
+      border: 1.5px solid #cbd5e1 !important;
+      color: #0f172a !important;
+    }
+    html.light-theme #panel-caqm .text-amber-400 {
+      color: #b45309 !important;
+      font-weight: 700 !important;
+    }
+
+    /* Badges High-Contrast Overhaul */
+    html.light-theme .badge-green {
+      background-color: #ecfdf5 !important;
+      color: #047857 !important;
+      border: 1px solid #a7f3d0 !important;
+      font-weight: 800 !important;
+    }
+    html.light-theme .badge-blue {
+      background-color: #f0f9ff !important;
+      color: #0369a1 !important;
+      border: 1px solid #bae6fd !important;
+      font-weight: 800 !important;
+    }
+    html.light-theme .badge-yellow {
+      background-color: #fef3c7 !important;
+      color: #92400e !important;
+      border: 1px solid #fde68a !important;
+      font-weight: 800 !important;
+    }
+    html.light-theme .badge-orange {
+      background-color: #fff7ed !important;
+      color: #c2410c !important;
+      border: 1px solid #fed7aa !important;
+      font-weight: 800 !important;
+    }
+    html.light-theme .badge-red {
+      background-color: #fee2e2 !important;
+      color: #991b1b !important;
+      border: 1px solid #fecaca !important;
+      font-weight: 800 !important;
+    }
+
   </style>
 </head>
 <body class="min-h-screen text-[#f2f5f3] flex flex-col antialiased selection:bg-[#10201a] selection:text-[#6fe2a3] overflow-x-hidden max-w-full w-full">
@@ -8424,9 +8755,9 @@
         if (btn) {
           if (isLight) {
             if (isCurrent) {
-              btn.className = "px-3.5 py-1.5 rounded-xl text-emerald-800 bg-emerald-50 border border-emerald-300 font-bold flex items-center gap-1.5 transition whitespace-nowrap shadow-sm";
+              btn.className = "px-3.5 py-1.5 rounded-xl text-emerald-800 bg-emerald-50 border-2 border-emerald-500 font-bold flex items-center gap-1.5 transition whitespace-nowrap shadow-sm active";
             } else {
-              btn.className = "px-3.5 py-1.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 flex items-center gap-1.5 transition whitespace-nowrap";
+              btn.className = "px-3.5 py-1.5 rounded-xl text-slate-700 bg-slate-50 hover:bg-slate-100 border border-slate-300 hover:text-slate-900 hover:border-slate-400 flex items-center gap-1.5 transition whitespace-nowrap font-semibold";
             }
           } else {
             if (isCurrent) {
