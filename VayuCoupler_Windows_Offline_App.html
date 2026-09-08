@@ -4933,6 +4933,19 @@
 
   <!-- ================= APP SCRIPT ================= -->
   <script>
+    // Safety guard: Suppress any legacy GPS or modal alert popups
+    (function() {
+      const _origAlert = window.alert;
+      window.alert = function(msg) {
+        const text = String(msg || '');
+        if (/gps|delhi nct|location not available/i.test(text)) {
+          console.warn('[VayuCoupler Alert Suppressed]:', text);
+          return;
+        }
+        _origAlert.apply(window, arguments);
+      };
+    })();
+
     let deferredPrompt = null;
 
     // Listen for modern PWA install event on Chrome/Android
@@ -5009,7 +5022,7 @@
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         checkIfInstalled();
-        navigator.serviceWorker.register('/static/sw.js?v=12').then(reg => {
+        navigator.serviceWorker.register('/static/sw.js?v=18').then(reg => {
           reg.update();
           reg.onupdatefound = () => {
             const installing = reg.installing;
@@ -5023,6 +5036,14 @@
             }
           };
         }).catch(err => console.log('SW registration error', err));
+      });
+
+      let refreshing = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!refreshing) {
+          refreshing = true;
+          window.location.reload();
+        }
       });
     }
 
@@ -11624,15 +11645,6 @@
 
               if (this.map) {
                 this.map.flyTo([targetLat, targetLon], 11, { duration: 1.2 });
-              }
-
-              if (typeof VayuForecastEngine !== 'undefined' && VayuForecastEngine.showLocationToast) {
-                VayuForecastEngine.showLocationToast(
-                  activeStation.name,
-                  (VayuForecastEngine.stationDistanceKm || 5.6),
-                  (activeStation.aqi || 157),
-                  "GPS Unavailable • Showing Active Station"
-                );
               }
             };
 

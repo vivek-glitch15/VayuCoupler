@@ -1,15 +1,15 @@
-const CACHE_NAME = 'vayucoupler-v12';
+const CACHE_NAME = 'vayucoupler-v18';
 const ASSETS = [
   '/',
   '/?source=pwa',
   '/static/index.html',
-  '/static/manifest.json?v=12',
-  '/static/css/styles.css?v=12',
-  '/static/css/mobile.css?v=12',
-  '/static/icon-192.png?v=12',
-  '/static/icon-512.png?v=12',
-  '/static/icon-maskable-512.png?v=12',
-  '/static/apple-touch-icon.png?v=12'
+  '/static/manifest.json?v=18',
+  '/static/css/styles.css?v=18',
+  '/static/css/mobile.css?v=18',
+  '/static/icon-192.png?v=18',
+  '/static/icon-512.png?v=18',
+  '/static/icon-maskable-512.png?v=18',
+  '/static/apple-touch-icon.png?v=18'
 ];
 
 self.addEventListener('install', (e) => {
@@ -46,8 +46,10 @@ self.addEventListener('fetch', (e) => {
     e.respondWith(
       fetch(e.request)
         .then((response) => {
-          const responseClone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(e.request, responseClone));
+          if (response && response.status === 200) {
+            const responseClone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(e.request, responseClone));
+          }
           return response;
         })
         .catch(() => caches.match(e.request).then((res) => res || caches.match('/')))
