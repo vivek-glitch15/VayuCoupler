@@ -1923,14 +1923,14 @@
       color: #059669 !important;
       font-weight: 800 !important;
     }
-    html.light-theme #whatif-run-btn {
-      background-color: #059669 !important;
-      color: #ffffff !important;
-      border: none !important;
-      box-shadow: 0 2px 8px rgba(5, 150, 105, 0.25) !important;
+    html.light-theme #whatif-status-badge {
+      background-color: #ecfdf5 !important;
+      color: #047857 !important;
+      border-color: #a7f3d0 !important;
+      box-shadow: 0 1px 3px rgba(5, 150, 105, 0.1) !important;
     }
-    html.light-theme #whatif-run-btn:hover {
-      background-color: #047857 !important;
+    html.light-theme #whatif-status-badge > span.animate-pulse {
+      background-color: #059669 !important;
     }
     html.light-theme #whatif-results-box {
       background-color: #ffffff !important;
@@ -3885,10 +3885,10 @@
               Demonstrate how predictive interventions 48h in advance prevent peak smog disasters. Test intervention intensities to simulate the immediate reduction in peak AQI.
             </p>
           </div>
-          <button id="whatif-run-btn" type="button" onclick="runWhatIfAnalysis(true)" class="px-4 py-2.5 rounded-[10px] bg-[#8FFFB0] hover:bg-[#7ceaa0] text-[#0A0B0A] font-bold text-xs flex items-center gap-1.5 transition self-start md:self-auto font-sans shadow-md active:scale-95 cursor-pointer">
-            <i data-lucide="play" class="w-4 h-4"></i>
-            <span id="whatif-btn-label">Run Counterfactual Simulation</span>
-          </button>
+          <div id="whatif-status-badge" class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 text-xs font-mono-tag font-semibold self-start md:self-auto shrink-0 shadow-sm">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>Real-Time Simulation Active</span>
+          </div>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 mt-5">
@@ -9276,12 +9276,6 @@
       }
     }
 
-    function updateSliderVal(type, val) {
-      const el = document.getElementById(`slider-val-${type}`);
-      if (el) el.innerText = `${val}%`;
-      runWhatIfAnalysis();
-    }
-
     async function loadCurrentStepData(step) {
       try {
         const [snapRes, fcRes, stFcRes, grapRes, dispRes] = await Promise.all([
@@ -10042,17 +10036,10 @@
       }
 
       if (isManualClick) {
-        const btn = document.getElementById('whatif-run-btn');
-        if (btn) {
-          const origHtml = btn.innerHTML;
-          btn.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4 text-emerald-950"></i> <span>Simulation Updated!</span>`;
-          btn.classList.add('scale-105', 'bg-emerald-400');
-          if (window.lucide) lucide.createIcons();
-          setTimeout(() => {
-            btn.innerHTML = origHtml;
-            btn.classList.remove('scale-105', 'bg-emerald-400');
-            if (window.lucide) lucide.createIcons();
-          }, 900);
+        const badge = document.getElementById('whatif-status-badge');
+        if (badge) {
+          badge.classList.add('scale-105', 'transition', 'duration-200');
+          setTimeout(() => badge.classList.remove('scale-105'), 400);
         }
       }
 

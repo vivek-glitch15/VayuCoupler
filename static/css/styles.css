@@ -1481,14 +1481,14 @@ html.light-theme #slider-val-industry {
   color: #7e22ce !important;
 }
 
-html.light-theme #whatif-run-btn {
-  background-color: #059669 !important;
-  color: #ffffff !important;
-  border: none !important;
-  box-shadow: 0 2px 8px rgba(5, 150, 105, 0.25) !important;
+html.light-theme #whatif-status-badge {
+  background-color: #ecfdf5 !important;
+  color: #047857 !important;
+  border-color: #a7f3d0 !important;
+  box-shadow: 0 1px 3px rgba(5, 150, 105, 0.1) !important;
 }
-html.light-theme #whatif-run-btn:hover {
-  background-color: #047857 !important;
+html.light-theme #whatif-status-badge > span.animate-pulse {
+  background-color: #059669 !important;
 }
 
 html.light-theme #whatif-results-box {
