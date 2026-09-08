@@ -2317,62 +2317,99 @@
       font-weight: 800 !important;
     }
 
-    /* Bulletproof Splash Screen Auto-Hide CSS Failsafe */
+    /* High-Performance 60/120fps Splash Screen Animations */
     #splash-screen {
-      animation: vayuSplashAutohide 0.35s ease 1.2s forwards;
+      animation: vayuSplashAutohide 0.4s ease 1.7s forwards;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
     }
     @keyframes vayuSplashAutohide {
       0% { opacity: 1; pointer-events: auto; }
       99% { opacity: 0; pointer-events: none; }
       100% { opacity: 0; pointer-events: none; display: none !important; visibility: hidden !important; }
     }
+    .splash-gauge-fill {
+      transition: stroke-dashoffset 0.85s cubic-bezier(0.16, 1, 0.3, 1), stroke 0.3s ease, filter 0.3s ease;
+      will-change: stroke-dashoffset, stroke;
+    }
+    @keyframes vayuRadarPulse {
+      0% { transform: scale(0.88); opacity: 0.75; }
+      50% { transform: scale(1.18); opacity: 0.25; }
+      100% { transform: scale(1.35); opacity: 0; }
+    }
+    .splash-radar-pulse {
+      animation: vayuRadarPulse 2s cubic-bezier(0.2, 0.8, 0.4, 1) infinite;
+    }
+    @keyframes vayuBarGlow {
+      0%, 100% { filter: drop-shadow(0 0 4px rgba(111, 226, 163, 0.6)); }
+      50% { filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.8)); }
+    }
+    .splash-bar-glow {
+      animation: vayuBarGlow 1.8s ease-in-out infinite;
+    }
 
   </style>
 </head>
 <body class="min-h-screen text-[#f2f5f3] flex flex-col antialiased selection:bg-[#10201a] selection:text-[#6fe2a3] overflow-x-hidden max-w-full w-full">
   <!-- ================= 0. INTRO / COLD LAUNCH SPLASH SCREEN ================= -->
-  <div id="splash-screen" class="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#0A0B0A] pb-safe cursor-pointer transition-opacity duration-300 select-none" onclick="if(window.VayuSplashScreen&&window.VayuSplashScreen.dismissSplash){window.VayuSplashScreen.dismissSplash(true);}this.style.opacity='0';this.style.pointerEvents='none';this.style.display='none';try{this.remove();}catch(e){}">
+  <div id="splash-screen" class="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#0A0B0A] pb-safe cursor-pointer transition-all duration-300 select-none" onclick="if(window.VayuSplashScreen&&window.VayuSplashScreen.dismissSplash){window.VayuSplashScreen.dismissSplash(true);}this.style.opacity='0';this.style.pointerEvents='none';this.style.display='none';try{this.remove();}catch(e){}">
+    <!-- Ambient Backdrop Aura -->
+    <div class="absolute w-96 h-96 rounded-full bg-[#6fe2a3]/5 blur-3xl pointer-events-none -top-12"></div>
+    <div class="absolute w-96 h-96 rounded-full bg-[#38bdf8]/5 blur-3xl pointer-events-none -bottom-12"></div>
+
     <!-- Central Authoritative Content Box -->
-    <div class="flex flex-col items-center justify-center text-center max-w-sm px-6 z-10 relative cursor-pointer">
+    <div id="splash-content-box" class="flex flex-col items-center justify-center text-center max-w-sm px-6 z-10 relative cursor-pointer transform transition-all duration-300 will-change-transform">
       <!-- System Identity (MoES coupled forecasting) -->
       <div id="splash-title-wrap" class="mb-4">
-        <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-[#EEF0EC] font-serif-display">VayuCoupler</h1>
-        <p class="text-xs text-[#8C948B] mt-0.5 font-sans-ui">Delhi-NCR Coupled Atmospheric Monitoring</p>
+        <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#10201a] border border-[#1f3d30] text-[#6fe2a3] text-[10px] font-mono-data mb-2">
+          <span class="w-1.5 h-1.5 rounded-full bg-[#6fe2a3] animate-pulse"></span> MoES Coupled System
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-[#EEF0EC] font-serif-display">VayuCoupler</h1>
+        <p class="text-xs text-[#8C948B] mt-0.5 font-sans-ui">Delhi-NCR Atmospheric Cockpit</p>
       </div>
 
       <!-- Circular SVG Gauge & Live AQI Count-Up (Immediate Primary View) -->
-      <div id="splash-gauge-wrap" class="relative w-44 h-44 sm:w-48 sm:h-48 flex items-center justify-center mb-4">
+      <div id="splash-gauge-wrap" class="relative w-48 h-48 sm:w-52 sm:h-52 flex items-center justify-center mb-4">
+        <!-- Pulse Echo Ring -->
+        <div class="absolute inset-2 rounded-full border border-[#6fe2a3]/20 splash-radar-pulse pointer-events-none"></div>
+
         <svg class="w-full h-full transform -rotate-90" viewBox="0 0 120 120">
-          <circle cx="60" cy="60" r="50" class="splash-gauge-bg" stroke="#262A26" stroke-width="7" fill="none"/>
-          <circle id="splash-gauge-ring" cx="60" cy="60" r="50" class="splash-gauge-fill" stroke="#FF9D7F" stroke-width="7" stroke-linecap="round" fill="none" stroke-dasharray="314.159" stroke-dashoffset="314.159"/>
+          <circle cx="60" cy="60" r="50" class="splash-gauge-bg" stroke="#181B18" stroke-width="7" fill="none"/>
+          <circle id="splash-gauge-ring" cx="60" cy="60" r="50" class="splash-gauge-fill" stroke="#6fe2a3" stroke-width="7" stroke-linecap="round" fill="none" stroke-dasharray="314.159" stroke-dashoffset="314.159"/>
         </svg>
         <div class="absolute inset-0 flex flex-col items-center justify-center">
-          <span class="text-[10px] font-mono-data text-[#8C948B]">LIVE GROUND AQI</span>
-          <span id="splash-aqi-number" class="text-5xl sm:text-6xl font-bold text-[#EEF0EC] font-serif-display my-0.5">431</span>
-          <span id="splash-aqi-severity" class="text-[10px] font-mono-tag font-bold px-2.5 py-0.5 rounded-full badge-orange">SEVERE (GRAP IV)</span>
+          <span class="text-[9px] tracking-wider uppercase font-mono-data text-[#8C948B]">LIVE GROUND AQI</span>
+          <span id="splash-aqi-number" class="text-5xl sm:text-6xl font-bold text-[#EEF0EC] font-serif-display my-0.5 tabular-nums">0</span>
+          <span id="splash-aqi-severity" class="text-[10px] font-mono-tag font-bold px-2.5 py-0.5 rounded-full badge-green transition-all duration-300">CALIBRATING</span>
         </div>
       </div>
 
       <!-- Live Monitoring Station Line -->
-      <div id="splash-location-line" class="text-xs text-[#8C948B] mb-4 flex items-center gap-1.5 font-sans-ui">
-        <svg class="w-3.5 h-3.5 text-[#8FFFB0] svg-icon-line" viewBox="0 0 24 24" stroke="currentColor"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-        <span>Live ground sensor at <b class="text-[#EEF0EC]" id="splash-station-name">Punjabi Bagh</b> (<span id="splash-station-dist">6.2 km</span>)</span>
+      <div id="splash-location-line" class="text-xs text-[#8C948B] mb-4 flex items-center gap-1.5 font-sans-ui bg-[#131613] px-3 py-1 rounded-full border border-[#262A26]">
+        <span class="relative flex h-2 w-2 mr-0.5">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#6fe2a3] opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-[#6fe2a3]"></span>
+        </span>
+        <span>Sensor: <b class="text-[#EEF0EC]" id="splash-station-name">Punjabi Bagh</b> (<span id="splash-station-dist">5.6 km</span>)</span>
       </div>
 
       <!-- Syncing 72-Hour Forecast Status & Progress Bar -->
-      <div id="splash-status-wrap" class="w-full max-w-[210px] flex flex-col items-center gap-1.5">
+      <div id="splash-status-wrap" class="w-full max-w-[220px] flex flex-col items-center gap-1.5">
         <div class="flex items-center justify-between w-full text-[10px] font-mono-data text-[#8C948B]">
-          <span>72H COUPLED FORECAST</span>
-          <span id="splash-sync-pct">100%</span>
+          <span class="flex items-center gap-1">
+            <svg class="w-3 h-3 text-[#38bdf8] animate-spin" style="animation-duration: 3s;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+            72H FORECAST SYNC
+          </span>
+          <span id="splash-sync-pct" class="tabular-nums text-[#38bdf8]">0%</span>
         </div>
-        <div class="w-full h-1 bg-[#131513] rounded-full overflow-hidden border border-[#262A26]">
-          <div id="splash-progress-bar" class="h-full bg-[#7FD4FF] w-full transition-all duration-300 ease-out"></div>
+        <div class="w-full h-1.5 bg-[#131513] rounded-full overflow-hidden border border-[#262A26] p-0.5">
+          <div id="splash-progress-bar" class="h-full bg-gradient-to-r from-[#38bdf8] to-[#6fe2a3] rounded-full w-0 transition-[width] duration-75 ease-out splash-bar-glow"></div>
         </div>
       </div>
 
-      <!-- Tap to skip prompt (without arrow) -->
-      <div id="splash-skip-hint" class="mt-4 text-[11px] font-mono-data text-[#8C948B]">
-        Tap anywhere to enter
+      <!-- Tap to skip prompt -->
+      <div id="splash-skip-hint" class="mt-4 text-[10px] font-mono-data text-[#6E766D] hover:text-[#EEF0EC] transition-colors">
+        Tap anywhere to enter • MoES VayuCoupler
       </div>
     </div>
   </div>
@@ -2386,16 +2423,16 @@
         dismissed = true;
         var s = document.getElementById('splash-screen');
         if (s) {
-          s.style.transition = 'opacity 0.25s ease';
+          s.style.transition = 'opacity 0.35s ease';
           s.style.opacity = '0';
           s.style.pointerEvents = 'none';
           setTimeout(function() {
             if (s && s.parentNode) s.parentNode.removeChild(s);
-          }, 300);
+          }, 350);
         }
       }
-      // Failsafe timer: maximum 1200ms timeout regardless of scripts/network
-      setTimeout(hideSplashFailsafe, 1200);
+      // Failsafe timer: maximum 1700ms timeout regardless of scripts/network
+      setTimeout(hideSplashFailsafe, 1700);
       // Failsafe tap anywhere listener
       window.addEventListener('click', function(e) {
         var s = document.getElementById('splash-screen');
@@ -6666,12 +6703,14 @@
       renderStationPickerList(query);
     }
 
-    // 3. INTRO / COLD LAUNCH SPLASH SCREEN CONTROLLER (~6 Seconds Total)
+    // ==========================================================================
+    // 3. INTRO / COLD LAUNCH SPLASH SCREEN CONTROLLER (60fps rAF High Performance)
     // ==========================================================================
     const VayuSplashScreen = {
       isDismissed: false,
       canTapSkip: true,
-      _countInterval: null,
+      _rafId: null,
+      _dismissTimer: null,
 
       init() {
         const splash = document.getElementById('splash-screen');
@@ -6686,6 +6725,8 @@
         const gaugeRing = document.getElementById('splash-gauge-ring');
         const aqiNumber = document.getElementById('splash-aqi-number');
         const aqiSev = document.getElementById('splash-aqi-severity');
+        const syncPct = document.getElementById('splash-sync-pct');
+        const progBar = document.getElementById('splash-progress-bar');
         const curSt = (typeof VayuForecastEngine !== 'undefined' && (VayuForecastEngine.currentStation || (VayuForecastEngine.stations && VayuForecastEngine.stations[0]))) || { baseAQI: 431, name: 'Punjabi Bagh' };
         const targetAQI = curSt.baseAQI || 431;
         const sevMeta = (typeof VayuForecastEngine !== 'undefined' && VayuForecastEngine.getSeverityMeta) ? VayuForecastEngine.getSeverityMeta(targetAQI) : { color: '#f2966e', label: 'Severe', stageCode: 'GRAP IV', badgeClass: 'badge-orange' };
@@ -6700,34 +6741,59 @@
         const targetOffset = 314.159 - (Math.min(500, targetAQI) / 500) * 314.159;
         if (gaugeRing) {
           gaugeRing.style.stroke = sevMeta.color;
-          setTimeout(() => {
+          gaugeRing.style.filter = `drop-shadow(0 0 12px ${sevMeta.color}90)`;
+          requestAnimationFrame(() => {
             if (gaugeRing) gaugeRing.style.strokeDashoffset = targetOffset.toString();
-          }, 40);
+          });
         }
 
-        // Fast snappy count-up from 0 to targetAQI in ~350ms
-        let currentVal = 0;
-        const step = Math.max(1, Math.ceil(targetAQI / 18));
-        this._countInterval = setInterval(() => {
-          currentVal += step;
-          if (currentVal >= targetAQI) {
-            currentVal = targetAQI;
-            if (this._countInterval) {
-              clearInterval(this._countInterval);
-              this._countInterval = null;
-            }
-            if (aqiSev) {
-              aqiSev.innerText = `${sevMeta.label.toUpperCase()} (${sevMeta.stageCode})`;
-              aqiSev.className = `text-[10px] font-mono-tag font-bold px-2.5 py-0.5 rounded-full ${sevMeta.badgeClass}`;
-            }
-          }
-          if (aqiNumber) aqiNumber.innerText = currentVal;
-        }, 18);
+        // Silky smooth 60fps / 120fps count-up via requestAnimationFrame (750ms duration)
+        let startTime = null;
+        const duration = 750;
+        const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
 
-        // Fast transition into app after ~700ms
-        setTimeout(() => {
-          this.dismissSplash();
-        }, 700);
+        const animateStep = (timestamp) => {
+          if (this.isDismissed) return;
+          if (!startTime) startTime = timestamp;
+          const elapsed = timestamp - startTime;
+          const progress = Math.min(1, elapsed / duration);
+          const eased = easeOutCubic(progress);
+
+          const currentAQI = Math.round(eased * targetAQI);
+          if (aqiNumber) aqiNumber.textContent = currentAQI;
+
+          const pct = Math.min(100, Math.round(eased * 100));
+          if (syncPct) syncPct.textContent = `${pct}%`;
+          if (progBar) progBar.style.width = `${pct}%`;
+
+          // Live severity color morphing
+          const liveMeta = (typeof VayuForecastEngine !== 'undefined' && VayuForecastEngine.getSeverityMeta) 
+            ? VayuForecastEngine.getSeverityMeta(currentAQI) 
+            : sevMeta;
+          if (aqiSev && progress < 1) {
+            aqiSev.textContent = `${liveMeta.label.toUpperCase()}`;
+            aqiSev.className = `text-[10px] font-mono-tag font-bold px-2.5 py-0.5 rounded-full ${liveMeta.badgeClass}`;
+          }
+
+          if (progress < 1) {
+            this._rafId = requestAnimationFrame(animateStep);
+          } else {
+            // Lock in final precise state
+            if (aqiNumber) aqiNumber.textContent = targetAQI;
+            if (syncPct) syncPct.textContent = '100%';
+            if (progBar) progBar.style.width = '100%';
+            if (aqiSev) {
+              aqiSev.textContent = `${sevMeta.label.toUpperCase()} (${sevMeta.stageCode})`;
+              aqiSev.className = `text-[10px] font-mono-tag font-bold px-2.5 py-0.5 rounded-full ${sevMeta.badgeClass} scale-105 transition-transform duration-200`;
+            }
+            // Hold for 300ms for user perception, then smooth cinematic exit
+            this._dismissTimer = setTimeout(() => {
+              this.dismissSplash();
+            }, 300);
+          }
+        };
+
+        this._rafId = requestAnimationFrame(animateStep);
       },
 
       handleUserTapSkip() {
@@ -6737,23 +6803,35 @@
       dismissSplash(immediate = false) {
         if (this.isDismissed) return;
         this.isDismissed = true;
-        if (this._countInterval) {
-          clearInterval(this._countInterval);
-          this._countInterval = null;
+        if (this._rafId) {
+          cancelAnimationFrame(this._rafId);
+          this._rafId = null;
+        }
+        if (this._dismissTimer) {
+          clearTimeout(this._dismissTimer);
+          this._dismissTimer = null;
         }
 
         const splash = document.getElementById('splash-screen');
+        const content = document.getElementById('splash-content-box');
         if (splash) {
           if (immediate) {
             splash.style.display = 'none';
             if (splash.parentNode) splash.parentNode.removeChild(splash);
           } else {
+            if (content) {
+              content.style.transition = 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease, filter 0.35s ease';
+              content.style.transform = 'scale(1.06)';
+              content.style.opacity = '0';
+              content.style.filter = 'blur(6px)';
+            }
+            splash.style.transition = 'opacity 0.38s ease';
             splash.style.opacity = '0';
             splash.style.pointerEvents = 'none';
             setTimeout(() => {
               splash.style.display = 'none';
               if (splash.parentNode) splash.parentNode.removeChild(splash);
-            }, 250);
+            }, 380);
           }
         }
       }
