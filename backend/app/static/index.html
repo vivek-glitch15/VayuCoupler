@@ -1209,6 +1209,19 @@
       background-color: #f8fafc !important;
       border-color: #cbd5e1 !important;
     }
+    #vayuai-quick-chips::-webkit-scrollbar {
+      display: none;
+    }
+    html.light-theme #vayuai-quick-chips button {
+      background-color: #f1f5f9 !important;
+      border: 1px solid #cbd5e1 !important;
+      color: #1e293b !important;
+    }
+    html.light-theme #vayuai-quick-chips button:hover {
+      background-color: #e2e8f0 !important;
+      border-color: #059669 !important;
+      color: #059669 !important;
+    }
 
     /* Commute Eco-Shield in Light Theme */
     html.light-theme #panel-commute .shadow-cyan-950 {
@@ -4080,11 +4093,11 @@
             </button>
           </div>
 
-          <!-- Engine Status Pill (Online Gemini vs Offline AI) -->
-          <div id="vayuai-engine-status" class="mt-2.5 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-mono border border-[#52C41A]/30 bg-[#52C41A]/10 text-[#52C41A] transition-all">
+          <!-- Engine Status Pill (Online Gemini vs Offline AI - Tap to Toggle) -->
+          <div onclick="VayuAIAssistant.toggleOfflineMode()" id="vayuai-engine-status" class="mt-2.5 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-mono border border-[#52C41A]/30 bg-[#52C41A]/10 text-[#52C41A] transition-all cursor-pointer hover:opacity-80" role="button" title="Tap to toggle Offline AI / Online mode">
             <span class="w-2 h-2 rounded-full bg-[#52C41A]"></span>
-            <span class="font-bold">Online</span>
-            <span class="text-[10px] text-[#8C948B]">(Google Gemini AI Grounded)</span>
+            <span class="font-bold">🟢 Online (Gemini AI)</span>
+            <span class="text-[10px] text-[#8C948B]">(Tap for Offline AI)</span>
           </div>
 
           <!-- 2-Column Grid of Question Cards (All 15 Preset Intents) -->
@@ -4107,7 +4120,7 @@
               <div>
                 <div class="text-xs font-bold text-[#EEF0EC] font-space flex items-center gap-2">
                   <span>VayuAI Assistant</span>
-                  <span id="vayuai-thread-badge" class="px-2 py-0.5 text-[9px] font-mono rounded border border-[#52C41A]/40 bg-[#52C41A]/10 text-[#52C41A] font-bold">Online</span>
+                  <button type="button" onclick="VayuAIAssistant.toggleOfflineMode()" id="vayuai-thread-badge" class="px-2 py-0.5 text-[9px] font-mono rounded border border-[#52C41A]/40 bg-[#52C41A]/10 text-[#52C41A] font-bold cursor-pointer hover:opacity-80 transition" title="Tap to toggle Offline AI / Online mode">🟢 Online</button>
                 </div>
                 <div id="vayuai-thread-subtext" class="text-[10px] text-[#8C948B] font-mono">Google Gemini AI Grounded</div>
               </div>
@@ -4133,8 +4146,27 @@
           <span class="text-[9px] font-mono px-2 py-0.5 rounded badge-yellow shrink-0">Hinglish detected</span>
         </div>
 
-        <!-- Pinned Bottom Input Bar with Speech Mic & Ask VayuAI Action Button -->
-        <div class="sticky bottom-0 bg-[#131513]/95 backdrop-blur-md mt-4 pt-3 pb-1 border-t border-[#262A26] z-10">
+        <!-- Pinned Bottom Bar with Quick Fixed Questions + Speech Mic & Ask VayuAI Action Button -->
+        <div class="sticky bottom-0 bg-[#131513]/95 backdrop-blur-md mt-2 pt-2 pb-1 border-t border-[#262A26] z-10 flex flex-col gap-2">
+          
+          <!-- Quick Fixed Question Chips (Works in Both Online & Offline AI Mode) -->
+          <div class="flex flex-col gap-1 px-1">
+            <div class="flex items-center justify-between text-[10px] font-mono">
+              <span class="text-[#8C948B] flex items-center gap-1">
+                <span class="text-[#FFA940] font-bold">⚡ Quick Inquiries:</span>
+                <span class="opacity-75">(Tap for instant answer)</span>
+              </span>
+              <div class="inline-flex items-center gap-1">
+                <button type="button" onclick="VayuSettings.setLanguage('hinglish')" id="vayuai-chip-lang-hi" class="px-2 py-0.5 rounded text-[10px] font-mono font-bold transition bg-[#7FD4FF]/20 text-[#7FD4FF] border border-[#7FD4FF]/40">🇮🇳 Hinglish</button>
+                <button type="button" onclick="VayuSettings.setLanguage('en')" id="vayuai-chip-lang-en" class="px-2 py-0.5 rounded text-[10px] font-mono font-medium transition text-[#8C948B] hover:text-[#EEF0EC]">🇬🇧 English</button>
+              </div>
+            </div>
+            
+            <div class="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar text-[11px]" id="vayuai-quick-chips">
+              <!-- Dynamically populated chips in both Hinglish and English -->
+            </div>
+          </div>
+
           <div class="flex items-center gap-2 p-1.5 pl-3.5 rounded-full bg-[#0A0B0A] border border-[#262A26] focus-within:border-[#7FD4FF] transition">
             <input type="text" id="vayuai-chat-input" placeholder="Apna sawaal likhein ya mic dabayein..." onkeydown="if(event.key==='Enter') sendVayuAICustomQuery()" class="flex-1 bg-transparent text-xs text-[#EEF0EC] placeholder-[#8C948B] focus:outline-none min-w-0 font-sans">
             
@@ -5441,7 +5473,7 @@
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         checkIfInstalled();
-        navigator.serviceWorker.register('/static/sw.js?v=25').then(reg => {
+        navigator.serviceWorker.register('/static/sw.js?v=26').then(reg => {
           reg.update();
           reg.onupdatefound = () => {
             const installing = reg.installing;
@@ -7764,9 +7796,68 @@
         { id: 15, cat: 'FORECAST', badgeClass: 'badge-blue', q: 'What is the current stubble burning status?' }
       ],
 
+      manualOfflineOverride: false,
       isOffline: !navigator.onLine,
       speechRecognizer: null,
       isListening: false,
+
+      toggleOfflineMode() {
+        if (this.manualOfflineOverride) {
+          this.manualOfflineOverride = false;
+          this.isOffline = !navigator.onLine;
+        } else {
+          this.manualOfflineOverride = true;
+          this.isOffline = true;
+        }
+        this.updateNetworkStatus();
+        if (typeof showGPSLocationToast === 'function') {
+          showGPSLocationToast(this.isOffline ? "⚡ Switched to Offline AI (Local Model)" : "🟢 Switched to Online Mode (Gemini AI)");
+        }
+      },
+
+      normalizeQuery(raw) {
+        if (!raw) return '';
+        let q = ' ' + raw.toLowerCase().trim() + ' ';
+        const replacements = [
+          [/\bkl\b/g, 'kal'],
+          [/\btmw\b/g, 'tomorrow'],
+          [/\btmrw\b/g, 'tomorrow'],
+          [/\bbnd\b/g, 'band'],
+          [/\brhnge\b/g, 'rahenge'],
+          [/\brhenge\b/g, 'rahenge'],
+          [/\brhega\b/g, 'rahega'],
+          [/\bhoga\b/g, 'hoga'],
+          [/\bhoge\b/g, 'hoge'],
+          [/\bschl\b/g, 'school'],
+          [/\bschls\b/g, 'schools'],
+          [/\bskool\b/g, 'school'],
+          [/\bclsd\b/g, 'closed'],
+          [/\bcls\b/g, 'close'],
+          [/\bktna\b/g, 'kitna'],
+          [/\bktni\b/g, 'kitni'],
+          [/\bknse\b/g, 'konsa'],
+          [/\bknsa\b/g, 'konsa'],
+          [/\bjgh\b/g, 'jagah'],
+          [/\bjgah\b/g, 'jagah'],
+          [/\bmsm\b/g, 'mausam'],
+          [/\bwthr\b/g, 'weather'],
+          [/\btmp\b/g, 'temperature'],
+          [/\btemp\b/g, 'temperature'],
+          [/\bbrsh\b/g, 'barish'],
+          [/\bbaresh\b/g, 'barish'],
+          [/\bplz\b/g, 'please'],
+          [/\bpls\b/g, 'please'],
+          [/\bkya\b/g, 'kya'],
+          [/\bh\b/g, 'hai'],
+          [/\bhn\b/g, 'hain'],
+          [/\bhain\b/g, 'hain'],
+          [/\bko\b/g, 'ko']
+        ];
+        for (const [re, repl] of replacements) {
+          q = q.replace(re, repl);
+        }
+        return q.trim();
+      },
 
       getQuestions() {
         const lang = (typeof VayuSettings !== 'undefined' && VayuSettings.language) ? VayuSettings.language : (localStorage.getItem('vayu_language') || 'en');
@@ -7775,24 +7866,38 @@
 
       init() {
         this.renderHubQuestions();
+        this.renderQuickChips();
         this.initSpeechRecognition();
         this.initNetworkListeners();
         this.updateNetworkStatus();
       },
 
       initNetworkListeners() {
-        window.addEventListener('online', () => {
-          this.isOffline = false;
-          this.updateNetworkStatus();
-        });
-        window.addEventListener('offline', () => {
-          this.isOffline = true;
-          this.updateNetworkStatus();
-        });
+        const updateNet = () => {
+          if (!this.manualOfflineOverride) {
+            this.isOffline = !navigator.onLine;
+            this.updateNetworkStatus();
+          }
+        };
+        window.addEventListener('online', updateNet);
+        window.addEventListener('offline', updateNet);
+        window.addEventListener('focus', updateNet);
+        document.addEventListener('visibilitychange', updateNet);
+
+        // Continuous heartbeat polling (1500ms) for instant mobile drop detection
+        setInterval(() => {
+          if (!this.manualOfflineOverride) {
+            const nowOffline = !navigator.onLine;
+            if (nowOffline !== this.isOffline) {
+              this.isOffline = nowOffline;
+              this.updateNetworkStatus();
+            }
+          }
+        }, 1500);
       },
 
       updateNetworkStatus() {
-        const isOff = !navigator.onLine || this.isOffline;
+        const isOff = !navigator.onLine || this.isOffline || this.manualOfflineOverride;
         const statusEl = document.getElementById('vayuai-engine-status');
         const threadBadge = document.getElementById('vayuai-thread-badge');
         const threadSubtext = document.getElementById('vayuai-thread-subtext');
@@ -7801,17 +7906,17 @@
 
         if (statusEl) {
           if (isOff) {
-            statusEl.className = "mt-2.5 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-mono border border-[#FFA940]/40 bg-[#FFA940]/10 text-[#FFA940] transition-all";
+            statusEl.className = "mt-2.5 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-mono border border-[#FFA940]/40 bg-[#FFA940]/10 text-[#FFA940] transition-all cursor-pointer hover:opacity-80";
             statusEl.innerHTML = `
               <span class="w-2 h-2 rounded-full bg-[#FFA940] animate-pulse"></span>
-              <span class="font-bold">Offline AI</span>
+              <span class="font-bold">⚡ Offline AI</span>
               <span class="text-[10px] text-[#8C948B]">(${isEn ? 'Local Coupled Model · 100% Offline' : 'Local Atmospheric Model · Offline'})</span>
             `;
           } else {
-            statusEl.className = "mt-2.5 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-mono border border-[#52C41A]/30 bg-[#52C41A]/10 text-[#52C41A] transition-all";
+            statusEl.className = "mt-2.5 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-mono border border-[#52C41A]/30 bg-[#52C41A]/10 text-[#52C41A] transition-all cursor-pointer hover:opacity-80";
             statusEl.innerHTML = `
               <span class="w-2 h-2 rounded-full bg-[#52C41A]"></span>
-              <span class="font-bold">Online</span>
+              <span class="font-bold">🟢 Online</span>
               <span class="text-[10px] text-[#8C948B]">(Google Gemini AI Grounded)</span>
             `;
           }
@@ -7819,11 +7924,11 @@
 
         if (threadBadge) {
           if (isOff) {
-            threadBadge.className = "px-2 py-0.5 text-[9px] font-mono rounded border border-[#FFA940]/40 bg-[#FFA940]/10 text-[#FFA940] font-bold";
-            threadBadge.innerText = "Offline AI";
+            threadBadge.className = "px-2 py-0.5 text-[9px] font-mono rounded border border-[#FFA940]/40 bg-[#FFA940]/10 text-[#FFA940] font-bold cursor-pointer hover:opacity-80 transition";
+            threadBadge.innerText = "⚡ Offline AI";
           } else {
-            threadBadge.className = "px-2 py-0.5 text-[9px] font-mono rounded border border-[#52C41A]/40 bg-[#52C41A]/10 text-[#52C41A] font-bold";
-            threadBadge.innerText = "Online";
+            threadBadge.className = "px-2 py-0.5 text-[9px] font-mono rounded border border-[#52C41A]/40 bg-[#52C41A]/10 text-[#52C41A] font-bold cursor-pointer hover:opacity-80 transition";
+            threadBadge.innerText = "🟢 Online";
           }
         }
 
@@ -7834,6 +7939,56 @@
             threadSubtext.innerText = "Google Gemini AI Grounded";
           }
         }
+      },
+
+      renderQuickChips() {
+        const container = document.getElementById('vayuai-quick-chips');
+        if (!container) return;
+        const lang = (typeof VayuSettings !== 'undefined' && VayuSettings.language) ? VayuSettings.language : (localStorage.getItem('vayu_language') || 'en');
+        const isEn = lang === 'en';
+
+        // Update language toggle buttons styling
+        const btnHi = document.getElementById('vayuai-chip-lang-hi');
+        const btnEn = document.getElementById('vayuai-chip-lang-en');
+        if (btnHi && btnEn) {
+          if (isEn) {
+            btnEn.className = "px-2 py-0.5 rounded text-[10px] font-mono font-bold transition bg-[#7FD4FF]/20 text-[#7FD4FF] border border-[#7FD4FF]/40";
+            btnHi.className = "px-2 py-0.5 rounded text-[10px] font-mono font-medium transition text-[#8C948B] hover:text-[#EEF0EC]";
+          } else {
+            btnHi.className = "px-2 py-0.5 rounded text-[10px] font-mono font-bold transition bg-[#7FD4FF]/20 text-[#7FD4FF] border border-[#7FD4FF]/40";
+            btnEn.className = "px-2 py-0.5 rounded text-[10px] font-mono font-medium transition text-[#8C948B] hover:text-[#EEF0EC]";
+          }
+        }
+
+        const quickQuestions = isEn ? [
+          { label: "🏫 School Closure", q: "Will schools be closed tomorrow?" },
+          { label: "📊 Tomorrow AQI", q: "What is the projected AQI tomorrow?" },
+          { label: "🚨 Active GRAP", q: "Which GRAP stage is active?" },
+          { label: "😷 N95 Mask", q: "Should I wear an N95 mask outdoors?" },
+          { label: "🌦️ Weather/Rain", q: "What is the live weather forecast?" },
+          { label: "🚗 Odd-Even", q: "Will the Odd-Even vehicle rule be enforced?" },
+          { label: "🏗️ Construction", q: "Are construction and demolition halted?" },
+          { label: "💻 WFH Advisory", q: "Is there an advisory for Work-From-Home?" },
+          { label: "🏃 Outdoor Sports", q: "Are morning sports and jogging safe?" },
+          { label: "📍 Hotspots", q: "Which Delhi-NCR zones are most affected?" }
+        ] : [
+          { label: "🏫 School Band?", q: "Kal school band rahenge kya?" },
+          { label: "📊 Kal ka AQI", q: "Kal AQI kitna hoga?" },
+          { label: "🚨 GRAP Stage", q: "Konsa GRAP stage lagu hoga?" },
+          { label: "😷 Mask Pehnein?", q: "Mujhe mask pehnna chahiye kya?" },
+          { label: "🌦️ Live Mausam", q: "Delhi-NCR ka live mausam kaisa hai?" },
+          { label: "🚗 Odd-Even", q: "Odd-even lagu hoga kya?" },
+          { label: "🏗️ Construction Rok", q: "Construction/demolition band hogi kya?" },
+          { label: "💻 WFH Advisory", q: "WFH advisory hai kya?" },
+          { label: "🏃 Sports/Walk Safe?", q: "Outdoor activities/sports safe hain kya?" },
+          { label: "📍 Sabse Kharab Area", q: "Konsi areas sabse zyada affected hongi?" }
+        ];
+
+        container.innerHTML = quickQuestions.map(item => `
+          <button type="button" onclick="VayuAIAssistant.askQuestion('${item.q}')" class="shrink-0 px-2.5 py-1 rounded-full text-[11px] font-sans border border-[#262A26] bg-[#191C19] text-[#EEF0EC] hover:border-[#7FD4FF] hover:text-[#7FD4FF] transition-all whitespace-nowrap active:scale-95 shadow-sm">
+            ${item.label}
+          </button>
+        `).join('');
       },
 
       renderHubQuestions() {
@@ -7851,6 +8006,7 @@
 
       onLanguageChange(lang) {
         this.renderHubQuestions();
+        this.renderQuickChips();
         this.updateNetworkStatus();
         
         // Update input placeholder
@@ -7990,6 +8146,10 @@
         const history = document.getElementById('vayuai-chat-history');
         if (!history) return;
 
+        const currentLang = (typeof VayuSettings !== 'undefined' && VayuSettings.language) ? VayuSettings.language : (localStorage.getItem('vayu_language') || 'en');
+        const isEn = currentLang === 'en';
+        const isCurrentlyOffline = !navigator.onLine || this.isOffline || this.manualOfflineOverride;
+
         // Transition into Chat Thread View
         if (hubView) hubView.classList.add('hidden');
         if (chatThread) chatThread.classList.remove('hidden');
@@ -8023,7 +8183,7 @@
 
         // If offline: bypass network fetch entirely for 0ms edge calculation!
         if (isCurrentlyOffline) {
-          await new Promise(r => setTimeout(r, 180));
+          await new Promise(r => setTimeout(r, 120));
           responseData = this.computeDynamicAnswer(query, true);
         } else {
           try {
@@ -8138,9 +8298,13 @@
             }
           } catch (err) {
             console.warn('Gemini chat error or timeout, switching to Offline AI:', err);
+            this.isOffline = true;
+            this.updateNetworkStatus();
           }
 
           if (!responseData) {
+            this.isOffline = true;
+            this.updateNetworkStatus();
             responseData = this.computeDynamicAnswer(query, true);
           }
         }
@@ -8220,7 +8384,8 @@
       },
 
       computeDynamicAnswer(query, isOffline = true) {
-        const q = query.toLowerCase();
+        const rawQ = query.toLowerCase();
+        const q = this.normalizeQuery(query);
         const forecast = VayuForecastEngine.forecastArray;
         const currentAQI = VayuForecastEngine.currentAQI;
         const stationName = VayuForecastEngine.currentStation ? VayuForecastEngine.currentStation.name : 'Punjabi Bagh';
@@ -8230,16 +8395,28 @@
         const max48Stage = VayuForecastEngine.getGrapStage(max48AQI);
         const lang = (typeof VayuSettings !== 'undefined' && VayuSettings.language) ? VayuSettings.language : 'en';
         const isEn = lang === 'en';
+
+        // Auto-detect Hinglish in user query so we respond in Hinglish even if system language is English
+        const isQueryHinglish = (
+          q.includes('kal') || q.includes('band') || q.includes('rahenge') || q.includes('rahega') || 
+          q.includes('hoga') || q.includes('kya') || q.includes('hai') || q.includes('hain') || 
+          q.includes('kitna') || q.includes('kitni') || q.includes('konsa') || q.includes('kaun') || 
+          q.includes('pehnna') || q.includes('chahiye') || q.includes('lagu') || q.includes('mausam') || 
+          q.includes('kaisa') || q.includes('parali') || q.includes('bachon') || q.includes('kab tak') ||
+          rawQ.includes('kl') || rawQ.includes('bnd') || rawQ.includes('rhnge')
+        );
+        const respondInEn = isEn && !isQueryHinglish;
+
         const metaLead = (desc) => isOffline ? `⚡ Offline AI · ${desc}` : desc;
 
         // Offline AI details / inquiry
         if (q.includes('offline ai') || q.includes('offline mode') || q.includes('bina internet') || q.includes('without internet') || q.includes('kaise kaam karta')) {
           return {
             isOffline: isOffline !== false,
-            text: isEn
+            text: respondInEn
               ? `<b>Offline AI</b> is running locally on your device! It uses VayuCoupler's mathematical boundary-layer physics, CAQM GRAP rules engine, and pre-cached 72-hour Delhi-NCR meteorological matrices stored in device memory. It works 100% without internet, zero API keys, and delivers instant 0ms responses.`
               : `<b>Offline AI</b> aapke browser me 100% locally chalta hai! Ye VayuCoupler ke mathematical atmospheric physics, CAQM GRAP rules engine, aur local device memory me cached 72-hour Delhi-NCR forecast data ka upyog karta hai. Isme bina internet ke, bina kisi external server ya API key ke instant answers milte hain.`,
-            leadMeta: metaLead(isEn ? 'Edge Inference Engine' : 'Local Edge Physics Model'),
+            leadMeta: metaLead(respondInEn ? 'Edge Inference Engine' : 'Local Edge Physics Model'),
             confidence: 99,
             tabLink: 'overview'
           };
@@ -8249,17 +8426,17 @@
         if (q.includes('hello') || q.includes('hi ') || q === 'hi' || q.includes('namaste') || q.includes('who are you') || q.includes('kaun ho')) {
           return {
             isOffline: isOffline !== false,
-            text: isEn
+            text: respondInEn
               ? `Hello! I am <b>VayuAI</b>, your atmospheric and environmental intelligence assistant for Delhi-NCR. Currently operating in <b>${isOffline ? 'Offline AI' : 'Cloud Gemini'}</b> mode. Ask me about school closures, tomorrow's AQI forecast, active GRAP stages, N95 masks, or live weather!`
               : `Namaste! Main <b>VayuAI</b> hoon — Delhi-NCR ka coupled atmospheric intelligence assistant. Abhi main <b>${isOffline ? 'Offline AI' : 'Cloud Gemini'}</b> mode me kaam kar raha hoon. Aap mujhse kal ke school status, AQI forecast, GRAP restrictions, masks, ya live weather ke baare me pooch sakte hain!`,
-            leadMeta: metaLead(isEn ? 'Delhi-NCR Coupled Intelligence' : 'Local Coupled Model'),
+            leadMeta: metaLead(respondInEn ? 'Delhi-NCR Coupled Intelligence' : 'Local Coupled Model'),
             confidence: 99,
             tabLink: 'overview'
           };
         }
 
         // 0. WEATHER / MAUSAM / BARISH / TEMPERATURE QUERIES
-        if (q.includes('weather') || q.includes('mausam') || q.includes('barish') || q.includes('rain') || q.includes('temp') || q.includes('taapman') || q.includes('dhoop') || q.includes('garmi') || q.includes('sardi') || q.includes('badal') || q.includes('cloud') || q.includes('fog') || q.includes('kohra') || q.includes('dhund') || q.includes('forecast') || q.includes('humidity') || q.includes('nami')) {
+        if (q.includes('weather') || q.includes('mausam') || q.includes('barish') || q.includes('rain') || q.includes('temp') || q.includes('temperature') || q.includes('taapman') || q.includes('dhoop') || q.includes('garmi') || q.includes('sardi') || q.includes('badal') || q.includes('cloud') || q.includes('fog') || q.includes('kohra') || q.includes('dhund') || q.includes('humidity') || q.includes('nami') || rawQ.includes('msm') || rawQ.includes('brsh')) {
           const currDay = (typeof VayuWeather !== 'undefined' && VayuWeather.forecastDays && VayuWeather.forecastDays.length > 0) ? VayuWeather.forecastDays[0] : null;
           const temp = (typeof VayuWeather !== 'undefined' && VayuWeather.currentTemp) ? VayuWeather.currentTemp : 28;
           const feels = (typeof VayuWeather !== 'undefined' && VayuWeather.feelsLike) ? VayuWeather.feelsLike : 30;
@@ -8267,11 +8444,11 @@
           const low = currDay ? currDay.low : 24;
           const precip = (typeof VayuWeather !== 'undefined' && VayuWeather.precipProb) ? VayuWeather.precipProb : 15;
           const humid = (typeof VayuWeather !== 'undefined' && VayuWeather.humidity) ? VayuWeather.humidity : 78;
-          const cond = currDay ? (isEn ? currDay.conditionEn : currDay.conditionHi) : (isEn ? 'Cloudy' : 'घने बादल');
+          const cond = currDay ? (respondInEn ? currDay.conditionEn : currDay.conditionHi) : (respondInEn ? 'Cloudy' : 'घने बादल');
           
           return {
             isOffline: isOffline !== false,
-            text: isEn
+            text: respondInEn
               ? `Here is your detailed real-time meteorological report for Delhi-NCR:
 <br><br>
 • 🌡️ <b>Temperature:</b> Current reading is <b>${temp}°C</b> (RealFeel: <b>${feels}°C</b>). Today's expected maximum is <b>${high}°C</b> and minimum is <b>${low}°C</b>.
@@ -8297,7 +8474,7 @@
             leadMeta: metaLead(`Coupled WRF-Chem & Open-Meteo Grid (${currDay ? currDay.date : 'Today'})`),
             confidence: 97,
             tabLink: 'weather',
-            tabLinkLabel: isEn ? 'Open Full 7-Day Live Weather Radar & Synoptic Curves' : 'Pura 7-Day Live Weather Radar aur Charts dekhein',
+            tabLinkLabel: respondInEn ? 'Open Full 7-Day Live Weather Radar & Synoptic Curves' : 'Pura 7-Day Live Weather Radar aur Charts dekhein',
             showWeatherCard: true,
             weatherData: {
               temp: temp,
@@ -8311,31 +8488,13 @@
           };
         }
 
-        // 1. "Kal school band rahenge kya?" / "Will schools be closed tomorrow?"
-        if (q.includes('school') && (q.includes('band') || q.includes('kal') || q.includes('close') || q.includes('tomorrow'))) {
-          const crossesThreshold = next24Pt.aqi >= 400;
-          return {
-            isOffline: isOffline !== false,
-            text: isEn
-              ? (crossesThreshold
-                  ? `Yes, the projected AQI in Delhi-NCR over the next 24 hours is <b>${next24Pt.aqi} (${next24Pt.grapStage})</b>. Under CAQM regulations, Primary schools (Class 1–5) will remain physically closed and transition to online mode.`
-                  : `No, tomorrow's projected AQI is <b>${next24Pt.aqi}</b>, which is below the emergency closure threshold (<400). Schools will operate on regular schedules, though morning outdoor assemblies remain cancelled.`)
-              : (crossesThreshold
-                  ? `Haan, agle 24 ghante me Delhi-NCR me projected AQI <b>${next24Pt.aqi} (${next24Pt.grapStage})</b> hai. CAQM guidelines ke tehat Primary schools (Class 1–5) physically band rahenge aur online mode par chalenge.`
-                  : `Nahi, kal projected AQI <b>${next24Pt.aqi}</b> hai jo emergency closure threshold (<400) se neeche hai. Schools regular timings par operate karenge, par morning outdoor physical assemblies cancel rahengi.`),
-            leadMeta: metaLead(`Based on 24-hour coupled forecast (${next24Pt.hourFormatted})`),
-            confidence: Math.round(next24Pt.confidence * 100),
-            tabLink: 'grap'
-          };
-        }
-
         // 2. "School kab tak band rahenge?" / "How long will school closures last?"
-        if (q.includes('school') && (q.includes('kab tak') || q.includes('how long') || q.includes('reopen'))) {
+        if ((q.includes('school') || q.includes('schools') || rawQ.includes('schl')) && (q.includes('kab tak') || q.includes('how long') || q.includes('reopen') || q.includes('khulenge'))) {
           const reopenIndex = forecast.findIndex(p => p.aqi < 350);
           const reopenPt = reopenIndex !== -1 ? forecast[reopenIndex] : null;
           return {
             isOffline: isOffline !== false,
-            text: isEn
+            text: respondInEn
               ? (reopenPt
                   ? `According to the coupled model trajectory, AQI will drop back into the safer zone at <b>T+${reopenPt.leadHours}h</b> (${reopenPt.aqi} AQI on ${reopenPt.dateFormatted}, ${reopenPt.hourFormatted}). Hybrid classes and outdoor activity curbs will remain active until then.`
                   : `AQI is projected to remain elevated (peaking at ${max48AQI}) throughout the next 72 hours. School physical reopening advisories will be reassessed after 3 days.`)
@@ -8348,12 +8507,33 @@
           };
         }
 
+        // 1. "Kal school band rahenge kya?" / "Will schools be closed tomorrow?"
+        const isSchoolClosureQuery = (q.includes('school') || q.includes('schools') || rawQ.includes('schl')) && 
+          (q.includes('band') || q.includes('close') || q.includes('closed') || q.includes('kal') || q.includes('tomorrow') || q.includes('chutti') || q.includes('holiday') || q.includes('open') || q.includes('off') || q.includes('rhnge') || rawQ.includes('bnd'));
+
+        if (isSchoolClosureQuery) {
+          const crossesThreshold = next24Pt.aqi >= 400;
+          return {
+            isOffline: isOffline !== false,
+            text: respondInEn
+              ? (crossesThreshold
+                  ? `Yes, the projected AQI in Delhi-NCR over the next 24 hours is <b>${next24Pt.aqi} (${next24Pt.grapStage})</b>. Under CAQM regulations, Primary schools (Class 1–5) will remain physically closed and transition to online mode.`
+                  : `No, tomorrow's projected AQI is <b>${next24Pt.aqi}</b>, which is below the emergency closure threshold (<400). Schools will operate on regular schedules, though morning outdoor assemblies remain cancelled.`)
+              : (crossesThreshold
+                  ? `Haan, agle 24 ghante me Delhi-NCR me projected AQI <b>${next24Pt.aqi} (${next24Pt.grapStage})</b> hai. CAQM guidelines ke tehat Primary schools (Class 1–5) physically band rahenge aur online mode par chalenge.`
+                  : `Nahi, kal projected AQI <b>${next24Pt.aqi}</b> hai jo emergency closure threshold (<400) se neeche hai. Schools regular timings par operate karenge, par morning outdoor physical assemblies cancel rahengi.`),
+            leadMeta: metaLead(`Based on 24-hour coupled forecast (${next24Pt.hourFormatted})`),
+            confidence: Math.round(next24Pt.confidence * 100),
+            tabLink: 'grap'
+          };
+        }
+
         // 3. "Kal AQI kitna hoga?" / "What is the projected AQI for tomorrow?"
-        if ((q.includes('aqi') && (q.includes('kal') || q.includes('kitna') || q.includes('tomorrow') || q.includes('forecast'))) || q.includes('projected aqi')) {
+        if ((q.includes('aqi') || q.includes('air quality') || q.includes('hawa')) && (q.includes('kal') || q.includes('kitna') || q.includes('tomorrow') || q.includes('forecast') || q.includes('kitni') || q.includes('kaisa') || q.includes('projected') || rawQ.includes('ktna'))) {
           const meta = VayuForecastEngine.getSeverityMeta(next24Pt.aqi);
           return {
             isOffline: isOffline !== false,
-            text: isEn
+            text: respondInEn
               ? `Tomorrow at this hour (+24h), the predicted AQI at ${stationName} will be <b>${next24Pt.aqi}</b> (<span style="color:${meta.color}">${meta.label}</span>). Dominant pollutant: <b>${next24Pt.dominantPollutant}</b>. Dense smog is expected around 07:00 AM due to nocturnal surface inversion.`
               : `Kal is waqt (+24h) ${stationName} par predicted AQI <b>${next24Pt.aqi}</b> hoga (<span style="color:${meta.color}">${meta.label}</span>). Dominant pollutant: <b>${next24Pt.dominantPollutant}</b>. Subah 07:00 AM par inversion ke chalte smog sabse dense rahega.`,
             leadMeta: metaLead(`Based on 24-hour forecast · Station ${stationName}`),
@@ -8363,10 +8543,10 @@
         }
 
         // 4. "Konsa GRAP stage lagu hoga?" / "Which GRAP stage is active?"
-        if (q.includes('grap') && (q.includes('stage') || q.includes('lagu') || q.includes('active') || q.includes('which'))) {
+        if (q.includes('grap') || ((q.includes('stage') || q.includes('curb') || q.includes('restriction')) && (q.includes('lagu') || q.includes('active') || q.includes('konsa') || q.includes('which')))) {
           return {
             isOffline: isOffline !== false,
-            text: isEn
+            text: respondInEn
               ? `Over the next 48 hours, Delhi-NCR maximum AQI is projected to touch <b>${max48AQI}</b>, triggering <b>${max48Stage}</b>. Under this stage, construction halts, diesel generator restrictions, and commercial diesel truck entry bans are strictly enforced.`
               : `Agle 48 ghante me Delhi-NCR me maximum AQI <b>${max48AQI}</b> touch karega, jisse <b>${max48Stage}</b> trigger ho raha hai. Iske tehat construction halts, DG set curbs aur commercial diesel truck entry restrictions mandatory hain.`,
             leadMeta: metaLead('Based on 48-hour peak trigger calculation'),
@@ -8376,10 +8556,10 @@
         }
 
         // 5. "Mujhe mask pehnna chahiye kya?" / "Should I wear a mask?"
-        if (q.includes('mask') || q.includes('pehnna') || q.includes('wear')) {
+        if (q.includes('mask') || q.includes('pehnna') || q.includes('pehne') || q.includes('respirator') || q.includes('n95') || q.includes('n-95') || q.includes('wear')) {
           return {
             isOffline: isOffline !== false,
-            text: isEn
+            text: respondInEn
               ? (currentAQI >= 200
                   ? `Yes, absolutely! Current AQI is <b>${currentAQI}</b>. Surgical or cloth masks cannot filter fine PM2.5 particulates — wearing a <b>certified N-95 or FFP2 respirator</b> is essential when stepping outdoors.`
                   : `Current AQI (${currentAQI}) is in the Moderate category. Mask usage is optional for healthy individuals but recommended for sensitive groups.`)
@@ -8393,10 +8573,10 @@
         }
 
         // 6. "Outdoor activities/sports safe hain kya?" / "Are outdoor sports safe?"
-        if (q.includes('outdoor') || q.includes('sports') || q.includes('running') || q.includes('jog')) {
+        if (q.includes('outdoor') || q.includes('sports') || q.includes('running') || q.includes('jog') || q.includes('jogging') || q.includes('walk') || q.includes('cricket') || q.includes('exercise')) {
           return {
             isOffline: isOffline !== false,
-            text: isEn
+            text: respondInEn
               ? `Between 06:00 AM and 10:00 AM, thermal inversion traps surface air, resulting in <b>${next12Pt.aqi} AQI (Severe)</b>. Avoid intense jogging or outdoor sports. The safest clean air window is between <b>01:30 PM and 04:00 PM</b>.`
               : `Subah 06:00 AM se 10:00 AM ke beech thermal inversion ke karan surface AQI <b>${next12Pt.aqi} (Severe)</b> rahega. Jogging ya outdoor sports se bachein. Safe clean air window dopahar <b>01:30 PM se 04:00 PM</b> ke beech hai.`,
             leadMeta: metaLead('Based on 12-hour diurnal cycle calculation'),
@@ -8406,10 +8586,10 @@
         }
 
         // 7. "Konsi areas sabse zyada affected hongi?" / "Which areas are most affected?"
-        if (q.includes('areas') || q.includes('affected') || q.includes('jagah') || q.includes('hotspot') || q.includes('zones')) {
+        if (q.includes('area') || q.includes('areas') || q.includes('affected') || q.includes('jagah') || q.includes('hotspot') || q.includes('hotspots') || q.includes('zones') || q.includes('kharaab')) {
           return {
             isOffline: isOffline !== false,
-            text: isEn
+            text: respondInEn
               ? `Top 3 most affected hotspots: <b>(1) Anand Vihar (AQI 468)</b>, <b>(2) Wazirpur (AQI 462)</b>, and <b>(3) Jahangirpuri (AQI 455)</b>. These regions lie in the direct downwind convergence zone with severe boundary-layer compression.`
               : `Top 3 most affected hotspots: <b>(1) Anand Vihar (AQI 468)</b>, <b>(2) Wazirpur (AQI 462)</b>, aur <b>(3) Jahangirpuri (AQI 455)</b>. Ye areas boundary layer compression aur heavy highway diesel traffic ke direct downwind trap zone me aate hain.`,
             leadMeta: metaLead('Based on coupled spatial dispersion mapping'),
@@ -8419,11 +8599,11 @@
         }
 
         // 8. "Odd-even lagu hoga kya?" / "Odd-even rule enforced?"
-        if (q.includes('odd-even') || q.includes('odd even') || q.includes('vehicle rationing')) {
+        if (q.includes('odd-even') || q.includes('odd even') || q.includes('vehicle rationing') || (q.includes('odd') && q.includes('even'))) {
           const stage4Triggered = max48AQI >= 450;
           return {
             isOffline: isOffline !== false,
-            text: isEn
+            text: respondInEn
               ? (stage4Triggered
                   ? `Yes, over the next 48 hours, AQI is crossing ${max48AQI} (Stage IV Emergency). The Delhi Cabinet and CAQM are actively reviewing emergency Odd-Even vehicle rationing deployment.`
                   : `Odd-Even is not currently mandated because projected AQI (${max48AQI}) is below the Stage IV threshold (450+). However, Stage III curbs (banning BS-III Petrol and BS-IV Diesel cars) are in active effect.`)
@@ -8437,11 +8617,11 @@
         }
 
         // 9. "Construction/demolition band hogi kya?" / "Construction halted?"
-        if (q.includes('construction') || q.includes('demolition') || q.includes('c&d')) {
+        if (q.includes('construction') || q.includes('demolition') || q.includes('c&d') || q.includes('cement') || q.includes('dust') || q.includes('constraction')) {
           const stage3Triggered = max48AQI >= 401;
           return {
             isOffline: isOffline !== false,
-            text: isEn
+            text: respondInEn
               ? (stage3Triggered
                   ? `Yes, under Stage III/IV curbs, all non-essential private and commercial Construction & Demolition (C&D) activities are <b>strictly banned</b> across Delhi-NCR. Ready-mix concrete plants and stone crushers are also sealed.`
                   : `Non-polluting indoor finishing work is permitted, but open excavation and unpaved soil handling require continuous water misting compliance.`)
@@ -8455,11 +8635,11 @@
         }
 
         // 10. "WFH advisory hai kya?" / "Work from home advisory?"
-        if (q.includes('wfh') || q.includes('work from home')) {
+        if (q.includes('wfh') || q.includes('work from home') || q.includes('office') || q.includes('ghar se kaam')) {
           const stage4 = max48AQI >= 450;
           return {
             isOffline: isOffline !== false,
-            text: isEn
+            text: respondInEn
               ? (stage4
                   ? `Yes, under GRAP Stage IV, the Delhi Government and CAQM have issued a <b>50% Work-From-Home (WFH)</b> advisory for municipal and private corporate offices to lower traffic load.`
                   : `Mandatory 50% WFH is not yet in force, but remote working is strongly recommended for respiratory patients, pregnant staff, and the elderly.`)
@@ -8473,10 +8653,10 @@
         }
 
         // 11. "AQI kab tak improve hoga?" / "When will AQI improve?"
-        if (q.includes('improve') || q.includes('sudhaar') || q.includes('when') || (q.includes('kab tak') && q.includes('aqi'))) {
+        if (q.includes('improve') || q.includes('sudhaar') || (q.includes('kab tak') && (q.includes('aqi') || q.includes('saaf')))) {
           return {
             isOffline: isOffline !== false,
-            text: isEn
+            text: respondInEn
               ? `According to the coupled meteorological forecast, surface wind speeds will increase to 14–16 km/h on <b>Day 6/7</b>, expanding the boundary layer to 1,100m. This will disperse the stagnant smog, allowing AQI to improve to <b>220–250 (Moderate-Poor)</b>.`
               : `Coupled meteorological forecast ke mutabiq <b>Day 6/7</b> par surface wind speed badhkar 14–16 km/h hone aur boundary layer 1,100m expand hone par toxic smog displace hoga aur AQI <b>220–250 (Moderate-Poor)</b> par settle hoga.`,
             leadMeta: metaLead('Based on synoptic 72h wind-mixing trajectory'),
@@ -8486,10 +8666,10 @@
         }
 
         // 12. "Elderly/asthma/bachon ke liye precaution?" / "Precautions for asthma/children?"
-        if (q.includes('elderly') || q.includes('asthma') || q.includes('children') || q.includes('bachon') || q.includes('precaution') || q.includes('health')) {
+        if (q.includes('elderly') || q.includes('asthma') || q.includes('children') || q.includes('bachon') || q.includes('precaution') || q.includes('health') || q.includes('saans')) {
           return {
             isOffline: isOffline !== false,
-            text: isEn
+            text: respondInEn
               ? `At current AQI <b>${currentAQI}</b>, vulnerable groups should strictly remain indoors between 05:00 AM and 09:30 AM. Keep True-HEPA air purifiers running, maintain adequate hydration, and keep prescribed bronchodilators/inhalers on hand.`
               : `Current AQI <b>${currentAQI}</b> par vulnerable groups ko subah 05:00–09:30 AM ke dauran strictly ghar ke andar rehna chahiye. True-HEPA purifiers on rakhein, dehydration se bachein, aur emergency inhalers/bronchodilators accessible rakhein.`,
             leadMeta: metaLead('Based on clinical PM2.5 lung-deposition modeling'),
@@ -8499,10 +8679,10 @@
         }
 
         // 13. "Flights ya trains affected honge kya?" / "Flights or trains delayed?"
-        if (q.includes('flight') || q.includes('train') || q.includes('visibility') || q.includes('fog')) {
+        if (q.includes('flight') || q.includes('train') || q.includes('visibility') || q.includes('fog') || q.includes('rail') || q.includes('airport')) {
           return {
             isOffline: isOffline !== false,
-            text: isEn
+            text: respondInEn
               ? `Yes, nocturnal inversion combined with high humidity (>82%) is triggering CAT-III radiation fog over IGI Airport and Northern Railway lines. Early morning departures may experience <b>35–60 minute delays</b>.`
               : `Haan, nocturnal inversion aur high humidity (>82%) ke chalte IGI Airport aur Northern Railway tracks par CAT-III radiation fog ban raha hai. Early morning departures me <b>35–60 minute delays</b> sambhav hain.`,
             leadMeta: metaLead('Based on 24-hour visibility & inversion index'),
@@ -8512,10 +8692,10 @@
         }
 
         // 14. "Anti-smog guns kahan active hain?" / "Where are anti-smog guns?"
-        if (q.includes('anti-smog') || q.includes('smog gun') || q.includes('guns')) {
+        if (q.includes('anti-smog') || q.includes('smog gun') || q.includes('guns') || q.includes('water spray')) {
           return {
             isOffline: isOffline !== false,
-            text: isEn
+            text: respondInEn
               ? `MCD and PWD have deployed <b>78 mobile anti-smog mist sprayers</b> across hotspots including Anand Vihar, Wazirpur, RK Puram, Punjabi Bagh, and Mundka, spraying atomized micro-droplets to settle suspended PM10.`
               : `MCD aur PWD ne Anand Vihar, Wazirpur, RK Puram, Punjabi Bagh aur Mundka hotspots par <b>78 mobile anti-smog mist sprayers</b> deploy kiye hain jo high-pressure mist se PM10 ko settle kar rahe hain.`,
             leadMeta: metaLead('Based on live multi-agency dispatch tracking'),
@@ -8525,10 +8705,10 @@
         }
 
         // 15. "Stubble burning ka kya status hai?" / "Stubble burning status?"
-        if (q.includes('stubble') || q.includes('parali') || q.includes('punjab') || q.includes('fires') || q.includes('farm fires')) {
+        if (q.includes('stubble') || q.includes('parali') || q.includes('punjab') || q.includes('fire') || q.includes('fires') || q.includes('khet')) {
           return {
             isOffline: isOffline !== false,
-            text: isEn
+            text: respondInEn
               ? `VIIRS and MODIS satellites have detected <b>3,140+</b> active farm fires in Punjab and <b>480+</b> in Haryana over the last 24h. Strong northwesterly winds are steering this dense smoke plume into the Delhi basin, contributing ~38% to Delhi's PM2.5 load.`
               : `VIIRS aur MODIS satellites ne pichle 24h me Punjab me <b>3,140+</b> aur Haryana me <b>480+</b> active farm fires record kiye hain. NW winds ke chalte ye smoke plume agle 28-32 ghante me Delhi basin me enter karega, contributing ~38% to Delhi PM2.5.`,
             leadMeta: metaLead('Based on satellite thermal anomaly detection'),
@@ -8540,7 +8720,7 @@
         // Generic Fallback
         return {
           isOffline: isOffline !== false,
-          text: isEn
+          text: respondInEn
             ? `I am VayuAI Assistant. You can ask me about school closures, tomorrow's forecast AQI, active GRAP emergency stages, anti-smog mist guns, Odd-Even rules, or safe clean air windows. Current AQI at ${stationName} is <b>${currentAQI}</b>.`
             : `Main VayuAI hoon. Aap mujhse school closures, kal ka AQI, GRAP stages, anti-smog guns, odd-even rules, ya safe clean air windows ke baare me pooch sakte hain. Abhi ${stationName} ka AQI <b>${currentAQI}</b> hai.`,
           leadMeta: metaLead('Based on live coupled system database'),
