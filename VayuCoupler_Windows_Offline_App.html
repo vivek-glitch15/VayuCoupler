@@ -2317,13 +2317,23 @@
       font-weight: 800 !important;
     }
 
+    /* Bulletproof Splash Screen Auto-Hide CSS Failsafe */
+    #splash-screen {
+      animation: vayuSplashAutohide 0.35s ease 1.2s forwards;
+    }
+    @keyframes vayuSplashAutohide {
+      0% { opacity: 1; pointer-events: auto; }
+      99% { opacity: 0; pointer-events: none; }
+      100% { opacity: 0; pointer-events: none; display: none !important; visibility: hidden !important; }
+    }
+
   </style>
 </head>
 <body class="min-h-screen text-[#f2f5f3] flex flex-col antialiased selection:bg-[#10201a] selection:text-[#6fe2a3] overflow-x-hidden max-w-full w-full">
   <!-- ================= 0. INTRO / COLD LAUNCH SPLASH SCREEN ================= -->
-  <div id="splash-screen" class="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#0A0B0A] pb-safe cursor-pointer transition-opacity duration-300" onclick="VayuSplashScreen.handleUserTapSkip()">
+  <div id="splash-screen" class="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#0A0B0A] pb-safe cursor-pointer transition-opacity duration-300 select-none" onclick="if(window.VayuSplashScreen&&window.VayuSplashScreen.dismissSplash){window.VayuSplashScreen.dismissSplash(true);}this.style.opacity='0';this.style.pointerEvents='none';this.style.display='none';try{this.remove();}catch(e){}">
     <!-- Central Authoritative Content Box -->
-    <div class="flex flex-col items-center justify-center text-center max-w-sm px-6 z-10 relative cursor-pointer" onclick="VayuSplashScreen.handleUserTapSkip()">
+    <div class="flex flex-col items-center justify-center text-center max-w-sm px-6 z-10 relative cursor-pointer">
       <!-- System Identity (MoES coupled forecasting) -->
       <div id="splash-title-wrap" class="mb-4">
         <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-[#EEF0EC] font-serif-display">VayuCoupler</h1>
@@ -2338,7 +2348,7 @@
         </svg>
         <div class="absolute inset-0 flex flex-col items-center justify-center">
           <span class="text-[10px] font-mono-data text-[#8C948B]">LIVE GROUND AQI</span>
-          <span id="splash-aqi-number" class="text-5xl sm:text-6xl font-bold text-[#EEF0EC] font-serif-display my-0.5">163</span>
+          <span id="splash-aqi-number" class="text-5xl sm:text-6xl font-bold text-[#EEF0EC] font-serif-display my-0.5">431</span>
           <span id="splash-aqi-severity" class="text-[10px] font-mono-tag font-bold px-2.5 py-0.5 rounded-full badge-orange">SEVERE (GRAP IV)</span>
         </div>
       </div>
@@ -2366,6 +2376,35 @@
       </div>
     </div>
   </div>
+
+  <script>
+    // Universal splash screen failsafe: guarantees splash screen can never trap the user under any conditions
+    (function() {
+      var dismissed = false;
+      function hideSplashFailsafe() {
+        if (dismissed) return;
+        dismissed = true;
+        var s = document.getElementById('splash-screen');
+        if (s) {
+          s.style.transition = 'opacity 0.25s ease';
+          s.style.opacity = '0';
+          s.style.pointerEvents = 'none';
+          setTimeout(function() {
+            if (s && s.parentNode) s.parentNode.removeChild(s);
+          }, 300);
+        }
+      }
+      // Failsafe timer: maximum 1200ms timeout regardless of scripts/network
+      setTimeout(hideSplashFailsafe, 1200);
+      // Failsafe tap anywhere listener
+      window.addEventListener('click', function(e) {
+        var s = document.getElementById('splash-screen');
+        if (s && (s === e.target || s.contains(e.target))) {
+          hideSplashFailsafe();
+        }
+      }, { capture: true, passive: true });
+    })();
+  </script>
 
   <!-- ================= GPS LOCATION AUTO-TOAST BANNER ================= -->
   <div id="gps-location-toast" class="hidden">
@@ -6632,6 +6671,7 @@
     const VayuSplashScreen = {
       isDismissed: false,
       canTapSkip: true,
+      _countInterval: null,
 
       init() {
         const splash = document.getElementById('splash-screen');
@@ -6639,42 +6679,43 @@
 
         // Check prefers-reduced-motion
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-          splash.style.transition = 'opacity 0.3s ease';
-          splash.style.opacity = '0';
-          setTimeout(() => splash.remove(), 300);
+          this.dismissSplash(true);
           return;
         }
 
         const gaugeRing = document.getElementById('splash-gauge-ring');
         const aqiNumber = document.getElementById('splash-aqi-number');
         const aqiSev = document.getElementById('splash-aqi-severity');
-        const curSt = VayuForecastEngine.currentStation || VayuForecastEngine.stations[0];
+        const curSt = (typeof VayuForecastEngine !== 'undefined' && (VayuForecastEngine.currentStation || (VayuForecastEngine.stations && VayuForecastEngine.stations[0]))) || { baseAQI: 431, name: 'Punjabi Bagh' };
         const targetAQI = curSt.baseAQI || 431;
-        const sevMeta = VayuForecastEngine.getSeverityMeta(targetAQI);
+        const sevMeta = (typeof VayuForecastEngine !== 'undefined' && VayuForecastEngine.getSeverityMeta) ? VayuForecastEngine.getSeverityMeta(targetAQI) : { color: '#f2966e', label: 'Severe', stageCode: 'GRAP IV', badgeClass: 'badge-orange' };
 
         // Pre-fill location line with exact active station
         const splashName = document.getElementById('splash-station-name');
         const splashDist = document.getElementById('splash-station-dist');
         if (splashName) splashName.innerText = curSt.name;
-        if (splashDist) splashDist.innerText = `${VayuForecastEngine.stationDistanceKm || 5.6} km`;
+        if (splashDist) splashDist.innerText = `${(typeof VayuForecastEngine !== 'undefined' && VayuForecastEngine.stationDistanceKm) || 5.6} km`;
 
         // Radial ring perimeter = 2 * PI * 50 = 314.159
         const targetOffset = 314.159 - (Math.min(500, targetAQI) / 500) * 314.159;
         if (gaugeRing) {
           gaugeRing.style.stroke = sevMeta.color;
           setTimeout(() => {
-            gaugeRing.style.strokeDashoffset = targetOffset.toString();
-          }, 50);
+            if (gaugeRing) gaugeRing.style.strokeDashoffset = targetOffset.toString();
+          }, 40);
         }
 
         // Fast snappy count-up from 0 to targetAQI in ~350ms
         let currentVal = 0;
         const step = Math.max(1, Math.ceil(targetAQI / 18));
-        const countInterval = setInterval(() => {
+        this._countInterval = setInterval(() => {
           currentVal += step;
           if (currentVal >= targetAQI) {
             currentVal = targetAQI;
-            clearInterval(countInterval);
+            if (this._countInterval) {
+              clearInterval(this._countInterval);
+              this._countInterval = null;
+            }
             if (aqiSev) {
               aqiSev.innerText = `${sevMeta.label.toUpperCase()} (${sevMeta.stageCode})`;
               aqiSev.className = `text-[10px] font-mono-tag font-bold px-2.5 py-0.5 rounded-full ${sevMeta.badgeClass}`;
@@ -6683,21 +6724,23 @@
           if (aqiNumber) aqiNumber.innerText = currentVal;
         }, 18);
 
-        // Fast transition into app after ~850ms
+        // Fast transition into app after ~700ms
         setTimeout(() => {
           this.dismissSplash();
-        }, 850);
+        }, 700);
       },
 
       handleUserTapSkip() {
-        if (!this.isDismissed) {
-          this.dismissSplash();
-        }
+        this.dismissSplash(true);
       },
 
       dismissSplash(immediate = false) {
         if (this.isDismissed) return;
         this.isDismissed = true;
+        if (this._countInterval) {
+          clearInterval(this._countInterval);
+          this._countInterval = null;
+        }
 
         const splash = document.getElementById('splash-screen');
         if (splash) {
@@ -6710,7 +6753,7 @@
             setTimeout(() => {
               splash.style.display = 'none';
               if (splash.parentNode) splash.parentNode.removeChild(splash);
-            }, 300);
+            }, 250);
           }
         }
       }
@@ -9793,20 +9836,6 @@
       loadCurrentStepData(currentStep);
     }
 
-    function updateForecastFromEngine(station) {
-      if (!station) {
-        if (typeof VayuForecastEngine !== 'undefined') {
-          station = VayuForecastEngine.currentStation || VayuForecastEngine.stations[0];
-        }
-      }
-      if (!station) return;
-
-      const baseAQI = station.baseAQI || station.aqi || 431;
-      const stationName = station.name || "Punjabi Bagh";
-
-      let points = [];
-      if (typeof VayuForecastEngine !== 'undefined') {
-        points = VayuForecastEngine.generate72hForecast(baseAQI, stationName);
     let forecastHoverInitialized = false;
     let activeForecastTrajectory = [];
 
