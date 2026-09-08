@@ -1481,31 +1481,101 @@ html.light-theme #slider-val-industry {
   color: #7e22ce !important;
 }
 
+html.light-theme #whatif-run-btn {
+  background-color: #059669 !important;
+  color: #ffffff !important;
+  border: none !important;
+  box-shadow: 0 2px 8px rgba(5, 150, 105, 0.25) !important;
+}
+html.light-theme #whatif-run-btn:hover {
+  background-color: #047857 !important;
+}
+
 html.light-theme #whatif-results-box {
   background: #ffffff !important;
-  border-color: #cbd5e1 !important;
+  border: 1.5px solid #cbd5e1 !important;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05) !important;
 }
 
 html.light-theme #whatif-results-box h3 {
   color: #0f172a !important;
+  font-weight: 800 !important;
+}
+
+html.light-theme #whatif-uncontrolled-card {
+  background-color: #fef2f2 !important;
+  border: 1.5px solid #fecaca !important;
+}
+
+html.light-theme #whatif-uncontrolled-card .text-\[\#8C948B\],
+html.light-theme #whatif-uncontrolled-card [class*="text-[#8C948B]"] {
+  color: #991b1b !important;
+  font-weight: 800 !important;
 }
 
 html.light-theme #whatif-base-peak {
-  color: #be123c !important;
+  color: #b91c1c !important;
+  font-weight: 900 !important;
+}
+
+html.light-theme #whatif-uncontrolled-card div:last-child {
+  color: #dc2626 !important;
+  font-weight: 700 !important;
+}
+
+html.light-theme #whatif-predictive-card {
+  background-color: #f0fdf4 !important;
+  border: 1.5px solid #a7f3d0 !important;
+}
+
+html.light-theme #whatif-predictive-card .text-\[\#7FD4FF\],
+html.light-theme #whatif-predictive-card [class*="text-[#7FD4FF]"] {
+  color: #047857 !important;
+  font-weight: 800 !important;
 }
 
 html.light-theme #whatif-mitigated-peak {
+  color: #059669 !important;
+  font-weight: 900 !important;
+}
+
+html.light-theme #whatif-stage-label {
   color: #047857 !important;
+  font-weight: 700 !important;
 }
 
-html.light-theme #whatif-results-box .bg-cyan-950\/80,
-html.light-theme #whatif-results-box .bg-cyan-950 {
-  background: #ecfdf5 !important;
-  border-color: #a7f3d0 !important;
+html.light-theme #whatif-summary-card {
+  background-color: #f8fafc !important;
+  border: 1.5px solid #cbd5e1 !important;
 }
 
-html.light-theme #whatif-results-box .text-cyan-300 {
-  color: #065f46 !important;
+html.light-theme #whatif-summary-card .text-\[\#8C948B\],
+html.light-theme #whatif-summary-card [class*="text-[#8C948B]"] {
+  color: #475569 !important;
+  font-weight: 800 !important;
+}
+
+html.light-theme #whatif-avoided-pts {
+  color: #0284c7 !important;
+  font-weight: 900 !important;
+}
+
+html.light-theme #whatif-mitigation-pct {
+  color: #059669 !important;
+  font-weight: 900 !important;
+}
+
+html.light-theme .whatif-preset-btn {
+  background-color: #f8fafc !important;
+  border: 1.5px solid #cbd5e1 !important;
+  color: #334155 !important;
+  font-weight: 700 !important;
+}
+
+html.light-theme .whatif-preset-btn:hover {
+  background-color: #ecfdf5 !important;
+  border-color: #059669 !important;
+  color: #047857 !important;
 }
 
 /* 9. Clean Air Commute & Route Shield in Light Mode */

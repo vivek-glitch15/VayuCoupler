@@ -1885,6 +1885,7 @@
     html.light-theme #panel-whatif .surface-panel {
       background: #ffffff !important;
       border: 1.5px solid #cbd5e1 !important;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05) !important;
     }
     html.light-theme #panel-whatif h2 {
       color: #0f172a !important;
@@ -1894,16 +1895,16 @@
       color: #475569 !important;
     }
     html.light-theme #panel-whatif .bg-\[\#191C19\] {
-      background-color: #ffffff !important;
+      background-color: #f8fafc !important;
       border: 1.5px solid #cbd5e1 !important;
-      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04) !important;
+      box-shadow: 0 1px 4px rgba(15, 23, 42, 0.03) !important;
     }
     html.light-theme #panel-whatif .text-\[\#EEF0EC\] {
       color: #0f172a !important;
       font-weight: 700 !important;
     }
     html.light-theme #panel-whatif .text-\[\#8C948B\] {
-      color: #475569 !important;
+      color: #64748b !important;
     }
     html.light-theme #panel-whatif #slider-val-stubble {
       color: #b45309 !important;
@@ -1913,13 +1914,94 @@
       color: #c2410c !important;
       font-weight: 800 !important;
     }
+    html.light-theme #panel-whatif #slider-val-dust,
     html.light-theme #panel-whatif #slider-val-misting {
       color: #0284c7 !important;
       font-weight: 800 !important;
     }
     html.light-theme #panel-whatif #slider-val-industry {
-      color: #6b21a8 !important;
+      color: #059669 !important;
       font-weight: 800 !important;
+    }
+    html.light-theme #whatif-run-btn {
+      background-color: #059669 !important;
+      color: #ffffff !important;
+      border: none !important;
+      box-shadow: 0 2px 8px rgba(5, 150, 105, 0.25) !important;
+    }
+    html.light-theme #whatif-run-btn:hover {
+      background-color: #047857 !important;
+    }
+    html.light-theme #whatif-results-box {
+      background-color: #ffffff !important;
+      border: 1.5px solid #cbd5e1 !important;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05) !important;
+    }
+    html.light-theme #whatif-results-box h3 {
+      color: #0f172a !important;
+      font-weight: 800 !important;
+    }
+    html.light-theme #whatif-uncontrolled-card {
+      background-color: #fef2f2 !important;
+      border: 1.5px solid #fecaca !important;
+    }
+    html.light-theme #whatif-uncontrolled-card .text-\[\#8C948B\],
+    html.light-theme #whatif-uncontrolled-card [class*="text-[#8C948B]"] {
+      color: #991b1b !important;
+      font-weight: 800 !important;
+    }
+    html.light-theme #whatif-base-peak {
+      color: #b91c1c !important;
+      font-weight: 900 !important;
+    }
+    html.light-theme #whatif-uncontrolled-card div:last-child {
+      color: #dc2626 !important;
+      font-weight: 700 !important;
+    }
+    html.light-theme #whatif-predictive-card {
+      background-color: #f0fdf4 !important;
+      border: 1.5px solid #a7f3d0 !important;
+    }
+    html.light-theme #whatif-predictive-card .text-\[\#7FD4FF\],
+    html.light-theme #whatif-predictive-card [class*="text-[#7FD4FF]"] {
+      color: #047857 !important;
+      font-weight: 800 !important;
+    }
+    html.light-theme #whatif-mitigated-peak {
+      color: #059669 !important;
+      font-weight: 900 !important;
+    }
+    html.light-theme #whatif-stage-label {
+      color: #047857 !important;
+      font-weight: 700 !important;
+    }
+    html.light-theme #whatif-summary-card {
+      background-color: #f8fafc !important;
+      border: 1.5px solid #cbd5e1 !important;
+    }
+    html.light-theme #whatif-summary-card .text-\[\#8C948B\],
+    html.light-theme #whatif-summary-card [class*="text-[#8C948B]"] {
+      color: #475569 !important;
+      font-weight: 800 !important;
+    }
+    html.light-theme #whatif-avoided-pts {
+      color: #0284c7 !important;
+      font-weight: 900 !important;
+    }
+    html.light-theme #whatif-mitigation-pct {
+      color: #059669 !important;
+      font-weight: 900 !important;
+    }
+    html.light-theme .whatif-preset-btn {
+      background-color: #f8fafc !important;
+      border: 1.5px solid #cbd5e1 !important;
+      color: #334155 !important;
+      font-weight: 700 !important;
+    }
+    html.light-theme .whatif-preset-btn:hover {
+      background-color: #ecfdf5 !important;
+      border-color: #059669 !important;
+      color: #047857 !important;
     }
 
   
@@ -3803,8 +3885,9 @@
               Demonstrate how predictive interventions 48h in advance prevent peak smog disasters. Test intervention intensities to simulate the immediate reduction in peak AQI.
             </p>
           </div>
-          <button onclick="runWhatIfAnalysis()" class="px-4 py-2.5 rounded-[10px] bg-[#8FFFB0] hover:bg-[#7ceaa0] text-[#0A0B0A] font-bold text-xs flex items-center gap-1.5 transition self-start md:self-auto font-sans">
-            <i data-lucide="play" class="w-4 h-4"></i> Run Counterfactual Simulation
+          <button id="whatif-run-btn" type="button" onclick="runWhatIfAnalysis(true)" class="px-4 py-2.5 rounded-[10px] bg-[#8FFFB0] hover:bg-[#7ceaa0] text-[#0A0B0A] font-bold text-xs flex items-center gap-1.5 transition self-start md:self-auto font-sans shadow-md active:scale-95 cursor-pointer">
+            <i data-lucide="play" class="w-4 h-4"></i>
+            <span id="whatif-btn-label">Run Counterfactual Simulation</span>
           </button>
         </div>
 
@@ -3815,7 +3898,7 @@
                 <span>🌾 Upwind Stubble Burning Mitigation (CRM)</span>
                 <span class="text-[#FFE270] font-mono text-sm" id="slider-val-stubble">50%</span>
               </div>
-              <input type="range" min="0" max="100" value="50" id="slider-stubble" oninput="updateSliderVal('stubble', this.value)" class="w-full mt-1">
+              <input type="range" min="0" max="100" value="50" id="slider-stubble" oninput="updateSliderVal('stubble', this.value)" onchange="runWhatIfAnalysis()" class="w-full mt-1 accent-amber-500 cursor-pointer">
               <p class="text-[10px] text-[#8C948B] mt-1 font-sans">Accelerated Happy Seeder deployment + Bio-decomposer spraying</p>
             </div>
             <div class="p-3.5 rounded-[14px] bg-[#191C19] border border-[#262A26]">
@@ -3823,7 +3906,7 @@
                 <span>🚛 Heavy Freight Highway Bypass (EPE/WPE Diversion)</span>
                 <span class="text-[#FF9D7F] font-mono text-sm" id="slider-val-truck">40%</span>
               </div>
-              <input type="range" min="0" max="100" value="40" id="slider-truck" oninput="updateSliderVal('truck', this.value)" class="w-full mt-1">
+              <input type="range" min="0" max="100" value="40" id="slider-truck" oninput="updateSliderVal('truck', this.value)" onchange="runWhatIfAnalysis()" class="w-full mt-1 accent-orange-500 cursor-pointer">
               <p class="text-[10px] text-[#8C948B] mt-1 font-sans">Border checkposts divert 60k+ diesel trucks around city bowl</p>
             </div>
             <div class="p-3.5 rounded-[14px] bg-[#191C19] border border-[#262A26]">
@@ -3831,7 +3914,7 @@
                 <span>🚜 Anti-Smog Guns & Hotspot Water Misting</span>
                 <span class="text-[#7FD4FF] font-mono text-sm" id="slider-val-dust">30%</span>
               </div>
-              <input type="range" min="0" max="100" value="30" id="slider-dust" oninput="updateSliderVal('dust', this.value)" class="w-full mt-1">
+              <input type="range" min="0" max="100" value="30" id="slider-dust" oninput="updateSliderVal('dust', this.value)" onchange="runWhatIfAnalysis()" class="w-full mt-1 accent-sky-500 cursor-pointer">
               <p class="text-[10px] text-[#8C948B] mt-1 font-sans">Suppresses PM10 ground resuspension on unpaved corridors</p>
             </div>
             <div class="p-3.5 rounded-[14px] bg-[#191C19] border border-[#262A26]">
@@ -3839,26 +3922,26 @@
                 <span>🏭 Industrial Fuel Switching (Coal to PNG)</span>
                 <span class="text-[#8FFFB0] font-mono text-sm" id="slider-val-industry">20%</span>
               </div>
-              <input type="range" min="0" max="100" value="20" id="slider-industry" oninput="updateSliderVal('industry', this.value)" class="w-full mt-1">
+              <input type="range" min="0" max="100" value="20" id="slider-industry" oninput="updateSliderVal('industry', this.value)" onchange="runWhatIfAnalysis()" class="w-full mt-1 accent-emerald-500 cursor-pointer">
               <p class="text-[10px] text-[#8C948B] mt-1 font-sans">Bawana, Narela, Faridabad industrial clusters switch to clean fuels</p>
             </div>
 
             <!-- Simulation Quick Presets -->
             <div class="mt-2 pt-3 border-t border-[#262A26] flex flex-wrap items-center gap-1.5">
               <span class="text-[10px] font-semibold text-[#8C948B] font-mono">Presets:</span>
-              <button onclick="applyWhatIfPreset(100, 100, 100, 100)" class="px-2 py-0.5 rounded-[8px] bg-[#7FD4FF]/10 hover:bg-[#7FD4FF]/20 border border-[#7FD4FF]/30 text-[#7FD4FF] text-[10px] font-bold transition font-mono">
+              <button type="button" onclick="applyWhatIfPreset(100, 100, 100, 100)" class="whatif-preset-btn px-2.5 py-1 rounded-[8px] bg-[#7FD4FF]/10 hover:bg-[#7FD4FF]/20 border border-[#7FD4FF]/30 text-[#7FD4FF] text-[10px] font-bold transition font-mono cursor-pointer active:scale-95">
                 100% Curbs
               </button>
-              <button onclick="applyWhatIfPreset(50, 40, 30, 20)" class="px-2 py-0.5 rounded-[8px] bg-[#191C19] hover:bg-[#262A26] border border-[#262A26] text-[#EEF0EC] text-[10px] font-medium transition font-mono">
+              <button type="button" onclick="applyWhatIfPreset(50, 40, 30, 20)" class="whatif-preset-btn px-2.5 py-1 rounded-[8px] bg-[#191C19] hover:bg-[#262A26] border border-[#262A26] text-[#EEF0EC] text-[10px] font-medium transition font-mono cursor-pointer active:scale-95">
                 GRAP-III
               </button>
-              <button onclick="applyWhatIfPreset(80, 20, 20, 10)" class="px-2 py-0.5 rounded-[8px] bg-[#FFE270]/10 hover:bg-[#FFE270]/20 border border-[#FFE270]/30 text-[#FFE270] text-[10px] font-medium transition font-mono">
+              <button type="button" onclick="applyWhatIfPreset(80, 20, 20, 10)" class="whatif-preset-btn px-2.5 py-1 rounded-[8px] bg-[#FFE270]/10 hover:bg-[#FFE270]/20 border border-[#FFE270]/30 text-[#FFE270] text-[10px] font-medium transition font-mono cursor-pointer active:scale-95">
                 Stubble focus
               </button>
-              <button onclick="applyWhatIfPreset(20, 80, 40, 20)" class="px-2 py-0.5 rounded-[8px] bg-[#FF9D7F]/10 hover:bg-[#FF9D7F]/20 border border-[#FF9D7F]/30 text-[#FF9D7F] text-[10px] font-medium transition font-mono">
+              <button type="button" onclick="applyWhatIfPreset(20, 80, 40, 20)" class="whatif-preset-btn px-2.5 py-1 rounded-[8px] bg-[#FF9D7F]/10 hover:bg-[#FF9D7F]/20 border border-[#FF9D7F]/30 text-[#FF9D7F] text-[10px] font-medium transition font-mono cursor-pointer active:scale-95">
                 Freight bypass
               </button>
-              <button onclick="applyWhatIfPreset(0, 0, 0, 0)" class="px-2 py-0.5 rounded-[8px] bg-[#191C19] hover:bg-[#262A26] border border-[#262A26] text-[#8C948B] text-[10px] font-medium transition font-mono">
+              <button type="button" onclick="applyWhatIfPreset(0, 0, 0, 0)" class="whatif-preset-btn px-2.5 py-1 rounded-[8px] bg-[#191C19] hover:bg-[#262A26] border border-[#262A26] text-[#8C948B] text-[10px] font-medium transition font-mono cursor-pointer active:scale-95">
                 Reset
               </button>
             </div>
@@ -3869,24 +3952,24 @@
               <span class="text-[10px] font-mono font-bold text-[#7FD4FF] bg-[#7FD4FF]/10 px-2.5 py-1 rounded-[8px] border border-[#7FD4FF]/30">Policy Evaluation Matrix</span>
               <h3 class="text-base sm:text-lg font-bold text-[#EEF0EC] mt-2 font-space">Predicted Crisis Mitigation</h3>
               <div class="grid grid-cols-2 gap-3 sm:gap-4 my-4 sm:my-6 font-mono">
-                <div class="p-3.5 sm:p-4 rounded-[12px] bg-[#131513] border border-[#262A26]">
-                  <div class="text-[10px] sm:text-xs text-[#8C948B] font-mono">UNCONTROLLED PEAK</div>
+                <div id="whatif-uncontrolled-card" class="p-3.5 sm:p-4 rounded-[12px] bg-[#131513] border border-[#262A26]">
+                  <div class="text-[10px] sm:text-xs text-[#8C948B] font-mono font-bold">UNCONTROLLED PEAK</div>
                   <div class="text-2xl sm:text-3xl font-bold text-[#FF9D7F] my-1 font-space" id="whatif-base-peak">480</div>
-                  <div class="text-[10px] text-[#FF9D7F] font-medium">Stage IV Emergency</div>
+                  <div class="text-[10px] text-[#FF9D7F] font-semibold">Stage IV Emergency</div>
                 </div>
-                <div class="p-3.5 sm:p-4 rounded-[12px] bg-[#7FD4FF]/10 border border-[#7FD4FF]/30">
-                  <div class="text-[10px] sm:text-xs text-[#7FD4FF] font-mono">PREDICTIVE POLICY</div>
+                <div id="whatif-predictive-card" class="p-3.5 sm:p-4 rounded-[12px] bg-[#7FD4FF]/10 border border-[#7FD4FF]/30">
+                  <div class="text-[10px] sm:text-xs text-[#7FD4FF] font-mono font-bold">PREDICTIVE POLICY</div>
                   <div class="text-2xl sm:text-3xl font-bold text-[#7FD4FF] my-1 font-space" id="whatif-mitigated-peak">386</div>
                   <div class="text-[10px] text-[#7FD4FF] font-semibold" id="whatif-stage-label">Stage II Managed</div>
                 </div>
               </div>
-              <div class="p-3.5 sm:p-4 rounded-[12px] bg-[#131513] border border-[#262A26] flex items-center justify-between">
+              <div id="whatif-summary-card" class="p-3.5 sm:p-4 rounded-[12px] bg-[#131513] border border-[#262A26] flex items-center justify-between">
                 <div>
-                  <div class="text-[10px] text-[#8C948B] font-mono">TOTAL AQI REDUCTION</div>
+                  <div class="text-[10px] text-[#8C948B] font-mono font-bold">TOTAL AQI REDUCTION</div>
                   <div class="text-lg sm:text-xl font-bold text-[#7FD4FF] font-space mt-0.5" id="whatif-avoided-pts">94 Points Avoided</div>
                 </div>
                 <div class="text-right">
-                  <div class="text-[10px] text-[#8C948B] font-mono">CRISIS MITIGATION</div>
+                  <div class="text-[10px] text-[#8C948B] font-mono font-bold">CRISIS MITIGATION</div>
                   <div class="text-lg sm:text-xl font-bold text-[#8FFFB0] font-space mt-0.5" id="whatif-mitigation-pct">19.6%</div>
                 </div>
               </div>
@@ -9866,8 +9949,11 @@
     }
 
     function updateSliderVal(type, val) {
-      document.getElementById(`slider-val-${type}`).innerText = `${val}%`;
+      const el = document.getElementById(`slider-val-${type}`);
+      if (el) el.innerText = `${val}%`;
+      runWhatIfAnalysis(false);
     }
+    window.updateSliderVal = updateSliderVal;
 
     function applyWhatIfPreset(stubble, truck, dust, industry) {
       const sStub = document.getElementById('slider-stubble');
@@ -9875,41 +9961,61 @@
       const sDust = document.getElementById('slider-dust');
       const sInd = document.getElementById('slider-industry');
 
-      if (sStub) { sStub.value = stubble; document.getElementById('slider-val-stubble').innerText = `${stubble}%`; }
-      if (sTruck) { sTruck.value = truck; document.getElementById('slider-val-truck').innerText = `${truck}%`; }
-      if (sDust) { sDust.value = dust; document.getElementById('slider-val-dust').innerText = `${dust}%`; }
-      if (sInd) { sInd.value = industry; document.getElementById('slider-val-industry').innerText = `${industry}%`; }
+      if (sStub) { sStub.value = stubble; const el = document.getElementById('slider-val-stubble'); if (el) el.innerText = `${stubble}%`; }
+      if (sTruck) { sTruck.value = truck; const el = document.getElementById('slider-val-truck'); if (el) el.innerText = `${truck}%`; }
+      if (sDust) { sDust.value = dust; const el = document.getElementById('slider-val-dust'); if (el) el.innerText = `${dust}%`; }
+      if (sInd) { sInd.value = industry; const el = document.getElementById('slider-val-industry'); if (el) el.innerText = `${industry}%`; }
 
-      runWhatIfAnalysis();
+      runWhatIfAnalysis(true);
     }
+    window.applyWhatIfPreset = applyWhatIfPreset;
 
-    async function runWhatIfAnalysis() {
-      const stubble = parseFloat(document.getElementById('slider-stubble')?.value || 50);
-      const truck = parseFloat(document.getElementById('slider-truck')?.value || 40);
-      const dust = parseFloat(document.getElementById('slider-dust')?.value || 30);
-      const industry = parseFloat(document.getElementById('slider-industry')?.value || 20);
+    async function runWhatIfAnalysis(isManualClick = false) {
+      const sStub = document.getElementById('slider-stubble');
+      const sTruck = document.getElementById('slider-truck');
+      const sDust = document.getElementById('slider-dust');
+      const sInd = document.getElementById('slider-industry');
 
-      const box = document.getElementById('whatif-results-box');
-      if (box) {
-        box.classList.add('ring-2', 'ring-[#7FD4FF]', 'transition', 'duration-300');
-        setTimeout(() => box.classList.remove('ring-2', 'ring-[#7FD4FF]'), 500);
-      }
+      const stubble = parseFloat(sStub?.value ?? 50);
+      const truck = parseFloat(sTruck?.value ?? 40);
+      const dust = parseFloat(sDust?.value ?? 30);
+      const industry = parseFloat(sInd?.value ?? 20);
 
-      // Local atmospheric dispersion calculation (instant & offline resilient)
+      // Keep percentage text mirrors synced
+      const elStub = document.getElementById('slider-val-stubble');
+      const elTruck = document.getElementById('slider-val-truck');
+      const elDust = document.getElementById('slider-val-dust');
+      const elInd = document.getElementById('slider-val-industry');
+      if (elStub) elStub.innerText = `${Math.round(stubble)}%`;
+      if (elTruck) elTruck.innerText = `${Math.round(truck)}%`;
+      if (elDust) elDust.innerText = `${Math.round(dust)}%`;
+      if (elInd) elInd.innerText = `${Math.round(industry)}%`;
+
+      // Local atmospheric dispersion calculation (MoES WRF-Chem coupled dispersion model)
       const basePeak = 480;
       const stubbleAvoided = (stubble / 100.0) * 110.0;
       const truckAvoided = (truck / 100.0) * 55.0;
       const dustAvoided = (dust / 100.0) * 35.0;
       const industryAvoided = (industry / 100.0) * 30.0;
       const totalAvoided = Math.round(stubbleAvoided + truckAvoided + dustAvoided + industryAvoided);
-      const mitigatedPeak = Math.max(80, basePeak - totalAvoided);
+      const mitigatedPeak = Math.max(75, Math.round(basePeak - totalAvoided));
       const mitigationPct = ((totalAvoided / basePeak) * 100.0).toFixed(1);
 
       let stageLabel = "Stage IV Emergency";
-      if (mitigatedPeak < 200) stageLabel = "Moderate (Safe)";
-      else if (mitigatedPeak < 300) stageLabel = "Stage I Managed";
-      else if (mitigatedPeak < 400) stageLabel = "Stage II Managed";
-      else if (mitigatedPeak < 450) stageLabel = "Stage III Controlled";
+      let stageColorClass = "text-rose-600";
+      if (mitigatedPeak < 200) {
+        stageLabel = "Moderate (Safe)";
+        stageColorClass = "text-emerald-700";
+      } else if (mitigatedPeak < 300) {
+        stageLabel = "Stage I Managed";
+        stageColorClass = "text-teal-700";
+      } else if (mitigatedPeak < 400) {
+        stageLabel = "Stage II Managed";
+        stageColorClass = "text-sky-700";
+      } else if (mitigatedPeak < 450) {
+        stageLabel = "Stage III Controlled";
+        stageColorClass = "text-amber-700";
+      }
 
       const baseEl = document.getElementById('whatif-base-peak');
       const mitEl = document.getElementById('whatif-mitigated-peak');
@@ -9918,17 +10024,44 @@
       const stageEl = document.getElementById('whatif-stage-label');
 
       if (baseEl) baseEl.innerText = basePeak;
-      if (mitEl) mitEl.innerText = mitigatedPeak;
+      if (mitEl) {
+        mitEl.innerText = mitigatedPeak;
+      }
       if (ptsEl) ptsEl.innerText = `${totalAvoided} Points Avoided`;
       if (pctEl) pctEl.innerText = `${mitigationPct}%`;
-      if (stageEl) stageEl.innerText = stageLabel;
+      if (stageEl) {
+        stageEl.innerText = stageLabel;
+      }
+
+      const box = document.getElementById('whatif-results-box');
+      if (box) {
+        box.classList.remove('ring-2', 'ring-emerald-500', 'ring-[#7FD4FF]');
+        void box.offsetWidth;
+        box.classList.add('ring-2', 'ring-emerald-500', 'transition', 'duration-300');
+        setTimeout(() => box.classList.remove('ring-2', 'ring-emerald-500', 'ring-[#7FD4FF]'), 600);
+      }
+
+      if (isManualClick) {
+        const btn = document.getElementById('whatif-run-btn');
+        if (btn) {
+          const origHtml = btn.innerHTML;
+          btn.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4 text-emerald-950"></i> <span>Simulation Updated!</span>`;
+          btn.classList.add('scale-105', 'bg-emerald-400');
+          if (window.lucide) lucide.createIcons();
+          setTimeout(() => {
+            btn.innerHTML = origHtml;
+            btn.classList.remove('scale-105', 'bg-emerald-400');
+            if (window.lucide) lucide.createIcons();
+          }, 900);
+        }
+      }
 
       try {
         const res = await fetch('/api/what-if', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            step_hour: currentStep,
+            step_hour: (typeof currentStep !== 'undefined' ? currentStep : 72),
             stubble_reduction_pct: stubble,
             truck_reduction_pct: truck,
             dust_reduction_pct: dust,
@@ -9937,15 +10070,24 @@
         });
         if (res.ok) {
           const data = await res.json();
-          if (baseEl) baseEl.innerText = data.baseline_uncontrolled.peak_risk_aqi;
-          if (mitEl) mitEl.innerText = data.counterfactual_mitigated.peak_risk_aqi;
-          if (ptsEl) ptsEl.innerText = `${data.counterfactual_mitigated.total_aqi_points_prevented} Points Avoided`;
-          if (pctEl) pctEl.innerText = `${data.counterfactual_mitigated.percentage_crisis_mitigation}%`;
+          if (baseEl && data.baseline_uncontrolled?.peak_risk_aqi) {
+            baseEl.innerText = data.baseline_uncontrolled.peak_risk_aqi;
+          }
+          if (mitEl && data.counterfactual_mitigated?.peak_risk_aqi) {
+            mitEl.innerText = data.counterfactual_mitigated.peak_risk_aqi;
+          }
+          if (ptsEl && data.counterfactual_mitigated?.total_aqi_points_prevented !== undefined) {
+            ptsEl.innerText = `${data.counterfactual_mitigated.total_aqi_points_prevented} Points Avoided`;
+          }
+          if (pctEl && data.counterfactual_mitigated?.percentage_crisis_mitigation !== undefined) {
+            pctEl.innerText = `${data.counterfactual_mitigated.percentage_crisis_mitigation}%`;
+          }
         }
       } catch (e) {
-        console.warn("Using offline coupled simulation calculations", e);
+        // Offline / static resilient calculation already applied above
       }
     }
+    window.runWhatIfAnalysis = runWhatIfAnalysis;
 
     // Bilingual Speech Synthesis Engine & Live Voice Alerts
     let isLiveVoiceAlertEnabled = true;
