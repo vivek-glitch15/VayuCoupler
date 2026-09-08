@@ -1049,6 +1049,17 @@ html.light-theme,
       color: #047857 !important;
       font-weight: 700 !important;
     }
+    html.light-theme #panel-attribution span[class*="bg-cyan-950"],
+    html.light-theme #panel-attribution span[class*="bg-cyan-900"] {
+      background-color: #f0f9ff !important;
+      border: 1.5px solid #bae6fd !important;
+      color: #0284c7 !important;
+      font-weight: 700 !important;
+    }
+    html.light-theme #panel-attribution span[class*="bg-cyan-950"] i,
+    html.light-theme #panel-attribution span[class*="bg-cyan-900"] i {
+      color: #0284c7 !important;
+    }
 
     /* VayuAI Assistant Chat in Light Mode */
     html.light-theme #ai-chat-messages .bg-\[\#1c1f1c\] {
@@ -8033,6 +8044,22 @@ html.light-theme,
         if (typeof VayuWeather !== 'undefined' && VayuWeather.renderChart) {
           VayuWeather.renderChart();
         }
+        if (typeof updateZonesStrip === 'function') {
+          const heroVal = parseInt(document.getElementById('mob-hero-aqi-val')?.innerText || '104', 10);
+          updateZonesStrip(heroVal);
+        }
+        if (typeof VayuForecastEngine !== 'undefined' && VayuForecastEngine.currentStation && typeof renderCoupledEpisodeMetrics === 'function') {
+          renderCoupledEpisodeMetrics(currentStep || 72);
+        }
+        if (typeof VayuAttributionEngine !== 'undefined' && VayuAttributionEngine.render) {
+          VayuAttributionEngine.render();
+        }
+        if (typeof VayuPredictiveTimeline !== 'undefined' && VayuPredictiveTimeline.render) {
+          VayuPredictiveTimeline.render();
+        }
+        if (typeof VayuDispatchesCenter !== 'undefined' && VayuDispatchesCenter.render) {
+          VayuDispatchesCenter.render();
+        }
       },
 
       applyLanguage(lang) {
@@ -8875,9 +8902,13 @@ html.light-theme,
           const secondary = isEn ? st.secondaryEn : st.secondaryHi;
           const wind = isEn ? st.windEn : st.windHi;
           
-          let aqiBadgeBg = 'bg-red-950 text-red-300 border-red-800';
-          if (st.aqi >= 400) aqiBadgeBg = 'bg-rose-950 text-rose-300 border-rose-800 font-black';
-          else if (st.aqi < 350) aqiBadgeBg = 'bg-amber-950 text-amber-300 border-amber-800';
+          const isLight = document.documentElement.classList.contains('light-theme');
+          let aqiBadgeBg = isLight ? 'bg-red-100 text-red-800 border-red-300 font-bold' : 'bg-red-950 text-red-300 border-red-800';
+          if (st.aqi >= 400) {
+            aqiBadgeBg = isLight ? 'bg-rose-100 text-rose-800 border-rose-300 font-black' : 'bg-rose-950 text-rose-300 border-rose-800 font-black';
+          } else if (st.aqi < 350) {
+            aqiBadgeBg = isLight ? 'bg-amber-100 text-amber-800 border-amber-300 font-bold' : 'bg-amber-950 text-amber-300 border-amber-800';
+          }
 
           return `
             <div class="p-3.5 rounded-2xl bg-earth-950/70 border border-earth-700/60 flex flex-col justify-between gap-2 shadow-sm hover:border-emerald-700/60 transition">
