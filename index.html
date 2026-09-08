@@ -2686,7 +2686,7 @@
   </header>
 
   <!-- ================= TIME-TRAVEL CRISIS SCRUBBER BAR ================= -->
-  <section class="bg-earth-900/90 border-b border-earth-700/60 px-3 sm:px-6 py-2 w-full max-w-full overflow-hidden">
+  <section id="time-travel-scrubber-section" class="bg-earth-900/90 border-b border-earth-700/60 px-3 sm:px-6 py-2 w-full max-w-full overflow-hidden">
     <div class="max-w-[1720px] mx-auto flex flex-col md:flex-row items-stretch md:items-center gap-2 sm:gap-3 w-full min-w-0">
       
       <!-- Time Header Row -->
@@ -3289,18 +3289,66 @@
 
             <!-- SVG Forecast Line Chart -->
             <div class="mt-2 relative w-full aspect-[16/9] bg-[#06100E] rounded-2xl border border-earth-700/80 p-2">
-              <svg id="forecast-chart-svg" viewBox="0 0 500 240" class="w-full h-full overflow-visible">
-                <line x1="40" y1="30" x2="480" y2="30" stroke="#1D3832" stroke-dasharray="3 3" />
-                <line x1="40" y1="80" x2="480" y2="80" stroke="#1D3832" stroke-dasharray="3 3" />
-                <line x1="40" y1="130" x2="480" y2="130" stroke="#1D3832" stroke-dasharray="3 3" />
-                <line x1="40" y1="180" x2="480" y2="180" stroke="#1D3832" stroke-dasharray="3 3" />
-                <line x1="40" y1="210" x2="480" y2="210" stroke="#2C4A45" stroke-width="1.5" />
+              <svg id="forecast-chart-svg" viewBox="0 0 500 240" class="w-full h-full overflow-visible select-none">
+                <defs>
+                  <linearGradient id="fc-ci-grad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#34D399" stop-opacity="0.30"/>
+                    <stop offset="100%" stop-color="#34D399" stop-opacity="0.04"/>
+                  </linearGradient>
+                </defs>
 
-                <line x1="40" y1="60" x2="480" y2="60" stroke="#EF4444" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.8"/>
-                <text x="410" y="55" fill="#EF4444" font-size="10" font-family="JetBrains Mono">GRAP 3/4 (400 AQI)</text>
+                <!-- Y-Axis Grid Lines -->
+                <line x1="42" y1="30" x2="480" y2="30" stroke="#1D3832" stroke-dasharray="3 3" />
+                <line x1="42" y1="66" x2="480" y2="66" stroke="#EF4444" stroke-width="1.2" stroke-dasharray="4 4" opacity="0.85"/>
+                <line x1="42" y1="102" x2="480" y2="102" stroke="#1D3832" stroke-dasharray="3 3" />
+                <line x1="42" y1="138" x2="480" y2="138" stroke="#1D3832" stroke-dasharray="3 3" />
+                <line x1="42" y1="174" x2="480" y2="174" stroke="#1D3832" stroke-dasharray="3 3" />
+                <line x1="42" y1="210" x2="480" y2="210" stroke="#2C4A45" stroke-width="1.5" />
 
-                <polygon id="svg-ci-band" points="" fill="rgba(16, 185, 129, 0.18)" stroke="none" />
-                <polyline id="svg-fc-line" points="" fill="none" stroke="#34D399" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                <!-- Y-Axis Numeric Labels -->
+                <text x="36" y="33" text-anchor="end" fill="#94A3B8" font-size="9" font-family="monospace">500</text>
+                <text x="36" y="69" text-anchor="end" fill="#EF4444" font-size="9" font-family="monospace">400</text>
+                <text x="36" y="105" text-anchor="end" fill="#F97316" font-size="9" font-family="monospace">300</text>
+                <text x="36" y="141" text-anchor="end" fill="#EAB308" font-size="9" font-family="monospace">200</text>
+                <text x="36" y="177" text-anchor="end" fill="#06B6D4" font-size="9" font-family="monospace">100</text>
+                <text x="36" y="213" text-anchor="end" fill="#10B981" font-size="9" font-family="monospace">0</text>
+
+                <!-- Severe 400 AQI Benchmark Text -->
+                <text x="478" y="60" text-anchor="end" fill="#EF4444" font-size="9" font-weight="bold" font-family="monospace" opacity="0.9">GRAP IV (400 AQI)</text>
+
+                <!-- Vertical Milestone Guidelines -->
+                <line x1="188" y1="30" x2="188" y2="210" stroke="#38BDF8" stroke-dasharray="3 3" opacity="0.35"/>
+                <line x1="334" y1="30" x2="334" y2="210" stroke="#34D399" stroke-dasharray="3 3" opacity="0.35"/>
+                <line x1="480" y1="30" x2="480" y2="210" stroke="#A855F7" stroke-dasharray="3 3" opacity="0.35"/>
+
+                <!-- X-Axis Milestone Labels -->
+                <text x="42" y="228" text-anchor="middle" fill="#94A3B8" font-size="9" font-family="monospace">Now</text>
+                <text x="115" y="228" text-anchor="middle" fill="#64748B" font-size="9" font-family="monospace">+12h</text>
+                <text x="188" y="228" text-anchor="middle" fill="#38BDF8" font-size="9" font-weight="bold" font-family="monospace">+24h</text>
+                <text x="261" y="228" text-anchor="middle" fill="#64748B" font-size="9" font-family="monospace">+36h</text>
+                <text x="334" y="228" text-anchor="middle" fill="#34D399" font-size="9" font-weight="bold" font-family="monospace">+48h</text>
+                <text x="407" y="228" text-anchor="middle" fill="#64748B" font-size="9" font-family="monospace">+60h</text>
+                <text x="480" y="228" text-anchor="middle" fill="#A855F7" font-size="9" font-weight="bold" font-family="monospace">+72h</text>
+
+                <!-- Confidence Interval & Forecast Curves -->
+                <polygon id="svg-ci-band" points="" fill="url(#fc-ci-grad)" stroke="none" />
+                <polyline id="svg-fc-line" points="" fill="none" stroke="#34D399" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+
+                <!-- Milestone Pin Dots -->
+                <circle id="svg-pin-24" cx="188" cy="120" r="4" fill="#38BDF8" stroke="#06100E" stroke-width="2"/>
+                <circle id="svg-pin-48" cx="334" cy="100" r="4" fill="#34D399" stroke="#06100E" stroke-width="2"/>
+                <circle id="svg-pin-72" cx="480" cy="140" r="4" fill="#A855F7" stroke="#06100E" stroke-width="2"/>
+
+                <!-- Interactive Hover Crosshair / Tooltip -->
+                <g id="fc-hover-group" opacity="0" class="pointer-events-none transition-opacity duration-150">
+                  <line id="fc-hover-line" x1="0" y1="28" x2="0" y2="210" stroke="#FFFFFF" stroke-dasharray="2 2" stroke-width="1" opacity="0.6"/>
+                  <circle id="fc-hover-circle" cx="0" cy="0" r="4.5" fill="#FFFFFF" stroke="#34D399" stroke-width="2"/>
+                  <g id="fc-hover-box-group">
+                    <rect id="fc-hover-bg" x="0" y="0" width="100" height="34" rx="6" fill="#030712" stroke="#374151" stroke-width="1" opacity="0.95"/>
+                    <text id="fc-hover-lead" x="6" y="14" fill="#9CA3AF" font-size="9" font-family="monospace">+0h Lead</text>
+                    <text id="fc-hover-val" x="6" y="27" fill="#34D399" font-size="11" font-weight="bold" font-family="monospace">AQI --</text>
+                  </g>
+                </g>
               </svg>
             </div>
 
@@ -5902,7 +5950,7 @@
         const now = new Date();
         const points = [];
 
-        for (let lead = 0; lead < 72; lead++) {
+        for (let lead = 0; lead <= 72; lead++) {
           const ptDate = new Date(now.getTime() + lead * 3600000);
           const hour = ptDate.getHours();
 
@@ -5913,27 +5961,29 @@
           } else {
             let diurnalMult = 1.0;
             if (hour >= 4 && hour <= 9) {
-              diurnalMult = 1.15 + Math.sin(((hour - 4) / 5) * Math.PI) * 0.10;
+              diurnalMult = 1.14 + Math.sin(((hour - 4) / 5) * Math.PI) * 0.10;
             } else if (hour >= 12 && hour <= 16) {
-              diurnalMult = 0.76 - Math.sin(((hour - 12) / 4) * Math.PI) * 0.08;
+              diurnalMult = 0.78 - Math.sin(((hour - 12) / 4) * Math.PI) * 0.08;
             } else if (hour >= 18 && hour <= 22) {
-              diurnalMult = 1.06 + Math.sin(((hour - 18) / 4) * Math.PI) * 0.05;
+              diurnalMult = 1.10 + Math.sin(((hour - 18) / 4) * Math.PI) * 0.07;
             } else {
-              diurnalMult = 0.95;
+              diurnalMult = 0.94;
             }
 
             let synopticTrend = 0;
-            if (lead >= 20 && lead <= 48) {
-              synopticTrend = Math.sin(((lead - 20) / 28) * Math.PI) * 20;
-            } else if (lead > 48) {
-              synopticTrend = -Math.min(45, (lead - 48) * 1.5);
+            if (lead >= 12 && lead <= 36) {
+              synopticTrend = Math.sin(((lead - 12) / 24) * Math.PI) * 35;
+            } else if (lead > 36 && lead <= 54) {
+              synopticTrend = Math.cos(((lead - 36) / 18) * (Math.PI / 2)) * 35 + 10;
+            } else if (lead > 54) {
+              synopticTrend = -Math.min(60, (lead - 54) * 2.2);
             }
 
             const rawAQI = Math.round(base * diurnalMult + synopticTrend);
-            aqi = Math.max(85, Math.min(498, rawAQI));
+            aqi = Math.max(30, Math.min(498, rawAQI));
           }
 
-          const confidence = Number((0.94 - (lead / 72) * 0.13).toFixed(2));
+          const confidence = Number((0.95 - (lead / 72) * 0.15).toFixed(2));
           const grapStage = this.getGrapStage(aqi);
 
           points.push({
@@ -9118,6 +9168,12 @@
         target.style.display = 'flex';
       }
 
+      // Isolate Time-Travel Crisis Scrubber exclusively to Command ("overview") tab
+      const scrubberSec = document.getElementById('time-travel-scrubber-section');
+      if (scrubberSec) {
+        scrubberSec.style.display = (tabId === 'overview') ? '' : 'none';
+      }
+
       if (tabId === 'overview' && typeof VayuAtmosphericMap !== 'undefined') {
         if (typeof VayuAtmosphericMap.resumeWindAnimation === 'function') {
           VayuAtmosphericMap.resumeWindAnimation();
@@ -9415,6 +9471,13 @@
       }
 
       updateZonesStrip(m.aqi);
+
+      if (typeof updateForecastFromEngine === 'function') {
+        const curSt = (typeof VayuForecastEngine !== 'undefined' && VayuForecastEngine.currentStation)
+          ? VayuForecastEngine.currentStation
+          : { name: "Punjabi Bagh", aqi: m.aqi, baseAQI: m.aqi };
+        updateForecastFromEngine({ ...curSt, aqi: m.aqi, baseAQI: m.aqi });
+      }
 
       if (typeof renderCleanAirWindows === 'function') {
         renderCleanAirWindows();
@@ -9744,11 +9807,141 @@
       let points = [];
       if (typeof VayuForecastEngine !== 'undefined') {
         points = VayuForecastEngine.generate72hForecast(baseAQI, stationName);
+    let forecastHoverInitialized = false;
+    let activeForecastTrajectory = [];
+
+    function renderForecastChart(points) {
+      if (!points || points.length === 0) return;
+      activeForecastTrajectory = points;
+
+      const svgLine = document.getElementById('svg-fc-line');
+      const svgBand = document.getElementById('svg-ci-band');
+      const pin24 = document.getElementById('svg-pin-24');
+      const pin48 = document.getElementById('svg-pin-48');
+      const pin72 = document.getElementById('svg-pin-72');
+
+      const xMin = 42;
+      const xMax = 480;
+      const svgWidth = xMax - xMin; // 438
+      const svgHeight = 180;
+      const baseY = 210;
+
+      let linePoints = [];
+      let upperBand = [];
+      let lowerBand = [];
+
+      points.forEach((p, idx) => {
+        const frac = idx / Math.max(1, points.length - 1);
+        const x = xMin + frac * svgWidth;
+        const aqiVal = p.aqi != null ? p.aqi : (p.forecast_aqi || 250);
+        const y = baseY - (Math.min(500, Math.max(0, aqiVal)) / 500) * svgHeight;
+
+        const uVal = p.upper_bound_90ci != null ? p.upper_bound_90ci : Math.min(500, aqiVal + Math.round(14 + frac * 32));
+        const lVal = p.lower_bound_90ci != null ? p.lower_bound_90ci : Math.max(0, aqiVal - Math.round(14 + frac * 32));
+        const yUpper = baseY - (Math.min(500, Math.max(0, uVal)) / 500) * svgHeight;
+        const yLower = baseY - (Math.min(500, Math.max(0, lVal)) / 500) * svgHeight;
+
+        linePoints.push(`${x.toFixed(1)},${y.toFixed(1)}`);
+        upperBand.push(`${x.toFixed(1)},${yUpper.toFixed(1)}`);
+        lowerBand.unshift(`${x.toFixed(1)},${yLower.toFixed(1)}`);
+
+        // Update milestone pins at +24h, +48h, +72h
+        const lead = p.leadHours != null ? p.leadHours : (p.lead_hours != null ? p.lead_hours : idx);
+        if (lead === 24 && pin24) {
+          pin24.setAttribute('cx', x.toFixed(1));
+          pin24.setAttribute('cy', y.toFixed(1));
+        } else if (lead === 48 && pin48) {
+          pin48.setAttribute('cx', x.toFixed(1));
+          pin48.setAttribute('cy', y.toFixed(1));
+        } else if (lead === 72 && pin72) {
+          pin72.setAttribute('cx', x.toFixed(1));
+          pin72.setAttribute('cy', y.toFixed(1));
+        }
+      });
+
+      if (svgLine) svgLine.setAttribute('points', linePoints.join(' '));
+      if (svgBand) svgBand.setAttribute('points', upperBand.concat(lowerBand).join(' '));
+
+      // Attach Interactive Mouse / Touch Tracking to Chart
+      const svgEl = document.getElementById('forecast-chart-svg');
+      if (svgEl && !forecastHoverInitialized) {
+        forecastHoverInitialized = true;
+        const hoverGrp = document.getElementById('fc-hover-group');
+        const hLine = document.getElementById('fc-hover-line');
+        const hCircle = document.getElementById('fc-hover-circle');
+        const hLead = document.getElementById('fc-hover-lead');
+        const hVal = document.getElementById('fc-hover-val');
+        const hBoxGrp = document.getElementById('fc-hover-box-group');
+
+        const onMove = (evt) => {
+          if (!activeForecastTrajectory || activeForecastTrajectory.length === 0 || !hoverGrp) return;
+          const rect = svgEl.getBoundingClientRect();
+          const clientX = evt.touches ? evt.touches[0].clientX : evt.clientX;
+          if (clientX == null) return;
+          const normX = ((clientX - rect.left) / rect.width) * 500;
+          const clampedX = Math.max(xMin, Math.min(xMax, normX));
+          const frac = (clampedX - xMin) / svgWidth;
+          const targetIdx = Math.round(frac * (activeForecastTrajectory.length - 1));
+          const pt = activeForecastTrajectory[targetIdx];
+          if (!pt) return;
+
+          const ptX = xMin + (targetIdx / (activeForecastTrajectory.length - 1)) * svgWidth;
+          const aqi = pt.aqi != null ? pt.aqi : (pt.forecast_aqi || 250);
+          const ptY = baseY - (Math.min(500, Math.max(0, aqi)) / 500) * svgHeight;
+          const lead = pt.leadHours != null ? pt.leadHours : (pt.lead_hours != null ? pt.lead_hours : targetIdx);
+          const meta = (typeof VayuForecastEngine !== 'undefined') ? VayuForecastEngine.getSeverityMeta(aqi) : { label: "AQI", color: "#34D399" };
+
+          hoverGrp.setAttribute('opacity', '1');
+          if (hLine) { hLine.setAttribute('x1', ptX.toFixed(1)); hLine.setAttribute('x2', ptX.toFixed(1)); }
+          if (hCircle) {
+            hCircle.setAttribute('cx', ptX.toFixed(1));
+            hCircle.setAttribute('cy', ptY.toFixed(1));
+            hCircle.setAttribute('stroke', meta.color || '#34D399');
+          }
+
+          if (hLead) hLead.textContent = `+${lead}h Lead`;
+          if (hVal) {
+            hVal.textContent = `AQI ${aqi} • ${meta.label}`;
+            hVal.setAttribute('fill', meta.color || '#34D399');
+          }
+
+          if (hBoxGrp) {
+            const boxX = ptX > 370 ? ptX - 105 : (ptX < 110 ? ptX + 10 : ptX - 50);
+            const boxY = ptY > 80 ? ptY - 42 : ptY + 12;
+            hBoxGrp.setAttribute('transform', `translate(${boxX.toFixed(1)}, ${boxY.toFixed(1)})`);
+          }
+        };
+
+        const onLeave = () => {
+          if (hoverGrp) hoverGrp.setAttribute('opacity', '0');
+        };
+
+        svgEl.addEventListener('mousemove', onMove);
+        svgEl.addEventListener('touchmove', onMove, { passive: true });
+        svgEl.addEventListener('mouseleave', onLeave);
+        svgEl.addEventListener('touchend', onLeave);
+      }
+    }
+
+    function updateForecastFromEngine(station) {
+      if (!station) {
+        if (typeof VayuForecastEngine !== 'undefined') {
+          station = VayuForecastEngine.currentStation || VayuForecastEngine.stations[0];
+        }
+      }
+      if (!station) return;
+
+      const baseAQI = station.baseAQI || station.aqi || 431;
+      const stationName = station.name || "Punjabi Bagh";
+
+      let points = [];
+      if (typeof VayuForecastEngine !== 'undefined') {
+        points = VayuForecastEngine.generate72hForecast(baseAQI, stationName);
       }
 
-      const pt24 = (points && points[24]) ? points[24] : { aqi: Math.round(baseAQI * 1.08) };
-      const pt48 = (points && points[48]) ? points[48] : { aqi: Math.round(baseAQI * 1.15) };
-      const pt72 = (points && points[71]) ? points[71] : { aqi: Math.round(baseAQI * 0.92) };
+      const pt24 = (points && (points.find(p => p.leadHours === 24) || points[24])) || { aqi: Math.round(baseAQI * 1.10) };
+      const pt48 = (points && (points.find(p => p.leadHours === 48) || points[48])) || { aqi: Math.round(baseAQI * 1.16) };
+      const pt72 = (points && (points.find(p => p.leadHours === 72) || points[72] || points[71])) || { aqi: Math.round(baseAQI * 0.90) };
 
       const meta24 = (typeof VayuForecastEngine !== 'undefined') ? VayuForecastEngine.getSeverityMeta(pt24.aqi) : { label: "Severe", color: "#f2966e" };
       const meta48 = (typeof VayuForecastEngine !== 'undefined') ? VayuForecastEngine.getSeverityMeta(pt48.aqi) : { label: "Severe+", color: "#f2966e" };
@@ -9784,40 +9977,13 @@
         el72Cat.style.color = meta72.color;
       }
 
-      // Update SVG Forecast Line & 90% Confidence Interval Polygon
-      const svgLine = document.getElementById('svg-fc-line');
-      const svgBand = document.getElementById('svg-ci-band');
-      if (svgLine && points && points.length > 0) {
-        const svgWidth = 440;
-        const svgHeight = 180;
-        const baseY = 210;
-        let linePoints = [];
-        let upperBand = [];
-        let lowerBand = [];
+      // Render chart
+      renderForecastChart(points);
 
-        points.forEach((p, idx) => {
-          const x = 40 + (idx / Math.max(1, points.length - 1)) * svgWidth;
-          const aqiVal = p.aqi || baseAQI;
-          const y = baseY - (Math.min(500, aqiVal) / 500) * svgHeight;
-          const uncertainty = Math.round(16 + (idx / points.length) * 34);
-          const yUpper = baseY - (Math.min(500, aqiVal + uncertainty) / 500) * svgHeight;
-          const yLower = baseY - (Math.max(0, aqiVal - uncertainty) / 500) * svgHeight;
-
-          linePoints.push(`${x.toFixed(1)},${y.toFixed(1)}`);
-          upperBand.push(`${x.toFixed(1)},${yUpper.toFixed(1)}`);
-          lowerBand.unshift(`${x.toFixed(1)},${yLower.toFixed(1)}`);
-        });
-
-        svgLine.setAttribute('points', linePoints.join(' '));
-        if (svgBand) {
-          svgBand.setAttribute('points', upperBand.concat(lowerBand).join(' '));
-        }
-      }
-
-      // Physics Coupling Decomposition (+48h)
-      const stubbleVal = Math.round(pt48.aqi * 0.34);
-      const inversionVal = Math.round(pt48.aqi * 0.26);
-      const urbanVal = Math.max(45, pt48.aqi - stubbleVal - inversionVal);
+      // Physics Coupling Decomposition (+48h) ensuring exact sum
+      const stubbleVal = Math.round(pt48.aqi * 0.35);
+      const inversionVal = Math.round(pt48.aqi * 0.28);
+      const urbanVal = pt48.aqi - stubbleVal - inversionVal;
 
       const decStubble = document.getElementById('decomp-stubble');
       const decInversion = document.getElementById('decomp-inversion');
@@ -9853,48 +10019,36 @@
       try {
         const ms = fc.milestones;
         
-        document.getElementById('fc-24h-val').innerText = ms["+24h"].forecast_aqi;
-        document.getElementById('fc-24h-cat').innerText = ms["+24h"].category;
-        document.getElementById('fc-24h-cat').style.backgroundColor = ms["+24h"].category_color + '33';
-        document.getElementById('fc-24h-cat').style.color = ms["+24h"].category_color;
+        if (ms["+24h"]) {
+          document.getElementById('fc-24h-val').innerText = ms["+24h"].forecast_aqi;
+          document.getElementById('fc-24h-cat').innerText = ms["+24h"].category;
+          document.getElementById('fc-24h-cat').style.backgroundColor = ms["+24h"].category_color + '33';
+          document.getElementById('fc-24h-cat').style.color = ms["+24h"].category_color;
+        }
 
-        document.getElementById('fc-48h-val').innerText = ms["+48h"].forecast_aqi;
-        document.getElementById('fc-48h-cat').innerText = ms["+48h"].category;
-        document.getElementById('fc-48h-cat').style.backgroundColor = ms["+48h"].category_color + '33';
-        document.getElementById('fc-48h-cat').style.color = ms["+48h"].category_color;
+        if (ms["+48h"]) {
+          document.getElementById('fc-48h-val').innerText = ms["+48h"].forecast_aqi;
+          document.getElementById('fc-48h-cat').innerText = ms["+48h"].category;
+          document.getElementById('fc-48h-cat').style.backgroundColor = ms["+48h"].category_color + '33';
+          document.getElementById('fc-48h-cat').style.color = ms["+48h"].category_color;
+        }
 
-        document.getElementById('fc-72h-val').innerText = ms["+72h"].forecast_aqi;
-        document.getElementById('fc-72h-cat').innerText = ms["+72h"].category;
-        document.getElementById('fc-72h-cat').style.backgroundColor = ms["+72h"].category_color + '33';
-        document.getElementById('fc-72h-cat').style.color = ms["+72h"].category_color;
+        if (ms["+72h"]) {
+          document.getElementById('fc-72h-val').innerText = ms["+72h"].forecast_aqi;
+          document.getElementById('fc-72h-cat').innerText = ms["+72h"].category;
+          document.getElementById('fc-72h-cat').style.backgroundColor = ms["+72h"].category_color + '33';
+          document.getElementById('fc-72h-cat').style.color = ms["+72h"].category_color;
+        }
 
         const points = fc.hourly_forecast_trajectory || [];
-        const svgWidth = 440;
-        const svgHeight = 180;
-        const baseY = 210;
+        renderForecastChart(points);
 
-        let linePoints = [];
-        let upperBand = [];
-        let lowerBand = [];
-
-        points.forEach((p, idx) => {
-          const x = 40 + (idx / Math.max(1, points.length - 1)) * svgWidth;
-          const y = baseY - (Math.min(500, p.forecast_aqi) / 500) * svgHeight;
-          const yUpper = baseY - (Math.min(500, p.upper_bound_90ci) / 500) * svgHeight;
-          const yLower = baseY - (Math.min(500, p.lower_bound_90ci) / 500) * svgHeight;
-
-          linePoints.push(`${x.toFixed(1)},${y.toFixed(1)}`);
-          upperBand.push(`${x.toFixed(1)},${yUpper.toFixed(1)}`);
-          lowerBand.unshift(`${x.toFixed(1)},${yLower.toFixed(1)}`);
-        });
-
-        document.getElementById('svg-fc-line').setAttribute('points', linePoints.join(' '));
-        document.getElementById('svg-ci-band').setAttribute('points', upperBand.concat(lowerBand).join(' '));
-
-        const decomp = ms["+48h"].coupling_decomposition;
-        document.getElementById('decomp-stubble').innerText = `+${decomp.stubble_transport_impact_aqi} AQI`;
-        document.getElementById('decomp-inversion').innerText = `+${decomp.inversion_and_pblh_trapping_aqi} AQI`;
-        document.getElementById('decomp-urban').innerText = `+${decomp.baseline_local_urban_aqi} AQI`;
+        if (ms["+48h"] && ms["+48h"].coupling_decomposition) {
+          const decomp = ms["+48h"].coupling_decomposition;
+          document.getElementById('decomp-stubble').innerText = `+${decomp.stubble_transport_impact_aqi} AQI`;
+          document.getElementById('decomp-inversion').innerText = `+${decomp.inversion_and_pblh_trapping_aqi} AQI`;
+          document.getElementById('decomp-urban').innerText = `+${decomp.baseline_local_urban_aqi} AQI`;
+        }
       } catch (err) {
         console.warn("Forecast panel error, using client physics engine fallback:", err);
         updateForecastFromEngine();

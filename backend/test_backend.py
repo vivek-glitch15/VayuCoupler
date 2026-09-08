@@ -37,7 +37,7 @@ def main():
     print(f"What-If Policy: Baseline Peak={whatif['baseline_uncontrolled']['peak_risk_aqi']} -> Mitigated Peak={whatif['counterfactual_mitigated']['peak_risk_aqi']}")
     print(f"AQI Reduction Prevented: {whatif['counterfactual_mitigated']['total_aqi_points_prevented']} Points ({whatif['counterfactual_mitigated']['percentage_crisis_mitigation']}%)")
     
-    print("\n✅ ALL BACKEND MODULES VERIFIED PERFECTLY!")
+    print("\n[OK] ALL BACKEND MODULES VERIFIED PERFECTLY!")
 
 if __name__ == "__main__":
     main()

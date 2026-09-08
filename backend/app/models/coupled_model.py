@@ -70,8 +70,12 @@ class CoupledPhysicsForecaster:
         forecast_points = []
         lead_time_highlights = {}
 
+        total_hours = self.adapter.synthetic_engine.total_hours
+        base_station_aqi = station_curr["aqi"]
+
         for lead_h in range(1, 73):
-            future_step_idx = min(self.adapter.synthetic_engine.total_hours - 1, current_step_hour + lead_h)
+            # Step in episode, wrapping cyclically over the 168h meteorological cycle to prevent freezing at step 167
+            future_step_idx = (current_step_hour + lead_h) % total_hours
             future_step = self.adapter.get_snapshot_at_step(future_step_idx)
             future_st = next((s for s in future_step["stations"] if s["station_id"] == station_id), future_step["stations"][0])
             
@@ -79,15 +83,28 @@ class CoupledPhysicsForecaster:
             future_met = future_step["meteorology"]
             future_fires = future_step["stubble_burning"]
 
-            # Ground truth projected value in episode
-            base_target_aqi = future_st["aqi"]
+            # Ground truth projected value in episode with smooth blend from current step
+            synoptic_target = future_st["aqi"]
+            blend_weight = min(1.0, lead_h / 20.0)
+            base_target_aqi = (1.0 - blend_weight) * base_station_aqi + blend_weight * synoptic_target
+
+            # Diurnal micro-variation based on future solar hour
+            future_hour = (current_step_hour + lead_h) % 24
+            if 4 <= future_hour <= 9:
+                diurnal_shift = 16.0 * math.sin(((future_hour - 4) / 5.0) * math.pi)
+            elif 12 <= future_hour <= 16:
+                diurnal_shift = -22.0 * math.sin(((future_hour - 12) / 4.0) * math.pi)
+            elif 18 <= future_hour <= 22:
+                diurnal_shift = 18.0 * math.sin(((future_hour - 18) / 4.0) * math.pi)
+            else:
+                diurnal_shift = -6.0
             
             # Statistical forecast uncertainty grows with lead time (sigma ~ sqrt(lead_h))
             sigma = 4.0 + 2.2 * math.sqrt(lead_h)
             
             # Forecast mean with slight realistic smoothing (capped at 500 for Indian standard NAQI)
-            forecast_aqi = min(500, max(30, int(round(base_target_aqi + np.random.normal(0, 1.2)))))
-            lower_bound = max(30, int(round(forecast_aqi - 1.645 * sigma)))
+            forecast_aqi = min(500, max(30, int(round(base_target_aqi + diurnal_shift + np.random.normal(0, 0.8)))))
+            lower_bound = max(25, int(round(forecast_aqi - 1.645 * sigma)))
             upper_bound = min(500, max(forecast_aqi, int(round(forecast_aqi + 1.645 * sigma))))
 
             cat, cat_color = get_aqi_category(forecast_aqi)
@@ -120,10 +137,14 @@ class CoupledPhysicsForecaster:
                     future_fires["total_active_fires"]
                 )
                 
-                # Estimate component contributions to AQI jump
-                stubble_points = int(min(220, future_st["stubble_share_ugm3"] * 1.8))
-                inversion_points = int(min(160, (physics["inversion_trapping_multiplier"] - 1.0) * 110))
-                baseline_local_points = int(max(40, forecast_aqi - stubble_points - inversion_points))
+                # Component contributions that strictly sum to forecast_aqi
+                stubble_share = min(0.42, max(0.15, (physics["stubble_transport_index"] / 100.0) * 0.40))
+                inversion_share = min(0.35, max(0.18, (physics["inversion_trapping_multiplier"] - 1.0) * 0.28 + 0.18))
+                stubble_points = int(round(forecast_aqi * stubble_share))
+                inversion_points = int(round(forecast_aqi * inversion_share))
+                baseline_local_points = max(20, forecast_aqi - stubble_points - inversion_points)
+                # Ensure exact sum matches forecast_aqi
+                stubble_points = forecast_aqi - inversion_points - baseline_local_points
 
                 lead_time_highlights[f"+{lead_h}h"] = {
                     "lead_hours": lead_h,
