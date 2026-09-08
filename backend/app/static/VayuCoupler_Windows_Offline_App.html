@@ -1274,6 +1274,32 @@ html.light-theme,
       background: #ffffff !important;
       border: 1.5px solid #cbd5e1 !important;
     }
+    html.light-theme #panel-interstate h2 {
+      color: #0f172a !important;
+      font-weight: 800 !important;
+    }
+    html.light-theme #panel-interstate p.text-earth-300\/90,
+    html.light-theme #panel-interstate p.text-earth-300 {
+      color: #475569 !important;
+      font-weight: 500 !important;
+    }
+    /* Wind Pill */
+    html.light-theme #panel-interstate .border-earth-700\/80 {
+      background-color: #ffffff !important;
+      border: 1.5px solid #cbd5e1 !important;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05) !important;
+    }
+    html.light-theme #interstate-wind-text {
+      color: #0f172a !important;
+      font-weight: 700 !important;
+    }
+    html.light-theme #interstate-wind-badge {
+      background-color: #fef3c7 !important;
+      border: 1.5px solid #f59e0b !important;
+      color: #92400e !important;
+      font-weight: 800 !important;
+    }
+    /* State Cards */
     html.light-theme [id^="card-delhi"],
     html.light-theme [id^="card-punjab"],
     html.light-theme [id^="card-haryana"],
@@ -1287,23 +1313,70 @@ html.light-theme,
       color: #0f172a !important;
       font-weight: 800 !important;
     }
-    html.light-theme [id^="card-"] .bg-earth-950\/90,
-    html.light-theme [id^="card-"] .bg-earth-950 {
+    /* State Badges - replacing dark maroon/brown blobs with crisp tinted pills */
+    html.light-theme #delhi-badge,
+    html.light-theme [id^="card-"] span[class*="bg-rose-950"] {
+      background-color: #fee2e2 !important;
+      border: 1.5px solid #ef4444 !important;
+      color: #991b1b !important;
+      font-weight: 800 !important;
+    }
+    html.light-theme #punjab-badge,
+    html.light-theme [id^="card-"] span[class*="bg-cyan-950"] {
+      background-color: #f0fdfa !important;
+      border: 1.5px solid #0d9488 !important;
+      color: #0f766e !important;
+      font-weight: 800 !important;
+    }
+    html.light-theme #haryana-badge,
+    html.light-theme [id^="card-"] span[class*="bg-amber-950"] {
+      background-color: #fef3c7 !important;
+      border: 1.5px solid #f59e0b !important;
+      color: #92400e !important;
+      font-weight: 800 !important;
+    }
+    /* Status Box: Dark readable text */
+    html.light-theme [id$="-status-text"] {
       background-color: #f8fafc !important;
       border: 1.5px solid #cbd5e1 !important;
       color: #0f172a !important;
+      font-weight: 700 !important;
     }
-    html.light-theme [id^="card-"] .text-amber-300 {
-      color: #b45309 !important;
+    /* Forecast Risk Box: High contrast burnt orange / amber on warm tint */
+    html.light-theme [id$="-risk-text"] {
+      background-color: #fff7ed !important;
+      border: 1.5px solid #fed7aa !important;
+      color: #c2410c !important;
       font-weight: 800 !important;
     }
-    html.light-theme [id^="card-"] .text-rose-300 {
-      color: #b91c1c !important;
-      font-weight: 800 !important;
-    }
+    /* Section Subheaders */
     html.light-theme [id^="card-"] .text-earth-400 {
       color: #334155 !important;
-      font-weight: 700 !important;
+      font-weight: 800 !important;
+    }
+    html.light-theme [id^="card-"] .text-amber-400 {
+      color: #9a3412 !important;
+      font-weight: 800 !important;
+    }
+    html.light-theme [id^="card-"] .text-emerald-400 {
+      color: #047857 !important;
+      font-weight: 800 !important;
+    }
+    /* Active Mandates List */
+    html.light-theme [id^="card-"] ul li span {
+      color: #1e293b !important;
+      font-weight: 600 !important;
+    }
+    html.light-theme [id^="card-"] ul li svg {
+      color: #059669 !important;
+    }
+    /* Card Footer */
+    html.light-theme [id^="card-"] div.border-t {
+      border-top-color: #e2e8f0 !important;
+    }
+    html.light-theme [id^="card-"] div.border-t span {
+      color: #475569 !important;
+      font-weight: 600 !important;
     }
 
     /* --- 7. TAB: VULNERABLE COHORTS HEALTH (#panel-health) --- */
@@ -1311,24 +1384,83 @@ html.light-theme,
       background: #ffffff !important;
       border: 1.5px solid #cbd5e1 !important;
     }
+    html.light-theme #panel-health h2 {
+      color: #0f172a !important;
+      font-weight: 800 !important;
+    }
+    html.light-theme #panel-health p.text-earth-300 {
+      color: #475569 !important;
+      font-weight: 500 !important;
+    }
+    html.light-theme #panel-health span.bg-rose-950\/80 {
+      background-color: #ffe4e6 !important;
+      border: 1.5px solid #fda4af !important;
+      color: #e11d48 !important;
+    }
+    /* Cohort Cards */
     html.light-theme #panel-health .p-4.rounded-2xl {
       background-color: #ffffff !important;
       border: 1.5px solid #cbd5e1 !important;
-      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05) !important;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05) !important;
     }
+    /* Cohort Titles & Icons */
+    html.light-theme #panel-health .text-amber-400 {
+      color: #b45309 !important;
+      font-weight: 800 !important;
+    }
+    html.light-theme #panel-health .text-rose-400 {
+      color: #be123c !important;
+      font-weight: 800 !important;
+    }
+    html.light-theme #panel-health .text-purple-400 {
+      color: #6b21a8 !important;
+      font-weight: 800 !important;
+    }
+    html.light-theme #panel-health .text-cyan-400 {
+      color: #0369a1 !important;
+      font-weight: 800 !important;
+    }
+    /* Subtitle & Body */
     html.light-theme #panel-health .text-white {
       color: #0f172a !important;
-      font-weight: 700 !important;
+      font-weight: 800 !important;
+      font-size: 13px !important;
     }
-    html.light-theme #panel-health .text-cyan-300 {
-      color: #0284c7 !important;
-      font-weight: 700 !important;
+    html.light-theme #panel-health p {
+      color: #334155 !important;
+      font-weight: 500 !important;
+      font-size: 11.5px !important;
+      line-height: 1.5 !important;
     }
-    html.light-theme #panel-health .bg-rose-950 {
+    /* Risk Badges */
+    html.light-theme #panel-health span.bg-rose-950 {
       background-color: #fee2e2 !important;
-      border-color: #fca5a5 !important;
+      border: 1.5px solid #ef4444 !important;
       color: #991b1b !important;
+      font-weight: 800 !important;
+    }
+    html.light-theme #panel-health span.bg-amber-950 {
+      background-color: #fef3c7 !important;
+      border: 1.5px solid #f59e0b !important;
+      color: #92400e !important;
+      font-weight: 800 !important;
+    }
+    /* Advisory Callout Box - high contrast, beautiful tint */
+    html.light-theme #panel-health .text-cyan-300 {
+      background-color: #f0f9ff !important;
+      border: 1.5px solid #bae6fd !important;
+      border-radius: 8px !important;
+      padding: 8px 12px !important;
+      margin-top: 12px !important;
+      color: #0369a1 !important;
       font-weight: 700 !important;
+      font-size: 11px !important;
+      line-height: 1.4 !important;
+      display: block !important;
+    }
+    html.light-theme #panel-health .text-cyan-300 b {
+      color: #075985 !important;
+      font-weight: 900 !important;
     }
 
     /* --- 8. TAB: VAYUAI ASSISTANT (#panel-copilot) --- */
@@ -1398,6 +1530,23 @@ html.light-theme,
     }
     html.light-theme #panel-windows .text-\[\#8C948B\] {
       color: #475569 !important;
+      font-weight: 500 !important;
+    }
+    html.light-theme #panel-windows .text-\[\#8FFFB0\] {
+      color: #047857 !important;
+      font-weight: 800 !important;
+    }
+    html.light-theme #panel-windows .text-\[\#FFE270\] {
+      color: #b45309 !important;
+      font-weight: 800 !important;
+    }
+    html.light-theme #panel-windows .text-\[\#FF9D7F\] {
+      color: #c2410c !important;
+      font-weight: 800 !important;
+    }
+    html.light-theme #panel-windows .text-\[\#7FD4FF\] {
+      color: #0284c7 !important;
+      font-weight: 800 !important;
     }
 
     /* --- 10. TAB: COMMUTE ROUTE SHIELD (#panel-commute) --- */
@@ -1405,6 +1554,26 @@ html.light-theme,
     html.light-theme #panel-commute .surface-panel {
       background: #ffffff !important;
       border-color: #cbd5e1 !important;
+    }
+    html.light-theme #panel-commute h2 {
+      color: #0f172a !important;
+      font-weight: 800 !important;
+    }
+    html.light-theme #panel-commute p.text-earth-300 {
+      color: #475569 !important;
+      font-weight: 500 !important;
+    }
+    /* Live Meteorology Pill */
+    html.light-theme #panel-commute .bg-cyan-950\/90,
+    html.light-theme #panel-commute span[class*="bg-cyan-950"] {
+      background-color: #f0fdfa !important;
+      border: 1.5px solid #0d9488 !important;
+      color: #0f766e !important;
+      font-weight: 800 !important;
+    }
+    html.light-theme #panel-commute label {
+      color: #334155 !important;
+      font-weight: 700 !important;
     }
     html.light-theme #panel-commute select {
       background-color: #ffffff !important;
@@ -1415,17 +1584,212 @@ html.light-theme,
     html.light-theme #panel-commute .p-4.rounded-2xl {
       background-color: #ffffff !important;
       border: 1.5px solid #cbd5e1 !important;
-      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04) !important;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05) !important;
+    }
+    /* Card 1: Standard Direct Route */
+    html.light-theme #panel-commute .text-rose-400,
+    html.light-theme #commute-std-dose {
+      color: #dc2626 !important;
+      font-weight: 900 !important;
+    }
+    html.light-theme #commute-std-route {
+      color: #475569 !important;
+      font-weight: 600 !important;
+      border-top-color: #e2e8f0 !important;
+    }
+    /* Card 2: Eco-Shield Recommended Route */
+    html.light-theme #panel-commute .shadow-cyan-950,
+    html.light-theme #panel-commute .bg-cyan-950\/70 {
+      background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%) !important;
+      border: 2px solid #059669 !important;
+      box-shadow: 0 4px 14px rgba(5, 150, 105, 0.15) !important;
+    }
+    html.light-theme #panel-commute .bg-cyan-950\/70 .text-cyan-300,
+    html.light-theme #panel-commute .shadow-cyan-950 .text-cyan-300,
+    html.light-theme #commute-eco-dose {
+      color: #047857 !important;
+      font-weight: 900 !important;
+    }
+    html.light-theme #panel-commute .text-cyan-200 {
+      color: #065f46 !important;
+      font-weight: 700 !important;
+    }
+    html.light-theme #commute-eco-route {
+      color: #047857 !important;
+      font-weight: 600 !important;
+      border-top-color: #a7f3d0 !important;
+    }
+    html.light-theme #commute-saved-pct {
+      color: #047857 !important;
+      font-weight: 900 !important;
+    }
+    html.light-theme #panel-commute .bg-cyan-500 {
+      background-color: #059669 !important;
+      color: #ffffff !important;
+      font-weight: 800 !important;
+    }
+    /* Card 3: Smart Timing Recommendation */
+    html.light-theme #panel-commute .text-amber-300 {
+      color: #c2410c !important;
+      font-weight: 800 !important;
+    }
+    html.light-theme #commute-timing-rec {
+      color: #9a3412 !important;
+      font-weight: 800 !important;
+    }
+    html.light-theme #panel-commute .text-amber-400.border-t,
+    html.light-theme #panel-commute .text-amber-400 {
+      background-color: #fffbeb !important;
+      border: 1.5px solid #fde68a !important;
+      border-radius: 8px !important;
+      padding: 6px 10px !important;
+      margin-top: 10px !important;
+      color: #92400e !important;
+      font-weight: 700 !important;
+      display: block !important;
     }
 
     /* --- 11. TAB: WEATHER ENGINE (#panel-weather) --- */
     html.light-theme #panel-weather .natural-glass {
       background: #ffffff !important;
-      border-color: #cbd5e1 !important;
+      border: 1.5px solid #cbd5e1 !important;
     }
-    html.light-theme #panel-weather .weather-hourly-box {
+    html.light-theme #panel-weather .weather-hourly-box,
+    html.light-theme #panel-weather .bg-\[\#0a0d0a\] {
       background: #ffffff !important;
       border: 1.5px solid #cbd5e1 !important;
+    }
+    html.light-theme #weather-main-temp {
+      color: #0f172a !important;
+      font-weight: 800 !important;
+    }
+    html.light-theme #weather-precip-val,
+    html.light-theme #weather-humidity-val,
+    html.light-theme #weather-wind-val {
+      color: #0f172a !important;
+      font-weight: 800 !important;
+    }
+    html.light-theme #weather-location-title span:first-child {
+      color: #0f172a !important;
+      font-weight: 800 !important;
+    }
+    html.light-theme #weather-day-name {
+      color: #1e293b !important;
+      font-weight: 700 !important;
+    }
+    html.light-theme #weather-condition-desc {
+      color: #475569 !important;
+      font-weight: 500 !important;
+    }
+    /* Badges in Weather */
+    html.light-theme #weather-location-title span[class*="bg-amber-950"],
+    html.light-theme #panel-weather span[class*="bg-amber-950"] {
+      background-color: #fef3c7 !important;
+      border: 1.5px solid #f59e0b !important;
+      color: #92400e !important;
+      font-weight: 800 !important;
+    }
+    html.light-theme #panel-weather span[class*="bg-emerald-950"] {
+      background-color: #ecfdf5 !important;
+      border: 1.5px solid #10b981 !important;
+      color: #047857 !important;
+      font-weight: 800 !important;
+    }
+    /* Metric Switcher Tabs */
+    html.light-theme .weather-metric-tab {
+      color: #475569 !important;
+      font-weight: 700 !important;
+    }
+    html.light-theme .weather-metric-tab:hover {
+      color: #0f172a !important;
+    }
+    html.light-theme .weather-metric-tab.active {
+      color: #ea580c !important;
+      font-weight: 800 !important;
+      border-bottom-color: #ea580c !important;
+    }
+    /* 8-Day Strip Header */
+    html.light-theme #panel-weather .text-earth-300 {
+      color: #0f172a !important;
+      font-weight: 800 !important;
+    }
+    html.light-theme #panel-weather .text-earth-400 {
+      color: #475569 !important;
+      font-weight: 500 !important;
+    }
+    /* 8-Day Cards */
+    html.light-theme .weather-day-card {
+      background: #ffffff !important;
+      border: 1.5px solid #cbd5e1 !important;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+    }
+    html.light-theme .weather-day-card:hover {
+      background: #f8fafc !important;
+      border-color: #94a3b8 !important;
+    }
+    html.light-theme .weather-day-card.active {
+      background: #ecfdf5 !important;
+      border-color: #059669 !important;
+      border-width: 2px !important;
+      box-shadow: 0 0 14px rgba(5, 150, 105, 0.2) !important;
+    }
+    html.light-theme .weather-day-card .text-slate-300 {
+      color: #1e293b !important;
+      font-weight: 700 !important;
+    }
+    html.light-theme .weather-day-card.active .text-amber-400,
+    html.light-theme .weather-day-card .text-amber-400 {
+      color: #047857 !important;
+      font-weight: 800 !important;
+    }
+    html.light-theme .weather-day-card span.text-white {
+      color: #0f172a !important;
+      font-weight: 800 !important;
+    }
+    html.light-theme .weather-day-card .text-slate-400 {
+      color: #475569 !important;
+      font-weight: 600 !important;
+    }
+
+    /* --- 12. TAB: WHAT-IF SIMULATOR (#panel-whatif) --- */
+    html.light-theme #panel-whatif .surface-panel {
+      background: #ffffff !important;
+      border: 1.5px solid #cbd5e1 !important;
+    }
+    html.light-theme #panel-whatif h2 {
+      color: #0f172a !important;
+      font-weight: 800 !important;
+    }
+    html.light-theme #panel-whatif p {
+      color: #475569 !important;
+    }
+    html.light-theme #panel-whatif .bg-\[\#191C19\] {
+      background-color: #ffffff !important;
+      border: 1.5px solid #cbd5e1 !important;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04) !important;
+    }
+    html.light-theme #panel-whatif .text-\[\#EEF0EC\] {
+      color: #0f172a !important;
+      font-weight: 700 !important;
+    }
+    html.light-theme #panel-whatif .text-\[\#8C948B\] {
+      color: #475569 !important;
+    }
+    html.light-theme #panel-whatif #slider-val-stubble {
+      color: #b45309 !important;
+      font-weight: 800 !important;
+    }
+    html.light-theme #panel-whatif #slider-val-truck {
+      color: #c2410c !important;
+      font-weight: 800 !important;
+    }
+    html.light-theme #panel-whatif #slider-val-misting {
+      color: #0284c7 !important;
+      font-weight: 800 !important;
+    }
+    html.light-theme #panel-whatif #slider-val-industry {
+      color: #6b21a8 !important;
+      font-weight: 800 !important;
     }
 
   </style>
@@ -7681,9 +8045,23 @@ html.light-theme,
 
         const isLight = document.documentElement.classList.contains('light-theme');
         const axisColor = isLight ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)';
-        const timeColor = isLight ? '#64748b' : '#94a3b8';
+        const timeColor = isLight ? '#334155' : '#94a3b8';
         const nodeStroke = isLight ? '#ffffff' : '#060706';
 
+        let chartStroke = strokeColor;
+        let chartLabelFill = strokeColor;
+        if (isLight) {
+          if (this.metric === 'temp') {
+            chartStroke = '#d97706';
+            chartLabelFill = '#9a3412';
+          } else if (this.metric === 'precip') {
+            chartStroke = '#0284c7';
+            chartLabelFill = '#0369a1';
+          } else {
+            chartStroke = '#059669';
+            chartLabelFill = '#047857';
+          }
+        }
         let svg = `
           <svg viewBox="0 0 ${width} ${height}" class="w-full h-full overflow-visible" preserveAspectRatio="none">
             <defs>
@@ -7695,14 +8073,14 @@ html.light-theme,
             
             <path d="${areaD}" fill="url(#weatherAreaGrad)" />
             <line x1="${padX}" y1="${height - padBottom}" x2="${width - padX}" y2="${height - padBottom}" stroke="${axisColor}" stroke-width="1" />
-            <path d="${pathD}" fill="none" stroke="${strokeColor}" stroke-width="3" stroke-linecap="round" />
+            <path d="${pathD}" fill="none" stroke="${chartStroke}" stroke-width="3.5" stroke-linecap="round" />
 
             ${points.map(pt => `
-              <text x="${pt.x}" y="${pt.y - 12}" fill="${strokeColor}" font-size="13" font-family="'IBM Plex Mono', monospace" font-weight="700" text-anchor="middle">
+              <text x="${pt.x}" y="${pt.y - 12}" fill="${chartLabelFill}" font-size="13" font-family="'IBM Plex Mono', monospace" font-weight="800" text-anchor="middle">
                 ${pt.val}${unitSuffix}
               </text>
-              <circle cx="${pt.x}" cy="${pt.y}" r="4.5" fill="${strokeColor}" stroke="${nodeStroke}" stroke-width="2" />
-              <text x="${pt.x}" y="${height - padBottom + 20}" fill="${timeColor}" font-size="11" font-family="'Inter', sans-serif" font-weight="600" text-anchor="middle">
+              <circle cx="${pt.x}" cy="${pt.y}" r="4.5" fill="${chartStroke}" stroke="${nodeStroke}" stroke-width="2" />
+              <text x="${pt.x}" y="${height - padBottom + 20}" fill="${timeColor}" font-size="11" font-family="'Inter', sans-serif" font-weight="700" text-anchor="middle">
                 ${pt.time}
               </text>
             `).join('')}
