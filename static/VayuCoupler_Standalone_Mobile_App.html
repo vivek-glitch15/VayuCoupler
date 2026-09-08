@@ -422,24 +422,25 @@
       background-color: transparent !important;
     }
 
-    /* Main Navigation Buttons */
-    html.light-theme nav button {
-      color: #334155 !important;
-      background-color: #f8fafc !important;
-      border: 1.5px solid #cbd5e1 !important;
+    /* Main Navigation Buttons (Desktop Header) */
+    html.light-theme header nav button {
+      color: #475569 !important;
+      background-color: transparent !important;
+      border: 1px solid transparent !important;
       font-weight: 600 !important;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
+      box-shadow: none !important;
     }
-    html.light-theme nav button:hover {
+    html.light-theme header nav button:hover {
       background-color: #f1f5f9 !important;
-      border-color: #94a3b8 !important;
+      border-color: transparent !important;
       color: #0f172a !important;
     }
-    html.light-theme nav button.active,
-    html.light-theme nav button[class*="text-cyan-300"],
-    html.light-theme nav button[class*="bg-cyan-950"] {
+    html.light-theme header nav button.active,
+    html.light-theme header nav button[class*="text-cyan-300"],
+    html.light-theme header nav button[class*="bg-cyan-950"],
+    html.light-theme header nav button[class*="active"] {
       background-color: #ecfdf5 !important;
-      border-color: #059669 !important;
+      border: 1.5px solid #059669 !important;
       color: #047857 !important;
       font-weight: 700 !important;
       box-shadow: 0 0 10px rgba(5, 150, 105, 0.15) !important;
@@ -2088,37 +2089,119 @@
       background-color: #ffffff !important;
       border-top: 1px solid #e2e8f0 !important;
     }
-    html.light-theme nav button {
-      color: #334155 !important;
-      background-color: #f8fafc !important;
-      border: 1.5px solid #cbd5e1 !important;
-      font-weight: 700 !important;
+    html.light-theme header nav button {
+      color: #475569 !important;
+      background-color: transparent !important;
+      border: 1px solid transparent !important;
+      font-weight: 600 !important;
       font-size: 12px !important;
       padding: 6px 14px !important;
+      box-shadow: none !important;
       transition: all 0.2s ease !important;
     }
-    html.light-theme nav button:hover {
+    html.light-theme header nav button:hover {
       background-color: #f1f5f9 !important;
-      border-color: #94a3b8 !important;
+      border-color: transparent !important;
       color: #0f172a !important;
     }
-    html.light-theme nav button.active,
-    html.light-theme nav button[class*="active"],
-    html.light-theme nav button[class*="bg-cyan-950"],
-    html.light-theme nav button[class*="bg-emerald-50"] {
+    html.light-theme header nav button.active,
+    html.light-theme header nav button[class*="active"],
+    html.light-theme header nav button[class*="bg-cyan-950"],
+    html.light-theme header nav button[class*="bg-emerald-50"] {
       background-color: #ecfdf5 !important;
       border: 1.5px solid #059669 !important;
       color: #065f46 !important;
-      font-weight: 800 !important;
+      font-weight: 700 !important;
       box-shadow: 0 1px 4px rgba(5, 150, 105, 0.15) !important;
     }
-    html.light-theme nav button.active i,
-    html.light-theme nav button.active svg,
-    html.light-theme nav button[class*="bg-cyan-950"] i,
-    html.light-theme nav button[class*="bg-cyan-950"] svg,
-    html.light-theme nav button[class*="bg-emerald-50"] i,
-    html.light-theme nav button[class*="bg-emerald-50"] svg {
+    html.light-theme header nav button.active i,
+    html.light-theme header nav button.active svg,
+    html.light-theme header nav button[class*="bg-cyan-950"] i,
+    html.light-theme header nav button[class*="bg-cyan-950"] svg,
+    html.light-theme header nav button[class*="bg-emerald-50"] i,
+    html.light-theme header nav button[class*="bg-emerald-50"] svg {
       color: #059669 !important;
+    }
+
+    /* Mobile Bottom Navigation Bar in Light Mode - Clean, Borderless Inactive Tabs (Matching Dark Mode Cockpit) */
+    html.light-theme .mobile-nav-bar,
+    html.light-theme nav.mobile-nav-bar {
+      background: rgba(255, 255, 255, 0.98) !important;
+      border-top: 1px solid #e2e8f0 !important;
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05) !important;
+    }
+
+    html.light-theme .mobile-nav-item,
+    html.light-theme nav.mobile-nav-bar button,
+    html.light-theme nav .mobile-nav-item,
+    html.light-theme .mobile-nav-bar .mobile-nav-item {
+      background: transparent !important;
+      background-color: transparent !important;
+      border: 1px solid transparent !important;
+      box-shadow: none !important;
+      color: #64748b !important;
+      padding: 5px 2px !important;
+      border-radius: 14px !important;
+      font-size: 10px !important;
+      font-weight: 500 !important;
+    }
+
+    html.light-theme .mobile-nav-item svg,
+    html.light-theme .mobile-nav-item i,
+    html.light-theme nav.mobile-nav-bar button svg,
+    html.light-theme nav.mobile-nav-bar button i {
+      color: #64748b !important;
+      stroke: #64748b !important;
+      fill: none !important;
+      width: 19px !important;
+      height: 19px !important;
+      margin-bottom: 2px !important;
+    }
+
+    html.light-theme .mobile-nav-item span,
+    html.light-theme nav.mobile-nav-bar button span {
+      color: #64748b !important;
+      font-weight: 500 !important;
+      font-size: 10px !important;
+    }
+
+    html.light-theme .mobile-nav-item:hover,
+    html.light-theme .mobile-nav-item:active,
+    html.light-theme nav.mobile-nav-bar button:hover,
+    html.light-theme nav.mobile-nav-bar button:active {
+      background: rgba(0, 0, 0, 0.03) !important;
+      background-color: rgba(0, 0, 0, 0.03) !important;
+      border-color: transparent !important;
+      box-shadow: none !important;
+    }
+
+    /* Active State: ONLY the active tab gets the rounded pill container with green accent */
+    html.light-theme .mobile-nav-item.active,
+    html.light-theme nav.mobile-nav-bar button.active,
+    html.light-theme nav .mobile-nav-item.active,
+    html.light-theme .mobile-nav-bar .mobile-nav-item.active {
+      color: #047857 !important;
+      background: #ecfdf5 !important;
+      background-color: #ecfdf5 !important;
+      border: 1.5px solid #10b981 !important;
+      border-radius: 14px !important;
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.16) !important;
+      font-weight: 700 !important;
+      padding: 5px 2px !important;
+    }
+
+    html.light-theme .mobile-nav-item.active svg,
+    html.light-theme .mobile-nav-item.active i,
+    html.light-theme nav.mobile-nav-bar button.active svg,
+    html.light-theme nav.mobile-nav-bar button.active i {
+      color: #047857 !important;
+      stroke: #047857 !important;
+    }
+
+    html.light-theme .mobile-nav-item.active span,
+    html.light-theme nav.mobile-nav-bar button.active span {
+      color: #047857 !important;
+      font-weight: 700 !important;
     }
 
     /* Map Overlays & Floating Docks in Light Mode */
@@ -5186,7 +5269,7 @@
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         checkIfInstalled();
-        navigator.serviceWorker.register('/static/sw.js?v=22').then(reg => {
+        navigator.serviceWorker.register('/static/sw.js?v=23').then(reg => {
           reg.update();
           reg.onupdatefound = () => {
             const installing = reg.installing;

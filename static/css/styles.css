@@ -403,23 +403,27 @@ html.light-theme .bg-earth-700 {
   color: #0f172a !important;
 }
 
-/* Navigation Tab Buttons in Light Mode */
-html.light-theme nav button {
+/* Navigation Tab Buttons in Light Mode (Desktop Header) */
+html.light-theme header nav button {
   color: #475569 !important;
-  background-color: #f8fafc !important;
-  border: 1px solid #cbd5e1 !important;
+  background-color: transparent !important;
+  border: 1px solid transparent !important;
+  box-shadow: none !important;
 }
-html.light-theme nav button:hover {
+html.light-theme header nav button:hover {
   background-color: #f1f5f9 !important;
+  border-color: transparent !important;
   color: #0f172a !important;
 }
-html.light-theme nav button.active,
-html.light-theme nav button[class*="text-cyan-300"],
-html.light-theme nav button[class*="bg-cyan-950"] {
+html.light-theme header nav button.active,
+html.light-theme header nav button[class*="text-cyan-300"],
+html.light-theme header nav button[class*="bg-cyan-950"],
+html.light-theme header nav button[class*="active"] {
   background-color: #ecfdf5 !important;
-  border-color: #a7f3d0 !important;
+  border: 1.5px solid #059669 !important;
   color: #047857 !important;
   font-weight: 700 !important;
+  box-shadow: 0 0 10px rgba(5, 150, 105, 0.15) !important;
 }
 
 /* Crisis Scrubber Bar in Light Mode */
@@ -689,19 +693,46 @@ html.light-theme #vayuai-chat-history {
 }
 
 html.light-theme .mobile-nav-bar {
-  background: rgba(255, 255, 255, 0.96) !important;
-  border-top-color: #e2e8e5 !important;
-  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.06) !important;
+  background: rgba(255, 255, 255, 0.98) !important;
+  border-top-color: #e2e8f0 !important;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05) !important;
 }
 
 html.light-theme .mobile-nav-item {
   color: #64748b !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  border: 1px solid transparent !important;
+  box-shadow: none !important;
+}
+
+html.light-theme .mobile-nav-item svg {
+  color: #64748b !important;
+  stroke: #64748b !important;
+}
+
+html.light-theme .mobile-nav-item span {
+  color: #64748b !important;
 }
 
 html.light-theme .mobile-nav-item.active {
-  color: #059669 !important;
+  color: #047857 !important;
   background: #ecfdf5 !important;
-  border-color: #a7f3d0 !important;
+  background-color: #ecfdf5 !important;
+  border: 1.5px solid #10b981 !important;
+  border-radius: 14px !important;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.16) !important;
+  font-weight: 700 !important;
+}
+
+html.light-theme .mobile-nav-item.active svg {
+  color: #047857 !important;
+  stroke: #047857 !important;
+}
+
+html.light-theme .mobile-nav-item.active span {
+  color: #047857 !important;
+  font-weight: 700 !important;
 }
 
 /* ==========================================================================
