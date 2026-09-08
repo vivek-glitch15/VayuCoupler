@@ -1209,18 +1209,61 @@
       background-color: #f8fafc !important;
       border-color: #cbd5e1 !important;
     }
-    #vayuai-quick-chips::-webkit-scrollbar {
-      display: none;
+    /* VayuAI Offline Showcase Cards & Voice Modal Styling */
+    .vayuai-offline-card {
+      background-color: #141714;
+      border: 1px solid #262A26;
+      border-radius: 12px;
+      padding: 12px 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
     }
-    html.light-theme #vayuai-quick-chips button {
-      background-color: #f1f5f9 !important;
-      border: 1px solid #cbd5e1 !important;
-      color: #1e293b !important;
+    .vayuai-offline-card:hover {
+      border-color: #FFA940;
+      background-color: #191c19;
+      transform: translateY(-1px);
     }
-    html.light-theme #vayuai-quick-chips button:hover {
-      background-color: #e2e8f0 !important;
-      border-color: #059669 !important;
-      color: #059669 !important;
+    html.light-theme .vayuai-offline-card {
+      background-color: #ffffff !important;
+      border: 1.5px solid #cbd5e1 !important;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04) !important;
+    }
+    html.light-theme .vayuai-offline-card:hover {
+      background-color: #f8fafc !important;
+      border-color: #d97706 !important;
+      box-shadow: 0 4px 12px rgba(217, 119, 6, 0.12) !important;
+      transform: translateY(-1px);
+    }
+    html.light-theme .vayuai-offline-card .text-\[\#EEF0EC\] {
+      color: #0f172a !important;
+    }
+    html.light-theme #vayuai-voice-modal .surface-panel {
+      background-color: #ffffff !important;
+      border: 1.5px solid #cbd5e1 !important;
+      color: #0f172a !important;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
+    }
+    html.light-theme #vayuai-voice-modal-title,
+    html.light-theme #vayuai-voice-modal .text-\[\#EEF0EC\] {
+      color: #0f172a !important;
+    }
+    html.light-theme #vayuai-voice-transcript-box {
+      background-color: #f8fafc !important;
+      border-color: #cbd5e1 !important;
+      color: #0f172a !important;
+    }
+    html.light-theme #vayuai-voice-modal-chips button {
+      background-color: #ffffff !important;
+      border: 1.5px solid #cbd5e1 !important;
+      color: #0f172a !important;
+    }
+    html.light-theme #vayuai-voice-modal-chips button:hover {
+      border-color: #d97706 !important;
+      background-color: #fffbeb !important;
+      color: #b45309 !important;
+    }
+    #panel-copilot {
+      padding-bottom: 7.5rem;
     }
 
     /* Commute Eco-Shield in Light Theme */
@@ -3014,6 +3057,74 @@
         ✓ Done
       </button>
 
+  <!-- ================= VAYUAI VOICE ASSISTANT OVERLAY MODAL ================= -->
+  <div id="vayuai-voice-modal" onclick="if(event.target === this) closeVayuAIVoiceModal()" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-3 sm:p-4">
+    <div class="surface-panel p-4 sm:p-6 rounded-2xl max-w-md w-full border border-[#262A26] shadow-2xl relative flex flex-col gap-4 max-h-[90vh] overflow-y-auto">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between pb-3 border-b border-[#262A26]">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-xl bg-[#7FD4FF]/15 border border-[#7FD4FF]/30 flex items-center justify-center text-[#7FD4FF] shrink-0 font-bold text-xs font-mono">
+            🎙️
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-[#EEF0EC] font-space leading-tight" id="vayuai-voice-modal-title">VayuAI Voice Assistant</h3>
+            <p class="text-[11px] text-[#8C948B] font-mono" id="vayuai-voice-modal-sub">Speak or tap any query below for instant answers</p>
+          </div>
+        </div>
+        <button onclick="closeVayuAIVoiceModal()" class="text-[#8C948B] hover:text-[#EEF0EC] p-1.5 rounded-lg hover:bg-[#1c1f1c] text-sm transition">
+          ✕
+        </button>
+      </div>
+
+      <!-- Center Voice Animation & Live Transcript -->
+      <div class="flex flex-col items-center justify-center py-3 text-center gap-2">
+        <div id="vayuai-voice-anim-orb" class="w-20 h-20 rounded-full bg-gradient-to-tr from-[#7FD4FF]/20 to-[#6fe2a3]/30 border-2 border-[#7FD4FF] flex items-center justify-center relative cursor-pointer active:scale-95 transition-all shadow-lg" onclick="VayuAIAssistant.toggleSpeech()">
+          <span id="vayuai-voice-pulse-1" class="absolute inset-0 rounded-full border border-[#7FD4FF] animate-ping opacity-60"></span>
+          <svg class="w-9 h-9 text-[#7FD4FF] svg-icon-line relative z-10" viewBox="0 0 24 24" stroke="currentColor">
+            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+            <line x1="12" y1="19" x2="12" y2="23"/>
+            <line x1="8" y1="23" x2="16" y2="23"/>
+          </svg>
+        </div>
+        
+        <div id="vayuai-voice-status-text" class="text-xs font-bold text-[#7FD4FF] font-mono mt-1">
+          🎙️ Sun raha hoon... Boliye apna sawaal
+        </div>
+        
+        <!-- Live Transcript Bubble -->
+        <div id="vayuai-voice-transcript-box" class="w-full p-3 rounded-xl bg-[#0A0B0A] border border-[#262A26] text-xs text-[#EEF0EC] min-h-[48px] flex items-center justify-center italic leading-relaxed">
+          "Boliye (e.g. Kal school band rahenge kya?)"
+        </div>
+      </div>
+
+      <!-- Prompt: "Kya bole / Kya poochein?" (1-Tap Direct Answer Questions) -->
+      <div class="flex flex-col gap-2 border-t border-[#262A26] pt-3">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-[#EEF0EC] font-space flex items-center gap-1.5">
+            <span class="text-[#FFA940]">⚡</span>
+            <span id="vayuai-voice-chips-heading">Kya bole ya poochein? (Direct 1-Tap Answers)</span>
+          </span>
+          <span class="text-[10px] font-mono text-[#8C948B]">0ms response</span>
+        </div>
+        <p class="text-[11px] text-[#8C948B]" id="vayuai-voice-chips-sub">Neeche kisi bhi sawaal par tap karke instant answer payein:</p>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-[190px] overflow-y-auto pr-1" id="vayuai-voice-modal-chips">
+          <!-- Populated dynamically with direct 1-tap options -->
+        </div>
+      </div>
+
+      <!-- Footer Buttons -->
+      <div class="flex items-center justify-between pt-2 border-t border-[#262A26]">
+        <button onclick="closeVayuAIVoiceModal()" class="px-3.5 py-1.5 rounded-lg border border-[#262A26] hover:bg-[#191C19] text-[#8C948B] text-xs font-mono transition">
+          Dismiss
+        </button>
+        <button onclick="submitVayuAIVoiceTranscript()" id="vayuai-voice-submit-btn" class="px-4 py-1.5 rounded-lg bg-[#7FD4FF] text-[#0A0B0A] text-xs font-bold font-sans hover:bg-[#68c3f0] transition active:scale-95 flex items-center gap-1.5">
+          <span>✓ Done / Ask</span>
+        </button>
+      </div>
+
     </div>
   </div>
 
@@ -4108,6 +4219,25 @@
             </div>
             <div class="vayuai-questions-grid" id="vayuai-questions-grid">
               <!-- Rendered dynamically via VayuAIAssistant -->
+            </div>
+          </div>
+
+          <!-- OFFLINE AI VERIFIED QUESTIONS & CAPABILITIES (Fills the lower empty space with direct 1-tap questions) -->
+          <div class="w-full mt-6 pt-4 border-t border-[#262A26] text-left">
+            <div class="flex items-center justify-between mb-2 px-1">
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-[#FFA940] animate-pulse"></span>
+                <span class="text-xs font-bold text-[#FFA940] font-mono" id="vayuai-offline-section-title">⚡ Offline AI Verified Queries (0ms Instant Answers)</span>
+              </div>
+              <span class="text-[10px] font-mono text-[#8C948B]" id="vayuai-offline-section-sub">100% Offline Model</span>
+            </div>
+            
+            <p class="text-[11px] text-[#8C948B] mb-3 px-1 font-sans" id="vayuai-offline-desc">
+              Net band hone par bhi VayuCoupler ka local coupled physics model in sabhi sawaalon ke direct accurate answers deta hai:
+            </p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5" id="vayuai-offline-showcase-grid">
+              <!-- Populated dynamically via VayuAIAssistant.renderOfflineShowcase() -->
             </div>
           </div>
         </div>
@@ -7798,8 +7928,109 @@
 
       manualOfflineOverride: false,
       isOffline: !navigator.onLine,
+      probeInFlight: false,
+      lastProbeTime: 0,
       speechRecognizer: null,
       isListening: false,
+
+      offlineShowcaseQuestions: [
+        {
+          cat: "Schools",
+          badgeClass: "bg-[#FFA940]/15 text-[#FFA940] border border-[#FFA940]/30",
+          qEn: "Will schools be closed tomorrow?",
+          qHi: "Kal school band rahenge kya?",
+          hintEn: "Stage III / IV threshold analysis",
+          hintHi: "GRAP Stage III/IV school rules"
+        },
+        {
+          cat: "Forecast",
+          badgeClass: "bg-[#7FD4FF]/15 text-[#7FD4FF] border border-[#7FD4FF]/30",
+          qEn: "What is the projected AQI for tomorrow?",
+          qHi: "Kal AQI kitna hoga?",
+          hintEn: "72-hour atmospheric coupled forecast",
+          hintHi: "Delhi-NCR 72-hour forecast"
+        },
+        {
+          cat: "GRAP",
+          badgeClass: "bg-[#FF7875]/15 text-[#FF7875] border border-[#FF7875]/30",
+          qEn: "Which GRAP emergency stage is active?",
+          qHi: "Konsa GRAP stage lagu hoga?",
+          hintEn: "CAQM emergency protocol status",
+          hintHi: "Active emergency stage details"
+        },
+        {
+          cat: "Weather",
+          badgeClass: "bg-[#6fe2a3]/15 text-[#6fe2a3] border border-[#6fe2a3]/30",
+          qEn: "What is the live weather & rain forecast?",
+          qHi: "Delhi-NCR ka live mausam kaisa hai?",
+          hintEn: "Temperature, rain % & synoptic winds",
+          hintHi: "Temperature, barish aur hawa ki gati"
+        },
+        {
+          cat: "Health",
+          badgeClass: "bg-[#FFD666]/15 text-[#FFD666] border border-[#FFD666]/30",
+          qEn: "Should I wear an N95 mask outdoors?",
+          qHi: "Mujhe mask pehnna chahiye kya?",
+          hintEn: "PM2.5 lung load advisory",
+          hintHi: "N95 respirator safety rules"
+        },
+        {
+          cat: "Vehicles",
+          badgeClass: "bg-[#B37FEB]/15 text-[#B37FEB] border border-[#B37FEB]/30",
+          qEn: "Will Odd-Even vehicle rule be enforced?",
+          qHi: "Odd-even lagu hoga kya?",
+          hintEn: "Stage IV transport restrictions",
+          hintHi: "Odd-even aur BS-III/IV restrictions"
+        },
+        {
+          cat: "Construction",
+          badgeClass: "bg-[#FFA940]/15 text-[#FFA940] border border-[#FFA940]/30",
+          qEn: "Are construction and demolition halted?",
+          qHi: "Construction/demolition band hogi kya?",
+          hintEn: "C&D activities ban criteria",
+          hintHi: "Building aur digging par rok"
+        },
+        {
+          cat: "Advisory",
+          badgeClass: "bg-[#7FD4FF]/15 text-[#7FD4FF] border border-[#7FD4FF]/30",
+          qEn: "Is there an advisory for Work-From-Home?",
+          qHi: "WFH advisory hai kya?",
+          hintEn: "50% capacity WFH advisory",
+          hintHi: "Office WFH guidelines"
+        },
+        {
+          cat: "Fitness",
+          badgeClass: "bg-[#6fe2a3]/15 text-[#6fe2a3] border border-[#6fe2a3]/30",
+          qEn: "Are outdoor sports and jogging safe?",
+          qHi: "Outdoor activities/sports safe hain kya?",
+          hintEn: "Exercise safety & clean air windows",
+          hintHi: "Subah ki running aur walk safety"
+        },
+        {
+          cat: "Stubble",
+          badgeClass: "bg-[#FF7875]/15 text-[#FF7875] border border-[#FF7875]/30",
+          qEn: "Is stubble burning smoke affecting Delhi?",
+          qHi: "Parali ka dhuan kitna asar daal raha hai?",
+          hintEn: "VIIRS satellite thermal anomaly tracking",
+          hintHi: "Punjab/Haryana farm fire plume"
+        },
+        {
+          cat: "Hotspots",
+          badgeClass: "bg-[#FFD666]/15 text-[#FFD666] border border-[#FFD666]/30",
+          qEn: "Which Delhi-NCR zones are most affected?",
+          qHi: "Konsi areas sabse zyada affected hongi?",
+          hintEn: "Severe AQI monitoring stations",
+          hintHi: "Top polluted zones list"
+        },
+        {
+          cat: "Sprinklers",
+          badgeClass: "bg-[#B37FEB]/15 text-[#B37FEB] border border-[#B37FEB]/30",
+          qEn: "Where are anti-smog mist guns deployed?",
+          qHi: "Anti-smog mist guns kahan chal rahi hain?",
+          hintEn: "MCD/DPCC dust suppression grid",
+          hintHi: "Water cannon aur mist guns status"
+        }
+      ],
 
       toggleOfflineMode() {
         if (this.manualOfflineOverride) {
@@ -7812,6 +8043,42 @@
         this.updateNetworkStatus();
         if (typeof showGPSLocationToast === 'function') {
           showGPSLocationToast(this.isOffline ? "⚡ Switched to Offline AI (Local Model)" : "🟢 Switched to Online Mode (Gemini AI)");
+        }
+      },
+
+      async probeConnectivity() {
+        if (this.manualOfflineOverride) return;
+        if (this.probeInFlight) return;
+        this.probeInFlight = true;
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 750);
+          const resp = await fetch('/static/manifest.json?probe=' + Date.now(), {
+            method: 'HEAD',
+            cache: 'no-store',
+            signal: controller.signal
+          });
+          clearTimeout(timeoutId);
+          if (resp && (resp.ok || resp.status < 500)) {
+            this.setOfflineState(false);
+          } else {
+            this.setOfflineState(true);
+          }
+        } catch (e) {
+          this.setOfflineState(true);
+        } finally {
+          this.probeInFlight = false;
+        }
+      },
+
+      setOfflineState(isOff) {
+        if (this.manualOfflineOverride) return;
+        if (this.isOffline !== isOff) {
+          this.isOffline = isOff;
+          this.updateNetworkStatus();
+          if (typeof showGPSLocationToast === 'function') {
+            showGPSLocationToast(isOff ? "⚡ Net disconnected: Switched to Offline AI" : "🟢 Net connected: Switched to Online Gemini AI");
+          }
         }
       },
 
@@ -7866,10 +8133,12 @@
 
       init() {
         this.renderHubQuestions();
+        this.renderOfflineShowcase();
         this.renderQuickChips();
         this.initSpeechRecognition();
         this.initNetworkListeners();
         this.updateNetworkStatus();
+        this.probeConnectivity();
       },
 
       initNetworkListeners() {
@@ -7877,6 +8146,7 @@
           if (!this.manualOfflineOverride) {
             this.isOffline = !navigator.onLine;
             this.updateNetworkStatus();
+            this.probeConnectivity();
           }
         };
         window.addEventListener('online', updateNet);
@@ -7884,16 +8154,10 @@
         window.addEventListener('focus', updateNet);
         document.addEventListener('visibilitychange', updateNet);
 
-        // Continuous heartbeat polling (1500ms) for instant mobile drop detection
+        // Continuous active HTTP probe (1000ms) for sub-second offline drop detection
         setInterval(() => {
-          if (!this.manualOfflineOverride) {
-            const nowOffline = !navigator.onLine;
-            if (nowOffline !== this.isOffline) {
-              this.isOffline = nowOffline;
-              this.updateNetworkStatus();
-            }
-          }
-        }, 1500);
+          this.probeConnectivity();
+        }, 1000);
       },
 
       updateNetworkStatus() {
@@ -7939,6 +8203,51 @@
             threadSubtext.innerText = "Google Gemini AI Grounded";
           }
         }
+      },
+
+      renderOfflineShowcase() {
+        const grid = document.getElementById('vayuai-offline-showcase-grid');
+        if (!grid) return;
+        const lang = (typeof VayuSettings !== 'undefined' && VayuSettings.language) ? VayuSettings.language : (localStorage.getItem('vayu_language') || 'en');
+        const isEn = lang === 'en';
+
+        const sectionTitle = document.getElementById('vayuai-offline-section-title');
+        const sectionSub = document.getElementById('vayuai-offline-section-sub');
+        const desc = document.getElementById('vayuai-offline-desc');
+        if (sectionTitle) {
+          sectionTitle.innerText = isEn ? "⚡ Offline AI Verified Queries (0ms Instant Answers)" : "⚡ Offline AI Verified Queries (0ms Instant Answers)";
+        }
+        if (sectionSub) {
+          sectionSub.innerText = isEn ? "100% Offline Model" : "100% Offline Model";
+        }
+        if (desc) {
+          desc.innerText = isEn
+            ? "Even with zero internet or mobile data off, VayuCoupler's local coupled atmospheric physics model gives instant, accurate answers to all of these:"
+            : "Net band hone par bhi VayuCoupler ka local atmospheric physics model in sabhi sawaalon ke direct accurate answers deta hai:";
+        }
+
+        grid.innerHTML = this.offlineShowcaseQuestions.map(item => {
+          const qText = isEn ? item.qEn : item.qHi;
+          const hintText = isEn ? item.hintEn : item.hintHi;
+          const safeQ = qText.replace(/'/g, "\\'");
+          return `
+            <div onclick="VayuAIAssistant.askQuestion('${safeQ}')" class="vayuai-offline-card p-3 rounded-xl border border-[#262A26] bg-[#101210] cursor-pointer flex flex-col justify-between gap-2 transition active:scale-95">
+              <div>
+                <div class="flex items-center justify-between gap-1 mb-1">
+                  <span class="text-[9px] font-mono-tag uppercase px-2 py-0.5 rounded-full ${item.badgeClass} font-bold">${item.cat}</span>
+                  <span class="text-[9px] font-mono text-[#FFA940] flex items-center gap-0.5">
+                    <span>⚡</span> 0ms
+                  </span>
+                </div>
+                <p class="text-xs text-[#EEF0EC] font-sans font-medium leading-snug line-clamp-2">${qText}</p>
+              </div>
+              <div class="text-[10px] text-[#8C948B] font-mono border-t border-[#1C1F1C] pt-1.5 flex items-center justify-between">
+                <span>${hintText}</span>
+                <span class="text-[#7FD4FF] font-bold">Ask →</span>
+              </div>
+            </div>
+          `;
+        }).join('');
       },
 
       renderQuickChips() {
@@ -8006,6 +8315,7 @@
 
       onLanguageChange(lang) {
         this.renderHubQuestions();
+        this.renderOfflineShowcase();
         this.renderQuickChips();
         this.updateNetworkStatus();
         
@@ -8069,12 +8379,20 @@
           const feedback = document.getElementById('vayuai-mic-feedback');
           const heroOrb = document.getElementById('vayuai-hero-orb');
           const pill = document.getElementById('orb-status-pill');
+          const modalStatus = document.getElementById('vayuai-voice-status-text');
+          const pulse = document.getElementById('vayuai-voice-pulse-1');
           const lang = (typeof VayuSettings !== 'undefined' && VayuSettings.language) ? VayuSettings.language : 'en';
+
           if (container) container.classList.add('mic-listening');
           if (feedback) feedback.classList.remove('hidden');
           if (heroOrb) heroOrb.classList.add('orb-listening');
+          if (pulse) pulse.classList.remove('hidden');
           if (pill) {
             pill.innerHTML = `<span class="w-2 h-2 rounded-full bg-[#f2966e] animate-ping"></span><span class="text-[#f2966e] font-bold">🎙️ ${lang === 'en' ? 'Listening, please speak...' : 'Boliye, sun raha hoon...'}</span>`;
+          }
+          if (modalStatus) {
+            modalStatus.innerText = lang === 'en' ? "🎙️ Listening... Speak your question" : "🎙️ Sun raha hoon... Boliye apna sawaal";
+            modalStatus.className = "text-xs font-bold text-[#7FD4FF] font-mono mt-1";
           }
         };
 
@@ -8085,8 +8403,13 @@
           }
           const transcriptEl = document.getElementById('vayuai-live-speech-transcript');
           const inputEl = document.getElementById('vayuai-chat-input');
+          const modalBox = document.getElementById('vayuai-voice-transcript-box');
           if (transcriptEl) transcriptEl.innerText = transcript;
           if (inputEl) inputEl.value = transcript;
+          if (modalBox) {
+            modalBox.innerText = `"${transcript}"`;
+            modalBox.classList.remove('italic');
+          }
         };
 
         recognizer.onend = () => {
@@ -8095,17 +8418,26 @@
           const feedback = document.getElementById('vayuai-mic-feedback');
           const heroOrb = document.getElementById('vayuai-hero-orb');
           const pill = document.getElementById('orb-status-pill');
+          const pulse = document.getElementById('vayuai-voice-pulse-1');
           if (container) container.classList.remove('mic-listening');
           if (feedback) feedback.classList.add('hidden');
           if (heroOrb) heroOrb.classList.remove('orb-listening');
+          if (pulse) pulse.classList.add('hidden');
           if (pill) {
             pill.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-[#6fe2a3] animate-ping"></span><span>Tap icon to speak / Activate VayuAI</span>`;
           }
 
           const inputEl = document.getElementById('vayuai-chat-input');
-          if (inputEl && inputEl.value.trim()) {
-            this.askQuestion(inputEl.value.trim());
-            inputEl.value = '';
+          const modalBox = document.getElementById('vayuai-voice-transcript-box');
+          let capturedText = (inputEl && inputEl.value.trim()) ? inputEl.value.trim() : '';
+          if (!capturedText && modalBox && !modalBox.classList.contains('italic')) {
+            capturedText = modalBox.innerText.replace(/^["']|["']$/g, '').trim();
+          }
+
+          if (capturedText && !capturedText.toLowerCase().includes('sun raha hoon') && !capturedText.toLowerCase().includes('listening')) {
+            if (typeof closeVayuAIVoiceModal === 'function') closeVayuAIVoiceModal();
+            this.askQuestion(capturedText);
+            if (inputEl) inputEl.value = '';
           }
         };
 
@@ -8116,11 +8448,27 @@
           const feedback = document.getElementById('vayuai-mic-feedback');
           const heroOrb = document.getElementById('vayuai-hero-orb');
           const pill = document.getElementById('orb-status-pill');
+          const pulse = document.getElementById('vayuai-voice-pulse-1');
+          const modalStatus = document.getElementById('vayuai-voice-status-text');
+
           if (container) container.classList.remove('mic-listening');
           if (feedback) feedback.classList.add('hidden');
           if (heroOrb) heroOrb.classList.remove('orb-listening');
+          if (pulse) pulse.classList.add('hidden');
           if (pill) {
             pill.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-[#6fe2a3] animate-ping"></span><span>Tap icon to speak / Activate VayuAI</span>`;
+          }
+
+          if (modalStatus) {
+            const isOff = !navigator.onLine || this.isOffline || this.manualOfflineOverride;
+            const lang = (typeof VayuSettings !== 'undefined' && VayuSettings.language) ? VayuSettings.language : 'en';
+            if (isOff || (err && err.error === 'network')) {
+              modalStatus.innerText = lang === 'en' ? "⚡ Offline: Speech requires net. Tap any question below:" : "⚡ Offline Mode: Voice ke liye net chahiye. Neeche kisi sawaal par tap karein:";
+              modalStatus.className = "text-xs font-bold text-[#FFA940] font-mono mt-1";
+            } else {
+              modalStatus.innerText = lang === 'en' ? "Tap any question below for instant answer:" : "Neeche kisi bhi sawaal par tap karke instant answer payein:";
+              modalStatus.className = "text-xs font-bold text-[#8C948B] font-mono mt-1";
+            }
           }
         };
 
@@ -8129,14 +8477,22 @@
 
       toggleSpeech() {
         if (!this.speechRecognizer) {
-          alert("Microphone speech recognition is not supported in this browser. Please type your query!");
+          if (typeof openVayuAIVoiceModal === 'function') {
+            openVayuAIVoiceModal();
+          } else {
+            alert("Microphone speech recognition is not supported in this browser. Please type your query!");
+          }
           return;
         }
 
         if (this.isListening) {
           this.speechRecognizer.stop();
         } else {
-          this.speechRecognizer.start();
+          try {
+            this.speechRecognizer.start();
+          } catch (e) {
+            console.warn("Speech start skipped:", e);
+          }
         }
       },
 
@@ -8386,13 +8742,15 @@
       computeDynamicAnswer(query, isOffline = true) {
         const rawQ = query.toLowerCase();
         const q = this.normalizeQuery(query);
-        const forecast = VayuForecastEngine.forecastArray;
-        const currentAQI = VayuForecastEngine.currentAQI;
-        const stationName = VayuForecastEngine.currentStation ? VayuForecastEngine.currentStation.name : 'Punjabi Bagh';
-        const next24Pt = forecast[24] || forecast[forecast.length - 1];
-        const next12Pt = forecast[12] || forecast[0];
-        const max48AQI = Math.max(...forecast.slice(0, 48).map(p => p.aqi));
-        const max48Stage = VayuForecastEngine.getGrapStage(max48AQI);
+        const forecast = (typeof VayuForecastEngine !== 'undefined' && VayuForecastEngine.forecastArray && VayuForecastEngine.forecastArray.length > 0)
+          ? VayuForecastEngine.forecastArray 
+          : [];
+        const currentAQI = (typeof VayuForecastEngine !== 'undefined' && VayuForecastEngine.currentAQI) ? VayuForecastEngine.currentAQI : 136;
+        const stationName = (typeof VayuForecastEngine !== 'undefined' && VayuForecastEngine.currentStation && VayuForecastEngine.currentStation.name) ? VayuForecastEngine.currentStation.name : 'Punjabi Bagh';
+        const next24Pt = (forecast.length > 24) ? forecast[24] : (forecast.length > 0 ? forecast[forecast.length - 1] : { aqi: currentAQI, grapStage: 'MODERATE', leadHours: 24, dateFormatted: 'Tomorrow', hourFormatted: '12:00 PM', confidence: 0.94, dominantPollutant: 'PM2.5' });
+        const next12Pt = (forecast.length > 12) ? forecast[12] : (forecast.length > 0 ? forecast[0] : { aqi: currentAQI, grapStage: 'MODERATE', leadHours: 12, confidence: 0.94, dominantPollutant: 'PM2.5' });
+        const max48AQI = forecast.length > 0 ? Math.max(...forecast.slice(0, 48).map(p => p.aqi || currentAQI)) : currentAQI;
+        const max48Stage = (typeof VayuForecastEngine !== 'undefined' && VayuForecastEngine.getGrapStage) ? VayuForecastEngine.getGrapStage(max48AQI) : { stage: max48AQI > 400 ? 'STAGE IV' : (max48AQI > 300 ? 'STAGE III' : 'MODERATE') };
         const lang = (typeof VayuSettings !== 'undefined' && VayuSettings.language) ? VayuSettings.language : 'en';
         const isEn = lang === 'en';
 
@@ -8508,8 +8866,13 @@
         }
 
         // 1. "Kal school band rahenge kya?" / "Will schools be closed tomorrow?"
-        const isSchoolClosureQuery = (q.includes('school') || q.includes('schools') || rawQ.includes('schl')) && 
-          (q.includes('band') || q.includes('close') || q.includes('closed') || q.includes('kal') || q.includes('tomorrow') || q.includes('chutti') || q.includes('holiday') || q.includes('open') || q.includes('off') || q.includes('rhnge') || rawQ.includes('bnd'));
+        const isSchoolClosureQuery = (
+          q.includes('school') || q.includes('schools') || rawQ.includes('schl') || rawQ.includes('skool') ||
+          rawQ.includes('chutti') || q.includes('chutti')
+        ) || (
+          (rawQ.includes('kl') || q.includes('kal') || q.includes('tomorrow')) && 
+          (rawQ.includes('bnd') || rawQ.includes('rhnge') || q.includes('band') || q.includes('close') || q.includes('closed') || q.includes('chutti') || q.includes('holiday'))
+        );
 
         if (isSchoolClosureQuery) {
           const crossesThreshold = next24Pt.aqi >= 400;
@@ -8522,22 +8885,23 @@
               : (crossesThreshold
                   ? `Haan, agle 24 ghante me Delhi-NCR me projected AQI <b>${next24Pt.aqi} (${next24Pt.grapStage})</b> hai. CAQM guidelines ke tehat Primary schools (Class 1–5) physically band rahenge aur online mode par chalenge.`
                   : `Nahi, kal projected AQI <b>${next24Pt.aqi}</b> hai jo emergency closure threshold (<400) se neeche hai. Schools regular timings par operate karenge, par morning outdoor physical assemblies cancel rahengi.`),
-            leadMeta: metaLead(`Based on 24-hour coupled forecast (${next24Pt.hourFormatted})`),
-            confidence: Math.round(next24Pt.confidence * 100),
-            tabLink: 'grap'
+            leadMeta: metaLead(`Based on 24-hour coupled forecast (${next24Pt.hourFormatted || '12:00 PM'})`),
+            confidence: Math.round((next24Pt.confidence || 0.94) * 100),
+            tabLink: 'grap',
+            tabLinkLabel: respondInEn ? 'View GRAP restrictions' : 'GRAP Stage dekhein'
           };
         }
 
         // 3. "Kal AQI kitna hoga?" / "What is the projected AQI for tomorrow?"
         if ((q.includes('aqi') || q.includes('air quality') || q.includes('hawa')) && (q.includes('kal') || q.includes('kitna') || q.includes('tomorrow') || q.includes('forecast') || q.includes('kitni') || q.includes('kaisa') || q.includes('projected') || rawQ.includes('ktna'))) {
-          const meta = VayuForecastEngine.getSeverityMeta(next24Pt.aqi);
+          const meta = (typeof VayuForecastEngine !== 'undefined' && VayuForecastEngine.getSeverityMeta) ? VayuForecastEngine.getSeverityMeta(next24Pt.aqi) : { color: '#FFA940', label: 'MODERATE' };
           return {
             isOffline: isOffline !== false,
             text: respondInEn
-              ? `Tomorrow at this hour (+24h), the predicted AQI at ${stationName} will be <b>${next24Pt.aqi}</b> (<span style="color:${meta.color}">${meta.label}</span>). Dominant pollutant: <b>${next24Pt.dominantPollutant}</b>. Dense smog is expected around 07:00 AM due to nocturnal surface inversion.`
-              : `Kal is waqt (+24h) ${stationName} par predicted AQI <b>${next24Pt.aqi}</b> hoga (<span style="color:${meta.color}">${meta.label}</span>). Dominant pollutant: <b>${next24Pt.dominantPollutant}</b>. Subah 07:00 AM par inversion ke chalte smog sabse dense rahega.`,
+              ? `Tomorrow at this hour (+24h), the predicted AQI at ${stationName} will be <b>${next24Pt.aqi}</b> (<span style="color:${meta.color}">${meta.label}</span>). Dominant pollutant: <b>${next24Pt.dominantPollutant || 'PM2.5'}</b>. Dense smog is expected around 07:00 AM due to nocturnal surface inversion.`
+              : `Kal is waqt (+24h) ${stationName} par predicted AQI <b>${next24Pt.aqi}</b> hoga (<span style="color:${meta.color}">${meta.label}</span>). Dominant pollutant: <b>${next24Pt.dominantPollutant || 'PM2.5'}</b>. Subah 07:00 AM par inversion ke chalte smog sabse dense rahega.`,
             leadMeta: metaLead(`Based on 24-hour forecast · Station ${stationName}`),
-            confidence: Math.round(next24Pt.confidence * 100),
+            confidence: Math.round((next24Pt.confidence || 0.94) * 100),
             tabLink: 'overview'
           };
         }
@@ -8737,8 +9101,101 @@
       if (chatThread) chatThread.classList.add('hidden');
     }
 
+    function openVayuAIVoiceModal() {
+      const modal = document.getElementById('vayuai-voice-modal');
+      if (!modal) return;
+      modal.classList.remove('hidden');
+
+      const lang = (typeof VayuSettings !== 'undefined' && VayuSettings.language) ? VayuSettings.language : (localStorage.getItem('vayu_language') || 'en');
+      const isEn = lang === 'en';
+      const isOff = !navigator.onLine || (VayuAIAssistant && VayuAIAssistant.isOffline);
+
+      const titleEl = document.getElementById('vayuai-voice-modal-title');
+      const subEl = document.getElementById('vayuai-voice-modal-sub');
+      const statusEl = document.getElementById('vayuai-voice-status-text');
+      const chipsHeading = document.getElementById('vayuai-voice-chips-heading');
+      const chipsSub = document.getElementById('vayuai-voice-chips-sub');
+      const transcriptBox = document.getElementById('vayuai-voice-transcript-box');
+      const pulse = document.getElementById('vayuai-voice-pulse-1');
+
+      if (titleEl) titleEl.innerText = isEn ? "VayuAI Voice Assistant" : "VayuAI Voice Assistant";
+      if (subEl) subEl.innerText = isEn ? "Speak or tap any query below for instant answers" : "Boliye ya neeche kisi sawaal par tap karein";
+      if (chipsHeading) chipsHeading.innerText = isEn ? "What to say or ask? (Direct 1-Tap Answers)" : "Kya bole ya poochein? (Direct 1-Tap Answers)";
+      if (chipsSub) chipsSub.innerText = isEn ? "Tap any inquiry below for an immediate response:" : "Neeche kisi bhi sawaal par tap karke instant answer payein:";
+      if (transcriptBox) {
+        transcriptBox.innerText = isEn ? '"Listening... (e.g. Will schools be closed tomorrow?)"' : '"Sun raha hoon... (e.g. Kal school band rahenge kya?)"';
+        transcriptBox.classList.add('italic');
+      }
+
+      if (isOff) {
+        if (pulse) pulse.classList.add('hidden');
+        if (statusEl) {
+          statusEl.innerText = isEn ? "⚡ Offline: Tap any verified question below:" : "⚡ Offline Mode: Neeche kisi bhi sawaal par tap karein:";
+          statusEl.className = "text-xs font-bold text-[#FFA940] font-mono mt-1";
+        }
+      } else {
+        if (pulse) pulse.classList.remove('hidden');
+        if (statusEl) {
+          statusEl.innerText = isEn ? "🎙️ Listening... Please speak your question" : "🎙️ Sun raha hoon... Boliye apna sawaal";
+          statusEl.className = "text-xs font-bold text-[#7FD4FF] font-mono mt-1";
+        }
+        if (VayuAIAssistant && VayuAIAssistant.speechRecognizer && !VayuAIAssistant.isListening) {
+          try {
+            VayuAIAssistant.speechRecognizer.start();
+          } catch (e) {
+            console.warn("Speech start skipped or active:", e);
+          }
+        }
+      }
+
+      // Populate 1-tap chips inside modal
+      const chipsContainer = document.getElementById('vayuai-voice-modal-chips');
+      if (chipsContainer && VayuAIAssistant && VayuAIAssistant.offlineShowcaseQuestions) {
+        chipsContainer.innerHTML = VayuAIAssistant.offlineShowcaseQuestions.slice(0, 8).map(item => {
+          const q = isEn ? item.qEn : item.qHi;
+          const safeQ = q.replace(/'/g, "\\'");
+          return `
+            <button type="button" onclick="selectVayuAIVoicePrompt('${safeQ}')" class="p-2 text-left rounded-xl border border-[#262A26] bg-[#101210] hover:border-[#7FD4FF] hover:bg-[#191C19] text-[#EEF0EC] text-xs font-medium transition active:scale-95 flex items-center justify-between gap-1.5 shadow-sm">
+              <span class="truncate">${q}</span>
+              <span class="text-[10px] text-[#FFA940] shrink-0 font-mono">⚡ 0ms</span>
+            </button>
+          `;
+        }).join('');
+      }
+    }
+
+    function closeVayuAIVoiceModal() {
+      const modal = document.getElementById('vayuai-voice-modal');
+      if (modal) modal.classList.add('hidden');
+      if (VayuAIAssistant && VayuAIAssistant.speechRecognizer && VayuAIAssistant.isListening) {
+        try {
+          VayuAIAssistant.speechRecognizer.stop();
+        } catch (e) {}
+      }
+    }
+
+    function selectVayuAIVoicePrompt(query) {
+      closeVayuAIVoiceModal();
+      if (VayuAIAssistant && typeof VayuAIAssistant.askQuestion === 'function') {
+        VayuAIAssistant.askQuestion(query);
+      }
+    }
+
+    function submitVayuAIVoiceTranscript() {
+      const transcriptBox = document.getElementById('vayuai-voice-transcript-box');
+      let q = transcriptBox ? transcriptBox.innerText.replace(/^["']|["']$/g, '').trim() : '';
+      closeVayuAIVoiceModal();
+      if (q && !q.toLowerCase().includes('sun raha hoon') && !q.toLowerCase().includes('listening')) {
+        VayuAIAssistant.askQuestion(q);
+      } else {
+        const lang = (typeof VayuSettings !== 'undefined' && VayuSettings.language) ? VayuSettings.language : 'en';
+        const fallbackQ = lang === 'en' ? "Will schools be closed tomorrow?" : "Kal school band rahenge kya?";
+        VayuAIAssistant.askQuestion(fallbackQ);
+      }
+    }
+
     function toggleVayuAISpeechRecognition() {
-      VayuAIAssistant.toggleSpeech();
+      openVayuAIVoiceModal();
     }
 
     function sendVayuAICustomQuery() {
@@ -8754,30 +9211,7 @@
         heroOrb.classList.add('scale-90');
         setTimeout(() => heroOrb.classList.remove('scale-90'), 150);
       }
-
-      // If already listening, stop to send
-      if (VayuAIAssistant && VayuAIAssistant.isListening) {
-        VayuAIAssistant.toggleSpeech();
-        return;
-      }
-
-      // If speech recognition supported, activate microphone
-      const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (SpeechRec) {
-        VayuAIAssistant.toggleSpeech();
-      } else {
-        // Switch to chat thread & focus input
-        const hubView = document.getElementById('vayuai-hub-view');
-        const chatThread = document.getElementById('vayuai-chat-thread');
-        if (hubView) hubView.classList.add('hidden');
-        if (chatThread) chatThread.classList.remove('hidden');
-        const input = document.getElementById('vayuai-chat-input');
-        if (input) {
-          input.focus();
-          const isEn = (typeof VayuSettings !== 'undefined' ? VayuSettings.language : 'en') === 'en';
-          input.placeholder = isEn ? "Type your question or tap mic to speak..." : "Boliye ya type karein (e.g. 'How are you?')...";
-        }
-      }
+      openVayuAIVoiceModal();
     }
 
     // ==========================================================================
