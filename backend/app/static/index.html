@@ -3302,7 +3302,7 @@
 
   <!-- ============ SECONDARY PANEL BACK BAR ============ -->
   <div id="vayu-secondary-bar" class="sticky top-[56px] z-[55] bg-[#0A0B0A]/98 backdrop-blur-xl border-b border-[#1C201C] px-4 py-2.5 flex items-center gap-3 w-full">
-    <button onclick="switchTab('home')" class="flex items-center gap-1.5 text-sm font-medium text-[#7FD4FF] hover:text-white transition">
+    <button onclick="vayuNavigateTo('home')" class="flex items-center gap-1.5 text-sm font-medium text-[#7FD4FF] hover:text-white transition">
       <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
       Back
     </button>
@@ -13424,23 +13424,23 @@
 
       <div class="vayu-drawer-section">Main</div>
 
-      <button onclick="closeHamburgerMenu(); switchTab('home');" class="vayu-drawer-item">
+      <button onclick="closeHamburgerMenu(); vayuNavigateTo('home');" class="vayu-drawer-item">
         <span class="vayu-drawer-icon">🏠</span>
         <span>Home</span>
       </button>
 
-      <button onclick="closeHamburgerMenu(); switchTab('copilot');" class="vayu-drawer-item">
+      <button onclick="closeHamburgerMenu(); vayuNavigateTo('copilot');" class="vayu-drawer-item">
         <span class="vayu-drawer-icon">🤖</span>
         <span>VayuAI Assistant</span>
         <span class="ml-auto text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-[#0f201a] text-[#8FFFB0] border border-[#1f3d30]">AI</span>
       </button>
 
-      <button onclick="closeHamburgerMenu(); switchTab('whatif');" class="vayu-drawer-item">
+      <button onclick="closeHamburgerMenu(); vayuNavigateTo('whatif');" class="vayu-drawer-item">
         <span class="vayu-drawer-icon">⚡</span>
         <span>What-If Simulator</span>
       </button>
 
-      <button onclick="closeHamburgerMenu(); switchTab('dispatches');" class="vayu-drawer-item">
+      <button onclick="closeHamburgerMenu(); vayuNavigateTo('dispatches');" class="vayu-drawer-item">
         <span class="vayu-drawer-icon">📋</span>
         <span>Dispatch Center</span>
       </button>
@@ -13448,37 +13448,37 @@
       <div class="my-2 border-t border-[#1C201C]"></div>
       <div class="vayu-drawer-section">Technical</div>
 
-      <button onclick="closeHamburgerMenu(); switchTab('home');" class="vayu-drawer-item">
+      <button onclick="closeHamburgerMenu(); vayuNavigateTo('home');" class="vayu-drawer-item">
         <span class="vayu-drawer-icon">📊</span>
         <span>Map &amp; Detailed Data</span>
       </button>
 
-      <button onclick="closeHamburgerMenu(); switchTab('weather');" class="vayu-drawer-item">
+      <button onclick="closeHamburgerMenu(); vayuNavigateTo('weather');" class="vayu-drawer-item">
         <span class="vayu-drawer-icon">🌤️</span>
         <span>Weather Engine</span>
       </button>
 
-      <button onclick="closeHamburgerMenu(); switchTab('grap');" class="vayu-drawer-item">
+      <button onclick="closeHamburgerMenu(); vayuNavigateTo('grap');" class="vayu-drawer-item">
         <span class="vayu-drawer-icon">🛡️</span>
         <span>Predictive GRAP</span>
       </button>
 
-      <button onclick="closeHamburgerMenu(); switchTab('attribution');" class="vayu-drawer-item">
+      <button onclick="closeHamburgerMenu(); vayuNavigateTo('attribution');" class="vayu-drawer-item">
         <span class="vayu-drawer-icon">🔬</span>
         <span>Source Attribution</span>
       </button>
 
-      <button onclick="closeHamburgerMenu(); switchTab('commute');" class="vayu-drawer-item">
+      <button onclick="closeHamburgerMenu(); vayuNavigateTo('commute');" class="vayu-drawer-item">
         <span class="vayu-drawer-icon">🧭</span>
         <span>Safe Commute</span>
       </button>
 
-      <button onclick="closeHamburgerMenu(); switchTab('health');" class="vayu-drawer-item">
+      <button onclick="closeHamburgerMenu(); vayuNavigateTo('health');" class="vayu-drawer-item">
         <span class="vayu-drawer-icon">❤️</span>
         <span>Health Advisory</span>
       </button>
 
-      <button onclick="closeHamburgerMenu(); switchTab('interstate');" class="vayu-drawer-item">
+      <button onclick="closeHamburgerMenu(); vayuNavigateTo('interstate');" class="vayu-drawer-item">
         <span class="vayu-drawer-icon">🗺️</span>
         <span>Inter-State Grid</span>
       </button>
@@ -13507,32 +13507,38 @@
 
   <!-- ============================== HAMBURGER + HOME SCREEN JS ============================== -->
   <script>
-    // ---- Drawer ----
+    /* ------------------------------------------------------------------
+       VayuCoupler Simplified UI — drawer + home screen helpers
+       NOTE: We do NOT redefine switchTab() to avoid JS hoisting bugs.
+             Use vayuNavigateTo(tabId) for all in-app navigation instead.
+    ------------------------------------------------------------------ */
+
+    // ---- Drawer open / close ----
     function openHamburgerMenu() {
       document.getElementById('vayu-drawer-backdrop').classList.remove('hidden');
       const d = document.getElementById('vayu-side-drawer');
-      d.classList.add('drawer-open');
-      // Sync mini AQI display
-      const aqiSrc = document.getElementById('mob-hero-aqi-val');
-      const catSrc = document.getElementById('mob-hero-category');
-      const mini = document.getElementById('drawer-aqi-mini');
-      const miniCat = document.getElementById('drawer-cat-mini');
-      if (mini && aqiSrc) { mini.innerText = aqiSrc.innerText || '--'; mini.style.color = aqiSrc.style.color || '#EEF0EC'; }
-      if (miniCat && catSrc) {
-        miniCat.innerText = catSrc.innerText || '--';
-        miniCat.style.color = catSrc.style.color || '#EEF0EC';
-        miniCat.style.backgroundColor = (catSrc.style.color || '#EEF0EC') + '22';
+      if (d) d.classList.add('drawer-open');
+      // Sync mini AQI pill in drawer header
+      const aqiEl  = document.getElementById('mob-hero-aqi-val');
+      const catEl  = document.getElementById('mob-hero-category');
+      const mini   = document.getElementById('drawer-aqi-mini');
+      const miniC  = document.getElementById('drawer-cat-mini');
+      if (mini && aqiEl) { mini.innerText = aqiEl.innerText || '--'; mini.style.color = aqiEl.style.color || '#EEF0EC'; }
+      if (miniC && catEl) {
+        miniC.innerText = catEl.innerText || '--';
+        miniC.style.color = catEl.style.color || '#EEF0EC';
+        miniC.style.backgroundColor = (catEl.style.color || '#EEF0EC') + '22';
       }
     }
 
     function closeHamburgerMenu() {
       document.getElementById('vayu-drawer-backdrop').classList.add('hidden');
-      document.getElementById('vayu-side-drawer').classList.remove('drawer-open');
+      const d = document.getElementById('vayu-side-drawer');
+      if (d) d.classList.remove('drawer-open');
     }
 
-    // ---- Sync Home Screen from existing JS data targets ----
+    // ---- Sync home screen data from existing hidden compat spans ----
     function syncHomeScreen() {
-      // Color/text pairs: [sourceId, destId]
       const pairs = [
         ['mob-hero-aqi-val',    'home-aqi-val'],
         ['mob-hero-category',   'home-category'],
@@ -13549,26 +13555,23 @@
         const s = document.getElementById(srcId);
         const d = document.getElementById(dstId);
         if (!s || !d) continue;
-        if (s.innerText && s.innerText !== d.innerText) d.innerText = s.innerText;
+        if (s.innerText) d.innerText = s.innerText;
         if (s.style.color) d.style.color = s.style.color;
         if (s.style.backgroundColor) d.style.backgroundColor = s.style.backgroundColor;
       }
-
       // AQI big number color
       const aqiSrc = document.getElementById('mob-hero-aqi-val');
       const aqiDst = document.getElementById('home-aqi-val');
       if (aqiSrc && aqiDst && aqiSrc.style.color) aqiDst.style.color = aqiSrc.style.color;
-
-      // Category pill
-      const catSrc = document.getElementById('mob-hero-category');
+      // Category pill color
+      const catSrc  = document.getElementById('mob-hero-category');
       const catPill = document.getElementById('home-category-pill');
       if (catSrc && catPill && catSrc.style.color) {
-        catPill.style.color = catSrc.style.color;
+        catPill.style.color           = catSrc.style.color;
         catPill.style.backgroundColor = catSrc.style.color + '1a';
-        catPill.style.borderColor = catSrc.style.color + '44';
+        catPill.style.borderColor     = catSrc.style.color + '44';
       }
-
-      // Simple trend text
+      // Trend
       const v24 = parseInt(document.getElementById('fc-24h-val')?.innerText) || 0;
       const v72 = parseInt(document.getElementById('fc-72h-val')?.innerText) || 0;
       const trendText = document.getElementById('home-trend-text');
@@ -13591,77 +13594,81 @@
       }
     }
 
-    // ---- Extend switchTab to handle 'home' + secondary bar ----
-    const _origSwitchTab = typeof switchTab === 'function' ? switchTab : null;
-
-    const PANEL_TITLES = {
-      overview:     'Detailed Map & Data',
-      weather:      'Weather Engine',
-      grap:         'Predictive GRAP',
-      attribution:  'Source Attribution',
-      copilot:      'VayuAI Assistant',
-      vayuai:       'VayuAI Assistant',
-      whatif:       'What-If Simulator',
-      dispatches:   'Dispatch Center',
-      health:       'Health Advisory',
-      commute:      'Safe Commute',
-      interstate:   'Inter-State Grid',
-      windows:      'Clean Air Windows',
-      citizen:      'Citizen Science',
-      caqm:         'CAQM Dashboard',
+    // ---- Panel title map ----
+    const VAYU_PANEL_TITLES = {
+      overview:    'Detailed Map & Data',
+      weather:     'Weather Engine',
+      grap:        'Predictive GRAP',
+      attribution: 'Source Attribution',
+      copilot:     'VayuAI Assistant',
+      vayuai:      'VayuAI Assistant',
+      whatif:      'What-If Simulator',
+      dispatches:  'Dispatch Center',
+      health:      'Health Advisory',
+      commute:     'Safe Commute',
+      interstate:  'Inter-State Grid',
+      windows:     'Clean Air Windows',
+      citizen:     'Citizen Science',
+      caqm:        'CAQM Dashboard',
     };
 
-    function switchTab(tabId) {
+    // ---- Main navigation helper (replaces switchTab for home + secondary-bar) ----
+    function vayuNavigateTo(tabId) {
       if (tabId === 'home') {
-        // Show panel-home, hide all tab-panels
-        document.querySelectorAll('.tab-panel').forEach(p => {
+        // Show panel-home
+        document.querySelectorAll('.tab-panel').forEach(function(p) {
           p.classList.add('hidden');
           p.style.display = 'none';
         });
-        const ph = document.getElementById('panel-home');
+        var ph = document.getElementById('panel-home');
         if (ph) { ph.classList.remove('hidden'); ph.style.display = 'flex'; }
-        // Hide secondary bar
-        const secBar = document.getElementById('vayu-secondary-bar');
+        // Hide the secondary back bar
+        var secBar = document.getElementById('vayu-secondary-bar');
         if (secBar) secBar.classList.remove('visible');
-        // Sync data
         syncHomeScreen();
         window.scrollTo(0, 0);
         return;
       }
 
-      // Call original switchTab for all other panels
-      if (_origSwitchTab) _origSwitchTab(tabId);
+      // For all other tabs: call the original switchTab (it exists from app JS)
+      if (typeof switchTab === 'function') {
+        switchTab(tabId);
+      }
 
-      // Ensure panel-home is hidden
-      const ph = document.getElementById('panel-home');
+      // Hide panel-home (in case we're coming from home)
+      var ph = document.getElementById('panel-home');
       if (ph) { ph.classList.add('hidden'); ph.style.display = 'none'; }
 
-      // Show secondary back bar
-      const secBar = document.getElementById('vayu-secondary-bar');
+      // Show secondary back bar with panel title
+      var secBar = document.getElementById('vayu-secondary-bar');
       if (secBar) {
         secBar.classList.add('visible');
-        const titleEl = document.getElementById('vayu-secondary-title');
-        if (titleEl) titleEl.innerText = PANEL_TITLES[tabId] || tabId;
+        var titleEl = document.getElementById('vayu-secondary-title');
+        if (titleEl) titleEl.innerText = VAYU_PANEL_TITLES[tabId] || tabId;
       }
+
+      window.scrollTo(0, 0);
     }
 
-    // ---- MutationObserver: keep home screen in sync ----
-    const _homeObserver = new MutationObserver(() => syncHomeScreen());
-    document.addEventListener('DOMContentLoaded', () => {
-      const watch = ['mob-hero-aqi-val', 'mob-hero-category', 'mob-hero-advisory',
-                     'fc-24h-val', 'fc-48h-val', 'fc-72h-val', 'header-station-text'];
-      watch.forEach(id => {
-        const el = document.getElementById(id);
+    // ---- MutationObserver: keep home screen in sync with live data ----
+    var _homeObserver = new MutationObserver(function() { syncHomeScreen(); });
+
+    document.addEventListener('DOMContentLoaded', function() {
+      // Watch key data elements for changes
+      var watchIds = ['mob-hero-aqi-val', 'mob-hero-category', 'mob-hero-advisory',
+                      'fc-24h-val', 'fc-48h-val', 'fc-72h-val', 'header-station-text'];
+      watchIds.forEach(function(id) {
+        var el = document.getElementById(id);
         if (el) _homeObserver.observe(el, { childList: true, characterData: true, subtree: true });
       });
 
-      // Default to home screen
-      switchTab('home');
+      // Start on home screen (the splash screen hides itself, this shows panel-home)
+      vayuNavigateTo('home');
 
-      // Initial sync after data loads
-      setTimeout(syncHomeScreen, 500);
-      setTimeout(syncHomeScreen, 1500);
-      setTimeout(syncHomeScreen, 3500);
+      // Sync home data after app data loads
+      setTimeout(syncHomeScreen, 800);
+      setTimeout(syncHomeScreen, 2000);
+      setTimeout(syncHomeScreen, 4000);
     });
   </script>
 
