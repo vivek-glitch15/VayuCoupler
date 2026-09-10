@@ -3479,10 +3479,14 @@
             </div>
           </div>
 
-          <!-- Tap for details hint -->
-          <div class="mt-3 text-center">
-            <button onclick="openHamburgerMenu()" class="text-[11px] text-[#8C948B] hover:text-[#7FD4FF] transition">
-              Tap ☰ for detailed technical data →
+          <!-- Quick action to map + drawer hint -->
+          <div class="mt-3 flex flex-col gap-2">
+            <button onclick="vayuNavigateTo('overview')" class="w-full py-2.5 px-4 rounded-xl bg-[#131513] hover:bg-[#191C19] border border-[#262A26] flex items-center justify-center gap-2 text-xs font-semibold text-[#8FFFB0] hover:text-white transition shadow-sm cursor-pointer">
+              <span>🗺️</span>
+              <span>View Live Map &amp; Detailed Data →</span>
+            </button>
+            <button onclick="openHamburgerMenu()" class="text-[11px] text-[#8C948B] hover:text-[#7FD4FF] transition py-1 text-center">
+              Or tap ☰ menu for VayuAI, Weather, GRAP &amp; more
             </button>
           </div>
 
@@ -3593,199 +3597,6 @@
     <!-- === TAB 1: COMMAND CENTER (MAP + FORECAST + ATTRIBUTION) === -->
     <div id="panel-overview" class="tab-panel flex flex-col gap-3 sm:gap-6 w-full min-w-0">
 
-      <!-- ================= 1. HERO AQI READING PANEL ================= -->
-      <section class="hero-card p-4 sm:p-5 rounded-[14px] border border-[#262A26] bg-[#131513] flex flex-col gap-3.5 w-full">
-        <!-- Top Row: Active Station & Status Badge -->
-        <div class="flex items-center justify-between gap-3 flex-wrap">
-          <button onclick="openStationPickerModal()" class="flex items-center gap-2 text-xs font-mono-data bg-[#191C19] hover:bg-[#1E221E] px-3 py-1.5 rounded-xl border border-[#262A26] text-[#EEF0EC] transition cursor-pointer active:scale-98">
-            <span class="w-2 h-2 rounded-full bg-[#8FFFB0] animate-pulse"></span>
-            <span id="mob-hero-station-name" class="font-bold text-xs truncate max-w-[200px] sm:max-w-none">Punjabi Bagh, Delhi</span>
-            <span class="text-[11px] text-[#8C948B]">Change station</span>
-          </button>
-          
-          <div class="flex items-center gap-2">
-            <span id="mob-hero-live-badge" class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-950/80 text-emerald-300 border border-emerald-500/30 text-[10px] font-mono-tag font-bold"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> LIVE WAQI</span>
-            <button id="live-waqi-refresh-btn" onclick="VayuWaqiService.refresh()" title="Refresh live telemetry" class="p-1.5 rounded-lg bg-[#191C19] border border-[#262A26] hover:border-emerald-500/40 text-slate-300 hover:text-emerald-300 transition cursor-pointer flex items-center justify-center">
-              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
-            </button>
-            <span id="mob-hero-category" class="text-[10px] font-bold px-2.5 py-1 rounded-full badge-orange font-mono-tag">SEVERE</span>
-            <span class="text-[10px] font-mono-tag font-bold px-2.5 py-1 rounded-full badge-orange" id="mob-hero-grap-stage">GRAP IV</span>
-          </div>
-        </div>
-
-        <!-- Central AQI Number & MoES Official Advisory -->
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 py-1">
-          <div>
-            <div class="flex items-center gap-2 text-[11px] font-mono-data text-[#8C948B]">
-              <span>COUPLED REAL-TIME NAQI</span>
-              <span id="live-source-subtext" class="text-[10px] text-emerald-400/90">• CPCB Ground Monitor</span>
-            </div>
-            <div class="flex items-baseline gap-2.5">
-              <span id="mob-hero-aqi-val" class="text-5xl sm:text-6xl font-bold font-serif-display text-[#FF9D7F]">157</span>
-              <!-- Desktop synced id element -->
-              <span id="curr-aqi-val" class="hidden">157</span>
-              <span id="curr-aqi-category-badge" class="hidden">Moderate</span>
-              <span class="text-xs font-mono-data text-[#8C948B]">NAQI</span>
-            </div>
-            <div id="mob-hero-advisory" class="text-xs text-[#EEF0EC] mt-1 font-sans-ui max-w-[70ch] leading-relaxed">
-              Air quality is moderate. Sensitive groups should limit prolonged outdoor exertion.
-            </div>
-          </div>
-
-          <!-- Secondary Action Pill -->
-          <div class="flex items-center gap-2 shrink-0 self-start sm:self-center">
-            <button onclick="switchTab('grap')" class="px-3.5 py-2 rounded-xl bg-[#191C19] hover:bg-[#202520] border border-[#262A26] text-xs font-sans-ui text-[#EEF0EC] font-semibold transition cursor-pointer">
-              View response plan
-            </button>
-            <button onclick="switchTab('copilot')" class="px-3.5 py-2 rounded-xl bg-[#191C19] hover:bg-[#202520] border border-[#262A26] text-xs font-sans-ui text-[#7FD4FF] font-semibold transition cursor-pointer">
-              Ask VayuAI
-            </button>
-          </div>
-        </div>
-
-        <!-- Ground Meteorological Telemetry Strip -->
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 pt-3 border-t border-[#262A26] text-xs font-mono-data">
-          <!-- Temp -->
-          <div class="bg-[#191C19] p-2.5 rounded-xl border border-[#262A26]">
-            <div class="text-[10px] text-[#8C948B]">TEMPERATURE</div>
-            <div id="mob-hero-temp" class="text-sm font-bold text-[#EEF0EC] mt-0.5">24°C</div>
-          </div>
-          <!-- Wind -->
-          <div class="bg-[#191C19] p-2.5 rounded-xl border border-[#262A26]">
-            <div class="text-[10px] text-[#8C948B]">WIND VECTOR</div>
-            <div class="flex items-center gap-1.5 mt-0.5">
-              <span id="curr-wind-speed" class="text-sm font-bold text-[#EEF0EC]">8.5 km/h</span>
-              <span id="curr-wind-dir" class="text-[10px] text-[#8C948B]">NW</span>
-              <span id="mob-hero-wind" class="hidden">8.5 NW</span>
-              <span id="wind-compass-needle" class="hidden"></span>
-            </div>
-          </div>
-          <!-- PM2.5 -->
-          <div class="bg-[#191C19] p-2.5 rounded-xl border border-[#262A26]">
-            <div class="text-[10px] text-[#8C948B]">PM2.5 SENSOR</div>
-            <div class="text-sm font-bold text-[#FF9D7F] mt-0.5"><span id="curr-pm25-val">284</span> <span class="text-[10px] text-[#8C948B]">μg/m³</span></div>
-            <span id="mob-hero-pm25" class="hidden">284</span>
-          </div>
-          <!-- PBLH -->
-          <div class="bg-[#191C19] p-2.5 rounded-xl border border-[#262A26]">
-            <div class="text-[10px] text-[#8C948B]">PBL HEIGHT</div>
-            <div class="text-sm font-bold text-[#7FD4FF] mt-0.5" id="curr-pblh-val">340 m</div>
-            <span id="mob-hero-pbl" class="hidden">340m</span>
-            <div class="hidden" id="pblh-bar"></div>
-            <span class="hidden" id="pblh-subtext"></span>
-          </div>
-          <!-- Ventilation Index -->
-          <div class="bg-[#191C19] p-2.5 rounded-xl border border-[#262A26]">
-            <div class="text-[10px] text-[#8C948B]">VENTILATION</div>
-            <div class="text-sm font-bold text-[#FFE270] mt-0.5" id="curr-vi-val">1,380 m²/s</div>
-            <span class="hidden" id="curr-vi-status">Evaluating</span>
-          </div>
-          <!-- Inversion / Fires -->
-          <div class="bg-[#191C19] p-2.5 rounded-xl border border-[#262A26]">
-            <div class="text-[10px] text-[#8C948B]">FARM FIRES</div>
-            <div class="text-sm font-bold text-[#FF9D7F] mt-0.5" id="curr-fire-count">1,420 fires</div>
-            <span class="hidden" id="curr-inversion-val"></span>
-            <span class="hidden" id="curr-trapping-status"></span>
-            <span class="hidden" id="stubble-share-badge"></span>
-          </div>
-        </div>
-      </section>
-
-      <!-- ================= 2. HORIZONTAL ZONE BREAKDOWN STRIP ================= -->
-      <section class="w-full flex flex-col gap-2">
-        <div class="flex items-center justify-between px-0.5">
-          <span class="text-[11px] font-mono-data text-[#8C948B]">DELHI-NCR REGIONAL ZONES</span>
-          <button onclick="openStationPickerModal()" class="text-[11px] font-mono-data text-[#7FD4FF] hover:underline cursor-pointer">
-            View all 58 stations
-          </button>
-        </div>
-        <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1" id="command-center-zone-strip">
-          <div onclick="filterStationsByZone('West Delhi'); openStationPickerModal();" class="surface-card p-3 rounded-xl border border-[#262A26] hover:border-[#383E38] transition cursor-pointer min-w-[140px] shrink-0 flex flex-col gap-1.5">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-semibold text-[#EEF0EC]">West Delhi</span>
-              <span id="zone-dot-west" class="w-2 h-2 rounded-full bg-[#7FD4FF]"></span>
-            </div>
-            <div class="flex items-baseline gap-1.5">
-              <span id="zone-aqi-west" class="text-xl font-bold font-serif-display text-[#7FD4FF]">187</span>
-              <span class="text-[10px] font-mono-data text-[#8C948B]">AQI</span>
-            </div>
-            <span class="text-[10px] font-mono-data text-[#8C948B]">5 stations</span>
-          </div>
-
-          <div onclick="filterStationsByZone('North Delhi'); openStationPickerModal();" class="surface-card p-3 rounded-xl border border-[#262A26] hover:border-[#383E38] transition cursor-pointer min-w-[140px] shrink-0 flex flex-col gap-1.5">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-semibold text-[#EEF0EC]">North Delhi</span>
-              <span id="zone-dot-north" class="w-2 h-2 rounded-full bg-[#FFE270]"></span>
-            </div>
-            <div class="flex items-baseline gap-1.5">
-              <span id="zone-aqi-north" class="text-xl font-bold font-serif-display text-[#FFE270]">256</span>
-              <span class="text-[10px] font-mono-data text-[#8C948B]">AQI</span>
-            </div>
-            <span class="text-[10px] font-mono-data text-[#8C948B]">14 stations</span>
-          </div>
-
-          <div onclick="filterStationsByZone('East Delhi'); openStationPickerModal();" class="surface-card p-3 rounded-xl border border-[#262A26] hover:border-[#383E38] transition cursor-pointer min-w-[140px] shrink-0 flex flex-col gap-1.5">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-semibold text-[#EEF0EC]">East Delhi</span>
-              <span id="zone-dot-east" class="w-2 h-2 rounded-full bg-[#7FD4FF]"></span>
-            </div>
-            <div class="flex items-baseline gap-1.5">
-              <span id="zone-aqi-east" class="text-xl font-bold font-serif-display text-[#7FD4FF]">177</span>
-              <span class="text-[10px] font-mono-data text-[#8C948B]">AQI</span>
-            </div>
-            <span class="text-[10px] font-mono-data text-[#8C948B]">6 stations</span>
-          </div>
-
-          <div onclick="filterStationsByZone('South Delhi'); openStationPickerModal();" class="surface-card p-3 rounded-xl border border-[#262A26] hover:border-[#383E38] transition cursor-pointer min-w-[140px] shrink-0 flex flex-col gap-1.5">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-semibold text-[#EEF0EC]">South Delhi</span>
-              <span id="zone-dot-south" class="w-2 h-2 rounded-full bg-[#7FD4FF]"></span>
-            </div>
-            <div class="flex items-baseline gap-1.5">
-              <span id="zone-aqi-south" class="text-xl font-bold font-serif-display text-[#7FD4FF]">151</span>
-              <span class="text-[10px] font-mono-data text-[#8C948B]">AQI</span>
-            </div>
-            <span class="text-[10px] font-mono-data text-[#8C948B]">11 stations</span>
-          </div>
-
-          <div onclick="filterStationsByZone('Central Delhi'); openStationPickerModal();" class="surface-card p-3 rounded-xl border border-[#262A26] hover:border-[#383E38] transition cursor-pointer min-w-[140px] shrink-0 flex flex-col gap-1.5">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-semibold text-[#EEF0EC]">Central Delhi</span>
-              <span id="zone-dot-central" class="w-2 h-2 rounded-full bg-[#7FD4FF]"></span>
-            </div>
-            <div class="flex items-baseline gap-1.5">
-              <span id="zone-aqi-central" class="text-xl font-bold font-serif-display text-[#7FD4FF]">122</span>
-              <span class="text-[10px] font-mono-data text-[#8C948B]">AQI</span>
-            </div>
-            <span class="text-[10px] font-mono-data text-[#8C948B]">7 stations</span>
-          </div>
-
-          <div onclick="filterStationsByZone('South West Delhi'); openStationPickerModal();" class="surface-card p-3 rounded-xl border border-[#262A26] hover:border-[#383E38] transition cursor-pointer min-w-[140px] shrink-0 flex flex-col gap-1.5">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-semibold text-[#EEF0EC]">SW Delhi</span>
-              <span id="zone-dot-sw" class="w-2 h-2 rounded-full bg-[#7FD4FF]"></span>
-            </div>
-            <div class="flex items-baseline gap-1.5">
-              <span id="zone-aqi-sw" class="text-xl font-bold font-serif-display text-[#7FD4FF]">132</span>
-              <span class="text-[10px] font-mono-data text-[#8C948B]">AQI</span>
-            </div>
-            <span class="text-[10px] font-mono-data text-[#8C948B]">4 stations</span>
-          </div>
-
-          <div onclick="filterStationsByZone('NCR'); openStationPickerModal();" class="surface-card p-3 rounded-xl border border-[#262A26] hover:border-[#383E38] transition cursor-pointer min-w-[140px] shrink-0 flex flex-col gap-1.5">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-semibold text-[#EEF0EC]">NCR Fringe</span>
-              <span id="zone-dot-ncr" class="w-2 h-2 rounded-full bg-[#7FD4FF]"></span>
-            </div>
-            <div class="flex items-baseline gap-1.5">
-              <span id="zone-aqi-ncr" class="text-xl font-bold font-serif-display text-[#7FD4FF]">173</span>
-              <span class="text-[10px] font-mono-data text-[#8C948B]">AQI</span>
-            </div>
-            <span class="text-[10px] font-mono-data text-[#8C948B]">11 stations</span>
-          </div>
-        </div>
-      </section>
-      
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
         
         <!-- Left: Interactive Map (7 Cols) -->
@@ -4102,6 +3913,201 @@
         </div>
 
       </div>
+
+    </div>
+
+      <!-- ================= 1. HERO AQI READING PANEL ================= -->
+      <section class="hero-card p-4 sm:p-5 rounded-[14px] border border-[#262A26] bg-[#131513] flex flex-col gap-3.5 w-full">
+        <!-- Top Row: Active Station & Status Badge -->
+        <div class="flex items-center justify-between gap-3 flex-wrap">
+          <button onclick="openStationPickerModal()" class="flex items-center gap-2 text-xs font-mono-data bg-[#191C19] hover:bg-[#1E221E] px-3 py-1.5 rounded-xl border border-[#262A26] text-[#EEF0EC] transition cursor-pointer active:scale-98">
+            <span class="w-2 h-2 rounded-full bg-[#8FFFB0] animate-pulse"></span>
+            <span id="mob-hero-station-name" class="font-bold text-xs truncate max-w-[200px] sm:max-w-none">Punjabi Bagh, Delhi</span>
+            <span class="text-[11px] text-[#8C948B]">Change station</span>
+          </button>
+          
+          <div class="flex items-center gap-2">
+            <span id="mob-hero-live-badge" class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-950/80 text-emerald-300 border border-emerald-500/30 text-[10px] font-mono-tag font-bold"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> LIVE WAQI</span>
+            <button id="live-waqi-refresh-btn" onclick="VayuWaqiService.refresh()" title="Refresh live telemetry" class="p-1.5 rounded-lg bg-[#191C19] border border-[#262A26] hover:border-emerald-500/40 text-slate-300 hover:text-emerald-300 transition cursor-pointer flex items-center justify-center">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+            </button>
+            <span id="mob-hero-category" class="text-[10px] font-bold px-2.5 py-1 rounded-full badge-orange font-mono-tag">SEVERE</span>
+            <span class="text-[10px] font-mono-tag font-bold px-2.5 py-1 rounded-full badge-orange" id="mob-hero-grap-stage">GRAP IV</span>
+          </div>
+        </div>
+
+        <!-- Central AQI Number & MoES Official Advisory -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 py-1">
+          <div>
+            <div class="flex items-center gap-2 text-[11px] font-mono-data text-[#8C948B]">
+              <span>COUPLED REAL-TIME NAQI</span>
+              <span id="live-source-subtext" class="text-[10px] text-emerald-400/90">• CPCB Ground Monitor</span>
+            </div>
+            <div class="flex items-baseline gap-2.5">
+              <span id="mob-hero-aqi-val" class="text-5xl sm:text-6xl font-bold font-serif-display text-[#FF9D7F]">157</span>
+              <!-- Desktop synced id element -->
+              <span id="curr-aqi-val" class="hidden">157</span>
+              <span id="curr-aqi-category-badge" class="hidden">Moderate</span>
+              <span class="text-xs font-mono-data text-[#8C948B]">NAQI</span>
+            </div>
+            <div id="mob-hero-advisory" class="text-xs text-[#EEF0EC] mt-1 font-sans-ui max-w-[70ch] leading-relaxed">
+              Air quality is moderate. Sensitive groups should limit prolonged outdoor exertion.
+            </div>
+          </div>
+
+          <!-- Secondary Action Pill -->
+          <div class="flex items-center gap-2 shrink-0 self-start sm:self-center">
+            <button onclick="switchTab('grap')" class="px-3.5 py-2 rounded-xl bg-[#191C19] hover:bg-[#202520] border border-[#262A26] text-xs font-sans-ui text-[#EEF0EC] font-semibold transition cursor-pointer">
+              View response plan
+            </button>
+            <button onclick="switchTab('copilot')" class="px-3.5 py-2 rounded-xl bg-[#191C19] hover:bg-[#202520] border border-[#262A26] text-xs font-sans-ui text-[#7FD4FF] font-semibold transition cursor-pointer">
+              Ask VayuAI
+            </button>
+          </div>
+        </div>
+
+        <!-- Ground Meteorological Telemetry Strip -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 pt-3 border-t border-[#262A26] text-xs font-mono-data">
+          <!-- Temp -->
+          <div class="bg-[#191C19] p-2.5 rounded-xl border border-[#262A26]">
+            <div class="text-[10px] text-[#8C948B]">TEMPERATURE</div>
+            <div id="mob-hero-temp" class="text-sm font-bold text-[#EEF0EC] mt-0.5">24°C</div>
+          </div>
+          <!-- Wind -->
+          <div class="bg-[#191C19] p-2.5 rounded-xl border border-[#262A26]">
+            <div class="text-[10px] text-[#8C948B]">WIND VECTOR</div>
+            <div class="flex items-center gap-1.5 mt-0.5">
+              <span id="curr-wind-speed" class="text-sm font-bold text-[#EEF0EC]">8.5 km/h</span>
+              <span id="curr-wind-dir" class="text-[10px] text-[#8C948B]">NW</span>
+              <span id="mob-hero-wind" class="hidden">8.5 NW</span>
+              <span id="wind-compass-needle" class="hidden"></span>
+            </div>
+          </div>
+          <!-- PM2.5 -->
+          <div class="bg-[#191C19] p-2.5 rounded-xl border border-[#262A26]">
+            <div class="text-[10px] text-[#8C948B]">PM2.5 SENSOR</div>
+            <div class="text-sm font-bold text-[#FF9D7F] mt-0.5"><span id="curr-pm25-val">284</span> <span class="text-[10px] text-[#8C948B]">μg/m³</span></div>
+            <span id="mob-hero-pm25" class="hidden">284</span>
+          </div>
+          <!-- PBLH -->
+          <div class="bg-[#191C19] p-2.5 rounded-xl border border-[#262A26]">
+            <div class="text-[10px] text-[#8C948B]">PBL HEIGHT</div>
+            <div class="text-sm font-bold text-[#7FD4FF] mt-0.5" id="curr-pblh-val">340 m</div>
+            <span id="mob-hero-pbl" class="hidden">340m</span>
+            <div class="hidden" id="pblh-bar"></div>
+            <span class="hidden" id="pblh-subtext"></span>
+          </div>
+          <!-- Ventilation Index -->
+          <div class="bg-[#191C19] p-2.5 rounded-xl border border-[#262A26]">
+            <div class="text-[10px] text-[#8C948B]">VENTILATION</div>
+            <div class="text-sm font-bold text-[#FFE270] mt-0.5" id="curr-vi-val">1,380 m²/s</div>
+            <span class="hidden" id="curr-vi-status">Evaluating</span>
+          </div>
+          <!-- Inversion / Fires -->
+          <div class="bg-[#191C19] p-2.5 rounded-xl border border-[#262A26]">
+            <div class="text-[10px] text-[#8C948B]">FARM FIRES</div>
+            <div class="text-sm font-bold text-[#FF9D7F] mt-0.5" id="curr-fire-count">1,420 fires</div>
+            <span class="hidden" id="curr-inversion-val"></span>
+            <span class="hidden" id="curr-trapping-status"></span>
+            <span class="hidden" id="stubble-share-badge"></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 2. HORIZONTAL ZONE BREAKDOWN STRIP ================= -->
+      <section class="w-full flex flex-col gap-2">
+        <div class="flex items-center justify-between px-0.5">
+          <span class="text-[11px] font-mono-data text-[#8C948B]">DELHI-NCR REGIONAL ZONES</span>
+          <button onclick="openStationPickerModal()" class="text-[11px] font-mono-data text-[#7FD4FF] hover:underline cursor-pointer">
+            View all 58 stations
+          </button>
+        </div>
+        <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1" id="command-center-zone-strip">
+          <div onclick="filterStationsByZone('West Delhi'); openStationPickerModal();" class="surface-card p-3 rounded-xl border border-[#262A26] hover:border-[#383E38] transition cursor-pointer min-w-[140px] shrink-0 flex flex-col gap-1.5">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold text-[#EEF0EC]">West Delhi</span>
+              <span id="zone-dot-west" class="w-2 h-2 rounded-full bg-[#7FD4FF]"></span>
+            </div>
+            <div class="flex items-baseline gap-1.5">
+              <span id="zone-aqi-west" class="text-xl font-bold font-serif-display text-[#7FD4FF]">187</span>
+              <span class="text-[10px] font-mono-data text-[#8C948B]">AQI</span>
+            </div>
+            <span class="text-[10px] font-mono-data text-[#8C948B]">5 stations</span>
+          </div>
+
+          <div onclick="filterStationsByZone('North Delhi'); openStationPickerModal();" class="surface-card p-3 rounded-xl border border-[#262A26] hover:border-[#383E38] transition cursor-pointer min-w-[140px] shrink-0 flex flex-col gap-1.5">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold text-[#EEF0EC]">North Delhi</span>
+              <span id="zone-dot-north" class="w-2 h-2 rounded-full bg-[#FFE270]"></span>
+            </div>
+            <div class="flex items-baseline gap-1.5">
+              <span id="zone-aqi-north" class="text-xl font-bold font-serif-display text-[#FFE270]">256</span>
+              <span class="text-[10px] font-mono-data text-[#8C948B]">AQI</span>
+            </div>
+            <span class="text-[10px] font-mono-data text-[#8C948B]">14 stations</span>
+          </div>
+
+          <div onclick="filterStationsByZone('East Delhi'); openStationPickerModal();" class="surface-card p-3 rounded-xl border border-[#262A26] hover:border-[#383E38] transition cursor-pointer min-w-[140px] shrink-0 flex flex-col gap-1.5">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold text-[#EEF0EC]">East Delhi</span>
+              <span id="zone-dot-east" class="w-2 h-2 rounded-full bg-[#7FD4FF]"></span>
+            </div>
+            <div class="flex items-baseline gap-1.5">
+              <span id="zone-aqi-east" class="text-xl font-bold font-serif-display text-[#7FD4FF]">177</span>
+              <span class="text-[10px] font-mono-data text-[#8C948B]">AQI</span>
+            </div>
+            <span class="text-[10px] font-mono-data text-[#8C948B]">6 stations</span>
+          </div>
+
+          <div onclick="filterStationsByZone('South Delhi'); openStationPickerModal();" class="surface-card p-3 rounded-xl border border-[#262A26] hover:border-[#383E38] transition cursor-pointer min-w-[140px] shrink-0 flex flex-col gap-1.5">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold text-[#EEF0EC]">South Delhi</span>
+              <span id="zone-dot-south" class="w-2 h-2 rounded-full bg-[#7FD4FF]"></span>
+            </div>
+            <div class="flex items-baseline gap-1.5">
+              <span id="zone-aqi-south" class="text-xl font-bold font-serif-display text-[#7FD4FF]">151</span>
+              <span class="text-[10px] font-mono-data text-[#8C948B]">AQI</span>
+            </div>
+            <span class="text-[10px] font-mono-data text-[#8C948B]">11 stations</span>
+          </div>
+
+          <div onclick="filterStationsByZone('Central Delhi'); openStationPickerModal();" class="surface-card p-3 rounded-xl border border-[#262A26] hover:border-[#383E38] transition cursor-pointer min-w-[140px] shrink-0 flex flex-col gap-1.5">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold text-[#EEF0EC]">Central Delhi</span>
+              <span id="zone-dot-central" class="w-2 h-2 rounded-full bg-[#7FD4FF]"></span>
+            </div>
+            <div class="flex items-baseline gap-1.5">
+              <span id="zone-aqi-central" class="text-xl font-bold font-serif-display text-[#7FD4FF]">122</span>
+              <span class="text-[10px] font-mono-data text-[#8C948B]">AQI</span>
+            </div>
+            <span class="text-[10px] font-mono-data text-[#8C948B]">7 stations</span>
+          </div>
+
+          <div onclick="filterStationsByZone('South West Delhi'); openStationPickerModal();" class="surface-card p-3 rounded-xl border border-[#262A26] hover:border-[#383E38] transition cursor-pointer min-w-[140px] shrink-0 flex flex-col gap-1.5">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold text-[#EEF0EC]">SW Delhi</span>
+              <span id="zone-dot-sw" class="w-2 h-2 rounded-full bg-[#7FD4FF]"></span>
+            </div>
+            <div class="flex items-baseline gap-1.5">
+              <span id="zone-aqi-sw" class="text-xl font-bold font-serif-display text-[#7FD4FF]">132</span>
+              <span class="text-[10px] font-mono-data text-[#8C948B]">AQI</span>
+            </div>
+            <span class="text-[10px] font-mono-data text-[#8C948B]">4 stations</span>
+          </div>
+
+          <div onclick="filterStationsByZone('NCR'); openStationPickerModal();" class="surface-card p-3 rounded-xl border border-[#262A26] hover:border-[#383E38] transition cursor-pointer min-w-[140px] shrink-0 flex flex-col gap-1.5">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold text-[#EEF0EC]">NCR Fringe</span>
+              <span id="zone-dot-ncr" class="w-2 h-2 rounded-full bg-[#7FD4FF]"></span>
+            </div>
+            <div class="flex items-baseline gap-1.5">
+              <span id="zone-aqi-ncr" class="text-xl font-bold font-serif-display text-[#7FD4FF]">173</span>
+              <span class="text-[10px] font-mono-data text-[#8C948B]">AQI</span>
+            </div>
+            <span class="text-[10px] font-mono-data text-[#8C948B]">11 stations</span>
+          </div>
+        </div>
+      </section>
 
     </div>
 
@@ -13615,11 +13621,21 @@
         if (titleEl) titleEl.innerText = VAYU_PANEL_TITLES[tabId] || tabId;
       }
 
-      // Invalidate map if overview
-      if (tabId === 'overview' && typeof VayuAtmosphericMap !== 'undefined' && VayuAtmosphericMap.map) {
-        setTimeout(function() {
-          try { VayuAtmosphericMap.map.invalidateSize(); } catch(e) {}
-        }, 100);
+      // Invalidate and ensure map is alive if overview
+      if (tabId === 'overview' && typeof VayuAtmosphericMap !== 'undefined') {
+        if (!VayuAtmosphericMap.map && typeof VayuAtmosphericMap.init === 'function') {
+          try { VayuAtmosphericMap.init(); } catch(e) {}
+        }
+        if (typeof VayuAtmosphericMap.resumeWindAnimation === 'function') {
+          try { VayuAtmosphericMap.resumeWindAnimation(); } catch(e) {}
+        }
+        [50, 150, 300, 600].forEach(function(delay) {
+          setTimeout(function() {
+            try {
+              if (VayuAtmosphericMap.map) VayuAtmosphericMap.map.invalidateSize();
+            } catch(e) {}
+          }, delay);
+        });
       }
 
       window.scrollTo(0, 0);
