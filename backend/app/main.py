@@ -538,13 +538,7 @@ def mobile_download_hub():
         <div class="text-[11px] text-slate-400 mt-0.5">Saved to phone Downloads • 100% Offline ready</div>
       </a>
 
-      <!-- Option 3: Download SIH Judges QA PDF -->
-      <a href="/static/VayuCoupler_SIH_Judges_QA_Guide.pdf" download="VayuCoupler_SIH_Judges_QA_Guide.pdf" class="block p-4 rounded-2xl bg-slate-800/90 hover:bg-slate-800 border border-slate-700 text-white transition text-center">
-        <div class="text-base font-bold text-amber-300 flex items-center justify-center gap-2">📄 Download SIH Judges Q&A Guide (.pdf)</div>
-        <div class="text-[11px] text-slate-400 mt-0.5">25 essential questions, jury answers & physics cheat-sheet</div>
-      </a>
-
-      <!-- Option 4: Download Windows Edition ZIP -->
+      <!-- Option 3: Download Windows Edition ZIP -->
       <a href="/static/VayuCoupler_Windows_Edition.zip" download="VayuCoupler_Windows_Edition.zip" class="block p-4 rounded-2xl bg-gradient-to-r from-blue-900/60 to-indigo-900/60 hover:from-blue-900 hover:to-indigo-900 border border-blue-500/50 text-white transition text-center shadow-lg shadow-blue-950/50">
         <div class="text-base font-bold text-sky-300 flex items-center justify-center gap-2">💻 Download Windows Edition (.zip)</div>
         <div class="text-[11px] text-sky-200 mt-0.5">Includes 1-Click "Launch_VayuCoupler_Windows.bat" + Offline App</div>

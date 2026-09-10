@@ -33,6 +33,7 @@ Agar aapke PC me Python installed hai (Python 3.9, 3.10, 3.11, ya 3.12):
 --------------------------------------------------------------------------------
 JURY / PRESENTATION GUIDE:
 --------------------------------------------------------------------------------
-Judges aur evaluation ke liye Q&A Guide PDF sath me diya gaya hai:
-- "docs/VayuCoupler_SIH_Judges_QA_Guide.pdf"
+Judges aur evaluation ke liye presentation aur pitch guide sath me diya gaya hai:
+- "VayuCoupler_SIH2026_AtomX_Presentation.pptx"
+- "docs/SIH_2026_PITCH_SCRIPT_AND_GUIDE.md"
 ================================================================================
