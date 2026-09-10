@@ -6,7 +6,7 @@ from pptx.enum.text import PP_ALIGN, MSO_ANCHOR
 from pptx.enum.shapes import MSO_SHAPE
 
 # -------------------------------------------------------------
-# Color Palette matching SIH Idea Submission Template
+# Color Palette matching SIH 2026 Idea Submission Template
 # -------------------------------------------------------------
 COLOR_WHITE = RGBColor(255, 255, 255)
 COLOR_DARK_BLUE = RGBColor(13, 47, 98)      # #0D2F62 SIH Title Blue
@@ -21,11 +21,11 @@ COLOR_PURPLE = RGBColor(109, 40, 217)       # #6D28D9 Subsection titles
 COLOR_BORDER_LIGHT = RGBColor(209, 213, 219)# #D1D5DB Light container border
 
 ASSETS_DIR = "static/sih_assets"
-LOGO_HEADER = os.path.join(ASSETS_DIR, "sih_header_logo.png")
-HERO_BULB = os.path.join(ASSETS_DIR, "sih_bulb_hero.png")
-PHONE_MOCKUP = os.path.join(ASSETS_DIR, "phone_mockup.png")
-ARCH_FLOW = os.path.join(ASSETS_DIR, "architecture_flow.png")
-COMMAND_PREVIEW = os.path.join(ASSETS_DIR, "command_center_preview.png")
+LOGO_HEADER_2026 = os.path.join(ASSETS_DIR, "sih_header_logo_2026.png")
+OFFICIAL_HERO_BULB = os.path.join(ASSETS_DIR, "sih_bulb_official.png")
+REAL_MOBILE_MOCKUP = os.path.join(ASSETS_DIR, "framed_real_mobile.png")
+TECH_CENTER_COMP = os.path.join(ASSETS_DIR, "technical_center_composition.png")
+REAL_APP_DESKTOP = os.path.join(ASSETS_DIR, "real_app_desktop.png")
 
 def set_slide_background(slide, color=COLOR_WHITE):
     bg = slide.background
@@ -65,9 +65,9 @@ def add_header(slide, title_text, show_team_oval=True):
     p_title.font.bold = True
     p_title.font.color.rgb = COLOR_TEXT_MAIN
 
-    # Top Right SIH Logo
-    if os.path.exists(LOGO_HEADER):
-        slide.shapes.add_picture(LOGO_HEADER, Inches(10.8), Inches(0.22), width=Inches(2.1))
+    # Top Right SIH 2026 Logo
+    if os.path.exists(LOGO_HEADER_2026):
+        slide.shapes.add_picture(LOGO_HEADER_2026, Inches(10.8), Inches(0.2), width=Inches(2.1))
 
 def add_footer(slide, slide_num):
     # Center text
@@ -101,18 +101,18 @@ def build_deck(output_pptx_path):
     blank_layout = prs.slide_layouts[6]
 
     # ---------------------------------------------------------
-    # SLIDE 1: Title & Team Details
+    # SLIDE 1: Title & Team Details (SIH 2026)
     # ---------------------------------------------------------
     slide1 = prs.slides.add_slide(blank_layout)
     set_slide_background(slide1)
 
-    # Top Center Title: SMART INDIA HACKATHON 2025
+    # Top Center Title: SMART INDIA HACKATHON 2026
     title_box = slide1.shapes.add_textbox(Inches(1.5), Inches(0.4), Inches(9.0), Inches(0.8))
     tf = title_box.text_frame
     tf.word_wrap = True
     p = tf.paragraphs[0]
     p.alignment = PP_ALIGN.CENTER
-    p.text = "SMART INDIA HACKATHON 2025"
+    p.text = "SMART INDIA HACKATHON 2026"
     p.font.name = "Georgia"
     p.font.size = Pt(30)
     p.font.bold = True
@@ -129,13 +129,13 @@ def build_deck(output_pptx_path):
     p_sub.font.bold = True
     p_sub.font.color.rgb = COLOR_TEXT_MAIN
 
-    # Top Right SIH Logo
-    if os.path.exists(LOGO_HEADER):
-        slide1.shapes.add_picture(LOGO_HEADER, Inches(10.8), Inches(0.3), width=Inches(2.1))
+    # Top Right SIH 2026 Logo
+    if os.path.exists(LOGO_HEADER_2026):
+        slide1.shapes.add_picture(LOGO_HEADER_2026, Inches(10.8), Inches(0.25), width=Inches(2.1))
 
-    # Hero SIH Lightbulb graphic on right
-    if os.path.exists(HERO_BULB):
-        slide1.shapes.add_picture(HERO_BULB, Inches(7.8), Inches(2.2), width=Inches(4.5))
+    # User's Official SIH Lightbulb Graphic on right
+    if os.path.exists(OFFICIAL_HERO_BULB):
+        slide1.shapes.add_picture(OFFICIAL_HERO_BULB, Inches(8.0), Inches(2.1), width=Inches(4.4))
 
     # Left Details Box
     left_box = slide1.shapes.add_textbox(Inches(0.8), Inches(2.3), Inches(6.8), Inches(4.5))
@@ -177,7 +177,7 @@ def build_deck(output_pptx_path):
     add_footer(slide2, 2)
 
     # Left Column: Unique Idea & Highlights
-    left_area = slide2.shapes.add_textbox(Inches(0.5), Inches(1.15), Inches(6.1), Inches(4.6))
+    left_area = slide2.shapes.add_textbox(Inches(0.5), Inches(1.15), Inches(6.0), Inches(4.6))
     tf2 = left_area.text_frame
     tf2.word_wrap = True
 
@@ -259,9 +259,9 @@ def build_deck(output_pptx_path):
     run.font.size = Pt(10.5)
     run.font.color.rgb = COLOR_TEXT_MAIN
 
-    # Center: Phone Mockup
-    if os.path.exists(PHONE_MOCKUP):
-        slide2.shapes.add_picture(PHONE_MOCKUP, Inches(6.8), Inches(1.2), height=Inches(4.5))
+    # Center: REAL APP MOBILE SCREENSHOT (FRAMED)
+    if os.path.exists(REAL_MOBILE_MOCKUP):
+        slide2.shapes.add_picture(REAL_MOBILE_MOCKUP, Inches(6.75), Inches(1.15), width=Inches(2.55))
 
     # Right Column: Red Feature Cards
     card_items = [
@@ -354,7 +354,7 @@ def build_deck(output_pptx_path):
     run_st2.font.color.rgb = COLOR_TEXT_MAIN
 
     # ---------------------------------------------------------
-    # SLIDE 3: Technical Approach
+    # SLIDE 3: Technical Approach (Real App System Screens)
     # ---------------------------------------------------------
     slide3 = prs.slides.add_slide(blank_layout)
     set_slide_background(slide3)
@@ -390,9 +390,9 @@ def build_deck(output_pptx_path):
         p_b.font.bold = True
         p_b.font.color.rgb = COLOR_NAVY_HEADING
 
-    # Center Architecture Flowchart
-    if os.path.exists(ARCH_FLOW):
-        slide3.shapes.add_picture(ARCH_FLOW, Inches(3.4), Inches(1.2), width=Inches(6.4))
+    # Center Composition: Architecture Flow + Real App Screens
+    if os.path.exists(TECH_CENTER_COMP):
+        slide3.shapes.add_picture(TECH_CENTER_COMP, Inches(3.35), Inches(1.18), width=Inches(6.5))
 
     # Right Column Bubbles
     right_bubbles = [
@@ -536,7 +536,7 @@ def build_deck(output_pptx_path):
         r2.font.size = Pt(11)
 
     # ---------------------------------------------------------
-    # SLIDE 5: Impact and Benefits
+    # SLIDE 5: Impact and Benefits (Real App Desktop Cockpit)
     # ---------------------------------------------------------
     slide5 = prs.slides.add_slide(blank_layout)
     set_slide_background(slide5)
@@ -544,7 +544,7 @@ def build_deck(output_pptx_path):
     add_footer(slide5, 5)
 
     # Left Column: Potential Impact & Benefits
-    left_impact = slide5.shapes.add_textbox(Inches(0.6), Inches(1.15), Inches(6.4), Inches(5.6))
+    left_impact = slide5.shapes.add_textbox(Inches(0.6), Inches(1.15), Inches(6.2), Inches(5.6))
     tf5 = left_impact.text_frame
     tf5.word_wrap = True
 
@@ -600,9 +600,8 @@ def build_deck(output_pptx_path):
         r2.font.color.rgb = COLOR_TEXT_MAIN
         r2.font.size = Pt(11)
 
-    # Right Column: Command Center Frame & Image
-    # Box title banner
-    banner = slide5.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(7.3), Inches(1.2), Inches(5.5), Inches(0.55))
+    # Right Column: Real App Command Center Frame & Screen
+    banner = slide5.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(7.1), Inches(1.2), Inches(5.7), Inches(0.55))
     banner.fill.solid()
     banner.fill.fore_color.rgb = COLOR_WHITE
     banner.line.color.rgb = COLOR_TEXT_MAIN
@@ -617,9 +616,9 @@ def build_deck(output_pptx_path):
     p.font.bold = True
     p.font.color.rgb = COLOR_TEXT_MAIN
 
-    # Preview Image
-    if os.path.exists(COMMAND_PREVIEW):
-        slide5.shapes.add_picture(COMMAND_PREVIEW, Inches(7.3), Inches(1.9), width=Inches(5.5))
+    # REAL APP DESKTOP SCREENSHOT
+    if os.path.exists(REAL_APP_DESKTOP):
+        slide5.shapes.add_picture(REAL_APP_DESKTOP, Inches(7.1), Inches(1.9), width=Inches(5.7))
 
     # ---------------------------------------------------------
     # SLIDE 6: Research and References
