@@ -2,7 +2,7 @@
 <html lang="en" class="dark">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>VayuCoupler</title>
   
   <link rel="manifest" href="/static/manifest.json?v=6">
@@ -17,36 +17,31 @@
   <link rel="stylesheet" href="/static/css/styles.css?v=13">
   <link rel="stylesheet" href="/static/css/mobile.css?v=13">
 
+
   <script>
     (function() {
       try {
         var params = new URLSearchParams(window.location.search);
         var urlTheme = params.get('theme');
         if (urlTheme) {
-          localStorage.setItem('vayu_theme', urlTheme);
-        }
-        var t = localStorage.getItem('vayu_theme') || 'dark';
-        if (t === 'light') {
-          document.documentElement.classList.add('light-theme');
-          document.documentElement.classList.remove('dark');
+          if (urlTheme === 'light') document.documentElement.classList.add('light-theme');
+          else document.documentElement.classList.remove('light-theme');
         } else {
-          document.documentElement.classList.remove('light-theme');
-          document.documentElement.classList.add('dark');
+          var saved = localStorage.getItem('vayucoupler_theme');
+          if (saved === 'light') document.documentElement.classList.add('light-theme');
         }
       } catch (e) {}
     })();
   </script>
   
-  <!-- Leaflet.js Interactive Geospatial Map Engine -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  <!-- Leaflet CSS & JS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   
-  <!-- Font: Inter (all weights) – system-ui fallback stack -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  
-  <!-- Tailwind CSS -->
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -131,9 +126,33 @@
     #panel-home { background: #0A0B0A; }
     #home-aqi-val { line-height: 1; }
 
-    /* Hide desktop tab nav + old mobile nav by default */
+    body {
+      padding-bottom: max(calc(env(safe-area-inset-bottom, 0px) + 72px), 72px);
+    }
+
+    /* Fixed Phone Bottom Navigation Dock */
+    #vayu-bottom-nav {
+      padding-bottom: max(env(safe-area-inset-bottom, 6px), 6px);
+      box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.65);
+    }
+
+    .bnav-btn {
+      touch-action: manipulation;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    
+    /* Smooth phone scrolling & touch targets */
+    html, body {
+      max-width: 100%;
+      overflow-x: hidden;
+      overscroll-behavior-y: none;
+      -webkit-overflow-scrolling: touch;
+      touch-action: manipulation;
+    }
+
+    /* Hide desktop tab nav by default */
     #vayu-tab-nav-row { display: none !important; }
-    .mobile-nav-bar { display: none !important; }
 
     /* Hide time-travel scrubber from main view; it can be shown from technical panel */
     #time-travel-scrubber-section { display: none !important; }
@@ -3170,9 +3189,11 @@
     </div>
   </div>
 
-  <!-- ================= MANUAL STATION PICKER MODAL ================= -->
-  <div id="station-picker-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-3 sm:p-4">
-    <div class="surface-panel p-4 sm:p-6 rounded-2xl max-w-lg w-full border border-[#1c1f1c] shadow-2xl relative flex flex-col gap-3 max-h-[90vh]">
+  <!-- ================= MANUAL STATION PICKER MODAL (PHONE BOTTOM SHEET) ================= -->
+  <div id="station-picker-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="surface-panel p-4 sm:p-6 rounded-t-3xl sm:rounded-2xl max-w-lg w-full border-t sm:border border-[#1c1f1c] shadow-2xl relative flex flex-col gap-3 max-h-[85vh] sm:max-h-[90vh]">
+      <!-- Mobile Pull Handle -->
+      <div class="w-12 h-1 bg-white/20 rounded-full mx-auto -mt-1 mb-1 sm:hidden"></div>
       <div class="flex items-center justify-between pb-2.5 border-b border-[#1c1f1c]">
         <div>
           <h3 class="text-base sm:text-lg font-bold text-white font-serif-display flex items-center gap-2">
@@ -3240,45 +3261,46 @@
   <header class="sticky top-0 z-50 bg-[#0A0B0A]/98 backdrop-blur-xl border-b border-[#1C201C] w-full max-w-full overflow-hidden" id="vayu-main-header">
 
     <!-- Primary Row: Hamburger | Brand | Location | GPS -->
-    <div class="max-w-screen-md mx-auto px-4 py-3 flex items-center gap-3 w-full">
+    <div class="max-w-screen-md mx-auto px-2.5 sm:px-4 py-2 sm:py-2.5 flex items-center justify-between gap-1.5 sm:gap-2.5 w-full">
 
-      <!-- 3-line Hamburger -->
-      <button id="vayu-hamburger-btn" onclick="openHamburgerMenu()" aria-label="Open menu"
-        class="w-10 h-10 flex flex-col items-center justify-center gap-[5px] rounded-xl hover:bg-[#131513] active:bg-[#191C19] transition shrink-0">
-        <span class="w-5 h-[2px] bg-[#EEF0EC] rounded-full block"></span>
-        <span class="w-5 h-[2px] bg-[#EEF0EC] rounded-full block"></span>
-        <span class="w-5 h-[2px] bg-[#EEF0EC] rounded-full block"></span>
-      </button>
+      <!-- Left: Hamburger + Brand -->
+      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        <button id="vayu-hamburger-btn" onclick="openHamburgerMenu()" aria-label="Open menu"
+          class="w-9 h-9 flex flex-col items-center justify-center gap-[4px] rounded-xl hover:bg-[#131513] active:bg-[#191C19] transition shrink-0 cursor-pointer">
+          <span class="w-4 h-[2px] bg-[#EEF0EC] rounded-full block"></span>
+          <span class="w-4 h-[2px] bg-[#EEF0EC] rounded-full block"></span>
+          <span class="w-4 h-[2px] bg-[#EEF0EC] rounded-full block"></span>
+        </button>
 
-      <!-- Brand -->
-      <div class="flex items-center gap-2 shrink-0">
-        <img src="/static/icon-192.png?v=6" class="w-7 h-7 rounded-xl object-cover">
-        <span class="text-sm font-semibold text-white tracking-tight">VayuCoupler</span>
+        <div class="flex items-center gap-1.5 shrink-0 cursor-pointer" onclick="vayuNavigateTo('home')">
+          <img src="/static/icon-192.png?v=6" class="w-6 h-6 sm:w-7 sm:h-7 rounded-xl object-cover">
+          <span class="text-xs sm:text-sm font-bold text-white tracking-tight">VayuCoupler</span>
+        </div>
       </div>
 
-      <!-- Spacer -->
-      <div class="flex-1"></div>
+      <!-- Right: AQI + Location + GPS -->
+      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        <!-- Location pill (shown on tablet/desktop, hidden on phone since hero displays it) -->
+        <button onclick="openStationPickerModal()" id="header-location-pill"
+          class="hidden sm:flex items-center gap-1 text-xs font-medium text-[#EEF0EC] bg-[#131513] hover:bg-[#191C19] border border-[#262A26] px-2.5 py-1.5 rounded-xl transition max-w-[140px] shrink-0 cursor-pointer">
+          <span class="w-1.5 h-1.5 rounded-full bg-[#8FFFB0] animate-pulse shrink-0"></span>
+          <span id="header-station-text" class="truncate max-w-[110px]">Punjabi Bagh</span>
+        </button>
 
-      <!-- AQI badge (compact) -->
-      <div id="header-aqi-badge" class="px-2.5 py-1 rounded-xl badge-blue flex items-center gap-1 text-xs font-semibold shadow-sm shrink-0">
-        <span id="header-aqi-val">--</span>
-        <span class="text-[9px] uppercase hidden sm:inline" id="header-aqi-severity"></span>
+        <!-- AQI badge (compact) -->
+        <div id="header-aqi-badge" class="px-2.5 py-1 rounded-xl badge-blue flex items-center gap-1 text-xs font-bold shadow-sm shrink-0">
+          <span id="header-aqi-val">--</span>
+          <span class="text-[9px] uppercase hidden sm:inline" id="header-aqi-severity"></span>
+        </div>
+
+        <!-- GPS refresh -->
+        <button onclick="refreshGPSLocation()"
+          class="w-8 h-8 rounded-xl bg-[#131513] hover:bg-[#191C19] border border-[#262A26] flex items-center justify-center transition shrink-0 cursor-pointer" title="Auto-detect my location">
+          <svg class="w-3.5 h-3.5 text-[#8FFFB0]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+          </svg>
+        </button>
       </div>
-
-      <!-- Location pill -->
-      <button onclick="openStationPickerModal()" id="header-location-pill"
-        class="flex items-center gap-1.5 text-xs font-medium text-[#EEF0EC] bg-[#131513] hover:bg-[#191C19] border border-[#262A26] px-2.5 py-2 rounded-xl transition max-w-[130px] sm:max-w-none shrink-0">
-        <span class="w-1.5 h-1.5 rounded-full bg-[#8FFFB0] animate-pulse shrink-0"></span>
-        <span id="header-station-text" class="truncate max-w-[80px] sm:max-w-[140px]">Punjabi Bagh</span>
-      </button>
-
-      <!-- GPS refresh -->
-      <button onclick="refreshGPSLocation()"
-        class="w-9 h-9 rounded-xl bg-[#131513] hover:bg-[#191C19] border border-[#262A26] flex items-center justify-center transition shrink-0" title="Auto-detect my location">
-        <svg class="w-4 h-4 text-[#8FFFB0]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
-        </svg>
-      </button>
     </div>
 
     <!-- Hidden desktop tab nav (kept for JS compat) -->
@@ -3398,8 +3420,8 @@
     </div>
   </div>
 
-  <!-- ================= MAIN CONTENT ================= -->
-  <main class="flex-1 max-w-[1720px] w-full mx-auto p-2.5 sm:p-5 flex flex-col gap-3 sm:gap-6 min-w-0 overflow-x-hidden">
+  <!-- ================= MAIN CONTENT (PHONE COMPACT) ================= -->
+  <main class="flex-1 max-w-md sm:max-w-xl md:max-w-3xl lg:max-w-4xl w-full mx-auto p-2.5 sm:p-4 flex flex-col gap-3 sm:gap-5 min-w-0 overflow-x-hidden">
 
     <!-- ================= 2. TAB PANELS ================= -->
     
@@ -3447,35 +3469,35 @@
       </div><!-- /flex-1 hero -->
 
       <!-- ---- Simple 3-Day Forecast Strip ---- -->
-      <div class="px-5 pb-8">
-        <div class="bg-[#0E100E] rounded-2xl border border-[#1C201C] p-4">
+      <div class="px-2 sm:px-5 pb-6">
+        <div class="bg-[#0E100E] rounded-2xl border border-[#1C201C] p-3 sm:p-4">
 
-          <div class="flex items-center justify-between mb-3">
-            <span class="text-xs font-semibold text-[#8C948B] uppercase tracking-wider">3-Day Forecast</span>
-            <div class="flex items-center gap-1.5 text-[11px] font-medium" id="home-trend-line">
-              <span id="home-trend-icon" class="text-sm">→</span>
+          <div class="flex items-center justify-between mb-2.5 sm:mb-3">
+            <span class="text-[11px] sm:text-xs font-semibold text-[#8C948B] uppercase tracking-wider">3-Day Forecast</span>
+            <div class="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-[11px] font-medium" id="home-trend-line">
+              <span id="home-trend-icon" class="text-xs sm:text-sm">→</span>
               <span id="home-trend-text" class="text-[#8C948B]">Calculating…</span>
             </div>
           </div>
 
-          <div class="grid grid-cols-3 gap-2.5">
+          <div class="grid grid-cols-3 gap-1.5 sm:gap-2.5">
             <!-- +24h -->
-            <div class="home-fc-card flex flex-col items-center gap-2 p-3 rounded-xl bg-[#0A0B0A] border border-[#1C201C]">
-              <span class="text-[11px] font-medium text-[#8C948B]">Tomorrow</span>
-              <span class="text-3xl font-semibold text-[#EEF0EC]" id="home-fc-24h-val">--</span>
-              <span id="home-fc-24h-cat" class="text-[10px] font-semibold px-2.5 py-0.5 rounded-full bg-[#131513] text-[#8C948B]">--</span>
+            <div class="home-fc-card flex flex-col items-center gap-1.5 p-2 sm:p-3 rounded-xl bg-[#0A0B0A] border border-[#1C201C] min-w-0">
+              <span class="text-[10px] sm:text-[11px] font-medium text-[#8C948B] truncate">Tomorrow</span>
+              <span class="text-2xl sm:text-3xl font-semibold text-[#EEF0EC]" id="home-fc-24h-val">--</span>
+              <span id="home-fc-24h-cat" class="text-[9px] sm:text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#131513] text-[#8C948B] truncate">--</span>
             </div>
             <!-- +48h -->
-            <div class="home-fc-card flex flex-col items-center gap-2 p-3 rounded-xl bg-[#0A0B0A] border border-[#1C201C]">
-              <span class="text-[11px] font-medium text-[#7FD4FF]">Day after</span>
-              <span class="text-3xl font-semibold text-[#EEF0EC]" id="home-fc-48h-val">--</span>
-              <span id="home-fc-48h-cat" class="text-[10px] font-semibold px-2.5 py-0.5 rounded-full bg-[#131513] text-[#8C948B]">--</span>
+            <div class="home-fc-card flex flex-col items-center gap-1.5 p-2 sm:p-3 rounded-xl bg-[#0A0B0A] border border-[#1C201C] min-w-0">
+              <span class="text-[10px] sm:text-[11px] font-medium text-[#7FD4FF] truncate">Day after</span>
+              <span class="text-2xl sm:text-3xl font-semibold text-[#EEF0EC]" id="home-fc-48h-val">--</span>
+              <span id="home-fc-48h-cat" class="text-[9px] sm:text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#131513] text-[#8C948B] truncate">--</span>
             </div>
             <!-- +72h -->
-            <div class="home-fc-card flex flex-col items-center gap-2 p-3 rounded-xl bg-[#0A0B0A] border border-[#1C201C]">
-              <span class="text-[11px] font-medium text-[#8C948B]">+3 Days</span>
-              <span class="text-3xl font-semibold text-[#EEF0EC]" id="home-fc-72h-val">--</span>
-              <span id="home-fc-72h-cat" class="text-[10px] font-semibold px-2.5 py-0.5 rounded-full bg-[#131513] text-[#8C948B]">--</span>
+            <div class="home-fc-card flex flex-col items-center gap-1.5 p-2 sm:p-3 rounded-xl bg-[#0A0B0A] border border-[#1C201C] min-w-0">
+              <span class="text-[10px] sm:text-[11px] font-medium text-[#8C948B] truncate">+3 Days</span>
+              <span class="text-2xl sm:text-3xl font-semibold text-[#EEF0EC]" id="home-fc-72h-val">--</span>
+              <span id="home-fc-72h-cat" class="text-[9px] sm:text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#131513] text-[#8C948B] truncate">--</span>
             </div>
           </div>
 
@@ -5677,32 +5699,75 @@
       </div>
     </div>
 
-  <!-- ================= MOBILE FIXED BOTTOM NAVIGATION BAR ================= -->
-  <nav class="md:hidden mobile-nav-bar pb-safe" aria-label="Mobile Navigation" style="display:none!important;">
-    <button onclick="switchTab('overview')" id="mob-tab-overview" class="mobile-nav-item active" title="Command Center">
-      <svg class="svg-icon-line" viewBox="0 0 24 24" stroke="currentColor"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-      <span>Overview</span>
-    </button>
-    <button onclick="switchTab('weather')" id="mob-tab-weather" class="mobile-nav-item" title="Live Weather">
-      <svg class="svg-icon-line" viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
-      <span>Weather</span>
-    </button>
-    <button onclick="switchTab('windows')" id="mob-tab-windows" class="mobile-nav-item" title="Clean Windows">
-      <svg class="svg-icon-line" viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-      <span>Windows</span>
-    </button>
-    <button onclick="switchTab('grap')" id="mob-tab-grap" class="mobile-nav-item" title="Predictive Action Plan">
-      <svg class="svg-icon-line" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-      <span>GRAP</span>
-    </button>
-    <button onclick="switchTab('commute')" id="mob-tab-commute" class="mobile-nav-item" title="Safe Commute">
-      <svg class="svg-icon-line" viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
-      <span>Commute</span>
-    </button>
-    <button onclick="switchTab('copilot')" id="mob-tab-copilot" class="mobile-nav-item" title="VayuAI Assistant">
-      <svg class="svg-icon-line" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
-      <span>VayuAI</span>
-    </button>
+  <!-- ================= PHONE-FIRST BOTTOM NAVIGATION DOCK ================= -->
+  <nav id="vayu-bottom-nav" class="fixed bottom-0 inset-x-0 z-50 bg-[#0A0C0A]/96 backdrop-blur-2xl border-t border-[#1C201C] pb-safe" aria-label="Bottom App Navigation">
+    <div class="w-full max-w-md sm:max-w-xl mx-auto px-1 sm:px-2 py-1.5 grid grid-cols-5 gap-1">
+      
+      <!-- 1. Home -->
+      <button type="button" onclick="vayuNavigateTo('home')" id="bnav-home"
+        class="bnav-btn w-full py-1 px-0.5 flex flex-col items-center justify-center gap-1 rounded-xl transition cursor-pointer active:scale-95 text-[#8FFFB0] font-bold">
+        <div class="bnav-icon-box w-7 h-7 rounded-xl flex items-center justify-center bg-[#8FFFB0]/15 text-[#8FFFB0] shadow-[0_0_12px_rgba(143,255,176,0.3)] transition">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
+        </div>
+        <span class="text-[10px] tracking-tight">Home</span>
+      </button>
+
+      <!-- 2. Map & Data -->
+      <button type="button" onclick="vayuNavigateTo('overview')" id="bnav-overview"
+        class="bnav-btn w-full py-1 px-0.5 flex flex-col items-center justify-center gap-1 rounded-xl transition cursor-pointer active:scale-95 text-[#8C948B] hover:text-[#EEF0EC]">
+        <div class="bnav-icon-box w-7 h-7 rounded-xl flex items-center justify-center transition text-[#8C948B]">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/>
+            <line x1="9" y1="3" x2="9" y2="18"/>
+            <line x1="15" y1="6" x2="15" y2="21"/>
+          </svg>
+        </div>
+        <span class="text-[10px] tracking-tight">Map</span>
+      </button>
+
+      <!-- 3. Safe Commute Route Finder -->
+      <button type="button" onclick="vayuNavigateTo('commute')" id="bnav-commute"
+        class="bnav-btn w-full py-1 px-0.5 flex flex-col items-center justify-center gap-1 rounded-xl transition cursor-pointer active:scale-95 text-[#8C948B] hover:text-[#EEF0EC]">
+        <div class="bnav-icon-box w-7 h-7 rounded-xl flex items-center justify-center transition text-[#8C948B]">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/>
+            <circle cx="7" cy="17" r="2"/>
+            <path d="M9 17h6"/>
+            <circle cx="17" cy="17" r="2"/>
+          </svg>
+        </div>
+        <span class="text-[10px] tracking-tight">Commute</span>
+      </button>
+
+      <!-- 4. VayuAI Assistant -->
+      <button type="button" onclick="vayuNavigateTo('copilot')" id="bnav-copilot"
+        class="bnav-btn w-full py-1 px-0.5 flex flex-col items-center justify-center gap-1 rounded-xl transition cursor-pointer active:scale-95 text-[#8C948B] hover:text-[#EEF0EC]">
+        <div class="bnav-icon-box w-7 h-7 rounded-xl flex items-center justify-center transition text-[#8C948B]">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <rect width="18" height="18" x="3" y="3" rx="2"/>
+            <path d="m9 12 2 2 4-4"/>
+          </svg>
+        </div>
+        <span class="text-[10px] tracking-tight">VayuAI</span>
+      </button>
+
+      <!-- 5. More Menu -->
+      <button type="button" onclick="openHamburgerMenu()" id="bnav-more"
+        class="bnav-btn w-full py-1 px-0.5 flex flex-col items-center justify-center gap-1 rounded-xl transition cursor-pointer active:scale-95 text-[#8C948B] hover:text-[#EEF0EC]">
+        <div class="bnav-icon-box w-7 h-7 rounded-xl flex items-center justify-center transition text-[#8C948B]">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <line x1="4" x2="20" y1="12" y2="12"/>
+            <line x1="4" x2="20" y1="6" y2="6"/>
+            <line x1="4" x2="20" y1="18" y2="18"/>
+          </svg>
+        </div>
+        <span class="text-[10px] tracking-tight">More</span>
+      </button>
+
+    </div>
   </nav>
 
   <!-- ================= MOBILE APP DOWNLOAD / INSTALL MODAL ================= -->
@@ -10947,6 +11012,9 @@
       }
 
       updateNavTabStyles();
+      if (typeof syncBottomNav === 'function') {
+        syncBottomNav(tabId);
+      }
       if (window.lucide) {
         if (target) lucide.createIcons({ root: target });
         else lucide.createIcons();
@@ -14085,8 +14153,39 @@
       caqm:        'CAQM Dashboard',
     };
 
+    // ---- Bottom navigation active sync ----
+    function syncBottomNav(tabId) {
+      var navKeys = ['home', 'overview', 'commute', 'copilot'];
+      var isMoreTab = ['weather', 'windows', 'planner', 'grap', 'attribution', 'dispatches', 'citizen', 'caqm', 'interstate'].indexOf(tabId) !== -1;
+      navKeys.forEach(function(k) {
+        var btn = document.getElementById('bnav-' + k);
+        if (!btn) return;
+        var box = btn.querySelector('.bnav-icon-box');
+        var isCurrent = (k === tabId) || (k === 'copilot' && (tabId === 'vayuai' || tabId === 'copilot'));
+        if (isCurrent) {
+          btn.className = 'bnav-btn w-full py-1 px-0.5 flex flex-col items-center justify-center gap-1 rounded-xl transition cursor-pointer active:scale-95 text-[#8FFFB0] font-bold';
+          if (box) box.className = 'bnav-icon-box w-7 h-7 rounded-xl flex items-center justify-center bg-[#8FFFB0]/15 text-[#8FFFB0] shadow-[0_0_12px_rgba(143,255,176,0.3)] transition';
+        } else {
+          btn.className = 'bnav-btn w-full py-1 px-0.5 flex flex-col items-center justify-center gap-1 rounded-xl transition cursor-pointer active:scale-95 text-[#8C948B] hover:text-[#EEF0EC]';
+          if (box) box.className = 'bnav-icon-box w-7 h-7 rounded-xl flex items-center justify-center transition text-[#8C948B]';
+        }
+      });
+      var moreBtn = document.getElementById('bnav-more');
+      if (moreBtn) {
+        var moreBox = moreBtn.querySelector('.bnav-icon-box');
+        if (isMoreTab) {
+          moreBtn.className = 'bnav-btn w-full py-1 px-0.5 flex flex-col items-center justify-center gap-1 rounded-xl transition cursor-pointer active:scale-95 text-[#8FFFB0] font-bold';
+          if (moreBox) moreBox.className = 'bnav-icon-box w-7 h-7 rounded-xl flex items-center justify-center bg-[#8FFFB0]/15 text-[#8FFFB0] shadow-[0_0_12px_rgba(143,255,176,0.3)] transition';
+        } else {
+          moreBtn.className = 'bnav-btn w-full py-1 px-0.5 flex flex-col items-center justify-center gap-1 rounded-xl transition cursor-pointer active:scale-95 text-[#8C948B] hover:text-[#EEF0EC]';
+          if (moreBox) moreBox.className = 'bnav-icon-box w-7 h-7 rounded-xl flex items-center justify-center transition text-[#8C948B]';
+        }
+      }
+    }
+
     // ---- Navigation helper ----
     function vayuNavigateTo(tabId) {
+      syncBottomNav(tabId);
       if (tabId === 'home') {
         document.querySelectorAll('.tab-panel').forEach(function(p) {
           p.classList.add('hidden');
