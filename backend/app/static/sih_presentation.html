@@ -401,27 +401,59 @@
       color: var(--text-main);
     }
 
+    @page {
+      size: 16in 9in;
+      margin: 0;
+    }
+
     @media print {
-      body {
-        overflow: visible;
-        height: auto;
+      html, body {
+        width: 100% !important;
+        height: auto !important;
+        min-height: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #070d1e !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        overflow: visible !important;
+        display: block !important;
+        position: static !important;
       }
       .pres-header, .pres-controls, .ambient-glow {
         display: none !important;
       }
       .stage {
-        padding: 0;
-        display: block;
+        padding: 0 !important;
+        margin: 0 !important;
+        display: block !important;
+        width: 100% !important;
+        height: auto !important;
+        overflow: visible !important;
+        position: static !important;
       }
       .slide {
         display: flex !important;
-        page-break-after: always;
-        height: 100vh;
-        max-height: none;
-        max-width: none;
-        border: none;
-        box-shadow: none;
-        border-radius: 0;
+        page-break-after: always !important;
+        page-break-inside: avoid !important;
+        break-after: page !important;
+        break-inside: avoid !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        max-height: 100vh !important;
+        border: none !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        padding: 36px 48px !important;
+        background: #070d1e !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        box-sizing: border-box !important;
+        overflow: hidden !important;
+      }
+      .slide:last-child {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
       }
     }
   </style>
@@ -437,6 +469,9 @@
     </div>
     <div class="pres-header-right">
       <span class="slide-counter" id="slideCounter">Page 1 / 6</span>
+      <a href="VayuCoupler_SIH2026_AtomX_Presentation.pdf" download class="btn-action">
+        📄 Download .PDF
+      </a>
       <a href="VayuCoupler_SIH2026_AtomX_Presentation.pptx" download class="btn-action">
         📥 Download .PPTX
       </a>
