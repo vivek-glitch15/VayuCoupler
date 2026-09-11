@@ -5586,8 +5586,8 @@
                 <span class="text-[9px] bg-emerald-500 text-earth-950 font-bold px-2 py-0.5 rounded-full font-sans shadow-sm">BEST CHOICE</span>
               </div>
               <div class="flex items-baseline gap-2 mt-1">
-                <div class="text-2xl font-bold text-emerald-300" id="route-card-0-aqi">AQI 68</div>
-                <div class="text-xs text-emerald-400 font-semibold">(Cleanest)</div>
+                <div class="text-2xl font-bold text-emerald-300" id="route-card-0-aqi">AQI 142</div>
+                <div class="text-xs text-emerald-400 font-semibold" id="route-card-0-status">(Cleanest Corridor)</div>
               </div>
               <div class="text-xs text-emerald-200/90 font-sans mt-0.5" id="route-card-0-sub">
                 Green Ridge Buffer &amp; Metro Viaduct Corridor
@@ -5641,8 +5641,8 @@
                 <span class="text-[9px] bg-earth-800 text-amber-300 font-medium px-2 py-0.5 rounded-full font-sans">FASTEST</span>
               </div>
               <div class="flex items-baseline gap-2 mt-1">
-                <div class="text-2xl font-bold text-amber-300" id="route-card-1-aqi">AQI 142</div>
-                <div class="text-xs text-amber-400 font-semibold">(Moderate Smog)</div>
+                <div class="text-2xl font-bold text-amber-300" id="route-card-1-aqi">AQI 270</div>
+                <div class="text-xs text-amber-400 font-semibold" id="route-card-1-status">(Direct Arterial)</div>
               </div>
               <div class="text-xs text-earth-300 font-sans mt-0.5" id="route-card-1-sub">
                 Main Ring Road Arterial Highway
@@ -5695,8 +5695,8 @@
                 <span class="text-[9px] bg-rose-950 text-rose-300 border border-rose-800 font-bold px-2 py-0.5 rounded-full font-sans">HIGH EXPOSURE</span>
               </div>
               <div class="flex items-baseline gap-2 mt-1">
-                <div class="text-2xl font-bold text-rose-400" id="route-card-2-aqi">AQI 280</div>
-                <div class="text-xs text-rose-400 font-semibold">(Severe Smog)</div>
+                <div class="text-2xl font-bold text-rose-400" id="route-card-2-aqi">AQI 415</div>
+                <div class="text-xs text-rose-400 font-semibold" id="route-card-2-status">(Severe Smog)</div>
               </div>
               <div class="text-xs text-earth-300 font-sans mt-0.5" id="route-card-2-sub">
                 Industrial Freight &amp; Commercial Bottlenecks
@@ -6144,7 +6144,7 @@
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         checkIfInstalled();
-        navigator.serviceWorker.register('/static/sw.js?v=27').then(reg => {
+        navigator.serviceWorker.register('/static/sw.js?v=30').then(reg => {
           reg.update();
           reg.onupdatefound = () => {
             const installing = reg.installing;
@@ -12206,24 +12206,35 @@
       // Route 0: Eco-Shield Clean Corridor
       const r0_dist = (rawDistKm * 1.15).toFixed(1);
       const r0_time = Math.round(parseFloat(r0_dist) * 1.8 * timeMultiplier);
-      const r0_aqi = Math.max(35, Math.round(baseAQI * 0.48 * (diurnal.factor >= 1.0 ? (1 + (diurnal.factor - 1) * 0.6) : diurnal.factor)));
+      const r0_aqi = Math.max(35, Math.round(baseAQI * 0.50 * (diurnal.factor >= 1.0 ? (1 + (diurnal.factor - 1) * 0.5) : diurnal.factor)));
       const r0_dose = Math.max(8, Math.round(r0_aqi * 0.28 * modeFactor * timeFactor));
 
       // Route 1: Standard Direct Arterial
       const r1_dist = (rawDistKm * 1.02).toFixed(1);
       const r1_time = Math.round(parseFloat(r1_dist) * 1.7 * timeMultiplier);
-      const r1_aqi = Math.max(80, Math.round(baseAQI * 0.95 * diurnal.factor));
+      const r1_aqi = Math.max(50, Math.round(baseAQI * 0.95 * diurnal.factor));
       const r1_dose = Math.max(25, Math.round(r1_aqi * 0.45 * modeFactor * timeFactor));
 
       // Route 2: Congested / Industrial Bypass
       const r2_dist = (rawDistKm * 1.25).toFixed(1);
       const r2_time = Math.round(parseFloat(r2_dist) * 2.3 * timeMultiplier);
-      const r2_aqi = Math.min(495, Math.round(baseAQI * 1.85 * (diurnal.factor >= 1.0 ? diurnal.factor : (1 - (1 - diurnal.factor) * 0.5))));
-      const r2_dose = Math.max(60, Math.round(r2_aqi * 0.65 * modeFactor * timeFactor));
+      const r2_aqi = Math.min(495, Math.max(r1_aqi + 25, Math.round(baseAQI * 1.28 * (diurnal.factor >= 1.0 ? diurnal.factor : (1 - (1 - diurnal.factor) * 0.4)))));
+      const r2_dose = Math.max(50, Math.round(r2_aqi * 0.65 * modeFactor * timeFactor));
+
+      function getRouteSeverityText(aqi) {
+        if (aqi <= 50) return '(Good Air)';
+        if (aqi <= 100) return '(Satisfactory)';
+        if (aqi <= 200) return '(Moderate Smog)';
+        if (aqi <= 300) return '(Poor Air)';
+        if (aqi <= 400) return '(Very Poor)';
+        return '(Severe Smog)';
+      }
 
       // Update Card 0
       const el0_aqi = document.getElementById('route-card-0-aqi');
       if (el0_aqi) el0_aqi.innerText = `AQI ${r0_aqi}`;
+      const el0_st = document.getElementById('route-card-0-status');
+      if (el0_st) el0_st.innerText = getRouteSeverityText(r0_aqi);
       const el0_dose = document.getElementById('route-card-0-dose');
       if (el0_dose) el0_dose.innerText = `${r0_dose} μg PM2.5`;
       const el0_time = document.getElementById('route-card-0-time');
@@ -12236,6 +12247,8 @@
       // Update Card 1
       const el1_aqi = document.getElementById('route-card-1-aqi');
       if (el1_aqi) el1_aqi.innerText = `AQI ${r1_aqi}`;
+      const el1_st = document.getElementById('route-card-1-status');
+      if (el1_st) el1_st.innerText = getRouteSeverityText(r1_aqi);
       const el1_dose = document.getElementById('route-card-1-dose');
       if (el1_dose) el1_dose.innerText = `${r1_dose} μg PM2.5`;
       const el1_time = document.getElementById('route-card-1-time');
@@ -12248,6 +12261,8 @@
       // Update Card 2
       const el2_aqi = document.getElementById('route-card-2-aqi');
       if (el2_aqi) el2_aqi.innerText = `AQI ${r2_aqi}`;
+      const el2_st = document.getElementById('route-card-2-status');
+      if (el2_st) el2_st.innerText = getRouteSeverityText(r2_aqi);
       const el2_dose = document.getElementById('route-card-2-dose');
       if (el2_dose) el2_dose.innerText = `${r2_dose} μg PM2.5`;
       const el2_time = document.getElementById('route-card-2-time');
