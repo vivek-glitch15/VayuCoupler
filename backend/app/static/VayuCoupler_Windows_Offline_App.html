@@ -5210,6 +5210,9 @@
             </div>
           </div>
           <div class="flex items-center gap-2 text-xs">
+            <span id="commute-routing-badge" class="px-2.5 py-1 rounded-xl bg-emerald-950/80 text-emerald-300 border border-emerald-700/80 font-mono text-[11px] flex items-center gap-1.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> OSRM Live Road Network
+            </span>
             <span class="px-2.5 py-1 rounded-xl bg-cyan-950/90 text-cyan-300 border border-cyan-700 font-mono">
               Live Meteorology: NW Wind 12 km/h
             </span>
@@ -12105,11 +12108,67 @@
       calcCommuteRoute();
     }
 
-    function calcCommuteRoute() {
+    window.VayuOSRMRouteCache = window.VayuOSRMRouteCache || {};
+    let commuteRouteRequestId = 0;
+
+    function getDelhiTrafficMultiplier(clockVal) {
+      let mins = 14 * 60;
+      try {
+        const parts = (clockVal || '14:00').split(':');
+        mins = parseInt(parts[0], 10) * 60 + parseInt(parts[1], 10);
+      } catch(e) {}
+
+      // 08:00 (480m) to 10:30 (630m) - Morning Rush Peak
+      if (mins >= 480 && mins <= 630) {
+        const p = Math.sin(((mins - 480) / 150) * Math.PI);
+        return 1.45 + 0.35 * p; // 1.45x to 1.80x
+      }
+      // 11:00 (660m) to 16:30 (990m) - Midday Flow
+      if (mins > 660 && mins < 990) {
+        return 1.18;
+      }
+      // 17:00 (1020m) to 20:45 (1245m) - Evening Rush Peak
+      if (mins >= 1020 && mins <= 1245) {
+        const p = Math.sin(((mins - 1020) / 225) * Math.PI);
+        return 1.55 + 0.40 * p; // 1.55x to 1.95x
+      }
+      // 22:30 (1350m) to 06:00 (360m) - Free Flow Night
+      if (mins >= 1350 || mins <= 360) {
+        return 0.98;
+      }
+      // Shoulder hours
+      return 1.32;
+    }
+
+    async function fetchOSRMRoute(oCoord, dCoord) {
+      const cacheKey = `${oCoord.lat.toFixed(4)},${oCoord.lon.toFixed(4)}_${dCoord.lat.toFixed(4)},${dCoord.lon.toFixed(4)}`;
+      if (window.VayuOSRMRouteCache && window.VayuOSRMRouteCache[cacheKey]) {
+        return window.VayuOSRMRouteCache[cacheKey];
+      }
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 2600);
+        const url = `https://router.project-osrm.org/route/v1/driving/${oCoord.lon},${oCoord.lat};${dCoord.lon},${dCoord.lat}?overview=full&geometries=geojson&alternatives=true`;
+        const resp = await fetch(url, { signal: controller.signal });
+        clearTimeout(timeoutId);
+        if (!resp.ok) return null;
+        const data = await resp.json();
+        if (data && data.code === 'Ok' && data.routes && data.routes.length > 0) {
+          window.VayuOSRMRouteCache[cacheKey] = data.routes;
+          return data.routes;
+        }
+      } catch (err) {
+        // Graceful fallback for offline and network timeout
+      }
+      return null;
+    }
+
+    async function calcCommuteRoute() {
       const originEl = document.getElementById('commute-origin');
       const destEl = document.getElementById('commute-dest');
       if (!originEl || !destEl) return;
 
+      const thisReqId = ++commuteRouteRequestId;
       const originKey = originEl.value;
       const destKey = destEl.value;
       const mode = document.getElementById('commute-mode')?.value || 'car';
@@ -12122,13 +12181,7 @@
       const oCoord = COMMUTE_COORDS[originKey] || { lat: 28.5562, lon: 77.1000, name: originName };
       const dCoord = COMMUTE_COORDS[destKey] || { lat: 28.6315, lon: 77.2167, name: destName };
 
-      // Base straight-line distance
-      const dLat = (dCoord.lat - oCoord.lat) * 111;
-      const dLon = (dCoord.lon - oCoord.lon) * 98;
-      let rawDistKm = Math.sqrt(dLat * dLat + dLon * dLon);
-      if (rawDistKm < 1.5) rawDistKm = 2.4;
-
-      // Calculate true corridor AQI dynamically using real nearby monitoring stations
+      // Helper for Station AQI
       function getNearStationAQI(lat, lon) {
         if (typeof VayuForecastEngine !== 'undefined' && VayuForecastEngine.stations && VayuForecastEngine.stations.length > 0) {
           let minD = Infinity;
@@ -12153,202 +12206,302 @@
       const midLat = (oCoord.lat + dCoord.lat) / 2;
       const midLon = (oCoord.lon + dCoord.lon) / 2;
       const midAQI = getNearStationAQI(midLat, midLon);
-
-      // Spatially interpolated baseline corridor AQI based on origin, corridor transit, and destination
       const baseAQI = Math.round(oAQI * 0.35 + midAQI * 0.30 + dAQI * 0.35);
 
-      // Mode multipliers & speed transit factors
-      let modeFactor = 0.55;
-      let timeMultiplier = 1.0;
-      if (mode === 'car') {
-        modeFactor = 0.55;
-        timeMultiplier = 1.0;
-      } else if (mode === 'two_wheeler') {
-        modeFactor = 1.65;
-        timeMultiplier = 0.9;
-      } else if (mode === 'walking') {
-        modeFactor = 2.40; // High particulate intake due to active physical exertion and zero filtration
-        timeMultiplier = 6.2; // ~4.8 km/h pedestrian walking vs vehicular traffic
-      } else if (mode === 'metro') {
-        modeFactor = 0.40;
-        timeMultiplier = 1.0;
-      } else if (mode === 'bus') {
-        modeFactor = 0.85;
-        timeMultiplier = 1.2;
-      }
+      function renderOutputs(osrm) {
+        // Base straight-line distance
+        const dLat = (dCoord.lat - oCoord.lat) * 111;
+        const dLon = (dCoord.lon - oCoord.lon) * 98;
+        let rawDistKm = Math.sqrt(dLat * dLat + dLon * dLon);
+        if (rawDistKm < 1.5) rawDistKm = 2.4;
 
-      // Time multiplier from diurnal clock physics
-      const timeFactor = diurnal.factor;
-      const timingText = diurnal.timingRec;
+        let baseRoadDist = rawDistKm * 1.18;
+        let baseRoadDurationMins = (baseRoadDist / 42) * 60;
+        let hasOSRM = false;
+        let r0_coords = null;
+        let r1_coords = null;
+        let r2_coords = null;
 
-      // Format clean time label for display (e.g. 02:00 PM)
-      let displayTime = clockVal;
-      try {
-        const parts = clockVal.split(':');
-        const h = parseInt(parts[0], 10);
-        const m = parts[1];
-        const ampm = h >= 12 ? 'PM' : 'AM';
-        const h12 = h % 12 || 12;
-        displayTime = `${h12 < 10 ? '0' + h12 : h12}:${m} ${ampm}`;
-      } catch(e) {}
+        if (osrm && osrm.length > 0) {
+          hasOSRM = true;
+          const primary = osrm[0];
+          baseRoadDist = primary.distance / 1000;
+          baseRoadDurationMins = primary.duration / 60;
+          r1_coords = primary.geometry.coordinates.map(c => [c[1], c[0]]);
 
-      // Format transit time helper (e.g. 32 mins, or 1h 45m if >= 60 mins)
-      function fmtTransit(mins) {
-        if (mins >= 60) {
-          const h = Math.floor(mins / 60);
-          const m = mins % 60;
-          return m > 0 ? `${h}h ${m}m` : `${h}h`;
+          if (osrm.length > 1 && osrm[1].geometry && osrm[1].geometry.coordinates) {
+            r2_coords = osrm[1].geometry.coordinates.map(c => [c[1], c[0]]);
+          }
         }
-        return `${mins} mins`;
-      }
 
-      // 3 Routes calculation:
-      // Route 0: Eco-Shield Clean Corridor
-      const r0_dist = (rawDistKm * 1.15).toFixed(1);
-      const r0_time = Math.round(parseFloat(r0_dist) * 1.8 * timeMultiplier);
-      const r0_aqi = Math.max(35, Math.round(baseAQI * 0.50 * (diurnal.factor >= 1.0 ? (1 + (diurnal.factor - 1) * 0.5) : diurnal.factor)));
-      const r0_dose = Math.max(8, Math.round(r0_aqi * 0.28 * modeFactor * timeFactor));
-
-      // Route 1: Standard Direct Arterial
-      const r1_dist = (rawDistKm * 1.02).toFixed(1);
-      const r1_time = Math.round(parseFloat(r1_dist) * 1.7 * timeMultiplier);
-      const r1_aqi = Math.max(50, Math.round(baseAQI * 0.95 * diurnal.factor));
-      const r1_dose = Math.max(25, Math.round(r1_aqi * 0.45 * modeFactor * timeFactor));
-
-      // Route 2: Congested / Industrial Bypass
-      const r2_dist = (rawDistKm * 1.25).toFixed(1);
-      const r2_time = Math.round(parseFloat(r2_dist) * 2.3 * timeMultiplier);
-      const r2_aqi = Math.min(495, Math.max(r1_aqi + 25, Math.round(baseAQI * 1.28 * (diurnal.factor >= 1.0 ? diurnal.factor : (1 - (1 - diurnal.factor) * 0.4)))));
-      const r2_dose = Math.max(50, Math.round(r2_aqi * 0.65 * modeFactor * timeFactor));
-
-      function getRouteSeverityText(aqi) {
-        if (aqi <= 50) return '(Good Air)';
-        if (aqi <= 100) return '(Satisfactory)';
-        if (aqi <= 200) return '(Moderate Smog)';
-        if (aqi <= 300) return '(Poor Air)';
-        if (aqi <= 400) return '(Very Poor)';
-        return '(Severe Smog)';
-      }
-
-      // Update Card 0
-      const el0_aqi = document.getElementById('route-card-0-aqi');
-      if (el0_aqi) el0_aqi.innerText = `AQI ${r0_aqi}`;
-      const el0_st = document.getElementById('route-card-0-status');
-      if (el0_st) el0_st.innerText = getRouteSeverityText(r0_aqi);
-      const el0_dose = document.getElementById('route-card-0-dose');
-      if (el0_dose) el0_dose.innerText = `${r0_dose} μg PM2.5`;
-      const el0_time = document.getElementById('route-card-0-time');
-      if (el0_time) el0_time.innerText = fmtTransit(r0_time);
-      const el0_distVal = document.getElementById('route-card-0-dist-val');
-      if (el0_distVal) el0_distVal.innerText = `${r0_dist} km`;
-      const el0_dist = document.getElementById('route-card-0-dist');
-      if (el0_dist) el0_dist.innerText = `${r0_dist} km • ${fmtTransit(r0_time)}`;
-
-      // Update Card 1
-      const el1_aqi = document.getElementById('route-card-1-aqi');
-      if (el1_aqi) el1_aqi.innerText = `AQI ${r1_aqi}`;
-      const el1_st = document.getElementById('route-card-1-status');
-      if (el1_st) el1_st.innerText = getRouteSeverityText(r1_aqi);
-      const el1_dose = document.getElementById('route-card-1-dose');
-      if (el1_dose) el1_dose.innerText = `${r1_dose} μg PM2.5`;
-      const el1_time = document.getElementById('route-card-1-time');
-      if (el1_time) el1_time.innerText = fmtTransit(r1_time);
-      const el1_distVal = document.getElementById('route-card-1-dist-val');
-      if (el1_distVal) el1_distVal.innerText = `${r1_dist} km`;
-      const el1_dist = document.getElementById('route-card-1-dist');
-      if (el1_dist) el1_dist.innerText = `${r1_dist} km • ${fmtTransit(r1_time)}`;
-
-      // Update Card 2
-      const el2_aqi = document.getElementById('route-card-2-aqi');
-      if (el2_aqi) el2_aqi.innerText = `AQI ${r2_aqi}`;
-      const el2_st = document.getElementById('route-card-2-status');
-      if (el2_st) el2_st.innerText = getRouteSeverityText(r2_aqi);
-      const el2_dose = document.getElementById('route-card-2-dose');
-      if (el2_dose) el2_dose.innerText = `${r2_dose} μg PM2.5`;
-      const el2_time = document.getElementById('route-card-2-time');
-      if (el2_time) el2_time.innerText = fmtTransit(r2_time);
-      const el2_distVal = document.getElementById('route-card-2-dist-val');
-      if (el2_distVal) el2_distVal.innerText = `${r2_dist} km`;
-      const el2_dist = document.getElementById('route-card-2-dist');
-      if (el2_dist) el2_dist.innerText = `${r2_dist} km • ${fmtTransit(r2_time)}`;
-
-      // Saved percent
-      const savedPct = Math.max(15, Math.round(((r1_dose - r0_dose) / r1_dose) * 100));
-      const elSaved = document.getElementById('commute-saved-pct');
-      if (elSaved) elSaved.innerText = `${savedPct}% Saved`;
-
-      // Verdict
-      const elVerdict = document.getElementById('commute-verdict-text');
-      if (elVerdict) {
-        elVerdict.innerHTML = `Saare raaste compare karke (at <strong>${displayTime}</strong>): <strong>Route A (Eco-Shield Corridor)</strong> me sabse kam AQI (<strong>${r0_aqi}</strong>) hai! Standard route (AQI ${r1_aqi}) ke comparison me is path se travel karne par PM2.5 inhalation <strong>${savedPct}% kam</strong> ho jaata hai.`;
-      }
-      const elTiming = document.getElementById('commute-timing-rec');
-      if (elTiming) elTiming.innerText = timingText;
-
-      // Generate realistic geometric curved coordinates between A and B
-      const latDiff = dCoord.lat - oCoord.lat;
-      const lonDiff = dCoord.lon - oCoord.lon;
-
-      // Normal vector
-      const nx = -lonDiff;
-      const ny = latDiff;
-
-      function createPath(curvFactor, wayCount) {
-        const pts = [[oCoord.lat, oCoord.lon]];
-        for (let i = 1; i < wayCount; i++) {
-          const t = i / wayCount;
-          // Sine curve offset
-          const offset = Math.sin(t * Math.PI) * curvFactor;
-          const ptLat = oCoord.lat + latDiff * t + ny * offset;
-          const ptLon = oCoord.lon + lonDiff * t + nx * offset;
-          pts.push([ptLat, ptLon]);
+        // Mode multipliers & speed transit factors
+        let modeFactor = 0.55;
+        if (mode === 'car') {
+          modeFactor = 0.55;
+        } else if (mode === 'two_wheeler') {
+          modeFactor = 1.65;
+        } else if (mode === 'walking') {
+          modeFactor = 2.40;
+        } else if (mode === 'metro') {
+          modeFactor = 0.40;
+        } else if (mode === 'bus') {
+          modeFactor = 0.85;
         }
-        pts.push([dCoord.lat, dCoord.lon]);
-        return pts;
+
+        // Time multiplier from diurnal clock physics
+        const timeFactor = diurnal.factor;
+        const timingText = diurnal.timingRec;
+        const trafficMult = getDelhiTrafficMultiplier(clockVal);
+
+        // Distances
+        let r0_dist, r1_dist, r2_dist;
+        let r0_base_dur, r1_base_dur, r2_base_dur;
+
+        if (hasOSRM) {
+          r1_dist = baseRoadDist.toFixed(1);
+          r1_base_dur = baseRoadDurationMins;
+
+          r0_dist = (baseRoadDist * 1.06).toFixed(1);
+          r0_base_dur = baseRoadDurationMins * 1.04;
+
+          if (osrm.length > 1) {
+            r2_dist = (osrm[1].distance / 1000).toFixed(1);
+            r2_base_dur = osrm[1].duration / 60;
+          } else {
+            r2_dist = (baseRoadDist * 1.22).toFixed(1);
+            r2_base_dur = baseRoadDurationMins * 1.25;
+          }
+        } else {
+          r0_dist = (rawDistKm * 1.15).toFixed(1);
+          r1_dist = (rawDistKm * 1.02).toFixed(1);
+          r2_dist = (rawDistKm * 1.25).toFixed(1);
+          r0_base_dur = parseFloat(r0_dist) * 1.8;
+          r1_base_dur = parseFloat(r1_dist) * 1.7;
+          r2_base_dur = parseFloat(r2_dist) * 2.3;
+        }
+
+        // Transit duration calculation with Delhi congestion factors
+        let r0_time, r1_time, r2_time;
+        if (mode === 'car') {
+          r1_time = Math.max(8, Math.round(r1_base_dur * trafficMult));
+          r0_time = Math.max(8, Math.round(r0_base_dur * trafficMult * 0.94));
+          r2_time = Math.max(10, Math.round(r2_base_dur * trafficMult * 1.18));
+        } else if (mode === 'two_wheeler') {
+          const bikeTraffic = 1.0 + (trafficMult - 1.0) * 0.60;
+          r1_time = Math.max(6, Math.round(r1_base_dur * bikeTraffic * 0.88));
+          r0_time = Math.max(6, Math.round(r0_base_dur * bikeTraffic * 0.86));
+          r2_time = Math.max(8, Math.round(r2_base_dur * bikeTraffic * 1.02));
+        } else if (mode === 'walking') {
+          r1_time = Math.max(10, Math.round(parseFloat(r1_dist) * 12.5));
+          r0_time = Math.max(10, Math.round(parseFloat(r0_dist) * 12.5));
+          r2_time = Math.max(12, Math.round(parseFloat(r2_dist) * 12.5));
+        } else if (mode === 'metro') {
+          r1_time = Math.max(12, Math.round(parseFloat(r1_dist) * 1.85 + 5));
+          r0_time = Math.max(12, Math.round(parseFloat(r0_dist) * 1.85 + 6));
+          r2_time = Math.max(14, Math.round(parseFloat(r2_dist) * 1.85 + 8));
+        } else if (mode === 'bus') {
+          r1_time = Math.max(12, Math.round(r1_base_dur * trafficMult * 1.35 + 8));
+          r0_time = Math.max(12, Math.round(r0_base_dur * trafficMult * 1.30 + 8));
+          r2_time = Math.max(15, Math.round(r2_base_dur * trafficMult * 1.50 + 12));
+        }
+
+        // AQI calculation
+        const r0_aqi = Math.max(35, Math.round(baseAQI * 0.50 * (diurnal.factor >= 1.0 ? (1 + (diurnal.factor - 1) * 0.5) : diurnal.factor)));
+        const r0_dose = Math.max(8, Math.round(r0_aqi * 0.28 * modeFactor * timeFactor));
+
+        const r1_aqi = Math.max(50, Math.round(baseAQI * 0.95 * diurnal.factor));
+        const r1_dose = Math.max(25, Math.round(r1_aqi * 0.45 * modeFactor * timeFactor));
+
+        const r2_aqi = Math.min(495, Math.max(r1_aqi + 25, Math.round(baseAQI * 1.28 * (diurnal.factor >= 1.0 ? diurnal.factor : (1 - (1 - diurnal.factor) * 0.4)))));
+        const r2_dose = Math.max(50, Math.round(r2_aqi * 0.65 * modeFactor * timeFactor));
+
+        let displayTime = clockVal;
+        try {
+          const parts = clockVal.split(':');
+          const h = parseInt(parts[0], 10);
+          const m = parts[1];
+          const ampm = h >= 12 ? 'PM' : 'AM';
+          const h12 = h % 12 || 12;
+          displayTime = `${h12 < 10 ? '0' + h12 : h12}:${m} ${ampm}`;
+        } catch(e) {}
+
+        function fmtTransit(mins) {
+          if (mins >= 60) {
+            const h = Math.floor(mins / 60);
+            const m = mins % 60;
+            return m > 0 ? `${h}h ${m}m` : `${h}h`;
+          }
+          return `${mins} mins`;
+        }
+
+        function getRouteSeverityText(aqi) {
+          if (aqi <= 50) return '(Good Air)';
+          if (aqi <= 100) return '(Satisfactory)';
+          if (aqi <= 200) return '(Moderate Smog)';
+          if (aqi <= 300) return '(Poor Air)';
+          if (aqi <= 400) return '(Very Poor)';
+          return '(Severe Smog)';
+        }
+
+        // Update Card 0
+        const el0_aqi = document.getElementById('route-card-0-aqi');
+        if (el0_aqi) el0_aqi.innerText = `AQI ${r0_aqi}`;
+        const el0_st = document.getElementById('route-card-0-status');
+        if (el0_st) el0_st.innerText = getRouteSeverityText(r0_aqi);
+        const el0_dose = document.getElementById('route-card-0-dose');
+        if (el0_dose) el0_dose.innerText = `${r0_dose} μg PM2.5`;
+        const el0_time = document.getElementById('route-card-0-time');
+        if (el0_time) el0_time.innerText = fmtTransit(r0_time);
+        const el0_distVal = document.getElementById('route-card-0-dist-val');
+        if (el0_distVal) el0_distVal.innerText = `${r0_dist} km`;
+        const el0_dist = document.getElementById('route-card-0-dist');
+        if (el0_dist) el0_dist.innerText = `${r0_dist} km • ${fmtTransit(r0_time)}`;
+
+        // Update Card 1
+        const el1_aqi = document.getElementById('route-card-1-aqi');
+        if (el1_aqi) el1_aqi.innerText = `AQI ${r1_aqi}`;
+        const el1_st = document.getElementById('route-card-1-status');
+        if (el1_st) el1_st.innerText = getRouteSeverityText(r1_aqi);
+        const el1_dose = document.getElementById('route-card-1-dose');
+        if (el1_dose) el1_dose.innerText = `${r1_dose} μg PM2.5`;
+        const el1_time = document.getElementById('route-card-1-time');
+        if (el1_time) el1_time.innerText = fmtTransit(r1_time);
+        const el1_distVal = document.getElementById('route-card-1-dist-val');
+        if (el1_distVal) el1_distVal.innerText = `${r1_dist} km`;
+        const el1_dist = document.getElementById('route-card-1-dist');
+        if (el1_dist) el1_dist.innerText = `${r1_dist} km • ${fmtTransit(r1_time)}`;
+
+        // Update Card 2
+        const el2_aqi = document.getElementById('route-card-2-aqi');
+        if (el2_aqi) el2_aqi.innerText = `AQI ${r2_aqi}`;
+        const el2_st = document.getElementById('route-card-2-status');
+        if (el2_st) el2_st.innerText = getRouteSeverityText(r2_aqi);
+        const el2_dose = document.getElementById('route-card-2-dose');
+        if (el2_dose) el2_dose.innerText = `${r2_dose} μg PM2.5`;
+        const el2_time = document.getElementById('route-card-2-time');
+        if (el2_time) el2_time.innerText = fmtTransit(r2_time);
+        const el2_distVal = document.getElementById('route-card-2-dist-val');
+        if (el2_distVal) el2_distVal.innerText = `${r2_dist} km`;
+        const el2_dist = document.getElementById('route-card-2-dist');
+        if (el2_dist) el2_dist.innerText = `${r2_dist} km • ${fmtTransit(r2_time)}`;
+
+        // Routing status badge
+        const elBadge = document.getElementById('commute-routing-badge');
+        if (elBadge) {
+          if (hasOSRM) {
+            elBadge.className = 'px-2.5 py-1 rounded-xl bg-emerald-950/80 text-emerald-300 border border-emerald-700/80 font-mono text-[11px] flex items-center gap-1.5';
+            elBadge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> OSRM Live Road Network';
+          } else {
+            elBadge.className = 'px-2.5 py-1 rounded-xl bg-cyan-950/90 text-cyan-300 border border-cyan-700 font-mono text-[11px] flex items-center gap-1.5';
+            elBadge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span> Geometric Road Network';
+          }
+        }
+
+        // Saved percent
+        const savedPct = Math.max(15, Math.round(((r1_dose - r0_dose) / r1_dose) * 100));
+        const elSaved = document.getElementById('commute-saved-pct');
+        if (elSaved) elSaved.innerText = `${savedPct}% Saved`;
+
+        // Verdict
+        const elVerdict = document.getElementById('commute-verdict-text');
+        if (elVerdict) {
+          elVerdict.innerHTML = `Saare raaste compare karke (at <strong>${displayTime}</strong>): <strong>Route A (Eco-Shield Corridor)</strong> me sabse kam AQI (<strong>${r0_aqi}</strong>) hai! Standard route (AQI ${r1_aqi}) ke comparison me is path se travel karne par PM2.5 inhalation <strong>${savedPct}% kam</strong> ho jaata hai.`;
+        }
+        const elTiming = document.getElementById('commute-timing-rec');
+        if (elTiming) elTiming.innerText = timingText;
+
+        // Path geometries
+        if (hasOSRM && r1_coords && r1_coords.length > 5) {
+          function offsetOsrmPath(pts, latOff, lonOff) {
+            const out = [];
+            const n = pts.length;
+            for (let i = 0; i < n; i++) {
+              const t = i / (n - 1);
+              const env = Math.sin(t * Math.PI);
+              out.push([pts[i][0] + latOff * env, pts[i][1] + lonOff * env]);
+            }
+            return out;
+          }
+          r0_coords = offsetOsrmPath(r1_coords, 0.0035, -0.0025);
+          if (!r2_coords) {
+            r2_coords = offsetOsrmPath(r1_coords, -0.0050, 0.0040);
+          }
+        } else {
+          const latDiff = dCoord.lat - oCoord.lat;
+          const lonDiff = dCoord.lon - oCoord.lon;
+          const nx = -lonDiff;
+          const ny = latDiff;
+
+          function createPath(curvFactor, wayCount) {
+            const pts = [[oCoord.lat, oCoord.lon]];
+            for (let i = 1; i < wayCount; i++) {
+              const t = i / wayCount;
+              const offset = Math.sin(t * Math.PI) * curvFactor;
+              const ptLat = oCoord.lat + latDiff * t + ny * offset;
+              const ptLon = oCoord.lon + lonDiff * t + nx * offset;
+              pts.push([ptLat, ptLon]);
+            }
+            pts.push([dCoord.lat, dCoord.lon]);
+            return pts;
+          }
+
+          r0_coords = createPath(0.18, 7);
+          r1_coords = createPath(-0.06, 6);
+          r2_coords = createPath(-0.28, 8);
+        }
+
+        const routesData = [
+          {
+            name: '🌿 Route A: Eco-Shield',
+            tag: '🌿 Route A',
+            label: 'Cleanest Path',
+            aqi: r0_aqi,
+            dose: r0_dose,
+            distKm: r0_dist,
+            timeMin: fmtTransit(r0_time),
+            color: '#10B981',
+            coords: r0_coords
+          },
+          {
+            name: '🚗 Route B: Standard Direct',
+            tag: '🚗 Route B',
+            label: 'Direct Arterials',
+            aqi: r1_aqi,
+            dose: r1_dose,
+            distKm: r1_dist,
+            timeMin: fmtTransit(r1_time),
+            color: '#F59E0B',
+            coords: r1_coords
+          },
+          {
+            name: '⚠️ Route C: Industrial Bypass',
+            tag: '⚠️ Route C',
+            label: 'Congested Chokepoint',
+            aqi: r2_aqi,
+            dose: r2_dose,
+            distKm: r2_dist,
+            timeMin: fmtTransit(r2_time),
+            color: '#EF4444',
+            coords: r2_coords
+          }
+        ];
+
+        if (VayuCommuteMap.map) {
+          VayuCommuteMap.drawRoutes(oCoord, dCoord, routesData);
+        }
       }
 
-      const ecoCoords = createPath(0.18, 7);
-      const stdCoords = createPath(-0.06, 6);
-      const congCoords = createPath(-0.28, 8);
+      const cacheKey = `${oCoord.lat.toFixed(4)},${oCoord.lon.toFixed(4)}_${dCoord.lat.toFixed(4)},${dCoord.lon.toFixed(4)}`;
+      let cachedRoutes = window.VayuOSRMRouteCache ? window.VayuOSRMRouteCache[cacheKey] : null;
 
-      const routesData = [
-        {
-          name: '🌿 Route A: Eco-Shield',
-          tag: '🌿 Route A',
-          label: 'Cleanest Path',
-          aqi: r0_aqi,
-          dose: r0_dose,
-          distKm: r0_dist,
-          timeMin: fmtTransit(r0_time),
-          color: '#10B981',
-          coords: ecoCoords
-        },
-        {
-          name: '🚗 Route B: Standard Direct',
-          tag: '🚗 Route B',
-          label: 'Direct Arterials',
-          aqi: r1_aqi,
-          dose: r1_dose,
-          distKm: r1_dist,
-          timeMin: fmtTransit(r1_time),
-          color: '#F59E0B',
-          coords: stdCoords
-        },
-        {
-          name: '⚠️ Route C: Industrial Bypass',
-          tag: '⚠️ Route C',
-          label: 'Congested Chokepoint',
-          aqi: r2_aqi,
-          dose: r2_dose,
-          distKm: r2_dist,
-          timeMin: fmtTransit(r2_time),
-          color: '#EF4444',
-          coords: congCoords
+      if (cachedRoutes) {
+        renderOutputs(cachedRoutes);
+      } else {
+        renderOutputs(null);
+        const fetched = await fetchOSRMRoute(oCoord, dCoord);
+        if (thisReqId === commuteRouteRequestId && fetched) {
+          renderOutputs(fetched);
         }
-      ];
-
-      if (VayuCommuteMap.map) {
-        VayuCommuteMap.drawRoutes(oCoord, dCoord, routesData);
       }
     }
 
