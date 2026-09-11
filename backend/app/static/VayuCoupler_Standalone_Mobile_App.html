@@ -5330,20 +5330,29 @@
           <div>
             <label class="block text-[11px] font-semibold text-earth-300 mb-1.5">Commute Mode</label>
             <select id="commute-mode" onchange="calcCommuteRoute()" class="w-full px-3 py-2.5 rounded-xl bg-earth-950 border border-earth-700 text-xs text-white focus:outline-none focus:border-cyan-400 font-medium">
-              <option value="metro">Delhi Metro (Air Conditioned)</option>
-              <option value="car">Car (HEPA Cabin Filter Active)</option>
+              <option value="car" selected>Car (HEPA Cabin Filter Active)</option>
               <option value="two_wheeler">Motorcycle / Scooter (Direct Ambient)</option>
-              <option value="bus">DTC Electric Bus</option>
             </select>
           </div>
           <div>
-            <label class="block text-[11px] font-semibold text-earth-300 mb-1.5">Departure Time Window</label>
-            <select id="commute-time" onchange="calcCommuteRoute()" class="w-full px-3 py-2.5 rounded-xl bg-earth-950 border border-earth-700 text-xs text-white focus:outline-none focus:border-cyan-400 font-medium">
-              <option value="morning_peak">08:00 AM (Morning Inversion Peak)</option>
-              <option value="afternoon" selected>02:00 PM (Optimal Clean Dispersion)</option>
-              <option value="evening_peak">07:30 PM (Evening Trapping Accumulation)</option>
-              <option value="midday">11:30 AM (Moderate Boundary Layer)</option>
-            </select>
+            <div class="flex items-center justify-between mb-1.5">
+              <label class="text-[11px] font-semibold text-earth-300 flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5 text-amber-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                </svg>
+                <span>Departure Time / Clock</span>
+              </label>
+              <span id="commute-time-phase-badge" class="text-[9px] font-mono px-1.5 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-500/40">Clean Window</span>
+            </div>
+            <div class="relative flex items-center">
+              <input type="time" id="commute-time-clock" value="14:00" onchange="onCommuteTimeClockChange(this.value)" class="w-full px-3 py-2 rounded-xl bg-earth-950 border border-cyan-500/50 text-xs text-white font-mono focus:outline-none focus:border-cyan-400 cursor-pointer shadow-inner">
+            </div>
+            <div class="flex items-center gap-1 mt-1.5 overflow-x-auto pb-0.5 scrollbar-none">
+              <button type="button" onclick="setCommuteClock('08:00')" class="px-1.5 py-0.5 rounded-lg text-[9px] font-mono bg-rose-950/70 border border-rose-500/40 text-rose-300 hover:bg-rose-900 transition whitespace-nowrap" title="Morning Inversion Peak">🌅 08:00 AM</button>
+              <button type="button" onclick="setCommuteClock('11:30')" class="px-1.5 py-0.5 rounded-lg text-[9px] font-mono bg-amber-950/70 border border-amber-500/40 text-amber-300 hover:bg-amber-900 transition whitespace-nowrap" title="Midday Convection">🌤️ 11:30 AM</button>
+              <button type="button" onclick="setCommuteClock('14:00')" class="px-1.5 py-0.5 rounded-lg text-[9px] font-mono bg-emerald-950/90 border border-emerald-500/60 text-emerald-300 hover:bg-emerald-900 transition whitespace-nowrap" title="Optimal Clean Dispersion">☀️ 02:00 PM</button>
+              <button type="button" onclick="setCommuteClock('19:30')" class="px-1.5 py-0.5 rounded-lg text-[9px] font-mono bg-rose-950/70 border border-rose-500/40 text-rose-300 hover:bg-rose-900 transition whitespace-nowrap" title="Evening Smog Trapping">🌆 07:30 PM</button>
+            </div>
           </div>
         </div>
 
@@ -5400,12 +5409,23 @@
               </div>
             </div>
 
-            <!-- On-map Zoom to Fit Button -->
-            <button type="button" onclick="VayuCommuteMap.fitBounds()" title="Zoom to fit route"
-              class="absolute top-3 right-3 z-[400] px-2.5 py-1.5 rounded-xl bg-earth-950/90 backdrop-blur-md border border-earth-700 hover:border-cyan-400 text-xs text-white font-medium shadow-lg transition flex items-center gap-1.5 cursor-pointer active:scale-95">
-              <svg class="w-3.5 h-3.5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
-              <span class="hidden sm:inline">Fit Route</span>
-            </button>
+            <!-- On-map Top Right Action Controls -->
+            <div class="absolute top-3 right-3 z-[400] flex items-center gap-1.5 sm:gap-2">
+              <button type="button" onclick="VayuCommuteMap.openInGoogleMaps()" id="btn-open-google-maps" title="Open this route in Google Maps"
+                class="px-2.5 py-1.5 rounded-xl bg-blue-950/90 backdrop-blur-md border border-blue-500/60 hover:border-blue-400 text-xs text-blue-300 hover:text-white font-semibold shadow-lg transition flex items-center gap-1.5 cursor-pointer active:scale-95">
+                <svg class="w-3.5 h-3.5 text-blue-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/>
+                  <line x1="9" y1="3" x2="9" y2="18"/>
+                  <line x1="15" y1="6" x2="15" y2="21"/>
+                </svg>
+                <span>Open in Maps</span>
+              </button>
+              <button type="button" onclick="VayuCommuteMap.fitBounds()" title="Zoom to fit route"
+                class="px-2.5 py-1.5 rounded-xl bg-earth-950/90 backdrop-blur-md border border-earth-700 hover:border-cyan-400 text-xs text-white font-medium shadow-lg transition flex items-center gap-1.5 cursor-pointer active:scale-95">
+                <svg class="w-3.5 h-3.5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+                <span class="hidden sm:inline">Fit Route</span>
+              </button>
+            </div>
 
             <!-- On-map Route Legend -->
             <div class="absolute bottom-3 right-3 z-[400] bg-earth-950/90 backdrop-blur-md border border-earth-700 px-3 py-2 rounded-xl text-[10px] font-mono flex flex-col gap-1 shadow-lg pointer-events-none hidden sm:flex">
@@ -5452,9 +5472,15 @@
                 <span id="route-card-0-dist">18.4 km • 32 mins</span>
               </div>
             </div>
-            <div class="text-[10px] text-emerald-300/90 mt-3 pt-2 border-t border-emerald-800/70 font-sans flex items-center justify-between">
-              <span id="commute-eco-route" class="truncate">Via Ridge Buffer &amp; Metro Line</span>
-              <span id="commute-saved-pct" class="text-emerald-400 font-bold shrink-0 ml-1">65.4% Saved</span>
+            <div>
+              <div class="text-[10px] text-emerald-300/90 mt-3 pt-2 border-t border-emerald-800/70 font-sans flex items-center justify-between">
+                <span id="commute-eco-route" class="truncate">Via Ridge Buffer &amp; Metro Line</span>
+                <span id="commute-saved-pct" class="text-emerald-400 font-bold shrink-0 ml-1">65.4% Saved</span>
+              </div>
+              <button type="button" onclick="event.stopPropagation(); VayuCommuteMap.openInGoogleMaps(0)" class="w-full mt-2.5 py-1.5 px-2 rounded-xl bg-emerald-900/40 hover:bg-emerald-800/60 border border-emerald-500/40 text-[11px] font-sans font-semibold text-emerald-300 flex items-center justify-center gap-1.5 transition active:scale-95" title="Navigate Route A in Google Maps">
+                <svg class="w-3.5 h-3.5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                <span>Open in Google Maps</span>
+              </button>
             </div>
           </div>
 
@@ -5482,8 +5508,14 @@
                 <span id="route-card-1-dist">15.1 km • 26 mins</span>
               </div>
             </div>
-            <div class="text-[10px] text-earth-400 mt-3 pt-2 border-t border-earth-800 font-sans truncate" id="commute-std-route">
-              Via Ring Road Arterials
+            <div>
+              <div class="text-[10px] text-earth-400 mt-3 pt-2 border-t border-earth-800 font-sans truncate" id="commute-std-route">
+                Via Ring Road Arterials
+              </div>
+              <button type="button" onclick="event.stopPropagation(); VayuCommuteMap.openInGoogleMaps(1)" class="w-full mt-2.5 py-1.5 px-2 rounded-xl bg-amber-950/40 hover:bg-amber-900/60 border border-amber-500/40 text-[11px] font-sans font-semibold text-amber-300 flex items-center justify-center gap-1.5 transition active:scale-95" title="Navigate Route B in Google Maps">
+                <svg class="w-3.5 h-3.5 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                <span>Open in Google Maps</span>
+              </button>
             </div>
           </div>
 
@@ -5511,8 +5543,14 @@
                 <span id="route-card-2-dist">19.6 km • 44 mins</span>
               </div>
             </div>
-            <div class="text-[10px] text-rose-400/90 mt-3 pt-2 border-t border-earth-800 font-sans truncate" id="route-card-2-path">
-              Via Industrial Periphery &amp; Truck Corridors
+            <div>
+              <div class="text-[10px] text-rose-400/90 mt-3 pt-2 border-t border-earth-800 font-sans truncate" id="route-card-2-path">
+                Via Industrial Periphery &amp; Truck Corridors
+              </div>
+              <button type="button" onclick="event.stopPropagation(); VayuCommuteMap.openInGoogleMaps(2)" class="w-full mt-2.5 py-1.5 px-2 rounded-xl bg-rose-950/40 hover:bg-rose-900/60 border border-rose-500/40 text-[11px] font-sans font-semibold text-rose-300 flex items-center justify-center gap-1.5 transition active:scale-95" title="Navigate Route C in Google Maps">
+                <svg class="w-3.5 h-3.5 text-rose-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                <span>Open in Google Maps</span>
+              </button>
             </div>
           </div>
         </div>
@@ -5715,7 +5753,18 @@
         <span class="text-[10px] tracking-tight">Home</span>
       </button>
 
-      <!-- 2. Map & Data -->
+      <!-- 2. Weather Engine (Placed directly beside Home) -->
+      <button type="button" onclick="vayuNavigateTo('weather')" id="bnav-weather"
+        class="bnav-btn w-full py-1 px-0.5 flex flex-col items-center justify-center gap-1 rounded-xl transition cursor-pointer active:scale-95 text-[#8C948B] hover:text-[#EEF0EC]">
+        <div class="bnav-icon-box w-7 h-7 rounded-xl flex items-center justify-center transition text-[#8C948B]">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
+          </svg>
+        </div>
+        <span class="text-[10px] tracking-tight">Weather</span>
+      </button>
+
+      <!-- 3. Map & Data -->
       <button type="button" onclick="vayuNavigateTo('overview')" id="bnav-overview"
         class="bnav-btn w-full py-1 px-0.5 flex flex-col items-center justify-center gap-1 rounded-xl transition cursor-pointer active:scale-95 text-[#8C948B] hover:text-[#EEF0EC]">
         <div class="bnav-icon-box w-7 h-7 rounded-xl flex items-center justify-center transition text-[#8C948B]">
@@ -5728,7 +5777,7 @@
         <span class="text-[10px] tracking-tight">Map</span>
       </button>
 
-      <!-- 3. Safe Commute Route Finder -->
+      <!-- 4. Safe Commute Route Finder -->
       <button type="button" onclick="vayuNavigateTo('commute')" id="bnav-commute"
         class="bnav-btn w-full py-1 px-0.5 flex flex-col items-center justify-center gap-1 rounded-xl transition cursor-pointer active:scale-95 text-[#8C948B] hover:text-[#EEF0EC]">
         <div class="bnav-icon-box w-7 h-7 rounded-xl flex items-center justify-center transition text-[#8C948B]">
@@ -5742,7 +5791,7 @@
         <span class="text-[10px] tracking-tight">Commute</span>
       </button>
 
-      <!-- 4. VayuAI Assistant -->
+      <!-- 5. VayuAI Assistant -->
       <button type="button" onclick="vayuNavigateTo('copilot')" id="bnav-copilot"
         class="bnav-btn w-full py-1 px-0.5 flex flex-col items-center justify-center gap-1 rounded-xl transition cursor-pointer active:scale-95 text-[#8C948B] hover:text-[#EEF0EC]">
         <div class="bnav-icon-box w-7 h-7 rounded-xl flex items-center justify-center transition text-[#8C948B]">
@@ -5752,19 +5801,6 @@
           </svg>
         </div>
         <span class="text-[10px] tracking-tight">VayuAI</span>
-      </button>
-
-      <!-- 5. More Menu -->
-      <button type="button" onclick="openHamburgerMenu()" id="bnav-more"
-        class="bnav-btn w-full py-1 px-0.5 flex flex-col items-center justify-center gap-1 rounded-xl transition cursor-pointer active:scale-95 text-[#8C948B] hover:text-[#EEF0EC]">
-        <div class="bnav-icon-box w-7 h-7 rounded-xl flex items-center justify-center transition text-[#8C948B]">
-          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-            <line x1="4" x2="20" y1="12" y2="12"/>
-            <line x1="4" x2="20" y1="6" y2="6"/>
-            <line x1="4" x2="20" y1="18" y2="18"/>
-          </svg>
-        </div>
-        <span class="text-[10px] tracking-tight">More</span>
       </button>
 
     </div>
@@ -11187,6 +11223,8 @@
       drawRoutes(originCoord, destCoord, routes) {
         if (!this.map || typeof L === 'undefined') return;
         this.clearLayers();
+        this.originCoord = originCoord;
+        this.destCoord = destCoord;
         this.routeData = routes;
 
         // 1. Origin Marker
@@ -11291,8 +11329,113 @@
           badgeTitle.style.color = d.color;
           badgeSub.innerText = `${d.dose} μg PM2.5 • ${d.distKm} km • ${d.timeMin} mins transit`;
         }
+      },
+
+      openInGoogleMaps(idx) {
+        if (idx === undefined || idx === null) {
+          idx = this.selectedRoute || 0;
+        }
+        const r = (this.routeData && this.routeData[idx]) || (this.routeData && this.routeData[0]);
+        const originEl = document.getElementById('commute-origin');
+        const destEl = document.getElementById('commute-dest');
+        const oKey = originEl ? originEl.value : 'dwarka_sec8';
+        const dKey = destEl ? destEl.value : 'connaught_place';
+        const oC = this.originCoord || COMMUTE_COORDS[oKey] || { lat: 28.5700, lon: 77.0700, name: 'Dwarka' };
+        const dC = this.destCoord || COMMUTE_COORDS[dKey] || { lat: 28.6315, lon: 77.2167, name: 'Connaught Place' };
+
+        let waypointsParam = '';
+        if (r && r.coords && r.coords.length > 2) {
+          const midIdx = Math.floor(r.coords.length / 2);
+          const pt = r.coords[midIdx];
+          if (pt && (Math.abs(pt[0] - oC.lat) > 0.005 || Math.abs(pt[1] - oC.lon) > 0.005)) {
+            waypointsParam = `&waypoints=${pt[0].toFixed(5)},${pt[1].toFixed(5)}`;
+          }
+        }
+
+        const gmapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${oC.lat.toFixed(5)},${oC.lon.toFixed(5)}&destination=${dC.lat.toFixed(5)},${dC.lon.toFixed(5)}${waypointsParam}&travelmode=driving`;
+        window.open(gmapsUrl, '_blank');
       }
     };
+
+    function getDiurnalSmogProfile(timeStr) {
+      let hour = 14, min = 0;
+      if (typeof timeStr === 'string' && timeStr.includes(':')) {
+        const parts = timeStr.split(':');
+        hour = parseInt(parts[0], 10) || 0;
+        min = parseInt(parts[1], 10) || 0;
+      }
+      const t = hour + min / 60.0;
+
+      // Realistic meteorological diurnal cycle for Delhi NCR:
+      // Peak inversion: morning 07:00-09:00 (Factor 1.60-1.72)
+      // Best convection: afternoon 13:00-15:30 (Factor 0.76-0.84)
+      // Evening trapping: 19:00-21:30 (Factor 1.35-1.52)
+      // Night calm: 22:00-05:00 (Factor 1.25-1.38)
+      let factor = 1.0;
+      let pbl = 900;
+      let phaseName = 'Optimal Clean Window';
+      let phaseClass = 'bg-emerald-950 text-emerald-400 border-emerald-500/40';
+      let timingRec = 'Optimal Window! Solar convection expands boundary layer to 1200m.';
+
+      if (t >= 5 && t < 10) {
+        // Morning inversion
+        const p = Math.sin(((t - 5) / 5) * Math.PI);
+        factor = 1.30 + 0.42 * p; // up to ~1.72
+        pbl = Math.round(180 + (t - 5) * 60);
+        phaseName = 'Morning Inversion Peak ⚠️';
+        phaseClass = 'bg-rose-950 text-rose-300 border-rose-500/50';
+        timingRec = `Morning Inversion Alert: Smog trapped below ${pbl}m. Wear N95 mask.`;
+      } else if (t >= 10 && t < 13) {
+        // Morning transition / lifting
+        factor = 1.35 - (t - 10) * 0.18;
+        pbl = Math.round(480 + (t - 10) * 220);
+        phaseName = 'Boundary Layer Lifting 🌤️';
+        phaseClass = 'bg-amber-950 text-amber-300 border-amber-500/40';
+        timingRec = `Convective warming underway. Boundary layer lifting to ${pbl}m.`;
+      } else if (t >= 13 && t < 17) {
+        // Optimal dispersion
+        factor = 0.78 + Math.abs(t - 14.5) * 0.04;
+        pbl = Math.round(1250 - Math.abs(t - 14.5) * 100);
+        phaseName = 'Clean Dispersion Window ☀️';
+        phaseClass = 'bg-emerald-950 text-emerald-400 border-emerald-500/40';
+        timingRec = `Optimal Clean Window! Convective boundary layer (~${pbl}m) flushes smog.`;
+      } else if (t >= 17 && t < 22) {
+        // Evening trapping
+        const p = Math.sin(((t - 17) / 5) * Math.PI);
+        factor = 1.15 + 0.38 * p;
+        pbl = Math.max(220, Math.round(750 - (t - 17) * 105));
+        phaseName = 'Evening Smog Trapping 🌆';
+        phaseClass = 'bg-rose-950 text-rose-300 border-rose-500/50';
+        timingRec = `Evening Trapping: Surface cooling rapidly condenses particulates below ${pbl}m.`;
+      } else {
+        // Night 22:00 - 05:00
+        factor = 1.28;
+        pbl = 210;
+        phaseName = 'Nocturnal Inversion 🌙';
+        phaseClass = 'bg-indigo-950 text-indigo-300 border-indigo-500/40';
+        timingRec = `Cold calm night: Particulates hover in shallow surface inversion layer (${pbl}m).`;
+      }
+
+      return { factor, pbl, hour, min, phaseName, phaseClass, timingRec };
+    }
+
+    function setCommuteClock(timeStr) {
+      const clockEl = document.getElementById('commute-time-clock');
+      if (clockEl) {
+        clockEl.value = timeStr;
+      }
+      onCommuteTimeClockChange(timeStr);
+    }
+
+    function onCommuteTimeClockChange(timeStr) {
+      const profile = getDiurnalSmogProfile(timeStr);
+      const badge = document.getElementById('commute-time-phase-badge');
+      if (badge) {
+        badge.innerText = profile.phaseName;
+        badge.className = `text-[9px] font-mono px-2 py-0.5 rounded-full border ${profile.phaseClass}`;
+      }
+      calcCommuteRoute();
+    }
 
     function calcCommuteRoute() {
       const originEl = document.getElementById('commute-origin');
@@ -11301,8 +11444,9 @@
 
       const originKey = originEl.value;
       const destKey = destEl.value;
-      const mode = document.getElementById('commute-mode')?.value || 'metro';
-      const time = document.getElementById('commute-time')?.value || 'afternoon';
+      const mode = document.getElementById('commute-mode')?.value || 'car';
+      const clockVal = document.getElementById('commute-time-clock')?.value || '14:00';
+      const diurnal = getDiurnalSmogProfile(clockVal);
 
       const originName = originEl.options[originEl.selectedIndex].text.split('(')[0].trim();
       const destName = destEl.options[destEl.selectedIndex].text.split('(')[0].trim();
@@ -11323,43 +11467,44 @@
       }
 
       // Mode multipliers
-      let modeFactor = 1.0;
-      if (mode === 'metro') modeFactor = 0.40;
-      else if (mode === 'car') modeFactor = 0.55;
-      else if (mode === 'bus') modeFactor = 0.85;
+      let modeFactor = 0.55;
+      if (mode === 'car') modeFactor = 0.55;
       else if (mode === 'two_wheeler') modeFactor = 1.65;
+      else if (mode === 'metro') modeFactor = 0.40;
+      else if (mode === 'bus') modeFactor = 0.85;
 
-      // Time multipliers
-      let timeFactor = 1.0;
-      let timingText = "Optimal window: 01:30 PM – 03:30 PM";
-      if (time === 'morning_peak') {
-        timeFactor = 1.55;
-        timingText = "Morning Inversion Alert: Smog trapped below 250m. Wear N95 mask.";
-      } else if (time === 'afternoon') {
-        timeFactor = 0.80;
-        timingText = "Optimal Window! Solar convection expands boundary layer to 1100m.";
-      } else if (time === 'evening_peak') {
-        timeFactor = 1.35;
-        timingText = "Evening Peak Trapping: Surface cooling rapidly condenses particulates.";
-      }
+      // Time multiplier from diurnal clock physics
+      const timeFactor = diurnal.factor;
+      const timingText = diurnal.timingRec;
+
+      // Format clean time label for display (e.g. 02:00 PM)
+      let displayTime = clockVal;
+      try {
+        const parts = clockVal.split(':');
+        const h = parseInt(parts[0], 10);
+        const m = parts[1];
+        const ampm = h >= 12 ? 'PM' : 'AM';
+        const h12 = h % 12 || 12;
+        displayTime = `${h12 < 10 ? '0' + h12 : h12}:${m} ${ampm}`;
+      } catch(e) {}
 
       // 3 Routes calculation:
       // Route 0: Eco-Shield Clean Corridor
       const r0_dist = (rawDistKm * 1.15).toFixed(1);
       const r0_time = Math.round(parseFloat(r0_dist) * 1.8);
-      const r0_aqi = Math.max(35, Math.round(baseAQI * 0.48));
+      const r0_aqi = Math.max(35, Math.round(baseAQI * 0.48 * (diurnal.factor >= 1.0 ? (1 + (diurnal.factor - 1) * 0.6) : diurnal.factor)));
       const r0_dose = Math.max(8, Math.round(r0_aqi * 0.28 * modeFactor * timeFactor));
 
       // Route 1: Standard Direct Arterial
       const r1_dist = (rawDistKm * 1.02).toFixed(1);
       const r1_time = Math.round(parseFloat(r1_dist) * 1.7);
-      const r1_aqi = Math.max(90, Math.round(baseAQI * 0.95));
+      const r1_aqi = Math.max(80, Math.round(baseAQI * 0.95 * diurnal.factor));
       const r1_dose = Math.max(25, Math.round(r1_aqi * 0.45 * modeFactor * timeFactor));
 
       // Route 2: Congested / Industrial Bypass
       const r2_dist = (rawDistKm * 1.25).toFixed(1);
       const r2_time = Math.round(parseFloat(r2_dist) * 2.3);
-      const r2_aqi = Math.min(480, Math.round(baseAQI * 1.85));
+      const r2_aqi = Math.min(495, Math.round(baseAQI * 1.85 * (diurnal.factor >= 1.0 ? diurnal.factor : (1 - (1 - diurnal.factor) * 0.5))));
       const r2_dose = Math.max(60, Math.round(r2_aqi * 0.65 * modeFactor * timeFactor));
 
       // Update Card 0
@@ -11394,7 +11539,7 @@
       // Verdict
       const elVerdict = document.getElementById('commute-verdict-text');
       if (elVerdict) {
-        elVerdict.innerHTML = `Saare raaste compare karke: <strong>Route A (Eco-Shield Corridor)</strong> me sabse kam AQI (<strong>${r0_aqi}</strong>) hai! Standard route (AQI ${r1_aqi}) ke comparison me is path se travel karne par PM2.5 inhalation <strong>${savedPct}% kam</strong> ho jaata hai.`;
+        elVerdict.innerHTML = `Saare raaste compare karke (at <strong>${displayTime}</strong>): <strong>Route A (Eco-Shield Corridor)</strong> me sabse kam AQI (<strong>${r0_aqi}</strong>) hai! Standard route (AQI ${r1_aqi}) ke comparison me is path se travel karne par PM2.5 inhalation <strong>${savedPct}% kam</strong> ho jaata hai.`;
       }
       const elTiming = document.getElementById('commute-timing-rec');
       if (elTiming) elTiming.innerText = timingText;
@@ -14155,8 +14300,7 @@
 
     // ---- Bottom navigation active sync ----
     function syncBottomNav(tabId) {
-      var navKeys = ['home', 'overview', 'commute', 'copilot'];
-      var isMoreTab = ['weather', 'windows', 'planner', 'grap', 'attribution', 'dispatches', 'citizen', 'caqm', 'interstate'].indexOf(tabId) !== -1;
+      var navKeys = ['home', 'weather', 'overview', 'commute', 'copilot'];
       navKeys.forEach(function(k) {
         var btn = document.getElementById('bnav-' + k);
         if (!btn) return;
@@ -14172,6 +14316,7 @@
       });
       var moreBtn = document.getElementById('bnav-more');
       if (moreBtn) {
+        var isMoreTab = ['windows', 'planner', 'grap', 'attribution', 'dispatches', 'citizen', 'caqm', 'interstate'].indexOf(tabId) !== -1;
         var moreBox = moreBtn.querySelector('.bnav-icon-box');
         if (isMoreTab) {
           moreBtn.className = 'bnav-btn w-full py-1 px-0.5 flex flex-col items-center justify-center gap-1 rounded-xl transition cursor-pointer active:scale-95 text-[#8FFFB0] font-bold';
