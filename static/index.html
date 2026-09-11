@@ -5339,28 +5339,107 @@
           <div>
             <label class="block text-[11px] font-semibold text-earth-300 mb-1.5">Commute Mode</label>
             <select id="commute-mode" onchange="calcCommuteRoute()" class="w-full px-3 py-2.5 rounded-xl bg-earth-950 border border-earth-700 text-xs text-white focus:outline-none focus:border-cyan-400 font-medium">
-              <option value="car" selected>Car (HEPA Cabin Filter Active)</option>
-              <option value="two_wheeler">Motorcycle / Scooter (Direct Ambient)</option>
+              <option value="car" selected>🚗 Car (HEPA Cabin Filter Active)</option>
+              <option value="two_wheeler">🛵 Motorcycle / Scooter (Direct Ambient)</option>
+              <option value="walking">🚶 Walking / Pedestrian (Unfiltered Inhalation)</option>
             </select>
           </div>
-          <div>
+          <div class="relative">
             <div class="flex items-center justify-between mb-1.5">
-              <label class="text-[11px] font-semibold text-earth-300 flex items-center gap-1.5">
+              <label class="text-[11px] font-semibold text-earth-300 flex items-center gap-1">
                 <svg class="w-3.5 h-3.5 text-amber-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
                 </svg>
-                <span>Departure Time / Clock</span>
+                <span>Departure Time</span>
               </label>
               <span id="commute-time-phase-badge" class="text-[9px] font-mono px-1.5 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-500/40">Clean Window</span>
             </div>
-            <div class="relative flex items-center">
-              <input type="time" id="commute-time-clock" value="14:00" onchange="onCommuteTimeClockChange(this.value)" class="w-full px-3 py-2 rounded-xl bg-earth-950 border border-cyan-500/50 text-xs text-white font-mono focus:outline-none focus:border-cyan-400 cursor-pointer shadow-inner">
-            </div>
-            <div class="flex items-center gap-1 mt-1.5 overflow-x-auto pb-0.5 scrollbar-none">
-              <button type="button" onclick="setCommuteClock('08:00')" class="px-1.5 py-0.5 rounded-lg text-[9px] font-mono bg-rose-950/70 border border-rose-500/40 text-rose-300 hover:bg-rose-900 transition whitespace-nowrap" title="Morning Inversion Peak">🌅 08:00 AM</button>
-              <button type="button" onclick="setCommuteClock('11:30')" class="px-1.5 py-0.5 rounded-lg text-[9px] font-mono bg-amber-950/70 border border-amber-500/40 text-amber-300 hover:bg-amber-900 transition whitespace-nowrap" title="Midday Convection">🌤️ 11:30 AM</button>
-              <button type="button" onclick="setCommuteClock('14:00')" class="px-1.5 py-0.5 rounded-lg text-[9px] font-mono bg-emerald-950/90 border border-emerald-500/60 text-emerald-300 hover:bg-emerald-900 transition whitespace-nowrap" title="Optimal Clean Dispersion">☀️ 02:00 PM</button>
-              <button type="button" onclick="setCommuteClock('19:30')" class="px-1.5 py-0.5 rounded-lg text-[9px] font-mono bg-rose-950/70 border border-rose-500/40 text-rose-300 hover:bg-rose-900 transition whitespace-nowrap" title="Evening Smog Trapping">🌆 07:30 PM</button>
+
+            <!-- Trigger Button: Exactly level with other 3 dropdowns -->
+            <button type="button" id="commute-time-btn" onclick="toggleCommuteClockPicker(event)"
+              class="w-full px-3 py-2.5 rounded-xl bg-earth-950 border border-earth-700 hover:border-cyan-400 text-xs text-white font-mono flex items-center justify-between cursor-pointer transition shadow-inner group"
+              title="Click to open interactive circular clock">
+              <div class="flex items-center gap-2">
+                <svg class="w-3.5 h-3.5 text-cyan-400 group-hover:scale-110 transition-transform shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                </svg>
+                <span id="commute-time-btn-display" class="font-bold text-white tracking-wider">02:00 PM</span>
+              </div>
+              <span class="text-[10px] text-cyan-400 font-sans flex items-center gap-1 font-semibold group-hover:text-cyan-300">
+                <span>Clock</span>
+                <svg class="w-3 h-3 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+              </span>
+            </button>
+
+            <!-- Hidden input for standard sync -->
+            <input type="hidden" id="commute-time-clock" value="14:00">
+
+            <!-- Interactive Circular Analog Clock Picker Popover -->
+            <div id="commute-clock-popover" class="hidden absolute top-full right-0 mt-2 z-[500] w-72 sm:w-80 p-4 rounded-2xl bg-earth-950/98 backdrop-blur-xl border-2 border-cyan-500/60 shadow-2xl shadow-black/80 font-sans text-white select-none">
+              <!-- Popover Header -->
+              <div class="flex items-center justify-between border-b border-earth-800 pb-2.5 mb-3">
+                <div class="text-xs font-bold text-white flex items-center gap-1.5">
+                  <svg class="w-4 h-4 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  <span>Interactive Clock Picker</span>
+                </div>
+                <button type="button" onclick="closeCommuteClockPicker()" class="p-1 text-earth-400 hover:text-white rounded-lg hover:bg-earth-800 transition cursor-pointer">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+              </div>
+
+              <!-- Digital Readout Display & AM/PM Switcher -->
+              <div class="flex items-center justify-between bg-earth-900/90 border border-earth-800 p-2.5 rounded-xl mb-3">
+                <div class="flex items-center gap-1 font-mono text-2xl font-bold">
+                  <button type="button" id="clock-disp-hour" onclick="setClockMode('hour')"
+                    class="px-2.5 py-1 rounded-lg bg-cyan-950 border border-cyan-500 text-cyan-300 cursor-pointer transition active:scale-95">02</button>
+                  <span class="text-earth-400 animate-pulse">:</span>
+                  <button type="button" id="clock-disp-min" onclick="setClockMode('minute')"
+                    class="px-2.5 py-1 rounded-lg bg-earth-950 border border-earth-700 text-earth-300 hover:text-white cursor-pointer transition active:scale-95">00</button>
+                </div>
+                <div class="flex items-center gap-1 font-mono text-xs font-bold bg-earth-950 p-1 rounded-xl border border-earth-800">
+                  <button type="button" id="clock-toggle-am" onclick="setClockAmPm('AM')"
+                    class="px-2.5 py-1 rounded-lg text-earth-400 hover:text-white transition cursor-pointer">AM</button>
+                  <button type="button" id="clock-toggle-pm" onclick="setClockAmPm('PM')"
+                    class="px-2.5 py-1 rounded-lg bg-amber-500 text-earth-950 font-bold shadow-sm transition cursor-pointer">PM</button>
+                </div>
+              </div>
+
+              <!-- Phase Status Hint -->
+              <div id="clock-popover-phase" class="text-[10px] text-center font-mono py-1 px-2 rounded-lg bg-emerald-950/80 text-emerald-300 border border-emerald-500/40 mb-3 truncate">
+                ☀️ Optimal Clean Dispersion Window
+              </div>
+
+              <!-- Circular Analog Clock Face Container -->
+              <div class="flex flex-col items-center justify-center my-1">
+                <div class="relative w-[210px] h-[210px] rounded-full bg-gradient-to-b from-[#080B08] to-[#040504] border-2 border-earth-700/80 shadow-inner flex items-center justify-center select-none" id="analog-clock-dial">
+                  <!-- SVG for Clock Hand and Pivot -->
+                  <svg class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 210 210">
+                    <!-- Center Pivot -->
+                    <circle cx="105" cy="105" r="4.5" fill="#06B6D4" />
+                    <!-- Hand Line -->
+                    <line id="analog-clock-hand" x1="105" y1="105" x2="105" y2="30" stroke="#06B6D4" stroke-width="2.5" stroke-linecap="round" />
+                    <!-- Selected Pin Circle -->
+                    <circle id="analog-clock-pin" cx="105" cy="30" r="16" fill="#06B6D4" fill-opacity="0.25" stroke="#06B6D4" stroke-width="2" />
+                  </svg>
+                  <!-- 12 Clickable Number Dial Elements rendered dynamically -->
+                  <div id="analog-clock-numbers" class="absolute inset-0 pointer-events-auto"></div>
+                </div>
+                <div class="text-[10px] text-earth-400 mt-2 font-mono" id="clock-mode-hint">Click number or drag hand to set Hour</div>
+              </div>
+
+              <!-- Quick Presets Inside Popover -->
+              <div class="mt-3 pt-2.5 border-t border-earth-800 flex items-center justify-between gap-1 overflow-x-auto pb-0.5 scrollbar-none">
+                <button type="button" onclick="setCommuteClock('08:00')" class="px-2 py-1 rounded-lg text-[9px] font-mono bg-rose-950/70 border border-rose-500/40 text-rose-300 hover:bg-rose-900 transition whitespace-nowrap" title="Morning Peak">🌅 08:00 AM</button>
+                <button type="button" onclick="setCommuteClock('11:30')" class="px-2 py-1 rounded-lg text-[9px] font-mono bg-amber-950/70 border border-amber-500/40 text-amber-300 hover:bg-amber-900 transition whitespace-nowrap" title="Midday Convection">🌤️ 11:30 AM</button>
+                <button type="button" onclick="setCommuteClock('14:00')" class="px-2 py-1 rounded-lg text-[9px] font-mono bg-emerald-950/90 border border-emerald-500/60 text-emerald-300 hover:bg-emerald-900 transition whitespace-nowrap" title="Optimal Clean">☀️ 02:00 PM</button>
+                <button type="button" onclick="setCommuteClock('19:30')" class="px-2 py-1 rounded-lg text-[9px] font-mono bg-rose-950/70 border border-rose-500/40 text-rose-300 hover:bg-rose-900 transition whitespace-nowrap" title="Evening Trapping">🌆 07:30 PM</button>
+              </div>
+
+              <!-- Close / Apply Button -->
+              <button type="button" onclick="closeCommuteClockPicker()"
+                class="w-full mt-3 py-2 px-3 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold font-sans flex items-center justify-center gap-1.5 shadow-md transition active:scale-95 cursor-pointer">
+                <span>Set Departure Time ✓</span>
+              </button>
             </div>
           </div>
         </div>
@@ -11094,8 +11173,13 @@
       if (tabId === 'windows' && typeof renderCleanAirWindows === 'function') {
         renderCleanAirWindows();
       }
-      if (tabId === 'commute' && typeof VayuCommuteMap !== 'undefined') {
-        VayuCommuteMap.initOrResize();
+      if (tabId === 'commute') {
+        if (typeof VayuCommuteMap !== 'undefined') {
+          VayuCommuteMap.initOrResize();
+        }
+        if (typeof VayuClockPicker !== 'undefined') {
+          VayuClockPicker.init();
+        }
       }
       activeTab = tabId;
       document.querySelectorAll('.tab-panel').forEach(p => {
@@ -11538,10 +11622,336 @@
           }
         }
 
-        const gmapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${originParam}&destination=${destParam}${waypointsParam}&travelmode=driving`;
+        const modeVal = document.getElementById('commute-mode')?.value || 'car';
+        let gmapsTravelMode = 'driving';
+        if (modeVal === 'walking') gmapsTravelMode = 'walking';
+        else if (modeVal === 'two_wheeler') gmapsTravelMode = 'two_wheeler';
+
+        const gmapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${originParam}&destination=${destParam}${waypointsParam}&travelmode=${gmapsTravelMode}`;
         window.open(gmapsUrl, '_blank');
       }
     };
+
+    // ================= INTERACTIVE CIRCULAR ANALOG CLOCK PICKER =================
+    const VayuClockPicker = {
+      hour: 14,      // 0-23
+      minute: 0,     // 0-59
+      mode: 'hour',  // 'hour' or 'minute'
+      isOpen: false,
+
+      init() {
+        this.renderDial();
+        this.updateDisplay();
+        this.attachDragListener();
+      },
+
+      renderDial() {
+        const container = document.getElementById('analog-clock-numbers');
+        if (!container) return;
+        container.innerHTML = '';
+        const cx = 105;
+        const cy = 105;
+        const r = 75;
+
+        if (this.mode === 'hour') {
+          const currentH12 = this.hour % 12 || 12;
+          for (let i = 1; i <= 12; i++) {
+            const angle = (i * 30 - 90) * (Math.PI / 180);
+            const x = cx + r * Math.cos(angle);
+            const y = cy + r * Math.sin(angle);
+            const isSel = i === currentH12;
+
+            const numEl = document.createElement('button');
+            numEl.type = 'button';
+            numEl.className = `absolute w-7 h-7 -ml-3.5 -mt-3.5 rounded-full flex items-center justify-center font-mono text-xs font-bold transition cursor-pointer select-none ${
+              isSel ? 'text-cyan-200 font-extrabold scale-110' : 'text-earth-300 hover:text-white hover:bg-earth-800/60'
+            }`;
+            numEl.style.left = `${x}px`;
+            numEl.style.top = `${y}px`;
+            numEl.innerText = i;
+            numEl.onclick = (e) => {
+              e.stopPropagation();
+              this.selectHour(i);
+            };
+            container.appendChild(numEl);
+          }
+        } else {
+          const currentMin = this.minute;
+          for (let i = 0; i < 12; i++) {
+            const val = i * 5;
+            const angle = (i * 30 - 90) * (Math.PI / 180);
+            const x = cx + r * Math.cos(angle);
+            const y = cy + r * Math.sin(angle);
+            const isSel = Math.abs(currentMin - val) < 3;
+
+            const numEl = document.createElement('button');
+            numEl.type = 'button';
+            numEl.className = `absolute w-7 h-7 -ml-3.5 -mt-3.5 rounded-full flex items-center justify-center font-mono text-[11px] font-bold transition cursor-pointer select-none ${
+              isSel ? 'text-cyan-200 font-extrabold scale-110' : 'text-earth-300 hover:text-white hover:bg-earth-800/60'
+            }`;
+            numEl.style.left = `${x}px`;
+            numEl.style.top = `${y}px`;
+            numEl.innerText = val < 10 ? '0' + val : val;
+            numEl.onclick = (e) => {
+              e.stopPropagation();
+              this.selectMinute(val);
+            };
+            container.appendChild(numEl);
+          }
+        }
+
+        this.updateHandAndPin();
+      },
+
+      updateHandAndPin() {
+        const hand = document.getElementById('analog-clock-hand');
+        const pin = document.getElementById('analog-clock-pin');
+        if (!hand || !pin) return;
+
+        const cx = 105;
+        const cy = 105;
+        const r = 75;
+        let angleDeg = 0;
+
+        if (this.mode === 'hour') {
+          const h12 = this.hour % 12 || 12;
+          angleDeg = h12 * 30 - 90;
+        } else {
+          angleDeg = this.minute * 6 - 90;
+        }
+
+        const angleRad = angleDeg * (Math.PI / 180);
+        const px = cx + r * Math.cos(angleRad);
+        const py = cy + r * Math.sin(angleRad);
+
+        hand.setAttribute('x2', px.toFixed(1));
+        hand.setAttribute('y2', py.toFixed(1));
+        pin.setAttribute('cx', px.toFixed(1));
+        pin.setAttribute('cy', py.toFixed(1));
+      },
+
+      selectHour(h) {
+        const isPM = this.hour >= 12;
+        this.hour = isPM ? (h === 12 ? 12 : h + 12) : (h === 12 ? 0 : h);
+        this.mode = 'minute'; // Automatically advance to minute selection
+        this.renderDial();
+        this.updateDisplay();
+        this.applyToSystem();
+      },
+
+      selectMinute(m) {
+        this.minute = m;
+        this.renderDial();
+        this.updateDisplay();
+        this.applyToSystem();
+      },
+
+      setMode(mode) {
+        this.mode = mode;
+        this.renderDial();
+        this.updateDisplay();
+      },
+
+      setAmPm(ampm) {
+        const currentH12 = this.hour % 12 || 12;
+        if (ampm === 'AM') {
+          this.hour = currentH12 === 12 ? 0 : currentH12;
+        } else {
+          this.hour = currentH12 === 12 ? 12 : currentH12 + 12;
+        }
+        this.renderDial();
+        this.updateDisplay();
+        this.applyToSystem();
+      },
+
+      updateDisplay() {
+        const isPM = this.hour >= 12;
+        const h12 = this.hour % 12 || 12;
+        const hStr = h12 < 10 ? '0' + h12 : '' + h12;
+        const mStr = this.minute < 10 ? '0' + this.minute : '' + this.minute;
+        const ampmStr = isPM ? 'PM' : 'AM';
+
+        const disHour = document.getElementById('clock-disp-hour');
+        const disMin = document.getElementById('clock-disp-min');
+        if (disHour) {
+          disHour.innerText = hStr;
+          disHour.className = this.mode === 'hour'
+            ? 'px-2.5 py-1 rounded-lg bg-cyan-950 border border-cyan-500 text-cyan-300 cursor-pointer transition'
+            : 'px-2.5 py-1 rounded-lg bg-earth-950 border border-earth-700 text-earth-300 hover:text-white cursor-pointer transition';
+        }
+        if (disMin) {
+          disMin.innerText = mStr;
+          disMin.className = this.mode === 'minute'
+            ? 'px-2.5 py-1 rounded-lg bg-cyan-950 border border-cyan-500 text-cyan-300 cursor-pointer transition'
+            : 'px-2.5 py-1 rounded-lg bg-earth-950 border border-earth-700 text-earth-300 hover:text-white cursor-pointer transition';
+        }
+
+        const btnAM = document.getElementById('clock-toggle-am');
+        const btnPM = document.getElementById('clock-toggle-pm');
+        if (btnAM && btnPM) {
+          if (!isPM) {
+            btnAM.className = 'px-2.5 py-1 rounded-lg bg-amber-500 text-earth-950 font-bold shadow-sm transition cursor-pointer';
+            btnPM.className = 'px-2.5 py-1 rounded-lg text-earth-400 hover:text-white transition cursor-pointer';
+          } else {
+            btnPM.className = 'px-2.5 py-1 rounded-lg bg-amber-500 text-earth-950 font-bold shadow-sm transition cursor-pointer';
+            btnAM.className = 'px-2.5 py-1 rounded-lg text-earth-400 hover:text-white transition cursor-pointer';
+          }
+        }
+
+        const triggerDisp = document.getElementById('commute-time-btn-display');
+        if (triggerDisp) {
+          triggerDisp.innerText = `${hStr}:${mStr} ${ampmStr}`;
+        }
+
+        const hint = document.getElementById('clock-mode-hint');
+        if (hint) {
+          hint.innerText = this.mode === 'hour' ? 'Click number or drag hand to set Hour' : 'Click number or drag hand to set Minute';
+        }
+
+        const time24 = `${this.hour < 10 ? '0' + this.hour : this.hour}:${mStr}`;
+        const profile = getDiurnalSmogProfile(time24);
+        const popPhase = document.getElementById('clock-popover-phase');
+        if (popPhase) {
+          popPhase.innerText = profile.phaseName;
+          popPhase.className = `text-[10px] text-center font-mono py-1 px-2 rounded-lg border ${profile.phaseClass} mb-3 truncate`;
+        }
+      },
+
+      applyToSystem() {
+        const hStr = this.hour < 10 ? '0' + this.hour : '' + this.hour;
+        const mStr = this.minute < 10 ? '0' + this.minute : '' + this.minute;
+        const time24 = `${hStr}:${mStr}`;
+
+        const clockEl = document.getElementById('commute-time-clock');
+        if (clockEl) clockEl.value = time24;
+
+        onCommuteTimeClockChange(time24);
+      },
+
+      setTimeFromString(timeStr) {
+        try {
+          const parts = timeStr.split(':');
+          this.hour = parseInt(parts[0], 10) || 14;
+          this.minute = parseInt(parts[1], 10) || 0;
+          this.renderDial();
+          this.updateDisplay();
+          this.applyToSystem();
+        } catch(e) {}
+      },
+
+      attachDragListener() {
+        const dial = document.getElementById('analog-clock-dial');
+        if (!dial) return;
+
+        const handleMove = (e) => {
+          const rect = dial.getBoundingClientRect();
+          const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+          const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+          const x = clientX - rect.left - 105;
+          const y = clientY - rect.top - 105;
+
+          let deg = Math.atan2(y, x) * (180 / Math.PI) + 90;
+          if (deg < 0) deg += 360;
+
+          if (this.mode === 'hour') {
+            let h = Math.round(deg / 30);
+            if (h === 0) h = 12;
+            const isPM = this.hour >= 12;
+            this.hour = isPM ? (h === 12 ? 12 : h + 12) : (h === 12 ? 0 : h);
+          } else {
+            let m = Math.round(deg / 6);
+            if (m === 60) m = 0;
+            this.minute = m;
+          }
+          this.renderDial();
+          this.updateDisplay();
+          this.applyToSystem();
+        };
+
+        let isDragging = false;
+        dial.addEventListener('mousedown', (e) => {
+          isDragging = true;
+          handleMove(e);
+        });
+        window.addEventListener('mousemove', (e) => {
+          if (isDragging) handleMove(e);
+        });
+        window.addEventListener('mouseup', () => {
+          if (isDragging) {
+            isDragging = false;
+            if (this.mode === 'hour') {
+              this.mode = 'minute';
+              this.renderDial();
+              this.updateDisplay();
+            }
+          }
+        });
+
+        dial.addEventListener('touchstart', (e) => {
+          isDragging = true;
+          handleMove(e);
+        }, { passive: true });
+        window.addEventListener('touchmove', (e) => {
+          if (isDragging) handleMove(e);
+        }, { passive: true });
+        window.addEventListener('touchend', () => {
+          if (isDragging) {
+            isDragging = false;
+            if (this.mode === 'hour') {
+              this.mode = 'minute';
+              this.renderDial();
+              this.updateDisplay();
+            }
+          }
+        });
+      }
+    };
+
+    function toggleCommuteClockPicker(e) {
+      if (e) e.stopPropagation();
+      const popover = document.getElementById('commute-clock-popover');
+      if (!popover) return;
+      const isHidden = popover.classList.contains('hidden');
+      if (isHidden) {
+        popover.classList.remove('hidden');
+        VayuClockPicker.isOpen = true;
+        VayuClockPicker.renderDial();
+        VayuClockPicker.updateDisplay();
+      } else {
+        popover.classList.add('hidden');
+        VayuClockPicker.isOpen = false;
+      }
+    }
+
+    function closeCommuteClockPicker() {
+      const popover = document.getElementById('commute-clock-popover');
+      if (popover) popover.classList.add('hidden');
+      VayuClockPicker.isOpen = false;
+    }
+
+    function setClockMode(m) {
+      VayuClockPicker.setMode(m);
+    }
+
+    function setClockAmPm(ampm) {
+      VayuClockPicker.setAmPm(ampm);
+    }
+
+    document.addEventListener('click', function(e) {
+      const popover = document.getElementById('commute-clock-popover');
+      const btn = document.getElementById('commute-time-btn');
+      if (popover && !popover.classList.contains('hidden')) {
+        if (!popover.contains(e.target) && (!btn || !btn.contains(e.target))) {
+          closeCommuteClockPicker();
+        }
+      }
+    });
+
+    try {
+      if (typeof VayuClockPicker !== 'undefined') {
+        VayuClockPicker.init();
+      }
+    } catch(e) {}
 
     function getDiurnalSmogProfile(timeStr) {
       let hour = 14, min = 0;
@@ -11606,11 +12016,13 @@
     }
 
     function setCommuteClock(timeStr) {
-      const clockEl = document.getElementById('commute-time-clock');
-      if (clockEl) {
-        clockEl.value = timeStr;
+      if (typeof VayuClockPicker !== 'undefined') {
+        VayuClockPicker.setTimeFromString(timeStr);
+      } else {
+        const clockEl = document.getElementById('commute-time-clock');
+        if (clockEl) clockEl.value = timeStr;
+        onCommuteTimeClockChange(timeStr);
       }
-      onCommuteTimeClockChange(timeStr);
     }
 
     function onCommuteTimeClockChange(timeStr) {
@@ -11652,12 +12064,25 @@
         baseAQI = parseInt(VayuCore.activeStation.aqi) || 155;
       }
 
-      // Mode multipliers
+      // Mode multipliers & speed transit factors
       let modeFactor = 0.55;
-      if (mode === 'car') modeFactor = 0.55;
-      else if (mode === 'two_wheeler') modeFactor = 1.65;
-      else if (mode === 'metro') modeFactor = 0.40;
-      else if (mode === 'bus') modeFactor = 0.85;
+      let timeMultiplier = 1.0;
+      if (mode === 'car') {
+        modeFactor = 0.55;
+        timeMultiplier = 1.0;
+      } else if (mode === 'two_wheeler') {
+        modeFactor = 1.65;
+        timeMultiplier = 0.9;
+      } else if (mode === 'walking') {
+        modeFactor = 2.40; // High particulate intake due to active physical exertion and zero filtration
+        timeMultiplier = 6.2; // ~4.8 km/h pedestrian walking vs vehicular traffic
+      } else if (mode === 'metro') {
+        modeFactor = 0.40;
+        timeMultiplier = 1.0;
+      } else if (mode === 'bus') {
+        modeFactor = 0.85;
+        timeMultiplier = 1.2;
+      }
 
       // Time multiplier from diurnal clock physics
       const timeFactor = diurnal.factor;
@@ -11674,22 +12099,32 @@
         displayTime = `${h12 < 10 ? '0' + h12 : h12}:${m} ${ampm}`;
       } catch(e) {}
 
+      // Format transit time helper (e.g. 32 mins, or 1h 45m if >= 60 mins)
+      function fmtTransit(mins) {
+        if (mins >= 60) {
+          const h = Math.floor(mins / 60);
+          const m = mins % 60;
+          return m > 0 ? `${h}h ${m}m` : `${h}h`;
+        }
+        return `${mins} mins`;
+      }
+
       // 3 Routes calculation:
       // Route 0: Eco-Shield Clean Corridor
       const r0_dist = (rawDistKm * 1.15).toFixed(1);
-      const r0_time = Math.round(parseFloat(r0_dist) * 1.8);
+      const r0_time = Math.round(parseFloat(r0_dist) * 1.8 * timeMultiplier);
       const r0_aqi = Math.max(35, Math.round(baseAQI * 0.48 * (diurnal.factor >= 1.0 ? (1 + (diurnal.factor - 1) * 0.6) : diurnal.factor)));
       const r0_dose = Math.max(8, Math.round(r0_aqi * 0.28 * modeFactor * timeFactor));
 
       // Route 1: Standard Direct Arterial
       const r1_dist = (rawDistKm * 1.02).toFixed(1);
-      const r1_time = Math.round(parseFloat(r1_dist) * 1.7);
+      const r1_time = Math.round(parseFloat(r1_dist) * 1.7 * timeMultiplier);
       const r1_aqi = Math.max(80, Math.round(baseAQI * 0.95 * diurnal.factor));
       const r1_dose = Math.max(25, Math.round(r1_aqi * 0.45 * modeFactor * timeFactor));
 
       // Route 2: Congested / Industrial Bypass
       const r2_dist = (rawDistKm * 1.25).toFixed(1);
-      const r2_time = Math.round(parseFloat(r2_dist) * 2.3);
+      const r2_time = Math.round(parseFloat(r2_dist) * 2.3 * timeMultiplier);
       const r2_aqi = Math.min(495, Math.round(baseAQI * 1.85 * (diurnal.factor >= 1.0 ? diurnal.factor : (1 - (1 - diurnal.factor) * 0.5))));
       const r2_dose = Math.max(60, Math.round(r2_aqi * 0.65 * modeFactor * timeFactor));
 
@@ -11699,11 +12134,11 @@
       const el0_dose = document.getElementById('route-card-0-dose');
       if (el0_dose) el0_dose.innerText = `${r0_dose} μg PM2.5`;
       const el0_time = document.getElementById('route-card-0-time');
-      if (el0_time) el0_time.innerText = `${r0_time} mins`;
+      if (el0_time) el0_time.innerText = fmtTransit(r0_time);
       const el0_distVal = document.getElementById('route-card-0-dist-val');
       if (el0_distVal) el0_distVal.innerText = `${r0_dist} km`;
       const el0_dist = document.getElementById('route-card-0-dist');
-      if (el0_dist) el0_dist.innerText = `${r0_dist} km • ${r0_time} mins`;
+      if (el0_dist) el0_dist.innerText = `${r0_dist} km • ${fmtTransit(r0_time)}`;
 
       // Update Card 1
       const el1_aqi = document.getElementById('route-card-1-aqi');
@@ -11711,11 +12146,11 @@
       const el1_dose = document.getElementById('route-card-1-dose');
       if (el1_dose) el1_dose.innerText = `${r1_dose} μg PM2.5`;
       const el1_time = document.getElementById('route-card-1-time');
-      if (el1_time) el1_time.innerText = `${r1_time} mins`;
+      if (el1_time) el1_time.innerText = fmtTransit(r1_time);
       const el1_distVal = document.getElementById('route-card-1-dist-val');
       if (el1_distVal) el1_distVal.innerText = `${r1_dist} km`;
       const el1_dist = document.getElementById('route-card-1-dist');
-      if (el1_dist) el1_dist.innerText = `${r1_dist} km • ${r1_time} mins`;
+      if (el1_dist) el1_dist.innerText = `${r1_dist} km • ${fmtTransit(r1_time)}`;
 
       // Update Card 2
       const el2_aqi = document.getElementById('route-card-2-aqi');
@@ -11723,11 +12158,11 @@
       const el2_dose = document.getElementById('route-card-2-dose');
       if (el2_dose) el2_dose.innerText = `${r2_dose} μg PM2.5`;
       const el2_time = document.getElementById('route-card-2-time');
-      if (el2_time) el2_time.innerText = `${r2_time} mins`;
+      if (el2_time) el2_time.innerText = fmtTransit(r2_time);
       const el2_distVal = document.getElementById('route-card-2-dist-val');
       if (el2_distVal) el2_distVal.innerText = `${r2_dist} km`;
       const el2_dist = document.getElementById('route-card-2-dist');
-      if (el2_dist) el2_dist.innerText = `${r2_dist} km • ${r2_time} mins`;
+      if (el2_dist) el2_dist.innerText = `${r2_dist} km • ${fmtTransit(r2_time)}`;
 
       // Saved percent
       const savedPct = Math.max(15, Math.round(((r1_dose - r0_dose) / r1_dose) * 100));
@@ -11776,7 +12211,7 @@
           aqi: r0_aqi,
           dose: r0_dose,
           distKm: r0_dist,
-          timeMin: r0_time,
+          timeMin: fmtTransit(r0_time),
           color: '#10B981',
           coords: ecoCoords
         },
@@ -11787,7 +12222,7 @@
           aqi: r1_aqi,
           dose: r1_dose,
           distKm: r1_dist,
-          timeMin: r1_time,
+          timeMin: fmtTransit(r1_time),
           color: '#F59E0B',
           coords: stdCoords
         },
@@ -11798,7 +12233,7 @@
           aqi: r2_aqi,
           dose: r2_dose,
           distKm: r2_dist,
-          timeMin: r2_time,
+          timeMin: fmtTransit(r2_time),
           color: '#EF4444',
           coords: congCoords
         }
