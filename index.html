@@ -5412,13 +5412,13 @@
             <!-- On-map Top Right Action Controls -->
             <div class="absolute top-3 right-3 z-[400] flex items-center gap-1.5 sm:gap-2">
               <button type="button" onclick="VayuCommuteMap.openInGoogleMaps()" id="btn-open-google-maps" title="Open this route in Google Maps"
-                class="px-2.5 py-1.5 rounded-xl bg-blue-950/90 backdrop-blur-md border border-blue-500/60 hover:border-blue-400 text-xs text-blue-300 hover:text-white font-semibold shadow-lg transition flex items-center gap-1.5 cursor-pointer active:scale-95">
-                <svg class="w-3.5 h-3.5 text-blue-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                class="px-3 py-1.5 rounded-xl bg-emerald-950/90 backdrop-blur-md border border-emerald-500/70 hover:border-emerald-400 text-xs text-emerald-300 hover:text-white font-bold shadow-lg transition flex items-center gap-1.5 cursor-pointer active:scale-95">
+                <svg class="w-4 h-4 text-emerald-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
                   <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/>
                   <line x1="9" y1="3" x2="9" y2="18"/>
                   <line x1="15" y1="6" x2="15" y2="21"/>
                 </svg>
-                <span>Open in Maps</span>
+                <span>Open in Google Maps ↗</span>
               </button>
               <button type="button" onclick="VayuCommuteMap.fitBounds()" title="Zoom to fit route"
                 class="px-2.5 py-1.5 rounded-xl bg-earth-950/90 backdrop-blur-md border border-earth-700 hover:border-cyan-400 text-xs text-white font-medium shadow-lg transition flex items-center gap-1.5 cursor-pointer active:scale-95">
@@ -5449,7 +5449,7 @@
         <!-- ================= 3 SIDE-BY-SIDE ROUTE COMPARISON CARDS ================= -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 font-mono">
           <!-- Route A: Eco-Shield (Best) -->
-          <div id="commute-card-0" onclick="VayuCommuteMap.selectRoute(0)"
+          <div id="commute-card-0" onclick="VayuCommuteMap.onCardClick(0)"
             class="p-4 rounded-2xl bg-emerald-950/50 border-2 border-emerald-500/80 flex flex-col justify-between shadow-lg shadow-emerald-950/50 transition cursor-pointer hover:border-emerald-400 active:scale-98 relative">
             <div>
               <div class="flex items-center justify-between mb-1">
@@ -5460,9 +5460,18 @@
                 <div class="text-2xl font-bold text-emerald-300" id="route-card-0-aqi">AQI 68</div>
                 <div class="text-xs text-emerald-400 font-semibold">(Cleanest)</div>
               </div>
-              <div class="text-xs text-emerald-200/90 font-sans mt-1" id="route-card-0-sub">
+              <div class="text-xs text-emerald-200/90 font-sans mt-0.5" id="route-card-0-sub">
                 Green Ridge Buffer &amp; Metro Viaduct Corridor
               </div>
+
+              <!-- Dedicated Direct Open in Google Maps button at top of card -->
+              <button type="button" onclick="event.stopPropagation(); VayuCommuteMap.openInGoogleMaps(0)"
+                class="w-full mt-2.5 py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-sans font-bold flex items-center justify-center gap-1.5 shadow-md shadow-emerald-950/60 transition active:scale-95 cursor-pointer"
+                title="Open Route A in Google Maps">
+                <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                <span>Open Route A in Google Maps ↗</span>
+              </button>
+
               <div class="mt-2.5 pt-2 border-t border-emerald-800/60 flex items-center justify-between text-[11px] text-earth-300">
                 <span>Inhalation Dosage:</span>
                 <span class="font-bold text-emerald-400" id="route-card-0-dose">17 μg PM2.5</span>
@@ -5477,15 +5486,11 @@
                 <span id="commute-eco-route" class="truncate">Via Ridge Buffer &amp; Metro Line</span>
                 <span id="commute-saved-pct" class="text-emerald-400 font-bold shrink-0 ml-1">65.4% Saved</span>
               </div>
-              <button type="button" onclick="event.stopPropagation(); VayuCommuteMap.openInGoogleMaps(0)" class="w-full mt-2.5 py-1.5 px-2 rounded-xl bg-emerald-900/40 hover:bg-emerald-800/60 border border-emerald-500/40 text-[11px] font-sans font-semibold text-emerald-300 flex items-center justify-center gap-1.5 transition active:scale-95" title="Navigate Route A in Google Maps">
-                <svg class="w-3.5 h-3.5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                <span>Open in Google Maps</span>
-              </button>
             </div>
           </div>
 
           <!-- Route B: Standard Direct -->
-          <div id="commute-card-1" onclick="VayuCommuteMap.selectRoute(1)"
+          <div id="commute-card-1" onclick="VayuCommuteMap.onCardClick(1)"
             class="p-4 rounded-2xl bg-earth-950 border border-earth-700 flex flex-col justify-between transition cursor-pointer hover:border-amber-400/80 active:scale-98">
             <div>
               <div class="flex items-center justify-between mb-1">
@@ -5496,9 +5501,18 @@
                 <div class="text-2xl font-bold text-amber-300" id="route-card-1-aqi">AQI 142</div>
                 <div class="text-xs text-amber-400 font-semibold">(Moderate Smog)</div>
               </div>
-              <div class="text-xs text-earth-300 font-sans mt-1" id="route-card-1-sub">
+              <div class="text-xs text-earth-300 font-sans mt-0.5" id="route-card-1-sub">
                 Main Ring Road Arterial Highway
               </div>
+
+              <!-- Dedicated Direct Open in Google Maps button at top of card -->
+              <button type="button" onclick="event.stopPropagation(); VayuCommuteMap.openInGoogleMaps(1)"
+                class="w-full mt-2.5 py-2 px-3 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-sans font-bold flex items-center justify-center gap-1.5 shadow-md shadow-amber-950/60 transition active:scale-95 cursor-pointer"
+                title="Open Route B in Google Maps">
+                <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                <span>Open Route B in Google Maps ↗</span>
+              </button>
+
               <div class="mt-2.5 pt-2 border-t border-earth-800 flex items-center justify-between text-[11px] text-earth-300">
                 <span>Inhalation Dosage:</span>
                 <span class="font-bold text-amber-400" id="route-card-1-dose">68 μg PM2.5</span>
@@ -5512,15 +5526,11 @@
               <div class="text-[10px] text-earth-400 mt-3 pt-2 border-t border-earth-800 font-sans truncate" id="commute-std-route">
                 Via Ring Road Arterials
               </div>
-              <button type="button" onclick="event.stopPropagation(); VayuCommuteMap.openInGoogleMaps(1)" class="w-full mt-2.5 py-1.5 px-2 rounded-xl bg-amber-950/40 hover:bg-amber-900/60 border border-amber-500/40 text-[11px] font-sans font-semibold text-amber-300 flex items-center justify-center gap-1.5 transition active:scale-95" title="Navigate Route B in Google Maps">
-                <svg class="w-3.5 h-3.5 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                <span>Open in Google Maps</span>
-              </button>
             </div>
           </div>
 
           <!-- Route C: Congested / High Exposure -->
-          <div id="commute-card-2" onclick="VayuCommuteMap.selectRoute(2)"
+          <div id="commute-card-2" onclick="VayuCommuteMap.onCardClick(2)"
             class="p-4 rounded-2xl bg-earth-950 border border-earth-700 flex flex-col justify-between transition cursor-pointer hover:border-rose-400/80 active:scale-98">
             <div>
               <div class="flex items-center justify-between mb-1">
@@ -5531,9 +5541,18 @@
                 <div class="text-2xl font-bold text-rose-400" id="route-card-2-aqi">AQI 280</div>
                 <div class="text-xs text-rose-400 font-semibold">(Severe Smog)</div>
               </div>
-              <div class="text-xs text-earth-300 font-sans mt-1" id="route-card-2-sub">
+              <div class="text-xs text-earth-300 font-sans mt-0.5" id="route-card-2-sub">
                 Industrial Freight &amp; Commercial Bottlenecks
               </div>
+
+              <!-- Dedicated Direct Open in Google Maps button at top of card -->
+              <button type="button" onclick="event.stopPropagation(); VayuCommuteMap.openInGoogleMaps(2)"
+                class="w-full mt-2.5 py-2 px-3 rounded-xl bg-rose-700 hover:bg-rose-600 text-white text-xs font-sans font-bold flex items-center justify-center gap-1.5 shadow-md shadow-rose-950/60 transition active:scale-95 cursor-pointer"
+                title="Open Route C in Google Maps">
+                <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                <span>Open Route C in Google Maps ↗</span>
+              </button>
+
               <div class="mt-2.5 pt-2 border-t border-earth-800 flex items-center justify-between text-[11px] text-earth-300">
                 <span>Inhalation Dosage:</span>
                 <span class="font-bold text-rose-400" id="route-card-2-dose">135 μg PM2.5</span>
@@ -5547,10 +5566,6 @@
               <div class="text-[10px] text-rose-400/90 mt-3 pt-2 border-t border-earth-800 font-sans truncate" id="route-card-2-path">
                 Via Industrial Periphery &amp; Truck Corridors
               </div>
-              <button type="button" onclick="event.stopPropagation(); VayuCommuteMap.openInGoogleMaps(2)" class="w-full mt-2.5 py-1.5 px-2 rounded-xl bg-rose-950/40 hover:bg-rose-900/60 border border-rose-500/40 text-[11px] font-sans font-semibold text-rose-300 flex items-center justify-center gap-1.5 transition active:scale-95" title="Navigate Route C in Google Maps">
-                <svg class="w-3.5 h-3.5 text-rose-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                <span>Open in Google Maps</span>
-              </button>
             </div>
           </div>
         </div>
@@ -11161,6 +11176,7 @@
       layers: [],
       routeLines: [],
       routeData: [],
+      badgeMarkers: [],
       selectedRoute: 0,
 
       initOrResize() {
@@ -11218,6 +11234,7 @@
         });
         this.layers = [];
         this.routeLines = [];
+        this.badgeMarkers = [];
       },
 
       drawRoutes(originCoord, destCoord, routes) {
@@ -11252,15 +11269,15 @@
           const isSelected = idx === this.selectedRoute;
           const polyline = L.polyline(r.coords, {
             color: r.color,
-            weight: isSelected ? 6.5 : 3.5,
-            opacity: isSelected ? 0.95 : 0.45,
+            weight: isSelected ? 7.5 : 3.0,
+            opacity: isSelected ? 1.0 : 0.20,
             dashArray: r.dashArray || null,
             lineCap: 'round',
             lineJoin: 'round'
           }).addTo(this.map);
 
           polyline.on('click', () => {
-            this.selectRoute(idx);
+            this.onCardClick(idx);
           });
 
           this.routeLines.push(polyline);
@@ -11270,39 +11287,69 @@
           const midIdx = Math.floor(r.coords.length / 2);
           const midPt = r.coords[midIdx] || r.coords[0];
           const badgeHtml = `
-            <div style="background:#0A0B0A;border:1.5px solid ${r.color};color:${r.color};padding:2px 7px;border-radius:10px;font-size:10px;font-weight:700;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,0.8);cursor:pointer;">
+            <div id="route-badge-marker-${idx}" style="background:#0A0B0A;border:1.5px solid ${r.color};color:${r.color};padding:3px 8px;border-radius:12px;font-size:10px;font-weight:800;white-space:nowrap;box-shadow:0 3px 10px rgba(0,0,0,0.8);cursor:pointer;transition:transform 0.2s, opacity 0.2s;">
               ${r.tag}: AQI ${r.aqi}
             </div>`;
-          const badgeIcon = L.divIcon({ className: 'custom-route-badge', html: badgeHtml, iconSize: [90, 22], iconAnchor: [45, 11] });
+          const badgeIcon = L.divIcon({ className: 'custom-route-badge', html: badgeHtml, iconSize: [95, 24], iconAnchor: [47, 12] });
           const badgeMarker = L.marker(midPt, { icon: badgeIcon }).addTo(this.map);
-          badgeMarker.on('click', () => { this.selectRoute(idx); });
+          badgeMarker.on('click', () => { this.onCardClick(idx); });
+          this.badgeMarkers.push(badgeMarker);
           this.layers.push(badgeMarker);
         });
 
-        this.fitBounds();
         this.selectRoute(this.selectedRoute);
       },
 
       selectRoute(idx) {
+        if (idx === undefined || idx === null) idx = 0;
+        idx = parseInt(idx, 10);
+        if (isNaN(idx) || idx < 0 || idx > 2) idx = 0;
         this.selectedRoute = idx;
+
+        // 1. Isolate the clicked route on the map!
+        // Selected route becomes bold, bright (opacity 1.0, weight 7.5), brought to front.
+        // Other routes are dimmed out (opacity 0.15, weight 2.5) so only the selected route dominates!
         this.routeLines.forEach((line, i) => {
           if (i === idx) {
-            line.setStyle({ weight: 6.5, opacity: 1 });
+            line.setStyle({ weight: 7.5, opacity: 1.0 });
             if (line.bringToFront) line.bringToFront();
           } else {
-            line.setStyle({ weight: 3.5, opacity: 0.4 });
+            line.setStyle({ weight: 2.5, opacity: 0.15 });
           }
         });
 
-        // Toggle card visual rings
+        // 2. Automatically zoom / pan to fit the clicked route!
+        if (this.routeLines[idx] && this.map) {
+          try {
+            this.map.fitBounds(this.routeLines[idx].getBounds(), { padding: [45, 45], maxZoom: 14 });
+          } catch(e) {}
+        }
+
+        // 3. Highlight midpoint badge
+        this.badgeMarkers.forEach((bm, i) => {
+          if (bm && bm.getElement) {
+            const el = bm.getElement();
+            if (el) {
+              el.style.opacity = (i === idx ? '1' : '0.25');
+              el.style.transform = (i === idx ? 'scale(1.1)' : 'scale(0.85)');
+              el.style.zIndex = (i === idx ? '1000' : '100');
+            }
+          }
+        });
+
+        // 4. Update the Route comparison cards styling
+        const colors = ['#10B981', '#F59E0B', '#EF4444'];
+        const bgColors = ['rgba(16,185,129,0.2)', 'rgba(245,158,11,0.2)', 'rgba(239,68,68,0.2)'];
+        const routeNames = ['Route A (Eco-Shield)', 'Route B (Standard Direct)', 'Route C (Industrial Bypass)'];
+
         for (let i = 0; i < 3; i++) {
           const card = document.getElementById(`commute-card-${i}`);
           const pill = document.getElementById(`btn-route-pill-${i}`);
           if (card) {
             if (i === idx) {
-              card.style.borderColor = (i === 0 ? '#10B981' : (i === 1 ? '#F59E0B' : '#EF4444'));
+              card.style.borderColor = colors[i];
               card.style.transform = 'scale(1.02)';
-              card.style.boxShadow = '0 10px 25px -5px rgba(0,0,0,0.5)';
+              card.style.boxShadow = `0 10px 25px -5px ${colors[i]}44`;
             } else {
               card.style.borderColor = '#262A26';
               card.style.transform = 'scale(1)';
@@ -11320,39 +11367,115 @@
           }
         }
 
-        // Update on-map floating badge
-        const d = this.routeData[idx];
+        // 5. Update top-right button on the map to explicitly show the clicked route
+        const btnMaps = document.getElementById('btn-open-google-maps');
+        if (btnMaps) {
+          btnMaps.setAttribute('onclick', `VayuCommuteMap.openInGoogleMaps(${idx})`);
+          btnMaps.innerHTML = `
+            <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/>
+              <line x1="9" y1="3" x2="9" y2="18"/>
+              <line x1="15" y1="6" x2="15" y2="21"/>
+            </svg>
+            <span>Open ${routeNames[idx]} in Google Maps ↗</span>
+          `;
+          btnMaps.style.borderColor = colors[idx];
+          btnMaps.style.color = colors[idx];
+          btnMaps.style.backgroundColor = bgColors[idx];
+        }
+
+        // 6. Update on-map floating badge with direct 1-tap navigation link
+        const d = this.routeData && this.routeData[idx];
         const badgeTitle = document.getElementById('commute-map-badge-title');
         const badgeSub = document.getElementById('commute-map-badge-sub');
         if (d && badgeTitle && badgeSub) {
           badgeTitle.innerText = `${d.name}: AQI ${d.aqi} (${d.label})`;
           badgeTitle.style.color = d.color;
-          badgeSub.innerText = `${d.dose} μg PM2.5 • ${d.distKm} km • ${d.timeMin} mins transit`;
+          badgeSub.innerHTML = `
+            <span>${d.dose} μg PM2.5 • ${d.distKm} km • ${d.timeMin} mins</span>
+            <button type="button" onclick="event.stopPropagation(); VayuCommuteMap.openInGoogleMaps(${idx})" class="ml-2 font-bold underline cursor-pointer pointer-events-auto" style="color: ${d.color};">Navigate in Google Maps ↗</button>
+          `;
+        }
+      },
+
+      onCardClick(idx) {
+        if (this.selectedRoute === idx) {
+          // If already selected, tap opens directly in Google Maps!
+          this.openInGoogleMaps(idx);
+        } else {
+          // First tap switches map to this route and zooms in
+          this.selectRoute(idx);
         }
       },
 
       openInGoogleMaps(idx) {
         if (idx === undefined || idx === null) {
-          idx = this.selectedRoute || 0;
+          idx = (this.selectedRoute !== undefined && this.selectedRoute !== null) ? this.selectedRoute : 0;
         }
-        const r = (this.routeData && this.routeData[idx]) || (this.routeData && this.routeData[0]);
+        idx = parseInt(idx, 10);
+        if (isNaN(idx) || idx < 0 || idx > 2) idx = 0;
+
         const originEl = document.getElementById('commute-origin');
         const destEl = document.getElementById('commute-dest');
-        const oKey = originEl ? originEl.value : 'dwarka_sec8';
-        const dKey = destEl ? destEl.value : 'connaught_place';
-        const oC = this.originCoord || COMMUTE_COORDS[oKey] || { lat: 28.5700, lon: 77.0700, name: 'Dwarka' };
-        const dC = this.destCoord || COMMUTE_COORDS[dKey] || { lat: 28.6315, lon: 77.2167, name: 'Connaught Place' };
+        const originName = originEl ? originEl.options[originEl.selectedIndex].text.split('(')[0].trim() : 'Dwarka';
+        const destName = destEl ? destEl.options[destEl.selectedIndex].text.split('(')[0].trim() : 'Connaught Place';
+
+        const oKey = (originEl ? originEl.value : 'dwarka_sec8').toLowerCase();
+        const dKey = (destEl ? destEl.value : 'connaught_place').toLowerCase();
+        const oC = this.originCoord || COMMUTE_COORDS[oKey] || { lat: 28.5700, lon: 77.0700, name: originName };
+        const dC = this.destCoord || COMMUTE_COORDS[dKey] || { lat: 28.6315, lon: 77.2167, name: destName };
+
+        const originParam = encodeURIComponent(`${originName}, Delhi, India`);
+        const destParam = encodeURIComponent(`${destName}, Delhi, India`);
 
         let waypointsParam = '';
-        if (r && r.coords && r.coords.length > 2) {
-          const midIdx = Math.floor(r.coords.length / 2);
-          const pt = r.coords[midIdx];
-          if (pt && (Math.abs(pt[0] - oC.lat) > 0.005 || Math.abs(pt[1] - oC.lon) > 0.005)) {
-            waypointsParam = `&waypoints=${pt[0].toFixed(5)},${pt[1].toFixed(5)}`;
+
+        if (idx === 0) {
+          // Route A: Eco-Shield Clean Ridge / Green Corridor
+          if (oKey.includes('dwarka') || oKey.includes('igi') || oKey.includes('palam') || oKey.includes('gurugram')) {
+            waypointsParam = `&waypoints=${encodeURIComponent('Dhaula Kuan, New Delhi')}`;
+          } else if (oKey.includes('noida') || oKey.includes('anand_vihar') || oKey.includes('laxmi_nagar') || oKey.includes('mayur_vihar') || oKey.includes('ghaziabad')) {
+            waypointsParam = `&waypoints=${encodeURIComponent('Barapullah Elevated Road, New Delhi')}`;
+          } else if (oKey.includes('rohini') || oKey.includes('pitampura') || oKey.includes('shalimar_bagh') || oKey.includes('burari')) {
+            waypointsParam = `&waypoints=${encodeURIComponent('Civil Lines, Delhi')}`;
+          } else if (oKey.includes('hauz_khas') || oKey.includes('saket') || oKey.includes('vasant')) {
+            waypointsParam = `&waypoints=${encodeURIComponent('Chanakyapuri, New Delhi')}`;
+          } else {
+            const r = this.routeData && this.routeData[0];
+            if (r && r.coords && r.coords.length > 2) {
+              const pt = r.coords[Math.floor(r.coords.length * 0.45)];
+              waypointsParam = `&waypoints=${pt[0].toFixed(5)},${pt[1].toFixed(5)}`;
+            } else {
+              waypointsParam = `&waypoints=${encodeURIComponent('Dhaula Kuan, New Delhi')}`;
+            }
+          }
+        } else if (idx === 1) {
+          // Route B: Standard Direct Shortest Highway (no detours, standard Google Maps arterial route!)
+          waypointsParam = '';
+        } else if (idx === 2) {
+          // Route C: Industrial / Ring Road Freight Bottleneck
+          if (oKey.includes('dwarka') || oKey.includes('igi') || oKey.includes('palam') || oKey.includes('janakpuri') || oKey.includes('tilak_nagar')) {
+            waypointsParam = `&waypoints=${encodeURIComponent('Mayapuri Industrial Area, New Delhi')}`;
+          } else if (oKey.includes('noida') || oKey.includes('okhla') || oKey.includes('faridabad') || oKey.includes('badarpur')) {
+            waypointsParam = `&waypoints=${encodeURIComponent('Ashram Chowk, New Delhi')}`;
+          } else if (oKey.includes('rohini') || oKey.includes('punjabi_bagh') || oKey.includes('paschim_vihar') || oKey.includes('wazirpur')) {
+            waypointsParam = `&waypoints=${encodeURIComponent('Wazirpur Industrial Area, Delhi')}`;
+          } else if (oKey.includes('anand_vihar') || oKey.includes('patparganj') || oKey.includes('laxmi_nagar')) {
+            waypointsParam = `&waypoints=${encodeURIComponent('Patparganj Industrial Area, Delhi')}`;
+          } else if (oKey.includes('narela') || oKey.includes('bawana')) {
+            waypointsParam = `&waypoints=${encodeURIComponent('Bawana Industrial Area, Delhi')}`;
+          } else {
+            const r = this.routeData && this.routeData[2];
+            if (r && r.coords && r.coords.length > 2) {
+              const pt = r.coords[Math.floor(r.coords.length * 0.55)];
+              waypointsParam = `&waypoints=${pt[0].toFixed(5)},${pt[1].toFixed(5)}`;
+            } else {
+              waypointsParam = `&waypoints=${encodeURIComponent('Mayapuri Industrial Area, New Delhi')}`;
+            }
           }
         }
 
-        const gmapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${oC.lat.toFixed(5)},${oC.lon.toFixed(5)}&destination=${dC.lat.toFixed(5)},${dC.lon.toFixed(5)}${waypointsParam}&travelmode=driving`;
+        const gmapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${originParam}&destination=${destParam}${waypointsParam}&travelmode=driving`;
         window.open(gmapsUrl, '_blank');
       }
     };
