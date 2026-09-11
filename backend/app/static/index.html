@@ -5526,33 +5526,34 @@
             <!-- Leaflet map canvas -->
             <div id="commute-leaflet-map" class="w-full h-full z-0 bg-[#060706]"></div>
 
-            <!-- On-map Floating Recommendation Banner -->
-            <div class="absolute top-3 left-3 z-[400] max-w-[85%] sm:max-w-md pointer-events-none">
-              <div id="commute-map-badge" class="px-3.5 py-2 rounded-xl bg-earth-950/95 backdrop-blur-md border border-emerald-500/60 shadow-xl flex items-center gap-2.5">
+            <!-- On-map Top Floating Bar (Unified Responsive Row with Controlled Spacing) -->
+            <div class="absolute top-2.5 inset-x-2.5 sm:top-3 sm:inset-x-3 z-[400] flex items-center justify-between gap-3 pointer-events-none">
+              <!-- Left: Route Info Badge -->
+              <div id="commute-map-badge" class="px-3 py-1.5 rounded-xl bg-earth-950/95 backdrop-blur-md border border-emerald-500/60 shadow-xl flex items-center gap-2.5 min-w-0 max-w-[48%] sm:max-w-xs md:max-w-sm pointer-events-auto shrink">
                 <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping shrink-0"></span>
-                <div>
-                  <div class="text-[11px] font-bold text-emerald-300" id="commute-map-badge-title">Recommended: Eco-Shield Corridor</div>
-                  <div class="text-[10px] text-earth-300 font-mono" id="commute-map-badge-sub">Lowest PM2.5 Inhalation • Saves 65% Smog Exposure</div>
+                <div class="min-w-0">
+                  <div class="text-[11px] font-bold text-emerald-300 truncate font-sans" id="commute-map-badge-title">Recommended: Eco-Shield Corridor</div>
+                  <div class="text-[10px] text-earth-300 font-mono truncate" id="commute-map-badge-sub">Lowest PM2.5 Inhalation • Saves 65% Smog Exposure</div>
                 </div>
               </div>
-            </div>
 
-            <!-- On-map Top Right Action Controls -->
-            <div class="absolute top-3 right-3 z-[400] flex items-center gap-1.5 sm:gap-2">
-              <button type="button" onclick="VayuCommuteMap.openInGoogleMaps()" id="btn-open-google-maps" title="Open this route in Google Maps"
-                class="px-3 py-1.5 rounded-xl bg-emerald-950/90 backdrop-blur-md border border-emerald-500/70 hover:border-emerald-400 text-xs text-emerald-300 hover:text-white font-bold shadow-lg transition flex items-center gap-1.5 cursor-pointer active:scale-95">
-                <svg class="w-4 h-4 text-emerald-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                  <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/>
-                  <line x1="9" y1="3" x2="9" y2="18"/>
-                  <line x1="15" y1="6" x2="15" y2="21"/>
-                </svg>
-                <span>Open in Google Maps ↗</span>
-              </button>
-              <button type="button" onclick="VayuCommuteMap.fitBounds()" title="Zoom to fit route"
-                class="px-2.5 py-1.5 rounded-xl bg-earth-950/90 backdrop-blur-md border border-earth-700 hover:border-cyan-400 text-xs text-white font-medium shadow-lg transition flex items-center gap-1.5 cursor-pointer active:scale-95">
-                <svg class="w-3.5 h-3.5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
-                <span class="hidden sm:inline">Fit Route</span>
-              </button>
+              <!-- Right: Map Actions (Google Maps + Fit Route) with distinct gap -->
+              <div class="flex items-center gap-2.5 shrink-0 pointer-events-auto ml-auto">
+                <button type="button" onclick="VayuCommuteMap.openInGoogleMaps()" id="btn-open-google-maps" title="Open this route in Google Maps"
+                  class="px-2.5 py-1.5 rounded-xl bg-emerald-950/90 backdrop-blur-md border border-emerald-500/70 hover:border-emerald-400 text-xs text-emerald-300 hover:text-white font-bold shadow-lg transition flex items-center gap-1.5 cursor-pointer active:scale-95 whitespace-nowrap">
+                  <svg class="w-3.5 h-3.5 text-emerald-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/>
+                    <line x1="9" y1="3" x2="9" y2="18"/>
+                    <line x1="15" y1="6" x2="15" y2="21"/>
+                  </svg>
+                  <span>Google Maps ↗</span>
+                </button>
+                <button type="button" onclick="VayuCommuteMap.fitBounds()" title="Zoom to fit route"
+                  class="px-2.5 py-1.5 rounded-xl bg-earth-950/90 backdrop-blur-md border border-earth-700 hover:border-cyan-400 text-xs text-white font-medium shadow-lg transition flex items-center gap-1.5 cursor-pointer active:scale-95 whitespace-nowrap">
+                  <svg class="w-3.5 h-3.5 text-cyan-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+                  <span>Fit Route</span>
+                </button>
+              </div>
             </div>
 
             <!-- On-map Route Legend -->
@@ -5617,10 +5618,10 @@
 
               <!-- Slim Google Maps Button -->
               <button type="button" onclick="event.stopPropagation(); VayuCommuteMap.openInGoogleMaps(0)"
-                class="w-full mt-2.5 py-1.5 px-2.5 rounded-lg bg-emerald-950/70 hover:bg-emerald-900/90 border border-emerald-500/50 hover:border-emerald-400 text-emerald-300 hover:text-white text-[11px] font-sans font-semibold flex items-center justify-center gap-1.5 shadow-sm transition active:scale-95 cursor-pointer"
+                class="w-full mt-2 py-1 px-2.5 rounded-lg bg-emerald-950/70 hover:bg-emerald-900/90 border border-emerald-500/50 hover:border-emerald-400 text-emerald-300 hover:text-white text-[10.5px] font-sans font-medium flex items-center justify-center gap-1.5 shadow-sm transition active:scale-95 cursor-pointer"
                 title="Open Route A in Google Maps">
                 <svg class="w-3.5 h-3.5 text-emerald-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                <span class="truncate">Open Route A in Google Maps ↗</span>
+                <span class="truncate">Open in Google Maps ↗</span>
               </button>
             </div>
             <div>
@@ -5672,10 +5673,10 @@
 
               <!-- Slim Google Maps Button -->
               <button type="button" onclick="event.stopPropagation(); VayuCommuteMap.openInGoogleMaps(1)"
-                class="w-full mt-2.5 py-1.5 px-2.5 rounded-lg bg-earth-900/80 hover:bg-earth-850 border border-amber-500/50 hover:border-amber-400 text-amber-300 hover:text-white text-[11px] font-sans font-semibold flex items-center justify-center gap-1.5 shadow-sm transition active:scale-95 cursor-pointer"
+                class="w-full mt-2 py-1 px-2.5 rounded-lg bg-earth-900/80 hover:bg-earth-850 border border-amber-500/50 hover:border-amber-400 text-amber-300 hover:text-white text-[10.5px] font-sans font-medium flex items-center justify-center gap-1.5 shadow-sm transition active:scale-95 cursor-pointer"
                 title="Open Route B in Google Maps">
                 <svg class="w-3.5 h-3.5 text-amber-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                <span class="truncate">Open Route B in Google Maps ↗</span>
+                <span class="truncate">Open in Google Maps ↗</span>
               </button>
             </div>
             <div>
@@ -5726,10 +5727,10 @@
 
               <!-- Slim Google Maps Button -->
               <button type="button" onclick="event.stopPropagation(); VayuCommuteMap.openInGoogleMaps(2)"
-                class="w-full mt-2.5 py-1.5 px-2.5 rounded-lg bg-earth-900/80 hover:bg-earth-850 border border-rose-500/50 hover:border-rose-400 text-rose-300 hover:text-white text-[11px] font-sans font-semibold flex items-center justify-center gap-1.5 shadow-sm transition active:scale-95 cursor-pointer"
+                class="w-full mt-2 py-1 px-2.5 rounded-lg bg-earth-900/80 hover:bg-earth-850 border border-rose-500/50 hover:border-rose-400 text-rose-300 hover:text-white text-[10.5px] font-sans font-medium flex items-center justify-center gap-1.5 shadow-sm transition active:scale-95 cursor-pointer"
                 title="Open Route C in Google Maps">
                 <svg class="w-3.5 h-3.5 text-rose-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                <span class="truncate">Open Route C in Google Maps ↗</span>
+                <span class="truncate">Open in Google Maps ↗</span>
               </button>
             </div>
             <div>
@@ -11406,7 +11407,7 @@
               preferCanvas: true
             });
 
-            L.control.zoom({ position: 'topright' }).addTo(this.map);
+            L.control.zoom({ position: 'bottomleft' }).addTo(this.map);
 
             L.tileLayer('https://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
               maxZoom: 16,
@@ -11584,30 +11585,20 @@
         const btnMaps = document.getElementById('btn-open-google-maps');
         if (btnMaps) {
           btnMaps.setAttribute('onclick', `VayuCommuteMap.openInGoogleMaps(${idx})`);
-          btnMaps.innerHTML = `
-            <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-              <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/>
-              <line x1="9" y1="3" x2="9" y2="18"/>
-              <line x1="15" y1="6" x2="15" y2="21"/>
-            </svg>
-            <span>Open ${routeNames[idx]} in Google Maps ↗</span>
-          `;
+          btnMaps.title = `Open ${routeNames[idx]} in Google Maps`;
           btnMaps.style.borderColor = colors[idx];
           btnMaps.style.color = colors[idx];
           btnMaps.style.backgroundColor = bgColors[idx];
         }
 
-        // 6. Update on-map floating badge with direct 1-tap navigation link
+        // 6. Update on-map floating badge with concise route stats
         const d = this.routeData && this.routeData[idx];
         const badgeTitle = document.getElementById('commute-map-badge-title');
         const badgeSub = document.getElementById('commute-map-badge-sub');
         if (d && badgeTitle && badgeSub) {
-          badgeTitle.innerText = `${d.name}: AQI ${d.aqi} (${d.label})`;
+          badgeTitle.innerText = `${d.name}: AQI ${d.aqi}`;
           badgeTitle.style.color = d.color;
-          badgeSub.innerHTML = `
-            <span>${d.dose} μg PM2.5 • ${d.distKm} km • ${d.timeMin} mins</span>
-            <button type="button" onclick="event.stopPropagation(); VayuCommuteMap.openInGoogleMaps(${idx})" class="ml-2 font-bold underline cursor-pointer pointer-events-auto" style="color: ${d.color};">Navigate in Google Maps ↗</button>
-          `;
+          badgeSub.innerHTML = `<span>${d.dose} μg PM2.5 • ${d.distKm} km • ${d.timeMin}</span>`;
         }
       },
 
@@ -12124,11 +12115,34 @@
       let rawDistKm = Math.sqrt(dLat * dLat + dLon * dLon);
       if (rawDistKm < 1.5) rawDistKm = 2.4;
 
-      // Base active station AQI or fallback
-      let baseAQI = 155;
-      if (typeof VayuCore !== 'undefined' && VayuCore.activeStation && VayuCore.activeStation.aqi) {
-        baseAQI = parseInt(VayuCore.activeStation.aqi) || 155;
+      // Calculate true corridor AQI dynamically using real nearby monitoring stations
+      function getNearStationAQI(lat, lon) {
+        if (typeof VayuForecastEngine !== 'undefined' && VayuForecastEngine.stations && VayuForecastEngine.stations.length > 0) {
+          let minD = Infinity;
+          let bestAQI = 160;
+          for (let i = 0; i < VayuForecastEngine.stations.length; i++) {
+            const st = VayuForecastEngine.stations[i];
+            const dLat = st.lat - lat;
+            const dLon = st.lon - lon;
+            const distSq = dLat * dLat + dLon * dLon;
+            if (distSq < minD) {
+              minD = distSq;
+              bestAQI = st.aqi || st.baseAQI || 160;
+            }
+          }
+          return bestAQI;
+        }
+        return (typeof VayuForecastEngine !== 'undefined' && VayuForecastEngine.currentAQI) ? VayuForecastEngine.currentAQI : 160;
       }
+
+      const oAQI = getNearStationAQI(oCoord.lat, oCoord.lon);
+      const dAQI = getNearStationAQI(dCoord.lat, dCoord.lon);
+      const midLat = (oCoord.lat + dCoord.lat) / 2;
+      const midLon = (oCoord.lon + dCoord.lon) / 2;
+      const midAQI = getNearStationAQI(midLat, midLon);
+
+      // Spatially interpolated baseline corridor AQI based on origin, corridor transit, and destination
+      const baseAQI = Math.round(oAQI * 0.35 + midAQI * 0.30 + dAQI * 0.35);
 
       // Mode multipliers & speed transit factors
       let modeFactor = 0.55;
