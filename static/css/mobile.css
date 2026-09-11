@@ -361,6 +361,13 @@
   transition: all 0.25s ease;
 }
 
+#gps-location-toast.hidden {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+}
+
 .toast-progress-bar {
   position: absolute;
   bottom: 0;
@@ -372,14 +379,28 @@
 }
 
 /* ==========================================================================
-   GLOBAL VIEWPORT & OVERFLOW LOCK
+   GLOBAL VIEWPORT & OVERFLOW
    ========================================================================== */
-html, body {
+html {
   max-width: 100% !important;
   width: 100% !important;
-  overflow-x: hidden !important;
+  overflow-x: clip !important;
+  overflow-y: auto !important;
+  box-sizing: border-box;
+}
+
+body {
+  max-width: 100% !important;
+  width: 100% !important;
+  overflow-x: clip !important;
+  overflow-y: visible !important;
   position: relative;
   box-sizing: border-box;
+}
+
+main {
+  overflow-x: clip;
+  overflow-y: visible;
 }
 
 *, *:before, *:after {

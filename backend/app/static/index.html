@@ -142,13 +142,23 @@
       -webkit-user-select: none;
     }
     
-    /* Smooth phone scrolling & touch targets */
-    html, body {
+    /* Smooth global scrolling & touch flow */
+    html {
       max-width: 100%;
-      overflow-x: hidden;
-      overscroll-behavior-y: none;
+      overflow-x: clip;
+      overflow-y: auto;
       -webkit-overflow-scrolling: touch;
-      touch-action: manipulation;
+      scroll-behavior: smooth;
+    }
+    body {
+      max-width: 100%;
+      overflow-x: clip;
+      overflow-y: visible;
+      -webkit-overflow-scrolling: touch;
+    }
+    main, .tab-panel {
+      overflow-x: clip;
+      overflow-y: visible;
     }
 
     /* Hide desktop tab nav by default */
@@ -2871,7 +2881,7 @@
 
   </style>
 </head>
-<body class="min-h-screen text-[#f2f5f3] flex flex-col antialiased selection:bg-[#10201a] selection:text-[#6fe2a3] overflow-x-hidden max-w-full w-full">
+<body class="min-h-screen text-[#f2f5f3] flex flex-col antialiased selection:bg-[#10201a] selection:text-[#6fe2a3] max-w-full w-full">
   <!-- ================= 0. INTRO / COLD LAUNCH SPLASH SCREEN ================= -->
   <div id="splash-screen" class="fixed inset-0 z-[9999] flex flex-col items-center justify-center pb-safe cursor-pointer transition-all duration-300 select-none" onclick="if(window.VayuSplashScreen&&window.VayuSplashScreen.dismissSplash){window.VayuSplashScreen.dismissSplash(true);}this.style.opacity='0';this.style.pointerEvents='none';this.style.display='none';try{this.remove();}catch(e){}">
 
@@ -2978,8 +2988,8 @@
           </div>
         </div>
       </div>
-      <button onclick="dismissLocationToast()" class="p-1 rounded-lg text-[#8b9390] hover:text-white hover:bg-[#1c1f1c] shrink-0 transition text-sm">
-        ✕
+      <button type="button" onclick="event.stopPropagation(); dismissLocationToast();" class="p-1.5 rounded-lg text-[#8b9390] hover:text-white hover:bg-[#1c1f1c] shrink-0 transition cursor-pointer active:scale-95" aria-label="Dismiss banner" title="Close">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
     <div class="toast-progress-bar" id="toast-progress-bar"></div>
@@ -3420,8 +3430,7 @@
     </div>
   </div>
 
-  <!-- ================= MAIN CONTENT (PHONE COMPACT) ================= -->
-  <main class="flex-1 max-w-md sm:max-w-xl md:max-w-3xl lg:max-w-4xl w-full mx-auto p-2.5 sm:p-4 flex flex-col gap-3 sm:gap-5 min-w-0 overflow-x-hidden">
+  <main class="flex-1 max-w-md sm:max-w-xl md:max-w-3xl lg:max-w-4xl w-full mx-auto p-2.5 sm:p-4 flex flex-col gap-3 sm:gap-5 min-w-0">
 
     <!-- ================= 2. TAB PANELS ================= -->
     
@@ -7320,6 +7329,9 @@
         subtext.innerText = `${stationName} • ${distanceKm} km away • AQI ${aqi}`;
         toast.classList.remove('hidden');
         toast.style.display = 'block';
+        toast.style.opacity = '1';
+        toast.style.pointerEvents = 'auto';
+        toast.style.visibility = 'visible';
 
         if (pBar) {
           pBar.style.transition = 'none';
@@ -7332,8 +7344,7 @@
 
         if (this.toastTimeout) clearTimeout(this.toastTimeout);
         this.toastTimeout = setTimeout(() => {
-          toast.classList.add('hidden');
-          toast.style.display = 'none';
+          dismissLocationToast();
         }, 4400);
       }
     };
@@ -7482,9 +7493,19 @@
 
     function dismissLocationToast() {
       const toast = document.getElementById('gps-location-toast');
-      if (toast) toast.classList.add('hidden');
-      if (VayuLocationService.toastTimeout) clearTimeout(VayuLocationService.toastTimeout);
+      if (toast) {
+        toast.classList.add('hidden');
+        toast.style.display = 'none';
+        toast.style.opacity = '0';
+        toast.style.pointerEvents = 'none';
+        toast.style.visibility = 'hidden';
+      }
+      if (typeof VayuLocationService !== 'undefined' && VayuLocationService.toastTimeout) {
+        clearTimeout(VayuLocationService.toastTimeout);
+        VayuLocationService.toastTimeout = null;
+      }
     }
+    window.dismissLocationToast = dismissLocationToast;
 
     function refreshGPSLocation() {
       VayuLocationService.requestDeviceLocation(true);
