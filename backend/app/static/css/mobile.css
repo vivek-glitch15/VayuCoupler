@@ -346,26 +346,29 @@
    GPS LOCATION TOAST & PICKER
    ========================================================================== */
 #gps-location-toast {
-  position: fixed;
-  top: 16px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1000;
-  width: 92%;
-  max-width: 480px;
-  background: var(--panel, #131513);
-  border: 1px solid var(--border, #262A26);
-  border-radius: var(--radius, 14px);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
-  overflow: hidden;
-  transition: all 0.25s ease;
+  position: fixed !important;
+  top: 16px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  z-index: 99999 !important;
+  width: 92% !important;
+  max-width: 480px !important;
+  background: var(--panel, #131513) !important;
+  border: 1px solid var(--border, #262A26) !important;
+  border-radius: var(--radius, 14px) !important;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6) !important;
+  overflow: hidden !important;
+  transition: opacity 0.25s ease, transform 0.25s ease !important;
 }
 
-#gps-location-toast.hidden {
+#gps-location-toast.hidden,
+#gps-location-toast[style*="display: none"],
+#gps-location-toast[data-dismissed="true"] {
   display: none !important;
   opacity: 0 !important;
   pointer-events: none !important;
   visibility: hidden !important;
+  transform: translate(-50%, -150%) !important;
 }
 
 .toast-progress-bar {

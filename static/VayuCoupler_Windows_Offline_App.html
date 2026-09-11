@@ -14,8 +14,8 @@
   <link rel="apple-touch-icon" href="/static/apple-touch-icon.png?v=6">
   <link rel="icon" type="image/png" href="/static/icon-192.png?v=6">
   
-  <link rel="stylesheet" href="/static/css/styles.css?v=13">
-  <link rel="stylesheet" href="/static/css/mobile.css?v=13">
+  <link rel="stylesheet" href="/static/css/styles.css?v=29">
+  <link rel="stylesheet" href="/static/css/mobile.css?v=29">
 
 
   <script>
@@ -2879,6 +2879,43 @@
       color: #0f172a !important;
     }
 
+    /* Bulletproof GPS Location Toast Banner Styles */
+    #gps-location-toast {
+      position: fixed !important;
+      top: 16px !important;
+      left: 50% !important;
+      transform: translateX(-50%) !important;
+      z-index: 99999 !important;
+      width: 92% !important;
+      max-width: 480px !important;
+      background: #131513 !important;
+      border: 1px solid #262A26 !important;
+      border-radius: 14px !important;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6) !important;
+      overflow: hidden !important;
+      transition: opacity 0.25s ease, transform 0.25s ease !important;
+    }
+
+    #gps-location-toast.hidden,
+    #gps-location-toast[style*="display: none"],
+    #gps-location-toast[data-dismissed="true"] {
+      display: none !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+      visibility: hidden !important;
+      transform: translate(-50%, -150%) !important;
+    }
+
+    .toast-progress-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 3px;
+      background: #8FFFB0;
+      width: 100%;
+      transform-origin: left;
+    }
+
   </style>
 </head>
 <body class="min-h-screen text-[#f2f5f3] flex flex-col antialiased selection:bg-[#10201a] selection:text-[#6fe2a3] max-w-full w-full">
@@ -2988,8 +3025,11 @@
           </div>
         </div>
       </div>
-      <button type="button" onclick="event.stopPropagation(); dismissLocationToast();" class="p-1.5 rounded-lg text-[#8b9390] hover:text-white hover:bg-[#1c1f1c] shrink-0 transition cursor-pointer active:scale-95" aria-label="Dismiss banner" title="Close">
-        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      <button type="button" id="btn-close-gps-toast"
+        onclick="event.stopPropagation(); window.VayuLocationToastDismissed = true; if (window.dismissLocationToast) { window.dismissLocationToast(); } const t=document.getElementById('gps-location-toast'); if(t){ t.setAttribute('data-dismissed','true'); t.style.setProperty('display','none','important'); t.style.setProperty('opacity','0','important'); t.style.setProperty('visibility','hidden','important'); t.style.setProperty('pointer-events','none','important'); t.classList.add('hidden'); }"
+        class="p-2 -mr-1 rounded-xl text-[#8b9390] hover:text-white hover:bg-[#1c1f1c] active:bg-[#252825] shrink-0 transition cursor-pointer active:scale-95 min-w-[36px] min-h-[36px] flex items-center justify-center touch-manipulation z-10"
+        aria-label="Dismiss banner" title="Close">
+        <svg class="w-4 h-4 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
     <div class="toast-progress-bar" id="toast-progress-bar"></div>
@@ -7438,6 +7478,7 @@
       },
 
       showLocationToast(stationName, distanceKm, aqi, customTitle = null) {
+        if (window.VayuLocationToastDismissed) return;
         const toast = document.getElementById('gps-location-toast');
         const subtext = document.getElementById('toast-station-subtext');
         const titleEl = document.getElementById('toast-title-text');
@@ -7448,19 +7489,26 @@
           titleEl.innerText = customTitle || "Local Air Quality Set to Your Location";
         }
         subtext.innerText = `${stationName} • ${distanceKm} km away • AQI ${aqi}`;
+        toast.removeAttribute('data-dismissed');
         toast.classList.remove('hidden');
-        toast.style.display = 'block';
-        toast.style.opacity = '1';
-        toast.style.pointerEvents = 'auto';
-        toast.style.visibility = 'visible';
+        toast.style.setProperty('display', 'block', 'important');
+        toast.style.setProperty('opacity', '1', 'important');
+        toast.style.setProperty('pointer-events', 'auto', 'important');
+        toast.style.setProperty('visibility', 'visible', 'important');
+        toast.style.setProperty('transform', 'translateX(-50%)', 'important');
 
         if (pBar) {
           pBar.style.transition = 'none';
           pBar.style.transform = 'scaleX(1)';
-          setTimeout(() => {
-            pBar.style.transition = 'transform 4.2s linear';
-            pBar.style.transform = 'scaleX(0)';
-          }, 50);
+          pBar.ontransitionend = () => {
+            dismissLocationToast();
+          };
+          requestAnimationFrame(() => {
+            setTimeout(() => {
+              pBar.style.transition = 'transform 4.2s linear';
+              pBar.style.transform = 'scaleX(0)';
+            }, 40);
+          });
         }
 
         if (this.toastTimeout) clearTimeout(this.toastTimeout);
@@ -7613,13 +7661,16 @@
 
 
     function dismissLocationToast() {
+      window.VayuLocationToastDismissed = true;
       const toast = document.getElementById('gps-location-toast');
       if (toast) {
+        toast.setAttribute('data-dismissed', 'true');
         toast.classList.add('hidden');
-        toast.style.display = 'none';
-        toast.style.opacity = '0';
-        toast.style.pointerEvents = 'none';
-        toast.style.visibility = 'hidden';
+        toast.style.setProperty('display', 'none', 'important');
+        toast.style.setProperty('opacity', '0', 'important');
+        toast.style.setProperty('pointer-events', 'none', 'important');
+        toast.style.setProperty('visibility', 'hidden', 'important');
+        toast.style.setProperty('transform', 'translate(-50%, -150%)', 'important');
       }
       if (typeof VayuLocationService !== 'undefined' && VayuLocationService.toastTimeout) {
         clearTimeout(VayuLocationService.toastTimeout);
@@ -7629,6 +7680,7 @@
     window.dismissLocationToast = dismissLocationToast;
 
     function refreshGPSLocation() {
+      window.VayuLocationToastDismissed = false;
       VayuLocationService.requestDeviceLocation(true);
     }
 
@@ -7740,6 +7792,7 @@
     }
 
     function selectManualStation(stationId) {
+      window.VayuLocationToastDismissed = false;
       const found = VayuForecastEngine.stations.find(s => s.id === stationId);
       if (found) {
         const userCoords = VayuLocationService.lastUserCoords || { lat: 28.6315, lon: 77.2167 };
@@ -11099,6 +11152,19 @@
         VayuSettings.init();
         lucide.createIcons();
 
+        // Bind GPS Location Toast Close Button
+        const closeToastBtn = document.getElementById('btn-close-gps-toast');
+        if (closeToastBtn) {
+          closeToastBtn.onclick = (e) => {
+            if (e) e.stopPropagation();
+            dismissLocationToast();
+          };
+          closeToastBtn.ontouchend = (e) => {
+            if (e) e.stopPropagation();
+            dismissLocationToast();
+          };
+        }
+
         // Zero-latency instant hydration of all telemetry & models locally
         applyStepDataLocally(currentStep);
         if (typeof updateForecastFromEngine === 'function') {
@@ -14114,6 +14180,7 @@
         const setBtn = document.getElementById('btn-inspect-set-active');
         if (setBtn) {
           setBtn.onclick = () => {
+            window.VayuLocationToastDismissed = false;
             if (typeof VayuLocationService !== 'undefined' && typeof VayuLocationService.applyResolvedStation === 'function') {
               VayuLocationService.applyResolvedStation(station, 2.5, true);
             } else if (typeof selectStation === 'function') {
@@ -14487,14 +14554,15 @@
                   this.map.flyTo([lat, lon], 12, { duration: 1.2 });
                 }
 
-                if (typeof VayuForecastEngine !== 'undefined') {
+                window.VayuLocationToastDismissed = false;
+                if (typeof VayuLocationService !== 'undefined' && typeof VayuLocationService.applyResolvedStation === 'function') {
                   let nearest = VayuForecastEngine.stations[0];
                   let minDist = Infinity;
                   VayuForecastEngine.stations.forEach(st => {
-                    const d = VayuForecastEngine.calcHaversineDistance(lat, lon, st.lat, st.lon);
+                    const d = VayuLocationService.calcHaversineDistance(lat, lon, st.lat, st.lon);
                     if (d < minDist) { minDist = d; nearest = st; }
                   });
-                  VayuForecastEngine.applyResolvedStation(nearest, minDist, true);
+                  VayuLocationService.applyResolvedStation(nearest, minDist, true);
                 }
               },
               err => {
