@@ -635,8 +635,12 @@ def build_deck(output_pptx_path):
     import shutil
     for folder in ["docs", "static", "backend/app/static"]:
         os.makedirs(folder, exist_ok=True)
-        shutil.copyfile(output_pptx_path, os.path.join(folder, output_pptx_path))
-    print("Copied idea submission deck to docs/, static/, and backend/app/static/.")
+        dst = os.path.join(folder, output_pptx_path)
+        try:
+            shutil.copyfile(output_pptx_path, dst)
+        except Exception as e:
+            print(f"Warning: Could not copy to {dst} (file might be open in PowerPoint): {e}")
+    print("Sync process completed for idea submission deck.")
 
 if __name__ == "__main__":
     out_path = "VayuCoupler_SIH_AtomX_Idea_Submission.pptx"
