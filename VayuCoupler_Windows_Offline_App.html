@@ -13469,60 +13469,73 @@
 
         const originEl = document.getElementById('commute-origin');
         const destEl = document.getElementById('commute-dest');
-        const originName = originEl ? originEl.options[originEl.selectedIndex].text.split('(')[0].trim() : 'Dwarka';
-        const destName = destEl ? destEl.options[destEl.selectedIndex].text.split('(')[0].trim() : 'Connaught Place';
+        const originSearchEl = document.getElementById('commute-origin-search');
+        const destSearchEl = document.getElementById('commute-dest-search');
 
-        const oKey = (originEl ? originEl.value : 'dwarka_sec8').toLowerCase();
-        const dKey = (destEl ? destEl.value : 'connaught_place').toLowerCase();
-        const oC = this.originCoord || COMMUTE_COORDS[oKey] || { lat: 28.5700, lon: 77.0700, name: originName };
-        const dC = this.destCoord || COMMUTE_COORDS[dKey] || { lat: 28.6315, lon: 77.2167, name: destName };
+        // Helper: Strip leading emojis, icons, and accuracy hints
+        const cleanName = (str) => {
+          if (!str) return '';
+          return str
+            .replace(/^[📍🏢🏁•\-\s]+/, '')
+            .split('(')[0]
+            .replace(/\s*±\d+m.*/, '')
+            .trim();
+        };
 
-        const originParam = encodeURIComponent(`${originName}, Delhi, India`);
-        const destParam = encodeURIComponent(`${destName}, Delhi, India`);
+        // 1. Resolve current active coordinates & names dynamically
+        const oC = this.originCoord || window.customOriginCoord || (originEl ? COMMUTE_COORDS[originEl.value] : null) || { lat: 28.5921, lon: 77.0460, name: 'Dwarka' };
+        const dC = this.destCoord || window.customDestCoord || (destEl ? COMMUTE_COORDS[destEl.value] : null) || { lat: 28.6315, lon: 77.2167, name: 'Connaught Place' };
 
+        const originCleanName = cleanName(window.customOriginName) || cleanName(originSearchEl ? originSearchEl.value : '') || cleanName(oC.name) || (originEl && originEl.options[originEl.selectedIndex] ? originEl.options[originEl.selectedIndex].text.split('(')[0].trim() : '') || 'Dwarka';
+        const destCleanName = cleanName(window.customDestName) || cleanName(destSearchEl ? destSearchEl.value : '') || cleanName(dC.name) || (destEl && destEl.options[destEl.selectedIndex] ? destEl.options[destEl.selectedIndex].text.split('(')[0].trim() : '') || 'Connaught Place';
+
+        // 2. Build Google Maps origin & destination parameters using exact coordinates for 100% pinpoint accuracy
+        const originParam = (oC && oC.lat && oC.lon) 
+          ? `${oC.lat.toFixed(5)},${oC.lon.toFixed(5)}` 
+          : encodeURIComponent(`${originCleanName}, Delhi, India`);
+
+        const destParam = (dC && dC.lat && dC.lon) 
+          ? `${dC.lat.toFixed(5)},${dC.lon.toFixed(5)}` 
+          : encodeURIComponent(`${destCleanName}, Delhi, India`);
+
+        // 3. Dynamic Waypoint selection based on actual computed route path
         let waypointsParam = '';
 
         if (idx === 0) {
-          // Route A: Eco-Shield Clean Ridge / Green Corridor
-          if (oKey.includes('dwarka') || oKey.includes('igi') || oKey.includes('palam') || oKey.includes('gurugram')) {
-            waypointsParam = `&waypoints=${encodeURIComponent('Dhaula Kuan, New Delhi')}`;
-          } else if (oKey.includes('noida') || oKey.includes('anand_vihar') || oKey.includes('laxmi_nagar') || oKey.includes('mayur_vihar') || oKey.includes('ghaziabad')) {
-            waypointsParam = `&waypoints=${encodeURIComponent('Barapullah Elevated Road, New Delhi')}`;
-          } else if (oKey.includes('rohini') || oKey.includes('pitampura') || oKey.includes('shalimar_bagh') || oKey.includes('burari')) {
-            waypointsParam = `&waypoints=${encodeURIComponent('Civil Lines, Delhi')}`;
-          } else if (oKey.includes('hauz_khas') || oKey.includes('saket') || oKey.includes('vasant')) {
-            waypointsParam = `&waypoints=${encodeURIComponent('Chanakyapuri, New Delhi')}`;
+          // Route A: Eco-Shield Clean Corridor
+          const r = this.routeData && this.routeData[0];
+          if (r && r.coords && r.coords.length > 2) {
+            const pt = r.coords[Math.floor(r.coords.length * 0.45)];
+            waypointsParam = `&waypoints=${pt[0].toFixed(5)},${pt[1].toFixed(5)}`;
           } else {
-            const r = this.routeData && this.routeData[0];
-            if (r && r.coords && r.coords.length > 2) {
-              const pt = r.coords[Math.floor(r.coords.length * 0.45)];
-              waypointsParam = `&waypoints=${pt[0].toFixed(5)},${pt[1].toFixed(5)}`;
-            } else {
+            const oKey = originCleanName.toLowerCase();
+            if (oKey.includes('dwarka') || oKey.includes('igi') || oKey.includes('palam') || oKey.includes('gurugram')) {
               waypointsParam = `&waypoints=${encodeURIComponent('Dhaula Kuan, New Delhi')}`;
+            } else if (oKey.includes('noida') || oKey.includes('anand_vihar') || oKey.includes('laxmi_nagar') || oKey.includes('mayur_vihar') || oKey.includes('ghaziabad')) {
+              waypointsParam = `&waypoints=${encodeURIComponent('Barapullah Elevated Road, New Delhi')}`;
+            } else if (oKey.includes('rohini') || oKey.includes('pitampura') || oKey.includes('shalimar_bagh') || oKey.includes('burari')) {
+              waypointsParam = `&waypoints=${encodeURIComponent('Civil Lines, Delhi')}`;
+            } else if (oKey.includes('hauz_khas') || oKey.includes('saket') || oKey.includes('vasant')) {
+              waypointsParam = `&waypoints=${encodeURIComponent('Chanakyapuri, New Delhi')}`;
             }
           }
         } else if (idx === 1) {
-          // Route B: Standard Direct Shortest Highway (no detours, standard Google Maps arterial route!)
+          // Route B: Standard Direct Shortest Highway (no detours, standard Google Maps arterial route)
           waypointsParam = '';
         } else if (idx === 2) {
           // Route C: Industrial / Ring Road Freight Bottleneck
-          if (oKey.includes('dwarka') || oKey.includes('igi') || oKey.includes('palam') || oKey.includes('janakpuri') || oKey.includes('tilak_nagar')) {
-            waypointsParam = `&waypoints=${encodeURIComponent('Mayapuri Industrial Area, New Delhi')}`;
-          } else if (oKey.includes('noida') || oKey.includes('okhla') || oKey.includes('faridabad') || oKey.includes('badarpur')) {
-            waypointsParam = `&waypoints=${encodeURIComponent('Ashram Chowk, New Delhi')}`;
-          } else if (oKey.includes('rohini') || oKey.includes('punjabi_bagh') || oKey.includes('paschim_vihar') || oKey.includes('wazirpur')) {
-            waypointsParam = `&waypoints=${encodeURIComponent('Wazirpur Industrial Area, Delhi')}`;
-          } else if (oKey.includes('anand_vihar') || oKey.includes('patparganj') || oKey.includes('laxmi_nagar')) {
-            waypointsParam = `&waypoints=${encodeURIComponent('Patparganj Industrial Area, Delhi')}`;
-          } else if (oKey.includes('narela') || oKey.includes('bawana')) {
-            waypointsParam = `&waypoints=${encodeURIComponent('Bawana Industrial Area, Delhi')}`;
+          const r = this.routeData && this.routeData[2];
+          if (r && r.coords && r.coords.length > 2) {
+            const pt = r.coords[Math.floor(r.coords.length * 0.55)];
+            waypointsParam = `&waypoints=${pt[0].toFixed(5)},${pt[1].toFixed(5)}`;
           } else {
-            const r = this.routeData && this.routeData[2];
-            if (r && r.coords && r.coords.length > 2) {
-              const pt = r.coords[Math.floor(r.coords.length * 0.55)];
-              waypointsParam = `&waypoints=${pt[0].toFixed(5)},${pt[1].toFixed(5)}`;
-            } else {
+            const oKey = originCleanName.toLowerCase();
+            if (oKey.includes('dwarka') || oKey.includes('igi') || oKey.includes('palam') || oKey.includes('janakpuri')) {
               waypointsParam = `&waypoints=${encodeURIComponent('Mayapuri Industrial Area, New Delhi')}`;
+            } else if (oKey.includes('noida') || oKey.includes('okhla') || oKey.includes('faridabad')) {
+              waypointsParam = `&waypoints=${encodeURIComponent('Ashram Chowk, New Delhi')}`;
+            } else if (oKey.includes('rohini') || oKey.includes('punjabi_bagh') || oKey.includes('wazirpur')) {
+              waypointsParam = `&waypoints=${encodeURIComponent('Wazirpur Industrial Area, Delhi')}`;
             }
           }
         }
@@ -14093,6 +14106,21 @@
             VayuCommuteMap.originCoord = window.customOriginCoord;
           }
 
+          const hiddenSelect = document.getElementById('commute-origin');
+          if (hiddenSelect) {
+            let opt = document.getElementById('commute-origin-gps-opt');
+            if (!opt) {
+              opt = document.createElement('option');
+              opt.id = 'commute-origin-gps-opt';
+              hiddenSelect.insertBefore(opt, hiddenSelect.firstChild);
+            }
+            opt.value = 'gps_live';
+            opt.text = displayName;
+            opt.selected = true;
+            hiddenSelect.selectedIndex = 0;
+            hiddenSelect.value = 'gps_live';
+          }
+
           calcCommuteRoute();
           if (typeof showFloatingToast === 'function') {
             showFloatingToast(`🎯 GPS Location locked: ${displayName} (${lat.toFixed(4)}, ${lon.toFixed(4)})`);
@@ -14242,6 +14270,7 @@
           for (let i = 0; i < hiddenSelect.options.length; i++) {
             if (hiddenSelect.options[i].value === key || hiddenSelect.options[i].text.includes(cleanName)) {
               hiddenSelect.selectedIndex = i;
+              hiddenSelect.value = hiddenSelect.options[i].value;
               found = true;
               break;
             }
@@ -14252,6 +14281,8 @@
             opt.text = fullName;
             opt.selected = true;
             hiddenSelect.appendChild(opt);
+            hiddenSelect.selectedIndex = hiddenSelect.options.length - 1;
+            hiddenSelect.value = key;
           }
         }
       } else {
@@ -14263,6 +14294,7 @@
           for (let i = 0; i < hiddenSelect.options.length; i++) {
             if (hiddenSelect.options[i].value === key || hiddenSelect.options[i].text.includes(cleanName)) {
               hiddenSelect.selectedIndex = i;
+              hiddenSelect.value = hiddenSelect.options[i].value;
               found = true;
               break;
             }
@@ -14273,6 +14305,8 @@
             opt.text = fullName;
             opt.selected = true;
             hiddenSelect.appendChild(opt);
+            hiddenSelect.selectedIndex = hiddenSelect.options.length - 1;
+            hiddenSelect.value = key;
           }
         }
       }
