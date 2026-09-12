@@ -3755,15 +3755,25 @@
       color: #0f172a !important;
     }
 
-    /* Quick Inquiry Long-Press Floating Preview */
+    /* Quick Inquiry Hover / Hold Floating Preview - 100% Solid Non-Transparent Card */
     #vayuai-chip-hold-preview {
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      background-color: #0c0e0c !important;
+      opacity: 1 !important;
+      border: 1.5px solid rgba(6, 182, 212, 0.75) !important;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.98), 0 0 24px rgba(6, 182, 212, 0.25) !important;
+      z-index: 999 !important;
+      transition: opacity 0.15s ease, transform 0.15s ease;
     }
     html.light-theme #vayuai-chip-hold-preview {
       background-color: #ffffff !important;
-      border-color: #0284c7 !important;
+      opacity: 1 !important;
+      border: 1.5px solid #0284c7 !important;
       color: #0f172a !important;
-      box-shadow: 0 10px 25px rgba(2, 132, 199, 0.18) !important;
+      box-shadow: 0 16px 40px rgba(15, 23, 42, 0.25), 0 0 18px rgba(2, 132, 199, 0.2) !important;
+      z-index: 999 !important;
+    }
+    html.light-theme #vayuai-chip-preview-text {
+      color: #0f172a !important;
     }
     html.light-theme #vayuai-quick-chips button {
       background-color: #ffffff !important;
@@ -5211,7 +5221,7 @@
             </div>
 
             <!-- Instant Fast Tap-and-Hold / Hover Floating Question Preview -->
-            <div id="vayuai-chip-hold-preview" class="hidden absolute -top-16 left-1 right-1 z-30 p-2.5 rounded-xl border border-[#7FD4FF]/60 bg-[#131513]/98 backdrop-blur-md shadow-2xl flex items-center justify-between pointer-events-auto transition-all">
+            <div id="vayuai-chip-hold-preview" class="hidden absolute -top-16 left-1 right-1 z-50 p-3 rounded-2xl border border-cyan-500/70 bg-[#0c0e0c] shadow-2xl flex items-center justify-between pointer-events-auto transition-all">
               <div class="flex flex-col gap-0.5 min-w-0 pr-2">
                 <span id="vayuai-chip-preview-cat" class="text-[9px] font-mono font-bold uppercase tracking-wider text-[#7FD4FF]">CATEGORY</span>
                 <p id="vayuai-chip-preview-text" class="text-xs font-bold text-[#EEF0EC] leading-snug line-clamp-2">Question preview...</p>
@@ -10524,7 +10534,8 @@
 
         const showPreview = (item) => {
           if (!previewEl || !previewText) return;
-          if (previewCat) previewCat.innerText = `${item.cat} · ${item.hint}`;
+          previewText.innerText = ''; // Clear previous text immediately to prevent overlap
+          if (previewCat) previewCat.innerText = `${item.cat} • ${item.hint}`;
           previewText.innerText = item.q;
           if (previewAskBtn) {
             previewAskBtn.onclick = (e) => {
@@ -10543,6 +10554,9 @@
           }
           if (previewEl) {
             previewEl.classList.add('hidden');
+          }
+          if (previewText) {
+            previewText.innerText = ''; // Wipe clean on exit
           }
         };
 
@@ -10585,16 +10599,16 @@
             }
           });
 
-          // Pointer Cancel or Leave
-          btn.addEventListener('pointercancel', hidePreview);
-          btn.addEventListener('mouseleave', () => {
-            if (holdTimer) clearTimeout(holdTimer);
-          });
-
-          // Desktop hover preview support
+          // Desktop hover preview: ONLY show while hovering over the button
           btn.addEventListener('mouseenter', () => {
             showPreview(item);
           });
+          btn.addEventListener('mouseleave', () => {
+            hidePreview();
+          });
+
+          // Pointer Cancel or Leave
+          btn.addEventListener('pointercancel', hidePreview);
         });
 
         // Hide preview if clicked outside
@@ -13985,6 +13999,7 @@
     
     // ==========================================================================
     // COMMUTE GPS LOCATION & LIVE NOMINATIM AUTOCOMPLETE SEARCH MODULE
+    const VAYU_GEOAPIFY_KEY = 'dc2dab0741074ea491baa125c057242c';
     // ==========================================================================
     window.customOriginCoord = null;
     window.customDestCoord = null;
@@ -14044,25 +14059,32 @@
           let displayName = `📍 Current Location (${closestStationName} ±${acc}m)`;
           if (originInput) originInput.value = displayName;
 
-          // Attempt fast reverse geocode via Nominatim for real street/colony name
+          // Attempt fast accurate reverse geocode via Geoapify (clean English colony, road, city)
           try {
             const controller = new AbortController();
-            const timer = setTimeout(() => controller.abort(), 2200);
-            const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=17&addressdetails=1`, {
+            const timer = setTimeout(() => controller.abort(), 2600);
+            const geoUrl = `https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${lon}&format=json&apiKey=${VAYU_GEOAPIFY_KEY}`;
+            const res = await fetch(geoUrl, {
               signal: controller.signal,
               headers: { 'Accept': 'application/json' }
             });
             clearTimeout(timer);
             if (res.ok) {
               const data = await res.json();
-              const revName = formatNominatimAddress(data, closestStationName);
-              if (revName && revName.length > 2) {
-                displayName = `📍 ${revName}`;
+              if (data && data.results && data.results.length > 0) {
+                const r = data.results[0];
+                const main = r.suburb || r.neighbourhood || r.street || r.quarter || r.name || closestStationName;
+                const dist = r.district || r.city || 'Delhi';
+                const cleanLoc = (main !== dist) ? `${main}, ${dist}` : main;
+                displayName = `📍 ${cleanLoc}`;
                 if (originInput) originInput.value = displayName;
               }
             }
           } catch(e) {
-            console.log("Nominatim reverse geocode fallback to nearest station", e);
+            console.log("Geoapify reverse geocode fallback", e);
+            // Fallback to nearest station clean label
+            displayName = `📍 ${closestStationName}`;
+            if (originInput) originInput.value = displayName;
           }
 
           window.customOriginName = displayName;
@@ -14153,39 +14175,31 @@
       if (q.length >= 2) {
         commuteSearchDebounceTimer = setTimeout(async () => {
           try {
-            // Complete National Capital Region (NCR) bounding box:
-            // West: 75.5 (Bhiwani/Jind/Alwar) to East: 78.5 (Meerut/Bulandshahr/Hapur)
-            // North: 30.0 (Karnal/Muzaffarnagar/Shamli) to South: 27.1 (Alwar/Bharatpur/Palwal)
-            const ncrViewbox = "75.5,30.0,78.5,27.1";
-            let url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}&viewbox=${ncrViewbox}&bounded=1&limit=8&addressdetails=1`;
-            let res = await fetch(url, { headers: { 'Accept': 'application/json' } });
-            let nominatimData = [];
-            if (res.ok) {
-              nominatimData = await res.json();
-            }
-            // Fallback to broader NCR query if bounded search returned empty
-            if ((!nominatimData || nominatimData.length === 0) && commuteSearchSeq === currentSeq) {
-              const fallbackUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q + ' NCR India')}&limit=6&addressdetails=1`;
-              const fallbackRes = await fetch(fallbackUrl, { headers: { 'Accept': 'application/json' } });
-              if (fallbackRes.ok) {
-                nominatimData = await fallbackRes.json();
+            // Real Geoapify Places & Landmark Autocomplete (Bounded strictly to Delhi-NCR)
+            const geoUrl = `https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(q)}&filter=rect:75.5,27.1,78.5,30.0&limit=8&apiKey=${VAYU_GEOAPIFY_KEY}`;
+            let res = await fetch(geoUrl, { headers: { 'Accept': 'application/json' } });
+            let liveResults = [];
+            if (res.ok && commuteSearchSeq === currentSeq) {
+              const geoData = await res.json();
+              if (geoData && geoData.features) {
+                liveResults = geoData.features.map(f => {
+                  const p = f.properties;
+                  const cleanMain = p.name || p.street || p.suburb || p.formatted.split(',')[0];
+                  const distTag = p.district || p.city || p.county || 'Delhi-NCR';
+                  const dispName = `${cleanMain}, ${p.suburb || p.city || 'Delhi-NCR'}`;
+                  return {
+                    name: dispName,
+                    cleanName: cleanMain.trim(),
+                    lat: p.lat,
+                    lon: p.lon,
+                    zone: distTag,
+                    key: 'geo_' + Math.round(p.lat * 10000) + '_' + Math.round(p.lon * 10000),
+                    isLive: true
+                  };
+                });
               }
             }
-            if (nominatimData && nominatimData.length > 0 && commuteSearchSeq === currentSeq) {
-              const liveResults = nominatimData.map(item => {
-                const formatted = formatNominatimAddress(item, item.display_name.split(',')[0]);
-                const addr = item.address || {};
-                const distTag = addr.city_district || addr.state_district || addr.city || addr.town || addr.county || 'Delhi-NCR';
-                return {
-                  name: formatted,
-                  cleanName: formatted.split(',')[0].trim(),
-                  lat: parseFloat(item.lat),
-                  lon: parseFloat(item.lon),
-                  zone: distTag,
-                  key: 'live_' + Math.round(parseFloat(item.lat)*1000),
-                  isLive: true
-                };
-              });
+            if (liveResults.length > 0 && commuteSearchSeq === currentSeq) {
 
               // Merge unique results (avoid duplicates with local list)
               const merged = [...localFiltered];
@@ -14358,15 +14372,16 @@
 
         // Base driving duration in Delhi:
         // Urban arterial baseline is ~36 km/h free-flow (~1.65 mins/km) + distance-scaled signal delay
-        // Calibrated driving durations:
-        // Intra-city trips (<=15 km): Urban arterials @ ~36 km/h (~1.65 mins/km) + distance-scaled traffic light delays
-        // Regional inter-district trips (>15 km): First 15 km urban + remaining on NCR expressways/highways @ ~65-75 km/h (~0.92 mins/km)
+        // Calibrated driving durations (Grounded in real Delhi-NCR daytime traffic speeds):
+        // Intra-city trips (<=15 km): Urban arterial speed is ~23 km/h (~2.60 mins/km) + traffic signal delays (3-4 mins)
+        // For a 10 km trip in Delhi: 10 * 2.6 + 3.5 = 29.5 mins * traffic multiplier (1.12 to 1.38) = 33 to 41 mins
+        // Regional trips (>15 km): First 15 km urban (~43 mins) + remaining on NCR expressways/highways @ ~65-75 km/h (~0.92 mins/km)
         let baseDrivingMins;
         if (baseRoadKm <= 15.0) {
-          const signalDelayMins = Math.min(6.0, Math.max(1.0, baseRoadKm * 0.28));
-          baseDrivingMins = (baseRoadKm * 1.65) + signalDelayMins;
+          const signalDelayMins = Math.min(6.5, Math.max(1.5, baseRoadKm * 0.35));
+          baseDrivingMins = (baseRoadKm * 2.55) + signalDelayMins;
         } else {
-          const urbanMins = (15.0 * 1.65) + 4.5;
+          const urbanMins = (15.0 * 2.55) + 5.5;
           const highwayKm = baseRoadKm - 15.0;
           const highwayMins = highwayKm * 0.92;
           baseDrivingMins = urbanMins + highwayMins;
