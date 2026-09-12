@@ -5978,37 +5978,39 @@
               </button>
             </div>
             <div class="relative">
-              <input type="text" id="commute-origin-search" value="Dwarka (Sectors 6, 10, 14, 21)" placeholder="Search origin or tap My GPS..." oninput="onCommuteSearchInput('origin', this.value)" onfocus="onCommuteSearchFocus('origin')" class="w-full pl-8 pr-3 py-2.5 rounded-xl bg-earth-950 border border-earth-700 text-xs text-white focus:outline-none focus:border-cyan-400 font-medium transition">
+              <input type="text" id="commute-origin-search" value="Dwarka" placeholder="Search origin or tap My GPS..." oninput="onCommuteSearchInput('origin', this.value)" onfocus="onCommuteSearchFocus('origin')" class="w-full pl-8 pr-3 py-2.5 rounded-xl bg-earth-950 border border-earth-700 text-xs text-white focus:outline-none focus:border-cyan-400 font-medium transition">
               <span class="absolute left-2.5 top-2.5 text-xs text-earth-400">📍</span>
             </div>
             <!-- Autocomplete suggestions dropdown -->
             <div id="commute-origin-suggestions" class="hidden absolute top-full left-0 right-0 mt-1 max-h-56 overflow-y-auto rounded-xl bg-[#0f110f] border border-[#262A26] shadow-2xl z-40 p-1 flex flex-col gap-0.5 text-xs font-sans"></div>
             <!-- Hidden Select for Script Backward Compatibility -->
             <select id="commute-origin" onchange="calcCommuteRoute()" class="hidden">
-              <option value="dwarka" selected>Dwarka (Sectors 6, 10, 14, 21)</option>
-              <option value="connaught_place">Connaught Place (Central)</option>
-              <option value="karol_bagh">Karol Bagh / Rajendra Place</option>
-              <option value="chandni_chowk">Chandni Chowk / Old Delhi</option>
-              <option value="ito">ITO / Pragati Maidan</option>
-              <option value="india_gate">India Gate / Central Vista</option>
-              <option value="aiims">AIIMS & Safdarjung Hospital</option>
-              <option value="hauz_khas">Hauz Khas / IIT Delhi</option>
-              <option value="saket">Saket (District Centre)</option>
-              <option value="nehru_place">Nehru Place (Commercial Hub)</option>
-              <option value="lajpat_nagar">Lajpat Nagar / Central Market</option>
-              <option value="okhla">Okhla Industrial Area (Phases 1-3)</option>
-              <option value="igi_airport">IGI Airport (Terminals 1, 2, 3)</option>
-              <option value="janakpuri">Janakpuri (District Centre)</option>
-              <option value="punjabi_bagh">Punjabi Bagh & Ring Road</option>
-              <option value="rohini">Rohini (Sectors 3, 8, 16, 24)</option>
-              <option value="pitampura">Pitampura / NSP</option>
-              <option value="anand_vihar">Anand Vihar (ISBT & Railway)</option>
-              <option value="laxmi_nagar">Laxmi Nagar / Shakarpur</option>
-              <option value="gurugram_cyber">Gurugram (DLF Cyber City)</option>
-              <option value="noida_sec18">Noida (Sector 18 / Atta Market)</option>
-              <option value="noida_sec62">Noida (Sector 62 / Electronic City)</option>
-              <option value="ghaziabad_indirapuram">Ghaziabad (Indirapuram / Vaishali)</option>
-              <option value="faridabad_sec15">Faridabad (Sector 15 / Bata Chowk)</option>
+              <option value="dwarka" selected>Dwarka</option>
+              <option value="connaught_place">Connaught Place</option>
+              <option value="karol_bagh">Karol Bagh</option>
+              <option value="rajendra_place">Rajendra Place</option>
+              <option value="punjabi_bagh">Punjabi Bagh</option>
+              <option value="chandni_chowk">Chandni Chowk</option>
+              <option value="ito">ITO</option>
+              <option value="india_gate">India Gate</option>
+              <option value="aiims">AIIMS</option>
+              <option value="hauz_khas">Hauz Khas</option>
+              <option value="saket">Saket</option>
+              <option value="nehru_place">Nehru Place</option>
+              <option value="lajpat_nagar">Lajpat Nagar</option>
+              <option value="okhla">Okhla</option>
+              <option value="igi_airport">IGI Airport</option>
+              <option value="janakpuri">Janakpuri</option>
+              <option value="rohini">Rohini</option>
+              <option value="pitampura">Pitampura</option>
+              <option value="anand_vihar">Anand Vihar</option>
+              <option value="laxmi_nagar">Laxmi Nagar</option>
+              <option value="gurugram_cyber">DLF Cyber City, Gurugram</option>
+              <option value="noida_sec18">Noida Sector 18</option>
+              <option value="noida_sec62">Noida Sector 62</option>
+              <option value="ghaziabad_indirapuram">Indirapuram, Ghaziabad</option>
+              <option value="vaishali">Vaishali, Ghaziabad</option>
+              <option value="faridabad_sec15">Faridabad Sector 15</option>
             </select>
           </div>
 
@@ -6016,37 +6018,39 @@
           <div class="relative">
             <label class="block text-[11px] font-semibold text-earth-300 mb-1.5">Destination</label>
             <div class="relative">
-              <input type="text" id="commute-dest-search" value="Connaught Place (Central)" placeholder="Search destination (CP, Cyber City, Noida)..." oninput="onCommuteSearchInput('dest', this.value)" onfocus="onCommuteSearchFocus('dest')" class="w-full pl-8 pr-3 py-2.5 rounded-xl bg-earth-950 border border-earth-700 text-xs text-white focus:outline-none focus:border-cyan-400 font-medium transition">
+              <input type="text" id="commute-dest-search" value="Connaught Place" placeholder="Search destination (CP, Cyber City, Noida)..." oninput="onCommuteSearchInput('dest', this.value)" onfocus="onCommuteSearchFocus('dest')" class="w-full pl-8 pr-3 py-2.5 rounded-xl bg-earth-950 border border-earth-700 text-xs text-white focus:outline-none focus:border-cyan-400 font-medium transition">
               <span class="absolute left-2.5 top-2.5 text-xs text-earth-400">🏁</span>
             </div>
             <!-- Autocomplete suggestions dropdown -->
             <div id="commute-dest-suggestions" class="hidden absolute top-full left-0 right-0 mt-1 max-h-56 overflow-y-auto rounded-xl bg-[#0f110f] border border-[#262A26] shadow-2xl z-40 p-1 flex flex-col gap-0.5 text-xs font-sans"></div>
             <!-- Hidden Select for Script Backward Compatibility -->
             <select id="commute-dest" onchange="calcCommuteRoute()" class="hidden">
-              <option value="connaught_place" selected>Connaught Place (Central)</option>
-              <option value="dwarka">Dwarka (Sectors 6, 10, 14, 21)</option>
-              <option value="karol_bagh">Karol Bagh / Rajendra Place</option>
-              <option value="chandni_chowk">Chandni Chowk / Old Delhi</option>
-              <option value="ito">ITO / Pragati Maidan</option>
-              <option value="india_gate">India Gate / Central Vista</option>
-              <option value="aiims">AIIMS & Safdarjung Hospital</option>
-              <option value="hauz_khas">Hauz Khas / IIT Delhi</option>
-              <option value="saket">Saket (District Centre)</option>
-              <option value="nehru_place">Nehru Place (Commercial Hub)</option>
-              <option value="lajpat_nagar">Lajpat Nagar / Central Market</option>
-              <option value="okhla">Okhla Industrial Area (Phases 1-3)</option>
-              <option value="igi_airport">IGI Airport (Terminals 1, 2, 3)</option>
-              <option value="janakpuri">Janakpuri (District Centre)</option>
-              <option value="punjabi_bagh">Punjabi Bagh & Ring Road</option>
-              <option value="rohini">Rohini (Sectors 3, 8, 16, 24)</option>
-              <option value="pitampura">Pitampura / NSP</option>
-              <option value="anand_vihar">Anand Vihar (ISBT & Railway)</option>
-              <option value="laxmi_nagar">Laxmi Nagar / Shakarpur</option>
-              <option value="gurugram_cyber">Gurugram (DLF Cyber City)</option>
-              <option value="noida_sec18">Noida (Sector 18 / Atta Market)</option>
-              <option value="noida_sec62">Noida (Sector 62 / Electronic City)</option>
-              <option value="ghaziabad_indirapuram">Ghaziabad (Indirapuram / Vaishali)</option>
-              <option value="faridabad_sec15">Faridabad (Sector 15 / Bata Chowk)</option>
+              <option value="connaught_place" selected>Connaught Place</option>
+              <option value="dwarka">Dwarka</option>
+              <option value="karol_bagh">Karol Bagh</option>
+              <option value="rajendra_place">Rajendra Place</option>
+              <option value="punjabi_bagh">Punjabi Bagh</option>
+              <option value="chandni_chowk">Chandni Chowk</option>
+              <option value="ito">ITO</option>
+              <option value="india_gate">India Gate</option>
+              <option value="aiims">AIIMS</option>
+              <option value="hauz_khas">Hauz Khas</option>
+              <option value="saket">Saket</option>
+              <option value="nehru_place">Nehru Place</option>
+              <option value="lajpat_nagar">Lajpat Nagar</option>
+              <option value="okhla">Okhla</option>
+              <option value="igi_airport">IGI Airport</option>
+              <option value="janakpuri">Janakpuri</option>
+              <option value="rohini">Rohini</option>
+              <option value="pitampura">Pitampura</option>
+              <option value="anand_vihar">Anand Vihar</option>
+              <option value="laxmi_nagar">Laxmi Nagar</option>
+              <option value="gurugram_cyber">DLF Cyber City, Gurugram</option>
+              <option value="noida_sec18">Noida Sector 18</option>
+              <option value="noida_sec62">Noida Sector 62</option>
+              <option value="ghaziabad_indirapuram">Indirapuram, Ghaziabad</option>
+              <option value="vaishali">Vaishali, Ghaziabad</option>
+              <option value="faridabad_sec15">Faridabad Sector 15</option>
             </select>
           </div>
           <div>
@@ -13108,6 +13112,7 @@
     const COMMUTE_COORDS = {
       connaught_place:       { lat: 28.6315, lon: 77.2167, name: 'Connaught Place' },
       karol_bagh:            { lat: 28.6517, lon: 77.1906, name: 'Karol Bagh' },
+      rajendra_place:        { lat: 28.6425, lon: 77.1783, name: 'Rajendra Place' },
       chandni_chowk:         { lat: 28.6562, lon: 77.2307, name: 'Chandni Chowk' },
       ito:                   { lat: 28.6289, lon: 77.2405, name: 'ITO' },
       india_gate:            { lat: 28.6129, lon: 77.2295, name: 'India Gate' },
@@ -13202,8 +13207,8 @@
       jind:                   { lat: 29.316, lon: 76.315, name: 'Jind' },
       bhiwani:                { lat: 28.793, lon: 76.139, name: 'Bhiwani' },
       charkhi_dadri:          { lat: 28.592, lon: 76.267, name: 'Charkhi Dadri' },
-      narnaul:                { lat: 28.043, lon: 76.108, name: 'Narnaul / Mahendragarh' },
-      nuh:                    { lat: 28.11, lon: 77, name: 'Nuh (Mewat)' },
+      narnaul:                { lat: 28.043, lon: 76.108, name: 'Narnaul' },
+      nuh:                    { lat: 28.11, lon: 77, name: 'Nuh' },
       alwar:                  { lat: 27.553, lon: 76.6346, name: 'Alwar' },
       bhiwadi:                { lat: 28.21, lon: 76.86, name: 'Bhiwadi' },
       bharatpur:              { lat: 27.217, lon: 77.49, name: 'Bharatpur' },
@@ -14100,7 +14105,7 @@
       if (typeof VayuForecastEngine !== 'undefined' && VayuForecastEngine.stations) {
         VayuForecastEngine.stations.forEach(st => {
           allLocations.push({
-            name: `${st.name} (${st.zone})`,
+            name: st.name,
             cleanName: st.name,
             lat: st.lat,
             lon: st.lon,
@@ -14209,7 +14214,7 @@
       const dropdown = document.getElementById(type === 'origin' ? 'commute-origin-suggestions' : 'commute-dest-suggestions');
       const hiddenSelect = document.getElementById(type === 'origin' ? 'commute-origin' : 'commute-dest');
 
-      if (input) input.value = fullName;
+      if (input) input.value = cleanName;
       if (dropdown) dropdown.classList.add('hidden');
 
       const coordObj = { lat: lat, lon: lon, name: cleanName };
