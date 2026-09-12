@@ -2285,11 +2285,51 @@
     }
 
     /* Mobile Bottom Navigation Bar in Light Mode - Clean, Borderless Inactive Tabs (Matching Dark Mode Cockpit) */
+    html.light-theme #vayu-bottom-nav {
+      background: rgba(255, 255, 255, 0.98) !important;
+      border-top: 1px solid #e2e8f0 !important;
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05) !important;
+    }
     html.light-theme .mobile-nav-bar,
     html.light-theme nav.mobile-nav-bar {
       background: rgba(255, 255, 255, 0.98) !important;
       border-top: 1px solid #e2e8f0 !important;
       box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05) !important;
+    }
+
+    /* ALL bottom nav buttons inactive in light mode */
+    html.light-theme .bnav-btn {
+      color: #64748b !important;
+      background: transparent !important;
+    }
+    html.light-theme .bnav-btn .bnav-icon-box {
+      background: transparent !important;
+      box-shadow: none !important;
+      color: #64748b !important;
+    }
+    html.light-theme .bnav-btn svg {
+      color: #64748b !important;
+      stroke: #64748b !important;
+    }
+    html.light-theme .bnav-btn span {
+      color: #64748b !important;
+    }
+    /* Active bnav tab in light mode */
+    html.light-theme .bnav-btn.active {
+      color: #047857 !important;
+    }
+    html.light-theme .bnav-btn.active .bnav-icon-box {
+      background: #d1fae5 !important;
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.22) !important;
+      color: #047857 !important;
+    }
+    html.light-theme .bnav-btn.active svg {
+      color: #047857 !important;
+      stroke: #047857 !important;
+    }
+    html.light-theme .bnav-btn.active span {
+      color: #047857 !important;
+      font-weight: 700 !important;
     }
 
     html.light-theme .mobile-nav-item,
@@ -3596,15 +3636,11 @@
                 <span>High: <b id="weather-high-val" class="text-white font-bold">33°</b> / Low: <b id="weather-low-val" class="text-slate-400 font-bold">25°</b></span>
               </div>
               <div class="text-xs text-earth-300/90 font-mono flex flex-wrap items-center gap-x-3 gap-y-1 mt-1.5">
-                <span>Precipitation: <b class="text-white font-bold" id="weather-precip-val">25%</b></span>
+                <span>Rain: <b class="text-white font-bold" id="weather-precip-val">25%</b></span>
                 <span class="text-slate-500">•</span>
                 <span>Humidity: <b class="text-white font-bold" id="weather-humidity-val">59%</b></span>
                 <span class="text-slate-500">•</span>
                 <span>Wind: <b class="text-white font-bold" id="weather-wind-val">11 km/h WNW</b></span>
-                <span class="text-slate-500">•</span>
-                <span>UV Index: <b class="text-white font-bold" id="weather-uv-val">4.2 (Mod)</b></span>
-                <span class="text-slate-500">•</span>
-                <span>Pressure: <b class="text-white font-bold" id="weather-pressure-val">1009 hPa</b></span>
                 <span class="text-slate-500">•</span>
                 <span id="weather-sun-val" class="text-earth-200">🌅 06:02 • 🌇 18:35</span>
               </div>
@@ -3614,13 +3650,12 @@
           <div class="flex flex-col md:items-end justify-center">
             <div class="text-xl sm:text-2xl font-bold text-white font-serif-display flex items-center gap-2" id="weather-location-title">
               <span id="weather-location-title-text">Delhi-NCR (Safdarjung)</span>
-              <span class="text-[10px] font-mono font-normal text-emerald-300 bg-emerald-950/80 px-2 py-0.5 rounded-full border border-emerald-800/80 uppercase">IMD LIVE RADAR</span>
             </div>
             <div class="text-sm sm:text-base font-semibold text-earth-200 mt-0.5" id="weather-day-name">Tuesday, 8 Sep</div>
             <div class="text-xs text-earth-300/90" id="weather-condition-desc">Partly Cloudy • High Humidity (59%) • Safdarjung IMD Ground Telemetry</div>
             <div class="mt-2 flex items-center gap-2">
               <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span class="text-[10px] font-mono-tag text-emerald-400 bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-800 uppercase">CALIBRATED HIGH-ACCURACY ENSEMBLE</span>
+              <span class="text-[10px] font-mono-tag text-emerald-400">IMD Live • Open-Meteo Ensemble</span>
             </div>
           </div>
         </div>
@@ -10113,7 +10148,7 @@
         if (modalTitle) modalTitle.innerText = isEn ? "System Settings" : "सिस्टम सेटिंग्स";
         if (modalSub) modalSub.innerText = isEn ? "Language, AI conversational style & visual appearance" : "भाषा, AI बातचीत शैली और थीम सेटिंग्स";
         if (activeLangBadge) activeLangBadge.innerText = isEn ? "ENGLISH ACTIVE" : "HINGLISH ACTIVE";
-        if (modalDone) modalDone.innerText = isEn ? "✓ Done" : "✓ सहेजें";
+        if (modalDone) modalDone.innerText = isEn ? "✓ Done" : "✓ Save Karo";
         if (headerBtn) headerBtn.title = isEn ? "System Settings (Language & Theme)" : "सिस्टम सेटिंग्स (भाषा और थीम)";
 
         if (isEn) {
@@ -10700,7 +10735,7 @@
           }
         }
         let svg = `
-          <svg viewBox="0 0 ${width} ${height}" class="w-full h-full overflow-visible" preserveAspectRatio="none">
+          <svg viewBox="0 0 ${width} ${height}" class="w-full h-full overflow-visible" preserveAspectRatio="none" id="weather-hourly-svg" style="cursor:crosshair">
             <defs>
               <linearGradient id="weatherAreaGrad" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stop-color="${fillGradStart}" />
@@ -10712,11 +10747,32 @@
             <line x1="${padX}" y1="${height - padBottom}" x2="${width - padX}" y2="${height - padBottom}" stroke="${axisColor}" stroke-width="1" />
             <path d="${pathD}" fill="none" stroke="${chartStroke}" stroke-width="3.5" stroke-linecap="round" />
 
-            ${points.map(pt => `
-              <text x="${pt.x}" y="${pt.y - 12}" fill="${chartLabelFill}" font-size="13" font-family="'IBM Plex Mono', monospace" font-weight="800" text-anchor="middle">
+            ${points.map((pt, idx) => `
+              <text x="${pt.x}" y="${pt.y - 12}" fill="${chartLabelFill}" font-size="13" font-family="'IBM Plex Mono', monospace" font-weight="800" text-anchor="middle" class="chart-label-${idx}" style="transition:font-size 0.18s,opacity 0.18s">
                 ${pt.val}${unitSuffix}
               </text>
-              <circle cx="${pt.x}" cy="${pt.y}" r="4.5" fill="${chartStroke}" stroke="${nodeStroke}" stroke-width="2" />
+              <circle cx="${pt.x}" cy="${pt.y}" r="4.5" fill="${chartStroke}" stroke="${nodeStroke}" stroke-width="2" class="chart-node-${idx}"
+                style="transition:r 0.18s,filter 0.18s"
+                onmouseover="(function(el,idx){
+                  var svg=el.closest('svg');
+                  var lbl=svg.querySelector('.chart-label-'+idx);
+                  var ttLine=svg.getElementById('chart-tt-line-'+idx);
+                  el.setAttribute('r','8');
+                  el.style.filter='drop-shadow(0 0 6px ${chartStroke})';
+                  if(lbl){lbl.setAttribute('font-size','15');lbl.setAttribute('font-weight','900');}
+                  if(ttLine){ttLine.setAttribute('opacity','1');}
+                })(this,${idx})"
+                onmouseout="(function(el,idx){
+                  var svg=el.closest('svg');
+                  var lbl=svg.querySelector('.chart-label-'+idx);
+                  var ttLine=svg.getElementById('chart-tt-line-'+idx);
+                  el.setAttribute('r','4.5');
+                  el.style.filter='none';
+                  if(lbl){lbl.setAttribute('font-size','13');lbl.setAttribute('font-weight','800');}
+                  if(ttLine){ttLine.setAttribute('opacity','0');}
+                })(this,${idx})"
+              />
+              <line id="chart-tt-line-${idx}" x1="${pt.x}" y1="${padTop}" x2="${pt.x}" y2="${height - padBottom}" stroke="${chartStroke}" stroke-width="1" stroke-dasharray="4 3" opacity="0" style="pointer-events:none;transition:opacity 0.15s" />
               <text x="${pt.x}" y="${height - padBottom + 20}" fill="${timeColor}" font-size="11" font-family="'Inter', sans-serif" font-weight="700" text-anchor="middle">
                 ${pt.time}
               </text>
@@ -10736,20 +10792,38 @@
           const isActive = idx === this.selectedDayIndex;
           const maxT = this.convertTemp(d.tempMax);
           const minT = this.convertTemp(d.tempMin);
-          const rainBadge = d.precip >= 30 ? `<span class="text-[9px] font-mono font-bold text-sky-400 bg-sky-950/80 px-1 py-0.2 rounded border border-sky-800/60 mt-0.5">💧 ${d.precip}%</span>` : '';
-          const dayLabel = idx === 0 ? (isEn ? 'Today' : 'आज') : d.day;
+          const dayLabel = idx === 0 ? (isEn ? 'Today' : 'Aaj') : d.day;
+
+          // Metric-specific bottom badge per tab selection
+          let metricBadge = '';
+          if (this.metric === 'temp') {
+            metricBadge = `<div class="flex items-center gap-1 font-mono text-[10px] mt-0.5">
+              <span class="font-bold text-white">${maxT}°</span>
+              <span class="text-slate-400">${minT}°</span>
+            </div>`;
+          } else if (this.metric === 'precip') {
+            const precipColor = d.precip >= 70 ? 'text-sky-300' : (d.precip >= 30 ? 'text-sky-400' : 'text-slate-400');
+            metricBadge = `<div class="flex items-center justify-center gap-0.5 font-mono text-[10px] mt-0.5">
+              <span class="text-[9px]">💧</span>
+              <span class="font-bold ${precipColor}">${d.precip}%</span>
+            </div>`;
+          } else {
+            // wind tab
+            metricBadge = `<div class="flex items-center justify-center gap-0.5 font-mono text-[10px] mt-0.5">
+              <span class="text-[9px]">🍃</span>
+              <span class="font-bold text-emerald-400">${d.windSpeed}</span>
+              <span class="text-slate-500 text-[8px]">km/h</span>
+            </div>`;
+          }
+
           return `
-            <div onclick="VayuWeather.selectDay(${idx})" class="weather-day-card ${isActive ? 'active' : ''}">
+            <div onclick="VayuWeather.selectDay(${idx})" class="weather-day-card ${isActive ? 'active' : ''}" style="transition:transform 0.18s,box-shadow 0.18s" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">
               <div class="text-[11px] font-bold ${isActive ? 'text-amber-400' : 'text-slate-300'}">${dayLabel}</div>
               <div class="text-[9px] font-mono font-medium ${isActive ? 'text-amber-500' : 'text-slate-400'} -mt-0.5">${d.date}</div>
               <div class="my-1 flex items-center justify-center">
                 ${this.getWeatherSvg(d.icon, 'w-7 h-7')}
               </div>
-              <div class="flex items-center gap-1 font-mono text-[10px]">
-                <span class="font-bold text-white">${maxT}°</span>
-                <span class="text-slate-400">${minT}°</span>
-              </div>
-              ${rainBadge}
+              ${metricBadge}
             </div>
           `;
         }).join('');
