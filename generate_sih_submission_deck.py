@@ -265,12 +265,12 @@ def build_deck(output_pptx_path):
 
     # Right Column: Red Feature Cards
     card_items = [
-        "Real Time Air Quality Exploration\nusing Interactive Maps.",
-        "Conversational Query System\nusing LLM + RAG Pipelines",
-        "Automatic Ingestion of CPCB\nSensors + NASA FIRMS Satellites",
-        "Atmospheric Boundary Layer\n(PBLH) & Inversion Coupling",
-        "Geospatial Tracking of Transboundary\nStubble Fire Plumes & Trajectories",
-        "Delivers direct scientific insights for\npublic health, municipal bodies & policy."
+        "Atmospheric Ambient Halo AQI\nCockpit with 3-Day Forecast Strip",
+        "Google Weather-Style Live\nMicroclimate Telemetry Engine",
+        "Interactive Spatial GIS Grid with\n40+ CPCB CAAQMS Stations",
+        "6-Pollutant Real-Time Telemetry:\nPM2.5, PM10, NO2, SO2, CO, O3",
+        "Safe Commute Clean Route Navigator\nCutting 35%–48% Inhaled PM2.5",
+        "Conversational VayuAI Assistant\nfor Instant Plain-Language Advice"
     ]
 
     card_top = Inches(1.2)
@@ -396,10 +396,10 @@ def build_deck(output_pptx_path):
 
     # Right Column Bubbles
     right_bubbles = [
-        "using LLM + RAG\nPipelines\nto Allow non-technical\nusers to ask questions\nin plain language.",
-        "Geospatial Visualization of\nStubble Plumes & Trajectories\n→ Provides clear insights into\nsmoke transport & coverage.",
+        "using LLM + RAG\nPipelines\nto Allow citizens to ask\nquestions in natural\nlanguage to VayuAI.",
+        "Safe Commute Engine\nCalculates Cleanest Route\n→ Cuts toxic particulate\ninhalation by 35%–48%.",
         "Using Cloud Deployment\nDeploying on Vercel & Render\nfor scalability, reliability +\n100% offline standalone mode.",
-        "Using Node.Js / FastAPI for\nmanaging requests, database,\nand running physics models\n& GRAP dispatch rules."
+        "Google Weather Integration\nReal-time temp, rain chance,\nwind speed, humidity & UV\ndirectly beside AQI."
     ]
 
     for i, btxt in enumerate(right_bubbles):

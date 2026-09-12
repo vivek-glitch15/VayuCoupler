@@ -5,6 +5,7 @@ Team Name: AtomX
 Problem Statement: SIH26082 (Ministry of Earth Sciences - MoES)
 Title: Air Pollution–Weather Coupled Forecasting System (Delhi NCR Focus)
 Format: High-Density 16:9 Widescreen Executive Presentation (Exactly 6 Slides)
+Focus: Front-Facing Atmospheric Cockpit & 5 Core Pillars (Excluding Secondary Drawer Menus)
 """
 
 import os
@@ -18,20 +19,21 @@ from pptx.enum.shapes import MSO_SHAPE
 # -------------------------------------------------------------
 # Color Palette (Deep Obsidian Command Center Aesthetic)
 # -------------------------------------------------------------
-BG_DARK = RGBColor(10, 17, 40)        # #0A1128 Deep Obsidian Navy
-BG_CARD = RGBColor(19, 29, 58)        # #131D3A Structured card container
-BG_CARD_ALT = RGBColor(15, 23, 42)    # #0F172A Slate dark container
+BG_DARK = RGBColor(10, 11, 10)        # #0A0B0A Deep Obsidian Black
+BG_CARD = RGBColor(19, 21, 19)        # #131513 Structured card container
+BG_CARD_ALT = RGBColor(25, 28, 25)    # #191C19 Elevated container
 BORDER_CYAN = RGBColor(0, 229, 255)   # #00E5FF Luminous Cyan
-BORDER_MUTED = RGBColor(38, 56, 95)   # #26385F Muted border
+BORDER_MUTED = RGBColor(38, 42, 38)   # #262A26 Muted border
 TEXT_WHITE = RGBColor(255, 255, 255)  # #FFFFFF
-TEXT_LIGHT = RGBColor(226, 232, 240)  # #E2E8F0 High contrast body text
-TEXT_MUTED = RGBColor(148, 163, 184)  # #94A3B8 Secondary text
-ACCENT_CYAN = RGBColor(0, 229, 255)   # #00E5FF Highlight
-ACCENT_BLUE = RGBColor(56, 189, 248)  # #38BDF8 Sky Blue
-ACCENT_RED = RGBColor(239, 68, 68)    # #EF4444 Emergency / Stoppage
-ACCENT_AMBER = RGBColor(245, 158, 11) # #F59E0B Warning / Trapping
-ACCENT_GREEN = RGBColor(16, 185, 129) # #10B981 Success / Lead Time
-ACCENT_PURPLE = RGBColor(168, 85, 247)# #A855F7 Science / Physics
+TEXT_LIGHT = RGBColor(238, 240, 236)  # #EEF0EC High contrast body text
+TEXT_MUTED = RGBColor(140, 148, 139)  # #8C948B Secondary text
+ACCENT_GREEN = RGBColor(143, 255, 176)# #8FFFB0 Signal Green
+ACCENT_BLUE = RGBColor(127, 212, 255) # #7FD4FF Signal Blue
+ACCENT_YELLOW = RGBColor(255, 226, 112)# #FFE270 Signal Yellow
+ACCENT_ORANGE = RGBColor(255, 157, 127)# #FF9D7F Warning Orange
+ACCENT_RED = RGBColor(239, 68, 68)    # #EF4444 Emergency Red
+ACCENT_PURPLE = RGBColor(168, 85, 247)# #A855F7 AI & Science Purple
+ACCENT_CYAN = RGBColor(0, 229, 255)   # #00E5FF Highlight Cyan
 
 def apply_background(slide):
     bg = slide.background
@@ -50,7 +52,7 @@ def add_header(slide, tag, title, subtitle=None):
     p_tag.font.name = "Calibri"
     p_tag.font.size = Pt(9.5)
     p_tag.font.bold = True
-    p_tag.font.color.rgb = ACCENT_CYAN
+    p_tag.font.color.rgb = ACCENT_GREEN
 
     # Main Title
     title_box = slide.shapes.add_textbox(Inches(0.8), Inches(0.68), Inches(11.7), Inches(0.55))
@@ -101,7 +103,7 @@ def add_footer(slide, current_slide, total_slides=6):
     p2.text = f"Page {current_slide} of {total_slides}  •  Production: https://vayucoupler.vercel.app  •  GitHub: vivek-glitch15/VayuCoupler"
     p2.font.name = "Calibri"
     p2.font.size = Pt(8.5)
-    p2.font.color.rgb = ACCENT_CYAN
+    p2.font.color.rgb = ACCENT_GREEN
     p2.alignment = PP_ALIGN.RIGHT
 
 def build_presentation():
@@ -116,7 +118,7 @@ def build_presentation():
     s1 = prs.slides.add_slide(blank_layout)
     apply_background(s1)
 
-    add_card(s1, Inches(0.8), Inches(0.6), Inches(11.733), Inches(6.2), bg_color=BG_CARD, border_color=BORDER_CYAN)
+    add_card(s1, Inches(0.8), Inches(0.6), Inches(11.733), Inches(6.2), bg_color=BG_CARD, border_color=ACCENT_GREEN)
 
     b_box = s1.shapes.add_textbox(Inches(1.2), Inches(0.85), Inches(10.9), Inches(0.35))
     b_tf = b_box.text_frame
@@ -126,7 +128,7 @@ def build_presentation():
     bp.font.name = "Calibri"
     bp.font.size = Pt(11)
     bp.font.bold = True
-    bp.font.color.rgb = ACCENT_CYAN
+    bp.font.color.rgb = ACCENT_GREEN
 
     t_box = s1.shapes.add_textbox(Inches(1.2), Inches(1.25), Inches(10.9), Inches(0.95))
     t_tf = t_box.text_frame
@@ -142,7 +144,7 @@ def build_presentation():
     sub_tf = sub_box.text_frame
     sub_tf.word_wrap = True
     sub_p = sub_tf.paragraphs[0]
-    sub_p.text = "Air Pollution–Weather Coupled Forecasting & Predictive GRAP Decision Support System"
+    sub_p.text = "Next-Generation Air Pollution–Weather Coupled Atmospheric Cockpit (Delhi-NCR Focus)"
     sub_p.font.name = "Calibri"
     sub_p.font.size = Pt(15)
     sub_p.font.bold = True
@@ -159,7 +161,7 @@ def build_presentation():
     p1_p1.font.size = Pt(10)
     p1_p1.font.color.rgb = ACCENT_CYAN
     p1_p2 = p1_tf.add_paragraph()
-    p1_p2.text = "• ID: SIH26082 (Software Edition)\n• Title: Air Pollution–Weather Coupled Forecasting (Delhi NCR Focus)\n• Ministry: Ministry of Earth Sciences (MoES)\n• Nodal Alignment: CAQM, CPCB, IMD"
+    p1_p2.text = "• ID: SIH26082 (Software Edition)\n• Title: Air Pollution–Weather Coupled Forecasting System (Delhi NCR Focus)\n• Ministry: Ministry of Earth Sciences (MoES)\n• Nodal Stakeholders: CAQM, CPCB, IMD"
     p1_p2.font.size = Pt(9.5)
     p1_p2.font.color.rgb = TEXT_LIGHT
 
@@ -168,12 +170,12 @@ def build_presentation():
     p2_tf = p2_tb.text_frame
     p2_tf.word_wrap = True
     p2_p1 = p2_tf.paragraphs[0]
-    p2_p1.text = "CORE VALUE PROPOSITION"
+    p2_p1.text = "CORE FRONT-FACING PILLARS"
     p2_p1.font.bold = True
     p2_p1.font.size = Pt(10)
-    p2_p1.font.color.rgb = ACCENT_AMBER
+    p2_p1.font.color.rgb = ACCENT_YELLOW
     p2_p2 = p2_tf.add_paragraph()
-    p2_p2.text = "• 48h to 72h Pre-emptive Lead Time\n• Dynamic PBLH & Inversion Coupling\n• NASA FIRMS Stubble Plume Vectoring\n• Closed-loop Multi-Agency Dispatch\n• 'What-If' Counterfactual Policy Simulator"
+    p2_p2.text = "• Atmospheric Home Cockpit & Ambient Halo\n• Google Weather-Style Microclimate Engine\n• 40+ Station Interactive GIS Spatial Map\n• Safe Commute Cleanest-Route Navigator\n• Conversational VayuAI Atmospheric Copilot"
     p2_p2.font.size = Pt(9.5)
     p2_p2.font.color.rgb = TEXT_LIGHT
 
@@ -187,7 +189,7 @@ def build_presentation():
     p3_p1.font.size = Pt(10)
     p3_p1.font.color.rgb = ACCENT_GREEN
     p3_p2 = p3_tf.add_paragraph()
-    p3_p2.text = "• Live Web: https://vayucoupler.vercel.app\n• GitHub: vivek-glitch15/VayuCoupler\n• Windows Offline Tool: Single-file executive client\n• Android Native APK: 5.4MB with offline caching"
+    p3_p2.text = "• Live Web Cockpit: https://vayucoupler.vercel.app\n• GitHub: vivek-glitch15/VayuCoupler\n• Windows Offline Tool: Single-file executive client\n• Standalone Mobile App: Phone-first UI & offline caching"
     p3_p2.font.size = Pt(9.5)
     p3_p2.font.color.rgb = TEXT_LIGHT
 
@@ -199,10 +201,10 @@ def build_presentation():
     tm_p1.text = "TEAM ATOMX COMPOSITION & DOMAIN ROLES:"
     tm_p1.font.bold = True
     tm_p1.font.size = Pt(10.5)
-    tm_p1.font.color.rgb = ACCENT_CYAN
+    tm_p1.font.color.rgb = ACCENT_GREEN
 
     tm_p2 = tm_tf.add_paragraph()
-    tm_p2.text = "• Vivek Raj (Team Lead — Systems Architecture, Coupled Physics & Geospatial Engine)   • Member 2 (PBLH & Inversion Modeling)\n• Member 3 (Backend Telemetry & Multi-Agency Dispatch Architecture)   • Member 4 (Geospatial UI/UX, Particle Wind Flow & Visuals)\n• Member 5 (ML Forecaster & Source Attribution Engine)   • Member 6 (Cross-Platform Mobile Android & Windows Offline Packaging)"
+    tm_p2.text = "• Vivek Raj (Team Lead — Systems Architecture, Atmospheric Coupling & Cockpit Design)   • Member 2 (Google Weather Engine & Microclimate Physics)\n• Member 3 (Safe Commute Exposure Routing & Geospatial GIS Engine)   • Member 4 (Ambient Halo UI/UX & Responsive Front-End Systems)\n• Member 5 (VayuAI LLM Grounding & Environmental Data Pipeline)   • Member 6 (Windows Standalone Offline Packaging & Mobile Architecture)"
     tm_p2.font.size = Pt(9.5)
     tm_p2.font.color.rgb = TEXT_LIGHT
     tm_p2.space_before = Pt(4)
@@ -210,13 +212,13 @@ def build_presentation():
     add_footer(s1, 1, 6)
 
     # =========================================================
-    # PAGE 2: Problem Statement & Flaw of Reactive GRAP
+    # PAGE 2: The Delhi-NCR Emergency & Need for Front-Facing Cockpit
     # =========================================================
     s2 = prs.slides.add_slide(blank_layout)
     apply_background(s2)
-    add_header(s2, "SIH26082 | Current Emergency Context", 
-               "The Problem: Delhi's Smog Trap & The Fatal Flaw of Reactive GRAP",
-               "Every winter, 30 million citizens choke because existing emergency systems enforce curbs only after the crisis arrives.")
+    add_header(s2, "SIH26082 | Environmental Emergency & Interface Gap", 
+               "The Challenge: Complex Atmospheric Data vs. Citizen Usability",
+               "Solving Delhi-NCR's air quality crisis requires replacing cluttered legacy portals with an intuitive, action-driven front cockpit.")
 
     col_w = Inches(3.64)
     # Card 1
@@ -225,16 +227,16 @@ def build_presentation():
     tf1 = tb1.text_frame
     tf1.word_wrap = True
     p = tf1.paragraphs[0]
-    p.text = "🚨 FATAL FLAW OF REACTIVE GRAP"
+    p.text = "🚨 FLAWS OF LEGACY AIR PORTALS"
     p.font.bold = True
     p.font.size = Pt(12)
     p.font.color.rgb = ACCENT_RED
 
     bullets1 = [
-        "Post-Facto Trigger Rule: CAQM/CPCB Stage III & IV emergency curbs (halting construction, halting interstate trucks) are triggered ONLY AFTER ground stations record 'Severe' (400+) for 48 consecutive hours.",
-        "Zero Lead Time: By the time diesel trucks or construction are banned, the dense smog trap has already formed over Delhi.",
-        "Irreversible Health Harm: Children, asthmatics, and seniors inhale toxic particulate matter for 2 to 3 days before authorities react.",
-        "Economic Shock: Sudden overnight blanket bans leave daily-wage workers stranded without preventing the initial spike."
+        "Disconnected Meteorology: Citizens & officials check AQI on one app and weather on another, missing the direct physical link between wind/humidity and smog trapping.",
+        "Inactionable Data Dumps: Existing portals display complex, static PDF tables and technical jargon that non-specialists cannot parse in an emergency.",
+        "Passive Exposure Maps: Legacy maps place static red dots on stations without offering any practical guidance on how to avoid inhaling toxic particulate matter.",
+        "Zero Conversational Access: Ordinary citizens have no way to ask everyday questions like 'Is it safe for a morning run?' without deciphering raw PM2.5 values."
     ]
     for b in bullets1:
         p = tf1.add_paragraph()
@@ -244,21 +246,21 @@ def build_presentation():
         p.space_before = Pt(6)
 
     # Card 2
-    c2 = add_card(s2, Inches(4.84), Inches(1.65), col_w, Inches(5.1), bg_color=BG_CARD, border_color=ACCENT_AMBER)
+    c2 = add_card(s2, Inches(4.84), Inches(1.65), col_w, Inches(5.1), bg_color=BG_CARD, border_color=ACCENT_YELLOW)
     tb2 = s2.shapes.add_textbox(Inches(5.04), Inches(1.8), col_w - Inches(0.4), Inches(4.7))
     tf2 = tb2.text_frame
     tf2.word_wrap = True
     p = tf2.paragraphs[0]
-    p.text = "🔬 DISCONNECTED METEOROLOGY"
+    p.text = "💡 THE UNIFIED ATMOSPHERIC COCKPIT"
     p.font.bold = True
     p.font.size = Pt(12)
-    p.font.color.rgb = ACCENT_AMBER
+    p.font.color.rgb = ACCENT_YELLOW
 
     bullets2 = [
-        "Trapping Crisis: Delhi's air crisis is fundamentally an atmospheric physics problem, not merely an emission issue.",
-        "Boundary Layer Compression: Planetary Boundary Layer Height (PBLH) collapses from 1,800m in daytime to under 350m at night.",
-        "Thermal Inversion Lid: Colder surface air trapped under warm aloft air prevents vertical dispersion (ΔT > 4°C).",
-        "Legacy Black-Box Flaw: Existing models treat AQI as an isolated statistical curve, ignoring real-time atmospheric dynamics."
+        "Phone-First Modern Design: Built with fluid responsive layouts, natural glassmorphism, and a luminous dark command-center aesthetic (#0A0B0A).",
+        "Ambient Halo AQI Visualizer: Instant situational clarity via dynamic glowing radial halo rings that pulse in category-specific HSL tones.",
+        "Deep Meteorological Coupling: Full Google Weather-style atmospheric engine directly embedded beside air quality telemetry.",
+        "Active Exposure Reduction: Shifts the paradigm from passive monitoring to actionable personal protection with Clean-Path Commute routing."
     ]
     for b in bullets2:
         p = tf2.add_paragraph()
@@ -268,21 +270,22 @@ def build_presentation():
         p.space_before = Pt(6)
 
     # Card 3
-    c3 = add_card(s2, Inches(8.88), Inches(1.65), col_w, Inches(5.1), bg_color=BG_CARD, border_color=ACCENT_BLUE)
+    c3 = add_card(s2, Inches(8.88), Inches(1.65), col_w, Inches(5.1), bg_color=BG_CARD, border_color=ACCENT_GREEN)
     tb3 = s2.shapes.add_textbox(Inches(9.08), Inches(1.8), col_w - Inches(0.4), Inches(4.7))
     tf3 = tb3.text_frame
     tf3.word_wrap = True
     p = tf3.paragraphs[0]
-    p.text = "🏛️ TRANS-BOUNDARY SILOS"
+    p.text = "📱 5 CORE FRONT-FACING PILLARS"
     p.font.bold = True
     p.font.size = Pt(12)
-    p.font.color.rgb = ACCENT_BLUE
+    p.font.color.rgb = ACCENT_GREEN
 
     bullets3 = [
-        "Trans-Boundary Influx: 30% to 45% of peak winter PM2.5 in Delhi arrives via trans-boundary transport from Punjab & Haryana stubble burning.",
-        "Inter-State Blame Game: Delhi declares red alert while upwind states continue burning due to lack of synchronized early warnings.",
-        "No 'What-If' Capability: Current portals display static graphs; policymakers cannot simulate policy impacts before enforcing curbs.",
-        "No Role-Based Dispatch: Agencies receive generic PDFs instead of automated, legally binding executive work orders."
+        "1. 🏠 Home Cockpit: Huge live AQI, ambient halo ring, nearest station indicator, dynamic health advisory & 3-Day Forecast strip.",
+        "2. 🌤️ Weather Engine: Real-time temp (°C/°F), conditions, 4 microclimate cards (Rain %, Wind km/h, Humidity %, UV), 8-day outlook & hourly scrubber.",
+        "3. 🗺️ Map & Data: Interactive 40+ station GIS grid with 6-pollutant telemetry (PM2.5, PM10, NO2, SO2, CO, O3) and spatial heatmap.",
+        "4. 🧭 Safe Commute: Intelligent route finder comparing Fastest vs. Cleanest path, cutting toxic inhaled dosage by 35%–48%.",
+        "5. 🤖 VayuAI Assistant: Domain-grounded conversational copilot for instant natural language health and activity decisions."
     ]
     for b in bullets3:
         p = tf3.add_paragraph()
@@ -294,380 +297,325 @@ def build_presentation():
     add_footer(s2, 2, 6)
 
     # =========================================================
-    # PAGE 3: The Breakthrough Solution & Atmospheric Physics Coupling
+    # PAGE 3: Front Pillar 1 & 2: Home Cockpit & Weather Engine
     # =========================================================
     s3 = prs.slides.add_slide(blank_layout)
     apply_background(s3)
-    add_header(s3, "SIH26082 | Scientific & Mathematical Innovation", 
-               "Our Solution: Predictive GRAP Grounded in Atmospheric Physics",
-               "Zero black-box obscurity — coupling boundary layer compression with satellite fire telemetry for 48h–72h lead time.")
+    add_header(s3, "SIH26082 | Core Front Interface Architecture", 
+               "Front Pillar 1 & 2: Atmospheric Home Cockpit & Live Weather Engine",
+               "Instant ambient visual clarity combined with Google Weather-style atmospheric microclimate dynamics.")
 
-    # Top Banner
-    add_card(s3, Inches(0.8), Inches(1.65), Inches(11.733), Inches(0.9), bg_color=BG_CARD, border_color=ACCENT_CYAN)
-    tb_b = s3.shapes.add_textbox(Inches(1.0), Inches(1.72), Inches(11.333), Inches(0.75))
-    tf_b = tb_b.text_frame
-    tf_b.word_wrap = True
-    p = tf_b.paragraphs[0]
-    p.text = "THE PARADIGM SHIFT: REACTIVE GRAP  ➜  PREDICTIVE GRAP (48h–72h LEAD TIME)"
+    hw = Inches(5.72)
+    hh = Inches(5.1)
+
+    # Left Card: Home Cockpit
+    c_left = add_card(s3, Inches(0.8), Inches(1.65), hw, hh, bg_color=BG_CARD_ALT, border_color=ACCENT_GREEN)
+    tb_l = s3.shapes.add_textbox(Inches(1.0), Inches(1.8), hw - Inches(0.4), hh - Inches(0.3))
+    tf_l = tb_l.text_frame
+    tf_l.word_wrap = True
+
+    p = tf_l.paragraphs[0]
+    p.text = "🏠 PILLAR 1: ATMOSPHERIC HOME COCKPIT"
     p.font.bold = True
     p.font.size = Pt(12)
-    p.font.color.rgb = ACCENT_CYAN
-    p2 = tf_b.add_paragraph()
-    p2.text = "Instead of waiting for stations to record 400+ AQI, VayuCoupler calculates boundary layer collapse and upwind stubble transport to trigger Stage II, III, and IV curbs 48 to 72 hours BEFORE the critical pollution peak arrives."
-    p2.font.size = Pt(10)
-    p2.font.color.rgb = TEXT_WHITE
-    p2.space_before = Pt(1)
-
-    # 4 Formula Cards (2x2 grid)
-    gw = Inches(5.72)
-    gh = Inches(2.05)
-
-    # Form 1
-    c1 = add_card(s3, Inches(0.8), Inches(2.65), gw, gh, bg_color=BG_CARD_ALT, border_color=ACCENT_CYAN)
-    tb1 = s3.shapes.add_textbox(Inches(0.95), Inches(2.75), gw - Inches(0.3), gh - Inches(0.2))
-    tf1 = tb1.text_frame
-    tf1.word_wrap = True
-    p = tf1.paragraphs[0]
-    p.text = "1. VENTILATION INDEX (VI) — FLUSHING CAPACITY"
-    p.font.bold = True
-    p.font.size = Pt(11)
-    p.font.color.rgb = ACCENT_CYAN
-    p_eq1 = tf1.add_paragraph()
-    p_eq1.text = "VI = Wind Speed (m/s)  ×  PBL Height (m)    [m²/s]"
-    p_eq1.font.bold = True
-    p_eq1.font.size = Pt(12)
-    p_eq1.font.color.rgb = TEXT_WHITE
-    p_eq1.space_before = Pt(3)
-    p_exp1 = tf1.add_paragraph()
-    p_exp1.text = "• VI > 3,500 m²/s: High atmospheric dispersion; ground pollutants flush out rapidly.\n• VI < 2,000 m²/s: Critical Trapping; Delhi basin behaves as an enclosed container.\n• Nighttime boundary layer collapse causes 3× to 5× pollutant concentration spikes."
-    p_exp1.font.size = Pt(9)
-    p_exp1.font.color.rgb = TEXT_LIGHT
-    p_exp1.space_before = Pt(2)
-
-    # Form 2
-    c2 = add_card(s3, Inches(6.813), Inches(2.65), gw, gh, bg_color=BG_CARD_ALT, border_color=ACCENT_AMBER)
-    tb2 = s3.shapes.add_textbox(Inches(6.963), Inches(2.75), gw - Inches(0.3), gh - Inches(0.2))
-    tf2 = tb2.text_frame
-    tf2.word_wrap = True
-    p = tf2.paragraphs[0]
-    p.text = "2. THERMAL INVERSION TRAPPING COEFFICIENT (K_trap)"
-    p.font.bold = True
-    p.font.size = Pt(11)
-    p.font.color.rgb = ACCENT_AMBER
-    p_eq2 = tf2.add_paragraph()
-    p_eq2.text = "K_trap = 1.0 + 0.38(ΔT_inv) + 1.4 × max(0, (2500 - VI) / 2500)"
-    p_eq2.font.bold = True
-    p_eq2.font.size = Pt(11.5)
-    p_eq2.font.color.rgb = TEXT_WHITE
-    p_eq2.space_before = Pt(3)
-    p_exp2 = tf2.add_paragraph()
-    p_exp2.text = "• Quantifies the thermal 'atmospheric lid' formed over Delhi NCR on cold winter nights.\n• ΔT_inv: Temperature differential between 1,000m layer and surface.\n• When K_trap exceeds 2.2, standard emissions produce 'Severe+' emergency spikes."
-    p_exp2.font.size = Pt(9)
-    p_exp2.font.color.rgb = TEXT_LIGHT
-    p_exp2.space_before = Pt(2)
-
-    # Form 3
-    c3 = add_card(s3, Inches(0.8), Inches(4.78), gw, gh, bg_color=BG_CARD_ALT, border_color=ACCENT_RED)
-    tb3 = s3.shapes.add_textbox(Inches(0.95), Inches(4.88), gw - Inches(0.3), gh - Inches(0.2))
-    tf3 = tb3.text_frame
-    tf3.word_wrap = True
-    p = tf3.paragraphs[0]
-    p.text = "3. UPWIND STUBBLE TRANSPORT VECTOR (S_vector)"
-    p.font.bold = True
-    p.font.size = Pt(11)
-    p.font.color.rgb = ACCENT_RED
-    p_eq3 = tf3.add_paragraph()
-    p_eq3.text = "S_vector = FireCount × max(0, cos(θ_wind - 315°)) × (WS / 5.0)"
-    p_eq3.font.bold = True
-    p_eq3.font.size = Pt(11.5)
-    p_eq3.font.color.rgb = TEXT_WHITE
-    p_eq3.space_before = Pt(3)
-    p_exp3 = tf3.add_paragraph()
-    p_exp3.text = "• Directional dot product of wind angle with the NW stubble plume corridor (315°).\n• Only fires with aligned north-westerly wind vectors are transported into Delhi.\n• Directly computes trans-boundary mass influx (µg/m³) rather than static tallies."
-    p_exp3.font.size = Pt(9)
-    p_exp3.font.color.rgb = TEXT_LIGHT
-    p_exp3.space_before = Pt(2)
-
-    # Form 4
-    c4 = add_card(s3, Inches(6.813), Inches(4.78), gw, gh, bg_color=BG_CARD_ALT, border_color=ACCENT_GREEN)
-    tb4 = s3.shapes.add_textbox(Inches(6.963), Inches(4.88), gw - Inches(0.3), gh - Inches(0.2))
-    tf4 = tb4.text_frame
-    tf4.word_wrap = True
-    p = tf4.paragraphs[0]
-    p.text = "4. COUPLED FORECASTER & SOURCE ATTRIBUTION"
-    p.font.bold = True
-    p.font.size = Pt(11)
     p.font.color.rgb = ACCENT_GREEN
-    p_eq4 = tf4.add_paragraph()
-    p_eq4.text = "AQI(t+Δt) = F_phys(AQI_t, VI, K_trap, S_vector) ± 90% CI"
-    p_eq4.font.bold = True
-    p_eq4.font.size = Pt(12)
-    p_eq4.font.color.rgb = TEXT_WHITE
-    p_eq4.space_before = Pt(3)
-    p_exp4 = tf4.add_paragraph()
-    p_exp4.text = "• Dynamic Source Apportionment: Stubble (38%), Vehicular (32%), Industry (15%), Dust (15%).\n• Outputs calibrated +24h, +48h, and +72h continuous predictions with uncertainty envelopes.\n• Directly triggers CAQM rules.json to generate automated, role-specific action tickets."
-    p_exp4.font.size = Pt(9)
-    p_exp4.font.color.rgb = TEXT_LIGHT
-    p_exp4.space_before = Pt(2)
+
+    home_features = [
+        ("Atmospheric Ambient Halo AQI Meter:", "A massive live AQI reading (e.g., 157 Moderate / 312 Very Poor) enveloped by glowing multi-ring radial halos pulsing in real-time color tiers (Green, Blue, Yellow, Orange, Red, Severe Maroon)."),
+        ("Live Monitoring Station Selector:", "Instant one-tap modal to switch between 40+ DPCC & CPCB CAAQMS stations (Punjabi Bagh, Anand Vihar, IGI T3, RK Puram) with GPS proximity auto-detection."),
+        ("Categorical Severity Pill & Actionable Advisory:", "Dynamic color-coded status badge paired with clear, single-line medical and outdoor guidance tailored to the active station's exposure tier."),
+        ("Coupled 3-Day Forecast Strip:", "Continuous 72-hour air quality forecast cards displaying Tomorrow (+24h), Day After (+48h), and Day 3 (+72h) projections with categorical tags and atmospheric trend indicators.")
+    ]
+    for title, desc in home_features:
+        p_t = tf_l.add_paragraph()
+        p_t.text = "• " + title
+        p_t.font.bold = True
+        p_t.font.size = Pt(9.5)
+        p_t.font.color.rgb = TEXT_WHITE
+        p_t.space_before = Pt(6)
+
+        p_d = tf_l.add_paragraph()
+        p_d.text = "   " + desc
+        p_d.font.size = Pt(9)
+        p_d.font.color.rgb = TEXT_LIGHT
+
+    # Right Card: Weather Engine
+    c_right = add_card(s3, Inches(6.813), Inches(1.65), hw, hh, bg_color=BG_CARD_ALT, border_color=ACCENT_YELLOW)
+    tb_r = s3.shapes.add_textbox(Inches(7.013), Inches(1.8), hw - Inches(0.4), hh - Inches(0.3))
+    tf_r = tb_r.text_frame
+    tf_r.word_wrap = True
+
+    p = tf_r.paragraphs[0]
+    p.text = "🌤️ PILLAR 2: GOOGLE WEATHER-STYLE LIVE ENGINE"
+    p.font.bold = True
+    p.font.size = Pt(12)
+    p.font.color.rgb = ACCENT_YELLOW
+
+    weather_features = [
+        ("Real-Time Microclimate Telemetry:", "Large current temperature display with instant °C / °F toggle, live sky condition ('Partly Cloudy', 'Haze/Smog'), 'Feels Like' index, and daily High/Low extremes."),
+        ("4 Key Atmospheric Dispersion Drivers:", "Four real-time metric cards critical for air quality dispersion:\n   💧 Rain Chance (%): Direct particulate washout probability.\n   🍃 Wind Speed & Direction (km/h): Horizontal ventilation capacity.\n   🌫️ Relative Humidity (%): Secondary aerosol nucleation rate.\n   ☀️ UV Index & Dew Point: Photochemical smog reaction drivers."),
+        ("8-Day Extended Weather Outlook:", "Day-by-day temperature range bars, sky condition icons, and atmospheric stability projections."),
+        ("24-Hour Interactive Hourly Scrubber:", "Hourly timeline tracking temperature curves, wind vectors, and night-time surface boundary stagnation.")
+    ]
+    for title, desc in weather_features:
+        p_t = tf_r.add_paragraph()
+        p_t.text = "• " + title
+        p_t.font.bold = True
+        p_t.font.size = Pt(9.5)
+        p_t.font.color.rgb = TEXT_WHITE
+        p_t.space_before = Pt(6)
+
+        p_d = tf_r.add_paragraph()
+        p_d.text = "   " + desc
+        p_d.font.size = Pt(9)
+        p_d.font.color.rgb = TEXT_LIGHT
 
     add_footer(s3, 3, 6)
 
     # =========================================================
-    # PAGE 4: System Architecture & Technical Methodology
+    # PAGE 4: Front Pillar 3: Interactive Spatial Map & Sensor Grid
     # =========================================================
     s4 = prs.slides.add_slide(blank_layout)
     apply_background(s4)
-    add_header(s4, "SIH26082 | Engineering Blueprint & Data Pipeline", 
-               "End-to-End 4-Tier Pipeline: Ingestion to Multi-Platform Delivery",
-               "Engineered for 100% offline hackathon demonstration resilience and frictionless cloud deployment.")
+    add_header(s4, "SIH26082 | Geospatial Telemetry & Sensor Network", 
+               "Front Pillar 3: Interactive Delhi-NCR Spatial GIS Map & Sensor Grid",
+               "Comprehensive real-time spatial coverage across 40+ CAAQMS monitoring stations with multi-pollutant telemetry.")
 
-    layer_w = Inches(11.733)
-    layer_h = Inches(1.15)
-    layers = [
-        ("LAYER 1: DATA INGESTION & DUAL-MODE ADAPTER", ACCENT_CYAN,
-         "• 16 CPCB Ground Stations (PM2.5, PM10, NO2, SO2, CO, O3) across Delhi NCR (Anand Vihar, IGI, Punjabi Bagh, etc.)\n• IMD High-Altitude Meteorology & Eulerian WRF wind fields  • NASA FIRMS MODIS/VIIRS Satellite Fire Hotspots\n• Dual-Mode Adapter: Auto-switches between live REST telemetry and 168-Hour Synthetic Episode for 100% demo uptime."),
-        
-        ("LAYER 2: COUPLED PHYSICS & ML ANALYTICS ENGINE", ACCENT_PURPLE,
-         "• Physics Ventilation Modulator calculates real-time Ventilation Index (VI) & Inversion Trapping Factor (K_trap)\n• Stubble Plume Directional Vector Projection (NW 315° corridor)  • Dynamic Source Apportionment Engine\n• Coupled +24h, +48h, and +72h Forecaster with 90% empirical confidence bounds."),
+    gw = Inches(5.72)
+    gh = Inches(2.45)
 
-        ("LAYER 3: PREDICTIVE GRAP & DISASTER DISPATCH ENGINE", ACCENT_AMBER,
-         "• Automated Predictive GRAP Rules Engine (evaluates forecast curves against configurable rules.json matrix)\n• Multi-Agency Action Dispatcher generates role-specific payloads (Police, Agri, MCD, Schools, Hospitals)\n• 'What-If' Counterfactual Policy Simulator for real-time Supreme Court & CAQM scenario testing."),
+    # Card 1: 40+ Station Network
+    c1 = add_card(s4, Inches(0.8), Inches(1.65), gw, gh, bg_color=BG_CARD_ALT, border_color=ACCENT_CYAN)
+    tb1 = s4.shapes.add_textbox(Inches(0.95), Inches(1.75), gw - Inches(0.3), gh - Inches(0.2))
+    tf1 = tb1.text_frame
+    tf1.word_wrap = True
+    p = tf1.paragraphs[0]
+    p.text = "1. 40+ STATION DELHI-NCR MONITORING GRID"
+    p.font.bold = True
+    p.font.size = Pt(11)
+    p.font.color.rgb = ACCENT_CYAN
+    p_exp1 = tf1.add_paragraph()
+    p_exp1.text = "• Dense spatial coverage spanning Delhi, Noida, Gurugram, Ghaziabad & Faridabad.\n• Covers key hotspot stations: Anand Vihar, Punjabi Bagh, Mandir Marg, IGI Airport, Mundka, Wazirpur, Okhla, RK Puram.\n• GPS Proximity Detection automatically locates and highlights the nearest active monitoring sensor with distance in kilometers.\n• High-performance Leaflet GIS rendering optimized for fluid mobile touch gestures."
+    p_exp1.font.size = Pt(9)
+    p_exp1.font.color.rgb = TEXT_LIGHT
+    p_exp1.space_before = Pt(4)
 
-        ("LAYER 4: CROSS-PLATFORM DELIVERY & COMMAND CENTERS", ACCENT_GREEN,
-         "• MoES Command Center Web App (Production on Vercel: https://vayucoupler.vercel.app)\n• Single-File Windows Desktop Offline Edition (zero setup, one-click evaluation for judges)\n• Native Android APK (5.4MB field inspection app with offline caching)  • High-performance FastAPI Telemetry Backend.")
-    ]
+    # Card 2: Heatmap & Status
+    c2 = add_card(s4, Inches(6.813), Inches(1.65), gw, gh, bg_color=BG_CARD_ALT, border_color=ACCENT_GREEN)
+    tb2 = s4.shapes.add_textbox(Inches(6.963), Inches(1.75), gw - Inches(0.3), gh - Inches(0.2))
+    tf2 = tb2.text_frame
+    tf2.word_wrap = True
+    p = tf2.paragraphs[0]
+    p.text = "2. COLOR-CODED SPATIAL HEATMAP & HOTSPOTS"
+    p.font.bold = True
+    p.font.size = Pt(11)
+    p.font.color.rgb = ACCENT_GREEN
+    p_exp2 = tf2.add_paragraph()
+    p_exp2.text = "• Standardized National AQI Color Spectrum:\n   🟢 Good (0–50)  |  🔵 Satisfactory (51–100)  |  🟡 Moderate (101–200)\n   🟠 Poor (201–300)  |  🔴 Very Poor (301–400)  |  🟣 Severe (401–500+)\n• Dynamic hotspot detection: Pulsating visual halos immediately highlight localized smog traps like Anand Vihar and Mundka.\n• Live regional air quality distribution visible in one glance."
+    p_exp2.font.size = Pt(9)
+    p_exp2.font.color.rgb = TEXT_LIGHT
+    p_exp2.space_before = Pt(4)
 
-    for idx, (title, color, desc) in enumerate(layers):
-        top_pos = Inches(1.65 + idx * 1.28)
-        c = add_card(s4, Inches(0.8), top_pos, layer_w, layer_h, bg_color=BG_CARD_ALT, border_color=color)
-        tb = s4.shapes.add_textbox(Inches(1.0), top_pos + Inches(0.08), layer_w - Inches(0.4), layer_h - Inches(0.16))
-        tf = tb.text_frame
-        tf.word_wrap = True
-        p = tf.paragraphs[0]
-        p.text = title
-        p.font.bold = True
-        p.font.size = Pt(11)
-        p.font.color.rgb = color
+    # Card 3: 6 Pollutants
+    c3 = add_card(s4, Inches(0.8), Inches(4.35), gw, gh, bg_color=BG_CARD_ALT, border_color=ACCENT_ORANGE)
+    tb3 = s4.shapes.add_textbox(Inches(0.95), Inches(4.45), gw - Inches(0.3), gh - Inches(0.2))
+    tf3 = tb3.text_frame
+    tf3.word_wrap = True
+    p = tf3.paragraphs[0]
+    p.text = "3. 6 MULTI-POLLUTANT LIVE TELEMETRY"
+    p.font.bold = True
+    p.font.size = Pt(11)
+    p.font.color.rgb = ACCENT_ORANGE
+    p_exp3 = tf3.add_paragraph()
+    p_exp3.text = "• Continuous sensor streams for all 6 major air pollutants:\n   • PM2.5 & PM10 (Fine & respirable particulate matter in µg/m³)\n   • NO2 (Vehicular exhaust & industrial combustion)\n   • SO2 (Thermal power generation & heavy fuel burning)\n   • CO (Carbon monoxide incomplete combustion) & O3 (Ground-level ozone)\n• Station inspection popup cards showing sensor timestamps and dominant pollutant."
+    p_exp3.font.size = Pt(9)
+    p_exp3.font.color.rgb = TEXT_LIGHT
+    p_exp3.space_before = Pt(4)
 
-        p2 = tf.add_paragraph()
-        p2.text = desc
-        p2.font.size = Pt(9.2)
-        p2.font.color.rgb = TEXT_LIGHT
-        p2.space_before = Pt(3)
+    # Card 4: Dual-Mode Resilience
+    c4 = add_card(s4, Inches(6.813), Inches(4.35), gw, gh, bg_color=BG_CARD_ALT, border_color=ACCENT_BLUE)
+    tb4 = s4.shapes.add_textbox(Inches(6.963), Inches(4.45), gw - Inches(0.3), gh - Inches(0.2))
+    tf4 = tb4.text_frame
+    tf4.word_wrap = True
+    p = tf4.paragraphs[0]
+    p.text = "4. ZERO-DEPENDENCY DUAL-MODE ARCHITECTURE"
+    p.font.bold = True
+    p.font.size = Pt(11)
+    p.font.color.rgb = ACCENT_BLUE
+    p_exp4 = tf4.add_paragraph()
+    p_exp4.text = "• Cloud Live Mode: Seamlessly streams real-time data from CPCB & DPCC continuous ambient stations.\n• Offline Demonstration Fallback: Auto-switches to local 168-Hour cached episode if cloud connectivity drops during hackathon jury evaluation.\n• 100% Guaranteed Uptime: Never shows a blank error screen or broken map during presentations."
+    p_exp4.font.size = Pt(9)
+    p_exp4.font.color.rgb = TEXT_LIGHT
+    p_exp4.space_before = Pt(4)
 
     add_footer(s4, 4, 6)
 
     # =========================================================
-    # PAGE 5: Competitive Advantage & 'What-If' Policy Simulator
+    # PAGE 5: Front Pillar 4: Safe Commute Route Finder
     # =========================================================
     s5 = prs.slides.add_slide(blank_layout)
     apply_background(s5)
-    add_header(s5, "SIH26082 | Competitive Superiority & Decision Support", 
-               "Comparison Matrix & Interactive 'What-If' Policy Simulator",
-               "Proving technological superiority over SAFAR and empowering CAQM with empirical scenario testing.")
+    add_header(s5, "SIH26082 | Active Exposure Minimization", 
+               "Front Pillar 4: Safe Commute Route Finder — Inhalation Dosage Reduction",
+               "Transforming passive monitoring into active personal protection: Intelligent A-to-B routing that cuts toxic inhaled particulate dosage by 35%–48%.")
 
-    # Left: Comparison Table
-    table_shape = s5.shapes.add_table(6, 3, Inches(0.8), Inches(1.65), Inches(6.0), Inches(5.1))
-    tbl = table_shape.table
-    tbl.columns[0].width = Inches(1.8)
-    tbl.columns[1].width = Inches(1.8)
-    tbl.columns[2].width = Inches(2.4)
+    # Left Card: How Safe Commute Works
+    c_l5 = add_card(s5, Inches(0.8), Inches(1.65), hw, hh, bg_color=BG_CARD_ALT, border_color=ACCENT_GREEN)
+    tb_l5 = s5.shapes.add_textbox(Inches(1.0), Inches(1.8), hw - Inches(0.4), hh - Inches(0.3))
+    tf_l5 = tb_l5.text_frame
+    tf_l5.word_wrap = True
 
-    comp_rows = [
-        ["CAPABILITY", "LEGACY / SAFAR", "VAYUCOUPLER (ATOMX)"],
-        ["GRAP Execution", "Reactive (After 48h spike)", "PREDICTIVE (48h–72h Lead Time)"],
-        ["Physics Coupling", "Basic statistical / None", "EXPLICIT (PBLH + Inversion + Vector)"],
-        ["Disaster Dispatch", "Passive public PDF upload", "AUTOMATED (6-Agency work orders)"],
-        ["Policy Simulation", "Not Supported", "INTERACTIVE 'WHAT-IF' SIMULATOR"],
-        ["Offline Resilience", "Cloud-only dependency", "100% OFFLINE (Windows & Mobile APK)"]
-    ]
-
-    for r_idx, row in enumerate(comp_rows):
-        for c_idx, val in enumerate(row):
-            cell = tbl.cell(r_idx, c_idx)
-            cell.text = val
-            p = cell.text_frame.paragraphs[0]
-            p.font.name = "Calibri"
-            if r_idx == 0:
-                p.font.bold = True
-                p.font.size = Pt(9.5)
-                p.font.color.rgb = ACCENT_CYAN
-                cell.fill.solid()
-                cell.fill.fore_color.rgb = BG_CARD
-            else:
-                p.font.size = Pt(8.8)
-                if c_idx == 2:
-                    p.font.bold = True
-                    p.font.color.rgb = ACCENT_GREEN
-                    cell.fill.solid()
-                    cell.fill.fore_color.rgb = RGBColor(16, 37, 66)
-                elif c_idx == 0:
-                    p.font.bold = True
-                    p.font.color.rgb = TEXT_WHITE
-                    cell.fill.solid()
-                    cell.fill.fore_color.rgb = BG_CARD_ALT
-                else:
-                    p.font.color.rgb = TEXT_LIGHT
-                    cell.fill.solid()
-                    cell.fill.fore_color.rgb = BG_DARK
-
-    # Right: What-If Simulator Showcase
-    c_right = add_card(s5, Inches(7.0), Inches(1.65), Inches(5.533), Inches(5.1), bg_color=BG_CARD, border_color=ACCENT_PURPLE)
-    tb_r = s5.shapes.add_textbox(Inches(7.18), Inches(1.8), Inches(5.17), Inches(4.8))
-    tf_r = tb_r.text_frame
-    tf_r.word_wrap = True
-    p = tf_r.paragraphs[0]
-    p.text = "🎯 'WHAT-IF' COUNTERFACTUAL POLICY SIMULATOR"
+    p = tf_l5.paragraphs[0]
+    p.text = "🧭 CLEANEST ROUTE VS. FASTEST ROUTE"
     p.font.bold = True
-    p.font.size = Pt(11.5)
-    p.font.color.rgb = ACCENT_PURPLE
+    p.font.size = Pt(12)
+    p.font.color.rgb = ACCENT_GREEN
 
-    p_w_desc = tf_r.add_paragraph()
-    p_w_desc.text = "Allows CAQM and Supreme Court authorities to slide policy levers in real time to preview resulting AQI curves before enforcing disruptive emergency bans."
-    p_w_desc.font.size = Pt(9)
-    p_w_desc.font.color.rgb = TEXT_LIGHT
-    p_w_desc.space_before = Pt(4)
+    commute_mechanics = [
+        ("A-to-B Spatial Waypoint Navigator:", "Commuters input start and destination points across Delhi-NCR (e.g., Punjabi Bagh to Cyber City Gurugram, Connaught Place to Noida Sector 62)."),
+        ("Cumulative Toxic Inhalation Model:", "Standard navigation minimizes time (t). VayuCoupler minimizes inhaled particulate dosage:\n   Inhaled Dosage = ∫ [ PM2.5_concentration(x,y,t) × Duration × Respiration_Rate ] dt"),
+        ("35% to 48% Toxic Particulate Reduction:", "By routing commuters through ventilated green bypasses and avoiding high-emission congestion bottlenecks, the Cleanest Route saves 35%–48% inhaled PM2.5 with only a 4–8 minute transit trade-off."),
+        ("Side-by-Side Live Comparison:", "Presents instant side-by-side metrics: Travel distance (km), estimated time (mins), and total micrograms (µg) of toxic PM2.5 avoided.")
+    ]
+    for title, desc in commute_mechanics:
+        p_t = tf_l5.add_paragraph()
+        p_t.text = "• " + title
+        p_t.font.bold = True
+        p_t.font.size = Pt(9.5)
+        p_t.font.color.rgb = TEXT_WHITE
+        p_t.space_before = Pt(6)
 
-    # Case A
-    p_ca = tf_r.add_paragraph()
-    p_ca.text = "SCENARIO A: STATUS QUO (REACTIVE GRAP)"
-    p_ca.font.bold = True
-    p_ca.font.size = Pt(10)
-    p_ca.font.color.rgb = ACCENT_RED
-    p_ca.space_before = Pt(8)
+        p_d = tf_l5.add_paragraph()
+        p_d.text = "   " + desc
+        p_d.font.size = Pt(9)
+        p_d.font.color.rgb = TEXT_LIGHT
 
-    p_ca_d = tf_r.add_paragraph()
-    p_ca_d.text = "• Monitors reach 400 at T-0h; curbs enforced only at T+48h.\n• Result: Peak AQI reaches 485 (Severe+ Emergency). Schools shut abruptly, hospitals overrun with respiratory distress."
-    p_ca_d.font.size = Pt(8.8)
-    p_ca_d.font.color.rgb = TEXT_LIGHT
+    # Right Card: Multi-Modal Guidance & Advisories
+    c_r5 = add_card(s5, Inches(6.813), Inches(1.65), hw, hh, bg_color=BG_CARD_ALT, border_color=ACCENT_BLUE)
+    tb_r5 = s5.shapes.add_textbox(Inches(7.013), Inches(1.8), hw - Inches(0.4), hh - Inches(0.3))
+    tf_r5 = tb_r5.text_frame
+    tf_r5.word_wrap = True
 
-    # Case B
-    p_cb = tf_r.add_paragraph()
-    p_cb.text = "SCENARIO B: VAYUCOUPLER PREDICTIVE INTERVENTION"
-    p_cb.font.bold = True
-    p_cb.font.size = Pt(10)
-    p_cb.font.color.rgb = ACCENT_GREEN
-    p_cb.space_before = Pt(8)
+    p = tf_r5.paragraphs[0]
+    p.text = "🚇 MULTI-MODAL COMMUTE GUIDANCE"
+    p.font.bold = True
+    p.font.size = Pt(12)
+    p.font.color.rgb = ACCENT_BLUE
 
-    p_cb_d = tf_r.add_paragraph()
-    p_cb_d.text = "• Model predicts 485 spike 48h prior due to PBLH collapse to 320m and NW wind shift.\n• Pre-emptive actions: 45% truck diversion + 40% stubble reduction.\n• Result: Peak AQI capped at 382 (Managed). Severe+ emergency averted completely!"
-    p_cb_d.font.size = Pt(8.8)
-    p_cb_d.font.color.rgb = TEXT_LIGHT
+    commute_guidance = [
+        ("Delhi Metro (Optimal Clean Air Mode):", "Recommends underground metro transit where station filtration systems lower particulate exposure by >65% compared to surface road traffic."),
+        ("AC Car with Cabin Air Recirculation:", "Advises commuters traveling by automobile to keep windows closed and enable internal air recirculation when crossing Severe hotspot corridors."),
+        ("Two-Wheeler & Pedestrian High-Risk Alert:", "Flags severe exposure risks for motorcyclists, cyclists, and pedestrians; triggers mandatory N95 mask recommendation."),
+        ("Optimal Departure Window Optimizer:", "Recommends leaving 30–45 minutes earlier or later to avoid peak thermal inversion hours when stagnant morning smog is trapped at ground level.")
+    ]
+    for title, desc in commute_guidance:
+        p_t = tf_r5.add_paragraph()
+        p_t.text = "• " + title
+        p_t.font.bold = True
+        p_t.font.size = Pt(9.5)
+        p_t.font.color.rgb = TEXT_WHITE
+        p_t.space_before = Pt(6)
 
-    # Multi-Agency dispatch pills
-    p_dis = tf_r.add_paragraph()
-    p_dis.text = "CLOSED-LOOP AUTOMATED DISPATCH:"
-    p_dis.font.bold = True
-    p_dis.font.size = Pt(9.5)
-    p_dis.font.color.rgb = ACCENT_CYAN
-    p_dis.space_before = Pt(8)
-
-    p_dis_d = tf_r.add_paragraph()
-    p_dis_d.text = "• Punjab Agri: Happy Seeders dispatched 48h early • Police: Trucks diverted to EPE/WPE • MCD: Anti-smog guns to Anand Vihar/Mundka • Health: Respiratory ICU prep."
-    p_dis_d.font.size = Pt(8.5)
-    p_dis_d.font.color.rgb = TEXT_LIGHT
+        p_d = tf_r5.add_paragraph()
+        p_d.text = "   " + desc
+        p_d.font.size = Pt(9)
+        p_d.font.color.rgb = TEXT_LIGHT
 
     add_footer(s5, 5, 6)
 
     # =========================================================
-    # PAGE 6: Real-World Impact, MoES Roadmap & Conclusion
+    # PAGE 6: Front Pillar 5: VayuAI Assistant & Demo Script
     # =========================================================
     s6 = prs.slides.add_slide(blank_layout)
     apply_background(s6)
-    add_header(s6, "SIH26082 | Impact, Roadmap & Live Demonstration Plan", 
-               "Measurable Impact, National Roadmap & 3-Minute Demo Workflow",
-               "Delivering India's first operational Weather–Pollution Coupled Predictive GRAP System.")
+    add_header(s6, "SIH26082 | Conversational AI & Live Demo Plan", 
+               "Front Pillar 5: VayuAI Assistant, Production Deployments & Jury Demo",
+               "Grounded conversational environmental intelligence with 100% offline resilience and a structured 3-minute hackathon demo.")
 
-    # 3 Stat Cards on Top
-    sc_w = Inches(3.64)
-    stat_cards = [
-        ("48 to 72 HOURS", "ADVANCE ACTION LEAD TIME", ACCENT_CYAN, "Replaces sudden same-day school closures and emergency bans with structured 3-day readiness."),
-        ("25% – 35% REDUCTION", "PEAK RESPIRATORY HOSPITALIZATIONS", ACCENT_GREEN, "Pre-empting extreme PM2.5 spikes (450+) protects vulnerable children, senior citizens, and asthma patients."),
-        ("₹1,200+ CRORE", "ESTIMATED AVOIDED ECONOMIC LOSS", ACCENT_AMBER, "Prevents chaotic blanket factory shutdowns and stranded interstate freight fleets through managed pre-routing.")
-    ]
+    # Top Card: VayuAI Assistant
+    top_w = Inches(11.733)
+    top_h = Inches(2.25)
+    c_ai = add_card(s6, Inches(0.8), Inches(1.65), top_w, top_h, bg_color=BG_CARD_ALT, border_color=ACCENT_PURPLE)
+    tb_ai = s6.shapes.add_textbox(Inches(1.0), Inches(1.75), top_w - Inches(0.4), top_h - Inches(0.2))
+    tf_ai = tb_ai.text_frame
+    tf_ai.word_wrap = True
 
-    for idx, (val, title, color, desc) in enumerate(stat_cards):
-        left_pos = Inches(0.8 + idx * 4.04)
-        c = add_card(s6, left_pos, Inches(1.65), sc_w, Inches(1.5), bg_color=BG_CARD_ALT, border_color=color)
-        tb = s6.shapes.add_textbox(left_pos + Inches(0.12), Inches(1.72), sc_w - Inches(0.24), Inches(1.35))
-        tf = tb.text_frame
-        tf.word_wrap = True
-        p = tf.paragraphs[0]
-        p.text = val
-        p.font.bold = True
-        p.font.size = Pt(18)
-        p.font.color.rgb = color
-
-        p2 = tf.add_paragraph()
-        p2.text = title
-        p2.font.bold = True
-        p2.font.size = Pt(9.5)
-        p2.font.color.rgb = TEXT_WHITE
-
-        p3 = tf.add_paragraph()
-        p3.text = desc
-        p3.font.size = Pt(8.2)
-        p3.font.color.rgb = TEXT_LIGHT
-
-    # Bottom Split: Roadmap (Left) and 3-Minute Demo Workflow (Right)
-    # Roadmap Card
-    c_road = add_card(s6, Inches(0.8), Inches(3.3), Inches(5.65), Inches(3.45), bg_color=BG_CARD, border_color=BORDER_MUTED)
-    tb_rd = s6.shapes.add_textbox(Inches(0.95), Inches(3.4), Inches(5.35), Inches(3.25))
-    tf_rd = tb_rd.text_frame
-    tf_rd.word_wrap = True
-    p = tf_rd.paragraphs[0]
-    p.text = "🏛️ SCALABILITY & MOES ADOPTION ROADMAP"
+    p = tf_ai.paragraphs[0]
+    p.text = "🤖 FRONT PILLAR 5: VAYUAI CONVERSATIONAL ATMOSPHERIC COPILOT"
     p.font.bold = True
-    p.font.size = Pt(11)
-    p.font.color.rgb = ACCENT_CYAN
+    p.font.size = Pt(12)
+    p.font.color.rgb = ACCENT_PURPLE
 
-    phases = [
-        ("Phase 1 (M 1–3) | Delhi NCR CAQM Pilot:", "Ingestion from all 40 CPCB CAAQMS stations + daily automated predictive GRAP briefings dispatched to Commission members."),
-        ("Phase 2 (M 4–8) | Indo-Gangetic Basin:", "Scaling models to Kanpur, Lucknow, Patna & Kolkata air-sheds + INSAT-3D AOD & Sentinel-5P TROPOMI satellite telemetry."),
-        ("Phase 3 (M 9–12) | Nationwide NCAP Integration:", "Direct coupling with IMD's 3km Eulerian WRF-Chem atmospheric models and CEMS at 1,000+ industrial smokestacks. Zero license lock-in.")
+    ai_bullets = [
+        "Domain-Grounded Environmental LLM: Connects live CPCB monitoring station readings, weather telemetry, and MoES health thresholds to answer citizen questions in natural language.",
+        "One-Tap Quick Action Prompts: Pre-configured prompt pills for instant answers: '🏃 Morning Jogging Safety' • '🌤️ Tomorrow's Air Outlook' • '🧭 Clean Route to Gurgaon' • '👶 Health Advice for Kids'.",
+        "Contextual, Evidence-Grounded Advice: Generates concise, actionable 2-sentence recommendations instead of generic search snippets (e.g., 'Current AQI at Punjabi Bagh is 157. Morning jog is acceptable for healthy adults, but asthmatics should avoid outdoor cardio before 8 AM')."
     ]
-    for ph_t, ph_d in phases:
-        p = tf_rd.add_paragraph()
-        p.text = ph_t
-        p.font.bold = True
-        p.font.size = Pt(8.8)
-        p.font.color.rgb = ACCENT_AMBER
-        p.space_before = Pt(4)
-        p_sub = tf_rd.add_paragraph()
-        p_sub.text = ph_d
-        p_sub.font.size = Pt(8.4)
-        p_sub.font.color.rgb = TEXT_LIGHT
+    for b in ai_bullets:
+        p_b = tf_ai.add_paragraph()
+        p_b.text = "• " + b
+        p_b.font.size = Pt(9.2)
+        p_b.font.color.rgb = TEXT_LIGHT
+        p_b.space_before = Pt(3)
 
-    # Demo Script Card
-    c_dm = add_card(s6, Inches(6.88), Inches(3.3), Inches(5.65), Inches(3.45), bg_color=BG_CARD, border_color=ACCENT_GREEN)
-    tb_dm = s6.shapes.add_textbox(Inches(7.03), Inches(3.4), Inches(5.35), Inches(3.25))
-    tf_dm = tb_dm.text_frame
-    tf_dm.word_wrap = True
-    p = tf_dm.paragraphs[0]
-    p.text = "⏱️ 3-MINUTE JUDGE DEMO SCRIPT & LIVE ARTIFACTS"
+    # Bottom Left Card: Deployments & Offline Resiliency
+    bot_w = Inches(5.72)
+    bot_h = Inches(2.7)
+    c_dep = add_card(s6, Inches(0.8), Inches(4.08), bot_w, bot_h, bg_color=BG_CARD_ALT, border_color=ACCENT_GREEN)
+    tb_dep = s6.shapes.add_textbox(Inches(0.95), Inches(4.18), bot_w - Inches(0.3), bot_h - Inches(0.2))
+    tf_dep = tb_dep.text_frame
+    tf_dep.word_wrap = True
+
+    p = tf_dep.paragraphs[0]
+    p.text = "💻 PRODUCTION SUITE & OFFLINE RESILIENCE"
     p.font.bold = True
     p.font.size = Pt(11)
     p.font.color.rgb = ACCENT_GREEN
 
-    steps = [
-        ("0:00 - 0:45 | 30s Pitch:", "Open https://vayucoupler.vercel.app. Pitch: 'Current GRAP is reactive; VayuCoupler predicts spikes 48h early via meteorology coupling.'"),
-        ("0:45 - 1:30 | 7-Day Scrubber:", "Scrub to T-72h. Show monitored AQI is still Moderate (~210), but boundary layer collapses to 340m, forecasting 480+ for T+48h."),
-        ("1:30 - 2:15 | Predictive GRAP:", "Show Stage III/IV in 'PRE-EMPTIVE TRIGGER' state. Inspect automated dispatch payloads for Punjab Agri & Delhi Police."),
-        ("2:15 - 3:00 | 'What-If' Testing:", "Move Stubble Reduction to 50% and Truck Diversion to 40%. Watch peak AQI drop from 485 to 382. Ready for Jury Q&A!")
+    dep_bullets = [
+        "Live Production Web App: Deployed on Vercel at https://vayucoupler.vercel.app with instant CDN edge caching.",
+        "Windows Standalone Offline Client: Single-file executable client (VayuCoupler_Windows_Offline_App.html) with zero install and zero setup for seamless hackathon jury evaluation.",
+        "Standalone Mobile App: Ultra-fast phone-first web application with local storage caching.",
+        "Open-Source GitHub Repository: Complete verified codebase at github.com/vivek-glitch15/VayuCoupler."
     ]
-    for st_t, st_d in steps:
-        p = tf_dm.add_paragraph()
-        p.text = st_t + " " + st_d
-        p.font.size = Pt(8.4)
-        p.font.color.rgb = TEXT_LIGHT
-        p.space_before = Pt(3)
+    for b in dep_bullets:
+        p_b = tf_dep.add_paragraph()
+        p_b.text = "• " + b
+        p_b.font.size = Pt(8.8)
+        p_b.font.color.rgb = TEXT_LIGHT
+        p_b.space_before = Pt(2.5)
 
-    p_end = tf_dm.add_paragraph()
+    # Bottom Right Card: 3-Minute Demo Workflow
+    c_demo = add_card(s6, Inches(6.813), Inches(4.08), bot_w, bot_h, bg_color=BG_CARD_ALT, border_color=ACCENT_CYAN)
+    tb_demo = s6.shapes.add_textbox(Inches(6.963), Inches(4.18), bot_w - Inches(0.3), bot_h - Inches(0.2))
+    tf_demo = tb_demo.text_frame
+    tf_demo.word_wrap = True
+
+    p = tf_demo.paragraphs[0]
+    p.text = "⏱️ 3-MINUTE HACKATHON JURY DEMONSTRATION SCRIPT"
+    p.font.bold = True
+    p.font.size = Pt(11)
+    p.font.color.rgb = ACCENT_CYAN
+
+    demo_steps = [
+        ("0:00 - 0:45 | Home Cockpit:", "Open app. Showcase Ambient Halo AQI meter (157), switch station to Punjabi Bagh, inspect category badge and 3-Day Forecast strip."),
+        ("0:45 - 1:30 | Weather Engine:", "Tap Weather tab. Demonstrate °C/°F toggle, 4 microclimate cards (Rain %, Wind, Humidity %, UV), 8-day outlook and hourly scrubber."),
+        ("1:30 - 2:15 | Map & Safe Commute:", "Tap Map to inspect 40+ Delhi-NCR stations. Switch to Commute tab: show Cleanest vs Fastest route saving 42% inhaled PM2.5!"),
+        ("2:15 - 3:00 | VayuAI Assistant:", "Tap VayuAI tab. Click 'Is it safe for morning jog?' and show instant grounded response. Open for Jury Q&A!")
+    ]
+    for st_t, st_d in demo_steps:
+        p_b = tf_demo.add_paragraph()
+        p_b.text = st_t + " " + st_d
+        p_b.font.size = Pt(8.4)
+        p_b.font.color.rgb = TEXT_LIGHT
+        p_b.space_before = Pt(2)
+
+    p_end = tf_demo.add_paragraph()
     p_end.text = "Team AtomX thanks the Jury! Live Web: https://vayucoupler.vercel.app"
     p_end.font.bold = True
-    p_end.font.size = Pt(9.5)
-    p_end.font.color.rgb = ACCENT_CYAN
-    p_end.space_before = Pt(6)
+    p_end.font.size = Pt(9.2)
+    p_end.font.color.rgb = ACCENT_GREEN
+    p_end.space_before = Pt(4)
 
     add_footer(s6, 6, 6)
 
