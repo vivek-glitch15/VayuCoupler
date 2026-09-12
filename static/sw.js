@@ -1,4 +1,4 @@
-const CACHE_NAME = 'vayucoupler-v34';
+const CACHE_NAME = 'vayucoupler-v35';
 const ASSETS = [
   '/',
   '/?source=pwa',

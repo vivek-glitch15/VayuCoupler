@@ -1965,19 +1965,32 @@
       color: #9a3412 !important;
       font-weight: 800 !important;
     }
-    html.light-theme #panel-commute .text-amber-400.border-t,
-    html.light-theme #panel-commute .text-amber-400 {
+    html.light-theme #panel-commute .commute-timing-badge {
       background-color: #fffbeb !important;
       border: 1.5px solid #fde68a !important;
       border-radius: 8px !important;
       padding: 6px 10px !important;
-      margin-top: 10px !important;
       color: #92400e !important;
       font-weight: 700 !important;
-      display: block !important;
     }
 
     /* Route A, B, C Cards in Light Theme (Image 2) */
+    html.light-theme #commute-card-0,
+    html.light-theme #commute-card-1,
+    html.light-theme #commute-card-2 {
+      background-color: #ffffff !important;
+      box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06) !important;
+    }
+    html.light-theme #commute-card-0 {
+      border: 2px solid #10b981 !important;
+    }
+    html.light-theme #commute-card-1 {
+      border: 1.5px solid #cbd5e1 !important;
+    }
+    html.light-theme #commute-card-2 {
+      border: 1.5px solid #fca5a5 !important;
+    }
+
     html.light-theme #route-card-0-aqi {
       color: #059669 !important;
     }
@@ -1988,6 +2001,75 @@
       color: #065f46 !important;
       font-weight: 600 !important;
     }
+
+    html.light-theme #route-card-1-aqi {
+      color: #d97706 !important;
+    }
+    html.light-theme #route-card-1-status {
+      color: #b45309 !important;
+    }
+    html.light-theme #route-card-1-sub {
+      color: #475569 !important;
+    }
+
+    html.light-theme #route-card-2-aqi {
+      color: #dc2626 !important;
+    }
+    html.light-theme #route-card-2-status {
+      color: #b91c1c !important;
+    }
+    html.light-theme #route-card-2-sub {
+      color: #64748b !important;
+    }
+
+    /* HIGH EXPOSURE Badge High Contrast (Dark & Light) */
+    #route-card-2-exposure-badge,
+    #commute-card-2 [class*="bg-rose-950"] {
+      background-color: #881337 !important;
+      color: #fecdd3 !important;
+      border: 1.5px solid #e11d48 !important;
+      font-weight: 800 !important;
+      letter-spacing: 0.04em !important;
+    }
+    html.light-theme #route-card-2-exposure-badge,
+    html.light-theme #commute-card-2 [class*="bg-rose-950"] {
+      background-color: #fee2e2 !important;
+      color: #b91c1c !important;
+      border: 1.5px solid #fca5a5 !important;
+      font-weight: 800 !important;
+    }
+
+    /* Google Maps Button styling on route cards in light theme */
+    html.light-theme #commute-card-0 button[onclick*="openInGoogleMaps"] {
+      background-color: #ecfdf5 !important;
+      border: 1.5px solid #a7f3d0 !important;
+      color: #065f46 !important;
+      font-weight: 700 !important;
+    }
+    html.light-theme #commute-card-0 button[onclick*="openInGoogleMaps"]:hover {
+      background-color: #d1fae5 !important;
+    }
+    html.light-theme #commute-card-1 button[onclick*="openInGoogleMaps"] {
+      background-color: #fffbeb !important;
+      border: 1.5px solid #fde68a !important;
+      color: #b45309 !important;
+      font-weight: 700 !important;
+    }
+    html.light-theme #commute-card-1 button[onclick*="openInGoogleMaps"]:hover {
+      background-color: #fef3c7 !important;
+      border-color: #f59e0b !important;
+    }
+    html.light-theme #commute-card-2 button[onclick*="openInGoogleMaps"] {
+      background-color: #fff1f2 !important;
+      border: 1.5px solid #fecdd3 !important;
+      color: #be123c !important;
+      font-weight: 700 !important;
+    }
+    html.light-theme #commute-card-2 button[onclick*="openInGoogleMaps"]:hover {
+      background-color: #ffe4e6 !important;
+      border-color: #f43f5e !important;
+    }
+
     html.light-theme #panel-commute .bg-earth-900\/90 {
       background: #f8fafc !important;
       border-color: #cbd5e1 !important;
@@ -3539,6 +3621,161 @@
       color: #0f172a !important;
     }
 
+    /* Hero Atmospheric Ambient Halo Animations (Image 3) */
+    .vayu-hero-halo-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      margin: 4px 0;
+    }
+    .vayu-hero-halo-ring {
+      position: absolute;
+      border-radius: 9999px;
+      pointer-events: none;
+      transition: all 0.8s ease;
+      will-change: transform, opacity;
+    }
+    .vayu-hero-halo-1 {
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba(143, 255, 176, 0.18) 0%, rgba(143, 255, 176, 0.05) 55%, transparent 75%);
+      animation: vayuHaloBreathe 4s ease-in-out infinite;
+      filter: blur(14px);
+    }
+    .vayu-hero-halo-2 {
+      width: 280px;
+      height: 280px;
+      border: 1.5px dashed rgba(143, 255, 176, 0.25);
+      animation: vayuHaloRotate 20s linear infinite;
+      opacity: 0.55;
+    }
+    .vayu-hero-halo-pulse {
+      width: 170px;
+      height: 170px;
+      border: 1px solid rgba(143, 255, 176, 0.35);
+      animation: vayuHaloPulse 3s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+    }
+
+    @keyframes vayuHaloBreathe {
+      0%, 100% { transform: scale(0.92); opacity: 0.45; }
+      50% { transform: scale(1.15); opacity: 0.85; }
+    }
+    @keyframes vayuHaloRotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    @keyframes vayuHaloPulse {
+      0% { transform: scale(0.85); opacity: 0.8; }
+      100% { transform: scale(1.35); opacity: 0; }
+    }
+
+    /* Light Theme Hero Halo Adaptation */
+    html.light-theme .vayu-hero-halo-1 {
+      background: radial-gradient(circle, rgba(2, 132, 199, 0.16) 0%, rgba(16, 185, 129, 0.08) 55%, transparent 75%) !important;
+      filter: blur(18px) !important;
+    }
+    html.light-theme .vayu-hero-halo-2 {
+      border-color: rgba(2, 132, 199, 0.3) !important;
+      opacity: 0.7 !important;
+    }
+    html.light-theme .vayu-hero-halo-pulse {
+      border-color: rgba(16, 185, 129, 0.35) !important;
+    }
+
+    /* Commute Interactive Clock Popover Light Theme (Image 5) */
+    html.light-theme #commute-clock-popover {
+      background-color: #ffffff !important;
+      border-color: #cbd5e1 !important;
+      color: #0f172a !important;
+      box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.25) !important;
+    }
+    html.light-theme #commute-clock-popover .text-white {
+      color: #0f172a !important;
+    }
+    html.light-theme #commute-clock-popover .border-b,
+    html.light-theme #commute-clock-popover .border-t {
+      border-color: #e2e8f0 !important;
+    }
+    html.light-theme #commute-clock-popover .bg-earth-900\/90 {
+      background-color: #f8fafc !important;
+      border-color: #cbd5e1 !important;
+    }
+    html.light-theme #commute-clock-popover .bg-earth-950 {
+      background-color: #f1f5f9 !important;
+      border-color: #cbd5e1 !important;
+    }
+    html.light-theme #commute-clock-popover #clock-disp-min {
+      background-color: #ffffff !important;
+      border-color: #cbd5e1 !important;
+      color: #0f172a !important;
+    }
+    html.light-theme #commute-clock-popover #clock-toggle-am {
+      color: #475569 !important;
+    }
+    html.light-theme #commute-clock-popover #analog-clock-dial {
+      background: radial-gradient(circle, #ffffff 0%, #f1f5f9 100%) !important;
+      border-color: #cbd5e1 !important;
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+    }
+    html.light-theme #analog-clock-numbers button {
+      color: #334155 !important;
+    }
+    html.light-theme #analog-clock-numbers button:hover {
+      background-color: #e2e8f0 !important;
+      color: #0f172a !important;
+    }
+    html.light-theme #analog-clock-numbers button.text-cyan-200 {
+      color: #0284c7 !important;
+      font-weight: 800 !important;
+    }
+
+    /* Commute Autocomplete Suggestions Dropdowns */
+    .commute-suggest-item {
+      padding: 8px 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background 0.15s ease;
+      font-size: 11.5px;
+    }
+    .commute-suggest-item:hover {
+      background: rgba(127, 212, 255, 0.15);
+    }
+    html.light-theme .commute-suggest-item:hover {
+      background: #f1f5f9 !important;
+    }
+    html.light-theme #commute-origin-suggestions,
+    html.light-theme #commute-dest-suggestions {
+      background-color: #ffffff !important;
+      border-color: #cbd5e1 !important;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.15) !important;
+      color: #0f172a !important;
+    }
+
+    /* Quick Inquiry Long-Press Floating Preview */
+    #vayuai-chip-hold-preview {
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    html.light-theme #vayuai-chip-hold-preview {
+      background-color: #ffffff !important;
+      border-color: #0284c7 !important;
+      color: #0f172a !important;
+      box-shadow: 0 10px 25px rgba(2, 132, 199, 0.18) !important;
+    }
+    html.light-theme #vayuai-quick-chips button {
+      background-color: #ffffff !important;
+      border-color: #cbd5e1 !important;
+      color: #0f172a !important;
+    }
+    html.light-theme #vayuai-quick-chips button:hover {
+      background-color: #f1f5f9 !important;
+      border-color: #0284c7 !important;
+      color: #0284c7 !important;
+    }
+
   </style>
 </head>
 <body class="min-h-screen text-[#f2f5f3] flex flex-col antialiased selection:bg-[#10201a] selection:text-[#6fe2a3] max-w-full w-full">
@@ -3871,7 +4108,7 @@
         <div>
           <h3 class="text-base sm:text-lg font-bold text-white font-serif-display flex items-center gap-2">
             <span>📍 Delhi-NCR Monitoring Stations</span>
-            <span class="text-[10px] font-mono-tag px-2 py-0.5 rounded-full bg-[#10201a] text-[#6fe2a3] border border-[#1f3d30]">58 LOCATIONS</span>
+            <span class="text-[10px] font-mono-tag px-2 py-0.5 rounded-full bg-[#10201a] text-[#6fe2a3] border border-[#1f3d30]">87 LOCATIONS</span>
           </h3>
           <p class="text-xs text-[#8b9390] mt-0.5 font-sans-ui">Select any Delhi locality or NCR satellite hub for real-time live AQI</p>
         </div>
@@ -3897,7 +4134,7 @@
 
       <!-- Zone Filter Pills -->
       <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 text-[11px] font-mono" id="zone-filter-bar">
-        <button onclick="filterStationsByZone('ALL')" data-zone="ALL" class="zone-tab-btn active px-2.5 py-1 rounded-lg bg-[#191C19] text-[#8FFFB0] border border-[#8FFFB0]/30 shrink-0 font-bold">ALL (58)</button>
+        <button onclick="filterStationsByZone('ALL')" data-zone="ALL" class="zone-tab-btn active px-2.5 py-1 rounded-lg bg-[#191C19] text-[#8FFFB0] border border-[#8FFFB0]/30 shrink-0 font-bold">ALL (87)</button>
         <button onclick="filterStationsByZone('West Delhi')" data-zone="West Delhi" class="zone-tab-btn px-2.5 py-1 rounded-lg bg-[#131513] text-[#8C948B] border border-[#262A26] hover:text-[#EEF0EC] shrink-0">West Delhi</button>
         <button onclick="filterStationsByZone('South Delhi')" data-zone="South Delhi" class="zone-tab-btn px-2.5 py-1 rounded-lg bg-[#131513] text-[#8C948B] border border-[#262A26] hover:text-[#EEF0EC] shrink-0">South Delhi</button>
         <button onclick="filterStationsByZone('Central Delhi')" data-zone="Central Delhi" class="zone-tab-btn px-2.5 py-1 rounded-lg bg-[#0f110f] text-[#8b9390] border border-[#1c1f1c] hover:text-white shrink-0">Central Delhi</button>
@@ -4115,14 +4352,19 @@
           <span id="home-station-text">Punjabi Bagh, Delhi</span>
         </button>
 
-        <!-- Huge AQI Number -->
-        <div class="text-center">
-          <div id="home-aqi-val"
-            class="text-[100px] sm:text-[120px] font-semibold leading-none tracking-tighter"
-            style="color:#FF9D7F;">
-            --
+        <!-- Huge AQI Number with Atmospheric Ambient Halo -->
+        <div class="text-center relative flex flex-col items-center justify-center">
+          <div class="vayu-hero-halo-container">
+            <div id="home-hero-halo-1" class="vayu-hero-halo-ring vayu-hero-halo-1"></div>
+            <div id="home-hero-halo-2" class="vayu-hero-halo-ring vayu-hero-halo-2"></div>
+            <div id="home-hero-halo-pulse" class="vayu-hero-halo-ring vayu-hero-halo-pulse"></div>
+            <div id="home-aqi-val"
+              class="relative z-10 text-[100px] sm:text-[120px] font-semibold leading-none tracking-tighter"
+              style="color:#FF9D7F;">
+              --
+            </div>
           </div>
-          <div class="text-sm font-medium text-[#8C948B] mt-1">Air Quality Index</div>
+          <div class="text-sm font-medium text-[#8C948B] mt-1 relative z-10">Air Quality Index</div>
         </div>
 
         <!-- Category pill -->
@@ -4857,7 +5099,7 @@
 
     <!-- === TAB: VAYU AI COPILOT === -->
     <!-- === TAB: VAYU AI ASSISTANT HUB === -->
-    <div id="panel-copilot" class="tab-panel hidden flex flex-col gap-4 w-full max-w-full">
+    <div id="panel-copilot" class="tab-panel hidden flex flex-col gap-4 w-full max-w-full pb-28">
       <div class="surface-panel p-4 sm:p-6 rounded-[14px] border border-[#262A26] flex flex-col relative">
         
         <!-- HUB HOME VIEW (Default state) -->
@@ -4910,25 +5152,6 @@
               <!-- Rendered dynamically via VayuAIAssistant -->
             </div>
           </div>
-
-          <!-- OFFLINE AI VERIFIED QUESTIONS & CAPABILITIES (Only shown when Offline AI is active) -->
-          <div id="vayuai-offline-showcase-container" class="w-full mt-6 pt-4 border-t border-[#262A26] text-left hidden" style="display: none;">
-            <div class="flex items-center justify-between mb-2 px-1">
-              <div class="flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-[#FFA940] animate-pulse"></span>
-                <span class="text-xs font-bold text-[#FFA940] font-mono" id="vayuai-offline-section-title">⚡ Offline AI Verified Queries (0ms Instant Answers)</span>
-              </div>
-              <span class="text-[10px] font-mono text-[#8C948B]" id="vayuai-offline-section-sub">100% Offline Model</span>
-            </div>
-            
-            <p class="text-[11px] text-[#8C948B] mb-3 px-1 font-sans" id="vayuai-offline-desc">
-              Net band hone par bhi VayuCoupler ka local coupled physics model in sabhi sawaalon ke direct accurate answers deta hai:
-            </p>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5" id="vayuai-offline-showcase-grid">
-              <!-- Populated dynamically via VayuAIAssistant.renderOfflineShowcase() -->
-            </div>
-          </div>
         </div>
 
         <!-- CHAT THREAD VIEW (Transitions after query) -->
@@ -4969,16 +5192,28 @@
         <div class="sticky bottom-0 bg-[#131513]/95 backdrop-blur-md mt-2 pt-2 pb-1 border-t border-[#262A26] z-10 flex flex-col gap-2">
           
           <!-- Quick Fixed Question Chips (Works in Both Online & Offline AI Mode) -->
-          <div class="flex flex-col gap-1 px-1">
+          <div class="flex flex-col gap-1 px-1 relative">
             <div class="flex items-center justify-between text-[10px] font-mono">
               <span class="text-[#8C948B] flex items-center gap-1">
                 <span class="text-[#FFA940] font-bold">⚡ Quick Inquiries:</span>
-                <span class="opacity-75">(Tap for instant answer)</span>
+                <span class="opacity-75">(Tap to ask · Hold for full preview)</span>
               </span>
               <div class="inline-flex items-center gap-1">
                 <button type="button" onclick="VayuSettings.setLanguage('hinglish')" id="vayuai-chip-lang-hi" class="px-2 py-0.5 rounded text-[10px] font-mono font-bold transition bg-[#7FD4FF]/20 text-[#7FD4FF] border border-[#7FD4FF]/40">🇮🇳 Hinglish</button>
                 <button type="button" onclick="VayuSettings.setLanguage('en')" id="vayuai-chip-lang-en" class="px-2 py-0.5 rounded text-[10px] font-mono font-medium transition text-[#8C948B] hover:text-[#EEF0EC]">🇬🇧 English</button>
               </div>
+            </div>
+
+            <!-- Instant Fast Tap-and-Hold / Hover Floating Question Preview -->
+            <div id="vayuai-chip-hold-preview" class="hidden absolute -top-16 left-1 right-1 z-30 p-2.5 rounded-xl border border-[#7FD4FF]/60 bg-[#131513]/98 backdrop-blur-md shadow-2xl flex items-center justify-between pointer-events-auto transition-all">
+              <div class="flex flex-col gap-0.5 min-w-0 pr-2">
+                <span id="vayuai-chip-preview-cat" class="text-[9px] font-mono font-bold uppercase tracking-wider text-[#7FD4FF]">CATEGORY</span>
+                <p id="vayuai-chip-preview-text" class="text-xs font-bold text-[#EEF0EC] leading-snug line-clamp-2">Question preview...</p>
+              </div>
+              <button type="button" id="vayuai-chip-preview-ask-btn" class="shrink-0 px-3 py-1.5 rounded-lg bg-[#7FD4FF] hover:bg-[#68c3f0] text-[#0A0B0A] text-[10.5px] font-bold font-mono transition active:scale-95 flex items-center gap-1">
+                <span>Ask</span>
+                <span>→</span>
+              </button>
             </div>
             
             <div class="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar text-[11px]" id="vayuai-quick-chips">
@@ -5727,162 +5962,85 @@
 
         <!-- Commute Input Grid -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-3.5 my-5">
-          <div>
-            <label class="block text-[11px] font-semibold text-earth-300 mb-1.5">Origin Location</label>
-            <select id="commute-origin" onchange="calcCommuteRoute()" class="w-full px-3 py-2.5 rounded-xl bg-earth-950 border border-earth-700 text-xs text-white focus:outline-none focus:border-cyan-400 font-medium">
-              <optgroup label="🏛️ Central & New Delhi">
-                <option value="connaught_place">Connaught Place (Central)</option>
-                <option value="karol_bagh">Karol Bagh / Rajendra Place</option>
-                <option value="chandni_chowk">Chandni Chowk / Old Delhi</option>
-                <option value="ito">ITO / Pragati Maidan</option>
-                <option value="india_gate">India Gate / Central Vista</option>
-                <option value="paharganj">Paharganj / New Delhi Station</option>
-                <option value="daryaganj">Daryaganj / Red Fort</option>
-                <option value="chanakyapuri">Chanakyapuri (Diplomatic Enclave)</option>
-                <option value="khan_market">Khan Market / Lodhi Estate</option>
-              </optgroup>
-              <optgroup label="🌲 South & South-East Delhi">
-                <option value="aiims">AIIMS & Safdarjung Hospital</option>
-                <option value="hauz_khas">Hauz Khas / IIT Delhi</option>
-                <option value="saket">Saket (District Centre)</option>
-                <option value="nehru_place">Nehru Place (Commercial Hub)</option>
-                <option value="lajpat_nagar">Lajpat Nagar / Central Market</option>
-                <option value="greater_kailash">Greater Kailash (GK 1 & 2)</option>
-                <option value="south_extension">South Extension (Part 1 & 2)</option>
-                <option value="malviya_nagar">Malviya Nagar</option>
-                <option value="green_park">Green Park / Safdarjung Enclave</option>
-                <option value="okhla">Okhla Industrial Area (Phases 1-3)</option>
-                <option value="kalkaji">Kalkaji / Lotus Temple</option>
-                <option value="sarita_vihar">Sarita Vihar & Jasola</option>
-                <option value="badarpur">Badarpur Border</option>
-                <option value="ashram">Ashram Chowk</option>
-              </optgroup>
-              <optgroup label="✈️ West & South-West Delhi">
-                <option value="dwarka" selected>Dwarka (Sectors 6, 10, 14, 21)</option>
-                <option value="igi_airport">IGI Airport (Terminals 1, 2, 3)</option>
-                <option value="janakpuri">Janakpuri (District Centre)</option>
-                <option value="rajouri_garden">Rajouri Garden</option>
-                <option value="punjabi_bagh">Punjabi Bagh & Ring Road</option>
-                <option value="tilak_nagar">Tilak Nagar / Subhash Nagar</option>
-                <option value="paschim_vihar">Paschim Vihar / Peera Garhi</option>
-                <option value="vikaspuri">Vikaspuri / Keshopur</option>
-                <option value="uttam_nagar">Uttam Nagar</option>
-                <option value="vasant_kunj">Vasant Kunj / Vasant Vihar</option>
-                <option value="delhi_cantt">Delhi Cantt / Dhaula Kuan</option>
-                <option value="palam">Palam / Mahipalpur</option>
-                <option value="najafgarh">Najafgarh Rural Hub</option>
-              </optgroup>
-              <optgroup label="🏭 North & North-West Delhi">
-                <option value="rohini">Rohini (Sectors 3, 8, 16, 24)</option>
-                <option value="pitampura">Pitampura / NSP</option>
-                <option value="kashmere_gate">Kashmere Gate (ISBT)</option>
-                <option value="civil_lines">Civil Lines / DU North Campus</option>
-                <option value="gtb_nagar">GTB Nagar / Model Town</option>
-                <option value="shalimar_bagh">Shalimar Bagh / Azadpur</option>
-                <option value="ashok_vihar">Ashok Vihar / Keshav Puram</option>
-                <option value="jahangirpuri">Jahangirpuri Industrial</option>
-                <option value="burari">Burari / Wazirabad</option>
-                <option value="narela">Narela Industrial Zone</option>
-                <option value="bawana">Bawana Industrial Area</option>
-              </optgroup>
-              <optgroup label="🌉 East & North-East Delhi">
-                <option value="anand_vihar">Anand Vihar (ISBT & Railway)</option>
-                <option value="laxmi_nagar">Laxmi Nagar / Shakarpur</option>
-                <option value="mayur_vihar">Mayur Vihar (Phases 1, 2, 3)</option>
-                <option value="preet_vihar">Preet Vihar / Nirman Vihar</option>
-                <option value="patparganj">Patparganj Industrial Area</option>
-                <option value="vivek_vihar">Vivek Vihar / Karkardooma</option>
-                <option value="shahdara">Shahdara / Dilshad Garden</option>
-                <option value="seelampur">Seelampur / Yamuna Vihar</option>
-                <option value="gandhi_nagar">Gandhi Nagar (Textile Hub)</option>
-              </optgroup>
-              <optgroup label="🚗 Connected NCR Corridors">
-                <option value="gurugram_cyber">Gurugram (DLF Cyber City)</option>
-                <option value="gurugram_golf">Gurugram (Golf Course Road)</option>
-                <option value="noida_sec18">Noida (Sector 18 / Atta Market)</option>
-                <option value="noida_sec62">Noida (Sector 62 / Electronic City)</option>
-                <option value="ghaziabad_indirapuram">Ghaziabad (Indirapuram / Vaishali)</option>
-                <option value="faridabad_sec15">Faridabad (Sector 15 / Bata Chowk)</option>
-              </optgroup>
+          <!-- Origin Location with Search & Instant Current GPS Button -->
+          <div class="relative">
+            <div class="flex items-center justify-between mb-1.5">
+              <label class="block text-[11px] font-semibold text-earth-300">Origin Location</label>
+              <button type="button" onclick="useCurrentLocationForOrigin()" class="text-[10.5px] text-[#8FFFB0] hover:text-[#b4ffd0] font-mono flex items-center gap-1 transition active:scale-95 bg-[#8FFFB0]/10 border border-[#8FFFB0]/30 px-2 py-0.5 rounded-md font-bold cursor-pointer" title="Auto-detect current GPS location accurately">
+                <span class="w-1.5 h-1.5 rounded-full bg-[#8FFFB0] animate-pulse"></span>
+                <span>🎯 My GPS</span>
+              </button>
+            </div>
+            <div class="relative">
+              <input type="text" id="commute-origin-search" value="Dwarka (Sectors 6, 10, 14, 21)" placeholder="Search origin or tap My GPS..." oninput="onCommuteSearchInput('origin', this.value)" onfocus="onCommuteSearchFocus('origin')" class="w-full pl-8 pr-3 py-2.5 rounded-xl bg-earth-950 border border-earth-700 text-xs text-white focus:outline-none focus:border-cyan-400 font-medium transition">
+              <span class="absolute left-2.5 top-2.5 text-xs text-earth-400">📍</span>
+            </div>
+            <!-- Autocomplete suggestions dropdown -->
+            <div id="commute-origin-suggestions" class="hidden absolute top-full left-0 right-0 mt-1 max-h-56 overflow-y-auto rounded-xl bg-[#0f110f] border border-[#262A26] shadow-2xl z-40 p-1 flex flex-col gap-0.5 text-xs font-sans"></div>
+            <!-- Hidden Select for Script Backward Compatibility -->
+            <select id="commute-origin" onchange="calcCommuteRoute()" class="hidden">
+              <option value="dwarka" selected>Dwarka (Sectors 6, 10, 14, 21)</option>
+              <option value="connaught_place">Connaught Place (Central)</option>
+              <option value="karol_bagh">Karol Bagh / Rajendra Place</option>
+              <option value="chandni_chowk">Chandni Chowk / Old Delhi</option>
+              <option value="ito">ITO / Pragati Maidan</option>
+              <option value="india_gate">India Gate / Central Vista</option>
+              <option value="aiims">AIIMS & Safdarjung Hospital</option>
+              <option value="hauz_khas">Hauz Khas / IIT Delhi</option>
+              <option value="saket">Saket (District Centre)</option>
+              <option value="nehru_place">Nehru Place (Commercial Hub)</option>
+              <option value="lajpat_nagar">Lajpat Nagar / Central Market</option>
+              <option value="okhla">Okhla Industrial Area (Phases 1-3)</option>
+              <option value="igi_airport">IGI Airport (Terminals 1, 2, 3)</option>
+              <option value="janakpuri">Janakpuri (District Centre)</option>
+              <option value="punjabi_bagh">Punjabi Bagh & Ring Road</option>
+              <option value="rohini">Rohini (Sectors 3, 8, 16, 24)</option>
+              <option value="pitampura">Pitampura / NSP</option>
+              <option value="anand_vihar">Anand Vihar (ISBT & Railway)</option>
+              <option value="laxmi_nagar">Laxmi Nagar / Shakarpur</option>
+              <option value="gurugram_cyber">Gurugram (DLF Cyber City)</option>
+              <option value="noida_sec18">Noida (Sector 18 / Atta Market)</option>
+              <option value="noida_sec62">Noida (Sector 62 / Electronic City)</option>
+              <option value="ghaziabad_indirapuram">Ghaziabad (Indirapuram / Vaishali)</option>
+              <option value="faridabad_sec15">Faridabad (Sector 15 / Bata Chowk)</option>
             </select>
           </div>
-          <div>
+
+          <!-- Destination Location with Search -->
+          <div class="relative">
             <label class="block text-[11px] font-semibold text-earth-300 mb-1.5">Destination</label>
-            <select id="commute-dest" onchange="calcCommuteRoute()" class="w-full px-3 py-2.5 rounded-xl bg-earth-950 border border-earth-700 text-xs text-white focus:outline-none focus:border-cyan-400 font-medium">
-              <optgroup label="🏛️ Central & New Delhi">
-                <option value="connaught_place" selected>Connaught Place (Central)</option>
-                <option value="karol_bagh">Karol Bagh / Rajendra Place</option>
-                <option value="chandni_chowk">Chandni Chowk / Old Delhi</option>
-                <option value="ito">ITO / Pragati Maidan</option>
-                <option value="india_gate">India Gate / Central Vista</option>
-                <option value="paharganj">Paharganj / New Delhi Station</option>
-                <option value="daryaganj">Daryaganj / Red Fort</option>
-                <option value="chanakyapuri">Chanakyapuri (Diplomatic Enclave)</option>
-                <option value="khan_market">Khan Market / Lodhi Estate</option>
-              </optgroup>
-              <optgroup label="🌲 South & South-East Delhi">
-                <option value="aiims">AIIMS & Safdarjung Hospital</option>
-                <option value="hauz_khas">Hauz Khas / IIT Delhi</option>
-                <option value="saket">Saket (District Centre)</option>
-                <option value="nehru_place">Nehru Place (Commercial Hub)</option>
-                <option value="lajpat_nagar">Lajpat Nagar / Central Market</option>
-                <option value="greater_kailash">Greater Kailash (GK 1 & 2)</option>
-                <option value="south_extension">South Extension (Part 1 & 2)</option>
-                <option value="malviya_nagar">Malviya Nagar</option>
-                <option value="green_park">Green Park / Safdarjung Enclave</option>
-                <option value="okhla">Okhla Industrial Area (Phases 1-3)</option>
-                <option value="kalkaji">Kalkaji / Lotus Temple</option>
-                <option value="sarita_vihar">Sarita Vihar & Jasola</option>
-                <option value="badarpur">Badarpur Border</option>
-                <option value="ashram">Ashram Chowk</option>
-              </optgroup>
-              <optgroup label="✈️ West & South-West Delhi">
-                <option value="dwarka">Dwarka (Sectors 6, 10, 14, 21)</option>
-                <option value="igi_airport">IGI Airport (Terminals 1, 2, 3)</option>
-                <option value="janakpuri">Janakpuri (District Centre)</option>
-                <option value="rajouri_garden">Rajouri Garden</option>
-                <option value="punjabi_bagh">Punjabi Bagh & Ring Road</option>
-                <option value="tilak_nagar">Tilak Nagar / Subhash Nagar</option>
-                <option value="paschim_vihar">Paschim Vihar / Peera Garhi</option>
-                <option value="vikaspuri">Vikaspuri / Keshopur</option>
-                <option value="uttam_nagar">Uttam Nagar</option>
-                <option value="vasant_kunj">Vasant Kunj / Vasant Vihar</option>
-                <option value="delhi_cantt">Delhi Cantt / Dhaula Kuan</option>
-                <option value="palam">Palam / Mahipalpur</option>
-                <option value="najafgarh">Najafgarh Rural Hub</option>
-              </optgroup>
-              <optgroup label="🏭 North & North-West Delhi">
-                <option value="rohini">Rohini (Sectors 3, 8, 16, 24)</option>
-                <option value="pitampura">Pitampura / NSP</option>
-                <option value="kashmere_gate">Kashmere Gate (ISBT)</option>
-                <option value="civil_lines">Civil Lines / DU North Campus</option>
-                <option value="gtb_nagar">GTB Nagar / Model Town</option>
-                <option value="shalimar_bagh">Shalimar Bagh / Azadpur</option>
-                <option value="ashok_vihar">Ashok Vihar / Keshav Puram</option>
-                <option value="jahangirpuri">Jahangirpuri Industrial</option>
-                <option value="burari">Burari / Wazirabad</option>
-                <option value="narela">Narela Industrial Zone</option>
-                <option value="bawana">Bawana Industrial Area</option>
-              </optgroup>
-              <optgroup label="🌉 East & North-East Delhi">
-                <option value="anand_vihar">Anand Vihar (ISBT & Railway)</option>
-                <option value="laxmi_nagar">Laxmi Nagar / Shakarpur</option>
-                <option value="mayur_vihar">Mayur Vihar (Phases 1, 2, 3)</option>
-                <option value="preet_vihar">Preet Vihar / Nirman Vihar</option>
-                <option value="patparganj">Patparganj Industrial Area</option>
-                <option value="vivek_vihar">Vivek Vihar / Karkardooma</option>
-                <option value="shahdara">Shahdara / Dilshad Garden</option>
-                <option value="seelampur">Seelampur / Yamuna Vihar</option>
-                <option value="gandhi_nagar">Gandhi Nagar (Textile Hub)</option>
-              </optgroup>
-              <optgroup label="🚗 Connected NCR Corridors">
-                <option value="gurugram_cyber">Gurugram (DLF Cyber City)</option>
-                <option value="gurugram_golf">Gurugram (Golf Course Road)</option>
-                <option value="noida_sec18">Noida (Sector 18 / Atta Market)</option>
-                <option value="noida_sec62">Noida (Sector 62 / Electronic City)</option>
-                <option value="ghaziabad_indirapuram">Ghaziabad (Indirapuram / Vaishali)</option>
-                <option value="faridabad_sec15">Faridabad (Sector 15 / Bata Chowk)</option>
-              </optgroup>
+            <div class="relative">
+              <input type="text" id="commute-dest-search" value="Connaught Place (Central)" placeholder="Search destination (CP, Cyber City, Noida)..." oninput="onCommuteSearchInput('dest', this.value)" onfocus="onCommuteSearchFocus('dest')" class="w-full pl-8 pr-3 py-2.5 rounded-xl bg-earth-950 border border-earth-700 text-xs text-white focus:outline-none focus:border-cyan-400 font-medium transition">
+              <span class="absolute left-2.5 top-2.5 text-xs text-earth-400">🏁</span>
+            </div>
+            <!-- Autocomplete suggestions dropdown -->
+            <div id="commute-dest-suggestions" class="hidden absolute top-full left-0 right-0 mt-1 max-h-56 overflow-y-auto rounded-xl bg-[#0f110f] border border-[#262A26] shadow-2xl z-40 p-1 flex flex-col gap-0.5 text-xs font-sans"></div>
+            <!-- Hidden Select for Script Backward Compatibility -->
+            <select id="commute-dest" onchange="calcCommuteRoute()" class="hidden">
+              <option value="connaught_place" selected>Connaught Place (Central)</option>
+              <option value="dwarka">Dwarka (Sectors 6, 10, 14, 21)</option>
+              <option value="karol_bagh">Karol Bagh / Rajendra Place</option>
+              <option value="chandni_chowk">Chandni Chowk / Old Delhi</option>
+              <option value="ito">ITO / Pragati Maidan</option>
+              <option value="india_gate">India Gate / Central Vista</option>
+              <option value="aiims">AIIMS & Safdarjung Hospital</option>
+              <option value="hauz_khas">Hauz Khas / IIT Delhi</option>
+              <option value="saket">Saket (District Centre)</option>
+              <option value="nehru_place">Nehru Place (Commercial Hub)</option>
+              <option value="lajpat_nagar">Lajpat Nagar / Central Market</option>
+              <option value="okhla">Okhla Industrial Area (Phases 1-3)</option>
+              <option value="igi_airport">IGI Airport (Terminals 1, 2, 3)</option>
+              <option value="janakpuri">Janakpuri (District Centre)</option>
+              <option value="punjabi_bagh">Punjabi Bagh & Ring Road</option>
+              <option value="rohini">Rohini (Sectors 3, 8, 16, 24)</option>
+              <option value="pitampura">Pitampura / NSP</option>
+              <option value="anand_vihar">Anand Vihar (ISBT & Railway)</option>
+              <option value="laxmi_nagar">Laxmi Nagar / Shakarpur</option>
+              <option value="gurugram_cyber">Gurugram (DLF Cyber City)</option>
+              <option value="noida_sec18">Noida (Sector 18 / Atta Market)</option>
+              <option value="noida_sec62">Noida (Sector 62 / Electronic City)</option>
+              <option value="ghaziabad_indirapuram">Ghaziabad (Indirapuram / Vaishali)</option>
+              <option value="faridabad_sec15">Faridabad (Sector 15 / Bata Chowk)</option>
             </select>
           </div>
           <div>
@@ -6098,7 +6256,7 @@
                 <div class="text-2xl font-bold text-emerald-300" id="route-card-0-aqi">AQI 142</div>
                 <div class="text-xs text-emerald-400 font-semibold" id="route-card-0-status">(Cleanest Corridor)</div>
               </div>
-              <div class="text-xs text-emerald-200/90 font-sans mt-0.5" id="route-card-0-sub">
+              <div class="text-xs text-emerald-200/90 font-sans mt-0.5 min-h-[32px] flex items-center" id="route-card-0-sub">
                 Green Ridge Buffer &amp; Metro Viaduct Corridor
               </div>
 
@@ -6153,7 +6311,7 @@
                 <div class="text-2xl font-bold text-amber-300" id="route-card-1-aqi">AQI 270</div>
                 <div class="text-xs text-amber-400 font-semibold" id="route-card-1-status">(Direct Arterial)</div>
               </div>
-              <div class="text-xs text-earth-300 font-sans mt-0.5" id="route-card-1-sub">
+              <div class="text-xs text-earth-300 font-sans mt-0.5 min-h-[32px] flex items-center" id="route-card-1-sub">
                 Main Ring Road Arterial Highway
               </div>
 
@@ -6201,13 +6359,13 @@
             <div>
               <div class="flex items-center justify-between mb-1">
                 <span class="text-[10px] text-rose-400 uppercase font-bold tracking-wider">⚠️ Route C: Industrial Bypass</span>
-                <span class="text-[9px] bg-rose-950 text-rose-300 border border-rose-800 font-bold px-2 py-0.5 rounded-full font-sans">HIGH EXPOSURE</span>
+                <span id="route-card-2-exposure-badge" class="text-[9px] font-bold px-2.5 py-0.5 rounded-full font-sans tracking-wide">HIGH EXPOSURE</span>
               </div>
               <div class="flex items-baseline gap-2 mt-1">
                 <div class="text-2xl font-bold text-rose-400" id="route-card-2-aqi">AQI 415</div>
                 <div class="text-xs text-rose-400 font-semibold" id="route-card-2-status">(Severe Smog)</div>
               </div>
-              <div class="text-xs text-earth-300 font-sans mt-0.5" id="route-card-2-sub">
+              <div class="text-xs text-earth-300 font-sans mt-0.5 min-h-[32px] flex items-center" id="route-card-2-sub">
                 Industrial Freight &amp; Commercial Bottlenecks
               </div>
 
@@ -6737,7 +6895,7 @@
     // 1. SHARED FORECAST ENGINE MODULE (ForecastPoint Schema, 72h Diurnal Curve)
     // ==========================================================================
     const VayuForecastEngine = {
-      // 58 Comprehensive Delhi-NCR Monitoring Stations
+      // 87 Comprehensive Delhi-NCR Monitoring Stations
       stations: [
         {
                 "id": "DEL001",
@@ -7608,6 +7766,441 @@
                 "temp": 26.1,
                 "humidity": 55,
                 "windSpeed": 9.2
+        },
+        {
+                "id": "NCR021",
+                "name": "DLF Cyber City",
+                "city": "Gurugram",
+                "zone": "NCR Hubs",
+                "lat": 28.4952,
+                "lon": 77.0895,
+                "baseAQI": 382,
+                "pm25": 242,
+                "pm10": 370,
+                "dominant": "PM2.5",
+                "temp": 25.1,
+                "humidity": 58,
+                "windSpeed": 8.9
+        },
+        {
+                "id": "NCR022",
+                "name": "Golf Course Road",
+                "city": "Gurugram",
+                "zone": "NCR Hubs",
+                "lat": 28.4595,
+                "lon": 77.0988,
+                "baseAQI": 365,
+                "pm25": 230,
+                "pm10": 355,
+                "dominant": "PM2.5",
+                "temp": 25.0,
+                "humidity": 57,
+                "windSpeed": 9.1
+        },
+        {
+                "id": "NCR023",
+                "name": "Sohna Road",
+                "city": "Gurugram",
+                "zone": "NCR Hubs",
+                "lat": 28.4184,
+                "lon": 77.0378,
+                "baseAQI": 378,
+                "pm25": 238,
+                "pm10": 365,
+                "dominant": "PM2.5",
+                "temp": 25.3,
+                "humidity": 56,
+                "windSpeed": 8.8
+        },
+        {
+                "id": "NCR024",
+                "name": "Manesar Industrial Hub",
+                "city": "Gurugram",
+                "zone": "NCR Hubs",
+                "lat": 28.3518,
+                "lon": 76.9388,
+                "baseAQI": 412,
+                "pm25": 268,
+                "pm10": 420,
+                "dominant": "PM10",
+                "temp": 25.6,
+                "humidity": 54,
+                "windSpeed": 8.5
+        },
+        {
+                "id": "NCR025",
+                "name": "Noida Sector 18 (Atta)",
+                "city": "Noida",
+                "zone": "NCR Hubs",
+                "lat": 28.5708,
+                "lon": 77.3260,
+                "baseAQI": 395,
+                "pm25": 250,
+                "pm10": 390,
+                "dominant": "PM2.5",
+                "temp": 24.8,
+                "humidity": 60,
+                "windSpeed": 8.6
+        },
+        {
+                "id": "NCR026",
+                "name": "Pari Chowk",
+                "city": "Greater Noida",
+                "zone": "NCR Hubs",
+                "lat": 28.4682,
+                "lon": 77.5103,
+                "baseAQI": 388,
+                "pm25": 245,
+                "pm10": 380,
+                "dominant": "PM2.5",
+                "temp": 24.5,
+                "humidity": 62,
+                "windSpeed": 8.2
+        },
+        {
+                "id": "NCR027",
+                "name": "Greater Noida West (Ext)",
+                "city": "Greater Noida",
+                "zone": "NCR Hubs",
+                "lat": 28.6015,
+                "lon": 77.4285,
+                "baseAQI": 405,
+                "pm25": 260,
+                "pm10": 410,
+                "dominant": "PM2.5",
+                "temp": 24.7,
+                "humidity": 61,
+                "windSpeed": 8.4
+        },
+        {
+                "id": "NCR028",
+                "name": "Vaishali",
+                "city": "Ghaziabad",
+                "zone": "NCR Hubs",
+                "lat": 28.6468,
+                "lon": 77.3392,
+                "baseAQI": 415,
+                "pm25": 272,
+                "pm10": 415,
+                "dominant": "PM2.5",
+                "temp": 24.6,
+                "humidity": 61,
+                "windSpeed": 8.5
+        },
+        {
+                "id": "NCR029",
+                "name": "Raj Nagar Extension",
+                "city": "Ghaziabad",
+                "zone": "NCR Hubs",
+                "lat": 28.7058,
+                "lon": 77.4281,
+                "baseAQI": 428,
+                "pm25": 285,
+                "pm10": 435,
+                "dominant": "PM10",
+                "temp": 24.4,
+                "humidity": 63,
+                "windSpeed": 8.3
+        },
+        {
+                "id": "NCR030",
+                "name": "Faridabad Sector 15",
+                "city": "Faridabad",
+                "zone": "NCR Hubs",
+                "lat": 28.4089,
+                "lon": 77.3178,
+                "baseAQI": 372,
+                "pm25": 235,
+                "pm10": 360,
+                "dominant": "PM2.5",
+                "temp": 25.2,
+                "humidity": 58,
+                "windSpeed": 9.0
+        },
+        {
+                "id": "NCR031",
+                "name": "Ballabhgarh Industrial",
+                "city": "Faridabad",
+                "zone": "NCR Hubs",
+                "lat": 28.3375,
+                "lon": 77.3235,
+                "baseAQI": 420,
+                "pm25": 275,
+                "pm10": 430,
+                "dominant": "PM10",
+                "temp": 25.5,
+                "humidity": 57,
+                "windSpeed": 8.7
+        },
+        {
+                "id": "NCR032",
+                "name": "Bahadurgarh Hub",
+                "city": "Jhajjar/NCR",
+                "zone": "NCR Hubs",
+                "lat": 28.6924,
+                "lon": 76.9234,
+                "baseAQI": 410,
+                "pm25": 265,
+                "pm10": 415,
+                "dominant": "PM2.5",
+                "temp": 24.3,
+                "humidity": 62,
+                "windSpeed": 8.6
+        },
+        {
+                "id": "NCR033",
+                "name": "Kundli Industrial Area",
+                "city": "Sonipat/NCR",
+                "zone": "NCR Hubs",
+                "lat": 28.8745,
+                "lon": 77.1265,
+                "baseAQI": 430,
+                "pm25": 282,
+                "pm10": 445,
+                "dominant": "PM10",
+                "temp": 23.8,
+                "humidity": 64,
+                "windSpeed": 8.4
+        },
+        {
+                "id": "DEL037",
+                "name": "Rajouri Garden",
+                "city": "Delhi",
+                "zone": "West Delhi",
+                "lat": 28.6492,
+                "lon": 77.1226,
+                "baseAQI": 398,
+                "pm25": 255,
+                "pm10": 385,
+                "dominant": "PM2.5",
+                "temp": 24.5,
+                "humidity": 61,
+                "windSpeed": 8.7
+        },
+        {
+                "id": "DEL038",
+                "name": "Tilak Nagar",
+                "city": "Delhi",
+                "zone": "West Delhi",
+                "lat": 28.6366,
+                "lon": 77.0963,
+                "baseAQI": 395,
+                "pm25": 252,
+                "pm10": 380,
+                "dominant": "PM2.5",
+                "temp": 24.4,
+                "humidity": 61,
+                "windSpeed": 8.8
+        },
+        {
+                "id": "DEL039",
+                "name": "Uttam Nagar",
+                "city": "Delhi",
+                "zone": "West Delhi",
+                "lat": 28.6214,
+                "lon": 77.0543,
+                "baseAQI": 412,
+                "pm25": 266,
+                "pm10": 410,
+                "dominant": "PM2.5",
+                "temp": 24.6,
+                "humidity": 60,
+                "windSpeed": 8.6
+        },
+        {
+                "id": "DEL040",
+                "name": "Vikaspuri",
+                "city": "Delhi",
+                "zone": "West Delhi",
+                "lat": 28.6358,
+                "lon": 77.0734,
+                "baseAQI": 390,
+                "pm25": 248,
+                "pm10": 375,
+                "dominant": "PM2.5",
+                "temp": 24.5,
+                "humidity": 61,
+                "windSpeed": 8.7
+        },
+        {
+                "id": "DEL041",
+                "name": "Kirti Nagar",
+                "city": "Delhi",
+                "zone": "West Delhi",
+                "lat": 28.6558,
+                "lon": 77.1472,
+                "baseAQI": 405,
+                "pm25": 262,
+                "pm10": 400,
+                "dominant": "PM2.5",
+                "temp": 24.7,
+                "humidity": 60,
+                "windSpeed": 8.5
+        },
+        {
+                "id": "DEL042",
+                "name": "Chanakyapuri",
+                "city": "Delhi",
+                "zone": "Central Delhi",
+                "lat": 28.5976,
+                "lon": 77.1852,
+                "baseAQI": 310,
+                "pm25": 195,
+                "pm10": 290,
+                "dominant": "PM2.5",
+                "temp": 24.9,
+                "humidity": 59,
+                "windSpeed": 9.2
+        },
+        {
+                "id": "DEL043",
+                "name": "Sarojini Nagar",
+                "city": "Delhi",
+                "zone": "South Delhi",
+                "lat": 28.5744,
+                "lon": 77.1985,
+                "baseAQI": 345,
+                "pm25": 218,
+                "pm10": 330,
+                "dominant": "PM2.5",
+                "temp": 24.8,
+                "humidity": 59,
+                "windSpeed": 9.0
+        },
+        {
+                "id": "DEL044",
+                "name": "Greater Kailash (GK)",
+                "city": "Delhi",
+                "zone": "South Delhi",
+                "lat": 28.5482,
+                "lon": 77.2344,
+                "baseAQI": 350,
+                "pm25": 222,
+                "pm10": 335,
+                "dominant": "PM2.5",
+                "temp": 25.0,
+                "humidity": 58,
+                "windSpeed": 8.9
+        },
+        {
+                "id": "DEL045",
+                "name": "Kalkaji",
+                "city": "Delhi",
+                "zone": "South Delhi",
+                "lat": 28.5385,
+                "lon": 77.2605,
+                "baseAQI": 365,
+                "pm25": 230,
+                "pm10": 350,
+                "dominant": "PM2.5",
+                "temp": 25.1,
+                "humidity": 58,
+                "windSpeed": 8.8
+        },
+        {
+                "id": "DEL046",
+                "name": "Malviya Nagar",
+                "city": "Delhi",
+                "zone": "South Delhi",
+                "lat": 28.5282,
+                "lon": 77.2065,
+                "baseAQI": 340,
+                "pm25": 215,
+                "pm10": 325,
+                "dominant": "PM2.5",
+                "temp": 24.9,
+                "humidity": 59,
+                "windSpeed": 9.0
+        },
+        {
+                "id": "DEL047",
+                "name": "Sarita Vihar & Jasola",
+                "city": "Delhi",
+                "zone": "South Delhi",
+                "lat": 28.5312,
+                "lon": 77.2954,
+                "baseAQI": 380,
+                "pm25": 240,
+                "pm10": 370,
+                "dominant": "PM2.5",
+                "temp": 25.2,
+                "humidity": 57,
+                "windSpeed": 8.7
+        },
+        {
+                "id": "DEL048",
+                "name": "Badarpur Border",
+                "city": "Delhi",
+                "zone": "South Delhi",
+                "lat": 28.5028,
+                "lon": 77.3039,
+                "baseAQI": 425,
+                "pm25": 278,
+                "pm10": 435,
+                "dominant": "PM10",
+                "temp": 25.4,
+                "humidity": 57,
+                "windSpeed": 8.6
+        },
+        {
+                "id": "DEL049",
+                "name": "Kashmere Gate ISBT",
+                "city": "Delhi",
+                "zone": "North Delhi",
+                "lat": 28.6665,
+                "lon": 77.2285,
+                "baseAQI": 420,
+                "pm25": 272,
+                "pm10": 420,
+                "dominant": "PM2.5",
+                "temp": 24.7,
+                "humidity": 61,
+                "windSpeed": 8.6
+        },
+        {
+                "id": "DEL050",
+                "name": "Shalimar Bagh",
+                "city": "Delhi",
+                "zone": "North West Delhi",
+                "lat": 28.7166,
+                "lon": 77.1648,
+                "baseAQI": 402,
+                "pm25": 258,
+                "pm10": 395,
+                "dominant": "PM2.5",
+                "temp": 24.3,
+                "humidity": 62,
+                "windSpeed": 8.8
+        },
+        {
+                "id": "DEL051",
+                "name": "Preet Vihar",
+                "city": "Delhi",
+                "zone": "East Delhi",
+                "lat": 28.6415,
+                "lon": 77.2945,
+                "baseAQI": 395,
+                "pm25": 254,
+                "pm10": 385,
+                "dominant": "PM2.5",
+                "temp": 24.8,
+                "humidity": 60,
+                "windSpeed": 8.7
+        },
+        {
+                "id": "DEL052",
+                "name": "Laxmi Nagar",
+                "city": "Delhi",
+                "zone": "East Delhi",
+                "lat": 28.6315,
+                "lon": 77.2775,
+                "baseAQI": 410,
+                "pm25": 268,
+                "pm10": 405,
+                "dominant": "PM2.5",
+                "temp": 24.9,
+                "humidity": 59,
+                "windSpeed": 8.6
         }
 ],
 
@@ -9217,7 +9810,7 @@
 
       init() {
         this.renderHubQuestions();
-        this.renderOfflineShowcase();
+        // renderOfflineShowcase removed
         this.renderQuickChips();
         this.initSpeechRecognition();
         this.initNetworkListeners();
@@ -9294,7 +9887,7 @@
           if (isOff) {
             offlineShowcase.classList.remove('hidden');
             offlineShowcase.style.display = 'block';
-            this.renderOfflineShowcase();
+            // renderOfflineShowcase removed
           } else {
             offlineShowcase.classList.add('hidden');
             offlineShowcase.style.display = 'none';
@@ -9366,35 +9959,124 @@
           }
         }
 
+        // All 12 comprehensive queries merging offline verified queries into quick inquiries
         const quickQuestions = isEn ? [
-          { label: "🏫 School Closure", q: "Will schools be closed tomorrow?" },
-          { label: "📊 Tomorrow AQI", q: "What is the projected AQI tomorrow?" },
-          { label: "🚨 Active GRAP", q: "Which GRAP stage is active?" },
-          { label: "😷 N95 Mask", q: "Should I wear an N95 mask outdoors?" },
-          { label: "🌦️ Weather/Rain", q: "What is the live weather forecast?" },
-          { label: "🚗 Odd-Even", q: "Will the Odd-Even vehicle rule be enforced?" },
-          { label: "🏗️ Construction", q: "Are construction and demolition halted?" },
-          { label: "💻 WFH Advisory", q: "Is there an advisory for Work-From-Home?" },
-          { label: "🏃 Outdoor Sports", q: "Are morning sports and jogging safe?" },
-          { label: "📍 Hotspots", q: "Which Delhi-NCR zones are most affected?" }
+          { cat: "Schools", label: "🏫 School Closure", q: "Will schools be closed tomorrow?", hint: "Stage III / IV threshold analysis" },
+          { cat: "Forecast", label: "📊 Tomorrow AQI", q: "What is the projected AQI for tomorrow?", hint: "72-hour atmospheric coupled forecast" },
+          { cat: "GRAP", label: "🚨 Active GRAP", q: "Which GRAP emergency stage is active?", hint: "CAQM emergency protocol status" },
+          { cat: "Health", label: "😷 N95 Mask", q: "Should I wear an N95 mask outdoors?", hint: "PM2.5 lung load advisory" },
+          { cat: "Weather", label: "🌦️ Weather/Rain", q: "What is the live weather & rain forecast?", hint: "Temperature, rain % & synoptic winds" },
+          { cat: "Vehicles", label: "🚗 Odd-Even", q: "Will Odd-Even vehicle rule be enforced?", hint: "Stage IV transport restrictions" },
+          { cat: "Construction", label: "🏗️ Construction", q: "Are construction and demolition halted?", hint: "C&D activities ban criteria" },
+          { cat: "Advisory", label: "💻 WFH Advisory", q: "Is there an advisory for Work-From-Home?", hint: "50% capacity WFH advisory" },
+          { cat: "Fitness", label: "🏃 Outdoor Sports", q: "Are outdoor sports and jogging safe?", hint: "Exercise safety & clean air windows" },
+          { cat: "Stubble", label: "🌾 Stubble Burning", q: "Is stubble burning smoke affecting Delhi?", hint: "VIIRS satellite thermal anomaly tracking" },
+          { cat: "Hotspots", label: "📍 NCR Hotspots", q: "Which Delhi-NCR zones are most affected?", hint: "Severe AQI monitoring stations" },
+          { cat: "Sprinklers", label: "💧 Mist Guns", q: "Where are anti-smog mist guns deployed?", hint: "MCD/DPCC dust suppression grid" }
         ] : [
-          { label: "🏫 School Band?", q: "Kal school band rahenge kya?" },
-          { label: "📊 Kal ka AQI", q: "Kal AQI kitna hoga?" },
-          { label: "🚨 GRAP Stage", q: "Konsa GRAP stage lagu hoga?" },
-          { label: "😷 Mask Pehnein?", q: "Mujhe mask pehnna chahiye kya?" },
-          { label: "🌦️ Live Mausam", q: "Delhi-NCR ka live mausam kaisa hai?" },
-          { label: "🚗 Odd-Even", q: "Odd-even lagu hoga kya?" },
-          { label: "🏗️ Construction Rok", q: "Construction/demolition band hogi kya?" },
-          { label: "💻 WFH Advisory", q: "WFH advisory hai kya?" },
-          { label: "🏃 Sports/Walk Safe?", q: "Outdoor activities/sports safe hain kya?" },
-          { label: "📍 Sabse Kharab Area", q: "Konsi areas sabse zyada affected hongi?" }
+          { cat: "Schools", label: "🏫 School Band?", q: "Kal school band rahenge kya?", hint: "GRAP Stage III/IV school rules" },
+          { cat: "Forecast", label: "📊 Kal ka AQI", q: "Kal AQI kitna hoga?", hint: "Delhi-NCR 72-hour forecast" },
+          { cat: "GRAP", label: "🚨 GRAP Stage", q: "Konsa GRAP stage lagu hoga?", hint: "Active emergency stage details" },
+          { cat: "Health", label: "😷 Mask Pehnein?", q: "Mujhe mask pehnna chahiye kya?", hint: "N95 respirator safety rules" },
+          { cat: "Weather", label: "🌦️ Live Mausam", q: "Delhi-NCR ka live mausam kaisa hai?", hint: "Temperature, barish aur hawa ki gati" },
+          { cat: "Vehicles", label: "🚗 Odd-Even", q: "Odd-even lagu hoga kya?", hint: "Odd-even aur BS-III/IV restrictions" },
+          { cat: "Construction", label: "🏗️ Construction Rok", q: "Construction/demolition band hogi kya?", hint: "Building aur digging par rok" },
+          { cat: "Advisory", label: "💻 WFH Advisory", q: "WFH advisory hai kya?", hint: "Office WFH guidelines" },
+          { cat: "Fitness", label: "🏃 Sports/Walk Safe?", q: "Outdoor activities/sports safe hain kya?", hint: "Subah ki running aur walk safety" },
+          { cat: "Stubble", label: "🌾 Parali Dhuan", q: "Parali ka dhuan kitna asar daal raha hai?", hint: "Punjab/Haryana farm fire plume" },
+          { cat: "Hotspots", label: "📍 Sabse Kharab Area", q: "Konsi areas sabse zyada affected hongi?", hint: "Top polluted zones list" },
+          { cat: "Sprinklers", label: "💧 Mist Guns", q: "Anti-smog mist guns kahan chal rahi hain?", hint: "Water cannon aur mist guns status" }
         ];
 
-        container.innerHTML = quickQuestions.map(item => `
-          <button type="button" onclick="VayuAIAssistant.askQuestion('${item.q}')" class="shrink-0 px-2.5 py-1 rounded-full text-[11px] font-sans border border-[#262A26] bg-[#191C19] text-[#EEF0EC] hover:border-[#7FD4FF] hover:text-[#7FD4FF] transition-all whitespace-nowrap active:scale-95 shadow-sm">
-            ${item.label}
-          </button>
-        `).join('');
+        const previewEl = document.getElementById('vayuai-chip-hold-preview');
+        const previewCat = document.getElementById('vayuai-chip-preview-cat');
+        const previewText = document.getElementById('vayuai-chip-preview-text');
+        const previewAskBtn = document.getElementById('vayuai-chip-preview-ask-btn');
+
+        let holdTimer = null;
+        let isLongPress = false;
+
+        const showPreview = (item) => {
+          if (!previewEl || !previewText) return;
+          if (previewCat) previewCat.innerText = `${item.cat} · ${item.hint}`;
+          previewText.innerText = item.q;
+          if (previewAskBtn) {
+            previewAskBtn.onclick = (e) => {
+              e.stopPropagation();
+              hidePreview();
+              VayuAIAssistant.askQuestion(item.q);
+            };
+          }
+          previewEl.classList.remove('hidden');
+        };
+
+        const hidePreview = () => {
+          if (holdTimer) {
+            clearTimeout(holdTimer);
+            holdTimer = null;
+          }
+          if (previewEl) {
+            previewEl.classList.add('hidden');
+          }
+        };
+
+        container.innerHTML = quickQuestions.map((item, idx) => {
+          const safeQ = item.q.replace(/'/g, "\'");
+          return `
+            <button type="button" 
+              data-idx="${idx}"
+              class="vayuai-quick-chip-btn shrink-0 px-2.5 py-1 rounded-full text-[11px] font-sans border border-[#262A26] bg-[#191C19] text-[#EEF0EC] hover:border-[#7FD4FF] hover:text-[#7FD4FF] transition-all whitespace-nowrap active:scale-95 shadow-sm select-none"
+              title="${item.q}">
+              ${item.label}
+            </button>
+          `;
+        }).join('');
+
+        // Attach fast Tap-and-Hold (200ms) & Desktop Hover handlers to all chip buttons
+        const chipButtons = container.querySelectorAll('.vayuai-quick-chip-btn');
+        chipButtons.forEach((btn, idx) => {
+          const item = quickQuestions[idx];
+
+          // Pointer Down (touch or click start)
+          btn.addEventListener('pointerdown', (e) => {
+            isLongPress = false;
+            holdTimer = setTimeout(() => {
+              isLongPress = true;
+              showPreview(item);
+              if (navigator.vibrate) navigator.vibrate(25);
+            }, 200); // Super fast 200ms trigger for instant feel
+          });
+
+          // Pointer Up
+          btn.addEventListener('pointerup', (e) => {
+            if (holdTimer) {
+              clearTimeout(holdTimer);
+              holdTimer = null;
+            }
+            if (!isLongPress) {
+              hidePreview();
+              VayuAIAssistant.askQuestion(item.q);
+            }
+          });
+
+          // Pointer Cancel or Leave
+          btn.addEventListener('pointercancel', hidePreview);
+          btn.addEventListener('mouseleave', () => {
+            if (holdTimer) clearTimeout(holdTimer);
+          });
+
+          // Desktop hover preview support
+          btn.addEventListener('mouseenter', () => {
+            showPreview(item);
+          });
+        });
+
+        // Hide preview if clicked outside
+        document.addEventListener('pointerdown', (e) => {
+          if (!container.contains(e.target) && (!previewEl || !previewEl.contains(e.target))) {
+            hidePreview();
+          }
+        }, { passive: true });
       },
 
       renderHubQuestions() {
@@ -9412,7 +10094,7 @@
 
       onLanguageChange(lang) {
         this.renderHubQuestions();
-        this.renderOfflineShowcase();
+        // renderOfflineShowcase removed
         this.renderQuickChips();
         this.updateNetworkStatus();
         
@@ -11963,7 +12645,18 @@
       noida_sec18:           { lat: 28.5708, lon: 77.3260, name: 'Noida Sec 18' },
       noida_sec62:           { lat: 28.6258, lon: 77.3644, name: 'Noida Sec 62' },
       ghaziabad_indirapuram: { lat: 28.6402, lon: 77.3712, name: 'Indirapuram' },
-      faridabad_sec15:       { lat: 28.4089, lon: 77.3178, name: 'Faridabad' }
+            faridabad_sec15:       { lat: 28.4089, lon: 77.3178, name: 'Faridabad' },
+      sohna_road:            { lat: 28.4184, lon: 77.0378, name: 'Sohna Road' },
+      manesar:               { lat: 28.3518, lon: 76.9388, name: 'Manesar' },
+      pari_chowk:            { lat: 28.4682, lon: 77.5103, name: 'Pari Chowk' },
+      noida_ext:             { lat: 28.6015, lon: 77.4285, name: 'Noida Extension' },
+      vaishali:              { lat: 28.6468, lon: 77.3392, name: 'Vaishali' },
+      raj_nagar_ext:         { lat: 28.7058, lon: 77.4281, name: 'Raj Nagar Ext' },
+      ballabhgarh:           { lat: 28.3375, lon: 77.3235, name: 'Ballabhgarh' },
+      bahadurgarh:           { lat: 28.6924, lon: 76.9234, name: 'Bahadurgarh' },
+      kundli:                { lat: 28.8745, lon: 77.1265, name: 'Kundli' },
+      kirti_nagar:           { lat: 28.6558, lon: 77.1472, name: 'Kirti Nagar' },
+      sarojini_nagar:        { lat: 28.5744, lon: 77.1985, name: 'Sarojini Nagar' }
     };
 
     const VayuCommuteMap = {
@@ -12730,6 +13423,197 @@
       return null;
     }
 
+    
+    // ==========================================================================
+    // COMMUTE GPS LOCATION & AUTOCOMPLETE SEARCH MODULE
+    // ==========================================================================
+    window.customOriginCoord = null;
+    window.customDestCoord = null;
+    window.customOriginName = null;
+    window.customDestName = null;
+
+    window.useCurrentLocationForOrigin = function() {
+      const originInput = document.getElementById('commute-origin-search');
+      if (originInput) originInput.value = "Fetching live accurate GPS...";
+
+      if (!navigator.geolocation) {
+        if (originInput) originInput.value = "GPS not supported on device";
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const lat = pos.coords.latitude;
+          const lon = pos.coords.longitude;
+          const acc = Math.round(pos.coords.accuracy || 15);
+
+          // Find closest station or known hub name for readable label
+          let closestName = "Delhi-NCR";
+          let minDist = Infinity;
+          if (typeof VayuForecastEngine !== 'undefined' && VayuForecastEngine.stations) {
+            for (const st of VayuForecastEngine.stations) {
+              const d = Math.hypot(st.lat - lat, st.lon - lon);
+              if (d < minDist) {
+                minDist = d;
+                closestName = st.name;
+              }
+            }
+          }
+
+          const displayName = `📍 Current GPS (${closestName} ±${acc}m)`;
+          if (originInput) originInput.value = displayName;
+
+          window.customOriginName = displayName;
+          window.customOriginCoord = { lat: lat, lon: lon, name: displayName };
+          if (typeof VayuCommuteMap !== 'undefined') {
+            VayuCommuteMap.originCoord = window.customOriginCoord;
+          }
+
+          calcCommuteRoute();
+          if (typeof showFloatingToast === 'function') {
+            showFloatingToast(`🎯 GPS Location locked: ${closestName} (${lat.toFixed(4)}, ${lon.toFixed(4)})`);
+          }
+        },
+        (err) => {
+          console.warn("GPS lookup failed", err);
+          const cached = (typeof VayuLocationService !== 'undefined' && VayuLocationService.lastUserCoords) ? VayuLocationService.lastUserCoords : { lat: 28.6692, lon: 77.1314 };
+          const displayName = "📍 Current GPS (Punjabi Bagh)";
+          if (originInput) originInput.value = displayName;
+          window.customOriginName = displayName;
+          window.customOriginCoord = { lat: cached.lat, lon: cached.lon, name: displayName };
+          if (typeof VayuCommuteMap !== 'undefined') {
+            VayuCommuteMap.originCoord = window.customOriginCoord;
+          }
+          calcCommuteRoute();
+        },
+        { enableHighAccuracy: true, timeout: 8000, maximumAge: 20000 }
+      );
+    };
+
+    window.onCommuteSearchInput = function(type, query) {
+      const dropdown = document.getElementById(type === 'origin' ? 'commute-origin-suggestions' : 'commute-dest-suggestions');
+      if (!dropdown) return;
+
+      const q = (query || '').toLowerCase().trim();
+      const allLocations = [];
+
+      // Gather from VayuForecastEngine stations and COMMUTE_COORDS
+      if (typeof VayuForecastEngine !== 'undefined' && VayuForecastEngine.stations) {
+        VayuForecastEngine.stations.forEach(st => {
+          allLocations.push({
+            name: `${st.name} (${st.zone})`,
+            cleanName: st.name,
+            lat: st.lat,
+            lon: st.lon,
+            zone: st.zone,
+            key: st.name.toLowerCase().replace(/[^a-z0-9]/g, '_')
+          });
+        });
+      }
+
+      const filtered = allLocations.filter(loc => {
+        if (!q) return true;
+        return loc.name.toLowerCase().includes(q) || loc.cleanName.toLowerCase().includes(q) || loc.zone.toLowerCase().includes(q);
+      }).slice(0, 8);
+
+      if (filtered.length === 0) {
+        dropdown.innerHTML = `<div class="p-2.5 text-center text-xs text-[#8C948B]">Koi location match nahi hui. "Dwarka", "CP", "Cyber City", ya "Noida" search karein.</div>`;
+        dropdown.classList.remove('hidden');
+        return;
+      }
+
+      dropdown.innerHTML = filtered.map(loc => `
+        <button type="button" 
+          onclick="selectCommuteLocation('${type}', '${loc.cleanName.replace(/'/g, "\'")}', '${loc.name.replace(/'/g, "\'")}', ${loc.lat}, ${loc.lon}, '${loc.key}')" 
+          class="w-full text-left p-2 rounded-lg hover:bg-earth-800 transition flex items-center justify-between text-xs text-white">
+          <div class="flex items-center gap-2 truncate">
+            <span class="text-xs text-cyan-400">📍</span>
+            <span class="font-medium truncate">${loc.name}</span>
+          </div>
+          <span class="text-[10px] font-mono text-earth-400 shrink-0 ml-2">${loc.zone}</span>
+        </button>
+      `).join('');
+
+      dropdown.classList.remove('hidden');
+    };
+
+    window.onCommuteSearchFocus = function(type) {
+      const input = document.getElementById(type === 'origin' ? 'commute-origin-search' : 'commute-dest-search');
+      window.onCommuteSearchInput(type, input ? input.value : '');
+    };
+
+    window.selectCommuteLocation = function(type, cleanName, fullName, lat, lon, key) {
+      const input = document.getElementById(type === 'origin' ? 'commute-origin-search' : 'commute-dest-search');
+      const dropdown = document.getElementById(type === 'origin' ? 'commute-origin-suggestions' : 'commute-dest-suggestions');
+      const hiddenSelect = document.getElementById(type === 'origin' ? 'commute-origin' : 'commute-dest');
+
+      if (input) input.value = fullName;
+      if (dropdown) dropdown.classList.add('hidden');
+
+      const coordObj = { lat: lat, lon: lon, name: cleanName };
+
+      if (type === 'origin') {
+        window.customOriginName = cleanName;
+        window.customOriginCoord = coordObj;
+        if (typeof VayuCommuteMap !== 'undefined') VayuCommuteMap.originCoord = coordObj;
+        if (hiddenSelect) {
+          let found = false;
+          for (let i = 0; i < hiddenSelect.options.length; i++) {
+            if (hiddenSelect.options[i].value === key || hiddenSelect.options[i].text.includes(cleanName)) {
+              hiddenSelect.selectedIndex = i;
+              found = true;
+              break;
+            }
+          }
+          if (!found) {
+            const opt = document.createElement('option');
+            opt.value = key;
+            opt.text = fullName;
+            opt.selected = true;
+            hiddenSelect.appendChild(opt);
+          }
+        }
+      } else {
+        window.customDestName = cleanName;
+        window.customDestCoord = coordObj;
+        if (typeof VayuCommuteMap !== 'undefined') VayuCommuteMap.destCoord = coordObj;
+        if (hiddenSelect) {
+          let found = false;
+          for (let i = 0; i < hiddenSelect.options.length; i++) {
+            if (hiddenSelect.options[i].value === key || hiddenSelect.options[i].text.includes(cleanName)) {
+              hiddenSelect.selectedIndex = i;
+              found = true;
+              break;
+            }
+          }
+          if (!found) {
+            const opt = document.createElement('option');
+            opt.value = key;
+            opt.text = fullName;
+            opt.selected = true;
+            hiddenSelect.appendChild(opt);
+          }
+        }
+      }
+
+      calcCommuteRoute();
+    };
+
+    // Close commute dropdowns when clicking outside
+    document.addEventListener('pointerdown', (e) => {
+      const oDrop = document.getElementById('commute-origin-suggestions');
+      const dDrop = document.getElementById('commute-dest-suggestions');
+      const oInp = document.getElementById('commute-origin-search');
+      const dInp = document.getElementById('commute-dest-search');
+
+      if (oDrop && !oDrop.contains(e.target) && oInp && !oInp.contains(e.target)) {
+        oDrop.classList.add('hidden');
+      }
+      if (dDrop && !dDrop.contains(e.target) && dInp && !dInp.contains(e.target)) {
+        dDrop.classList.add('hidden');
+      }
+    }, { passive: true });
+
     async function calcCommuteRoute() {
       const originEl = document.getElementById('commute-origin');
       const destEl = document.getElementById('commute-dest');
@@ -12742,11 +13626,14 @@
       const clockVal = document.getElementById('commute-time-clock')?.value || '14:00';
       const diurnal = getDiurnalSmogProfile(clockVal);
 
-      const originName = originEl.options[originEl.selectedIndex].text.split('(')[0].trim();
-      const destName = destEl.options[destEl.selectedIndex].text.split('(')[0].trim();
+      const originSearchEl = document.getElementById('commute-origin-search');
+      const destSearchEl = document.getElementById('commute-dest-search');
 
-      const oCoord = COMMUTE_COORDS[originKey] || { lat: 28.5562, lon: 77.1000, name: originName };
-      const dCoord = COMMUTE_COORDS[destKey] || { lat: 28.6315, lon: 77.2167, name: destName };
+      const originName = window.customOriginName || (originSearchEl ? originSearchEl.value.split('(')[0].trim() : (originEl.options ? originEl.options[originEl.selectedIndex]?.text.split('(')[0].trim() : 'Dwarka'));
+      const destName = window.customDestName || (destSearchEl ? destSearchEl.value.split('(')[0].trim() : (destEl.options ? destEl.options[destEl.selectedIndex]?.text.split('(')[0].trim() : 'Connaught Place'));
+
+      const oCoord = window.customOriginCoord || COMMUTE_COORDS[originKey] || { lat: 28.5562, lon: 77.1000, name: originName };
+      const dCoord = window.customDestCoord || COMMUTE_COORDS[destKey] || { lat: 28.6315, lon: 77.2167, name: destName };
 
       // Helper for Station AQI
       function getNearStationAQI(lat, lon) {
@@ -15708,6 +16595,19 @@
         aqiEl.style.color = meta.color;
       }
 
+      // Dynamic Atmospheric Ambient Halo Colors (Light & Dark Mode)
+      var h1 = document.getElementById('home-hero-halo-1');
+      var h2 = document.getElementById('home-hero-halo-2');
+      var hp = document.getElementById('home-hero-halo-pulse');
+      var isLight = document.documentElement.classList.contains('light-theme');
+      if (h1) {
+        h1.style.background = isLight 
+          ? `radial-gradient(circle, ${meta.color}35 0%, ${meta.color}15 55%, transparent 75%)`
+          : `radial-gradient(circle, ${meta.color}45 0%, ${meta.color}18 55%, transparent 75%)`;
+      }
+      if (h2) h2.style.borderColor = meta.color + (isLight ? '55' : '40');
+      if (hp) hp.style.borderColor = meta.color + (isLight ? '65' : '4a');
+
       var catEl = document.getElementById('home-category');
       if (catEl) catEl.innerText = meta.cat;
 
@@ -15896,6 +16796,10 @@
 
       window.scrollTo(0, 0);
     }
+    window.vayuNavigateTo = vayuNavigateTo;
+    window.syncHomeScreen = syncHomeScreen;
+    window.openHamburgerMenu = openHamburgerMenu;
+    window.closeHamburgerMenu = closeHamburgerMenu;
 
     // ---- Keep home in sync via observer and timers ----
     var _homeObserver = new MutationObserver(function() { syncHomeScreen(); });
