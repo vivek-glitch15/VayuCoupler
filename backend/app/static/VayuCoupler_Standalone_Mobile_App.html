@@ -2312,6 +2312,17 @@
       color: #059669 !important;
     }
 
+    html.light-theme #btn-toggle-hourly-forecast {
+      background: #ffffff !important;
+      border: 1.5px solid #cbd5e1 !important;
+      color: #0f172a !important;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04) !important;
+    }
+    html.light-theme #btn-toggle-hourly-forecast:hover {
+      background: #f8fafc !important;
+      border-color: #94a3b8 !important;
+    }
+
     /* Clean Map Tab (#panel-overview) in Light Theme */
     html.light-theme #panel-overview .natural-glass {
       background: #ffffff !important;
@@ -4582,18 +4593,34 @@
             </div>
           </div>
 
-          <!-- Hourly Forecast Slider (Google Weather Style: Time, Icon, Temp, Rain, Wind) -->
-          <div class="flex flex-col gap-1.5 mt-1">
-            <div class="flex items-center justify-between text-[11px] font-semibold text-earth-300 px-1">
-              <span class="flex items-center gap-1.5">
-                <span>⏱️</span> <span>Hourly Breakdown (Swipe Hours)</span>
+          <!-- View Hourly Forecast Option (Collapsible Toggle) -->
+          <div class="flex flex-col gap-2 mt-1">
+            <button type="button" onclick="VayuWeather.toggleHourlySlider()" id="btn-toggle-hourly-forecast"
+              class="w-full py-2.5 px-3.5 rounded-xl bg-earth-950/70 hover:bg-earth-900 border border-earth-700/60 hover:border-amber-400/50 text-xs font-semibold text-earth-200 transition flex items-center justify-between shadow-sm cursor-pointer active:scale-98">
+              <span class="flex items-center gap-2">
+                <span class="text-sm">⏱️</span>
+                <span class="font-bold">View Hourly Forecast &amp; Wind Breakdown</span>
+                <span class="text-[10px] py-0.5 px-2 rounded-full bg-amber-400/10 text-amber-300 border border-amber-400/20 font-mono hidden sm:inline">8 Hours</span>
               </span>
-              <span class="text-[10px] text-cyan-400 font-mono flex items-center gap-1 sm:hidden">
-                <span>Swipe</span> <span>↔</span>
+              <span class="flex items-center gap-1.5 text-[11px] text-amber-400 font-mono font-semibold">
+                <span id="toggle-hourly-text">Show Details</span>
+                <span id="toggle-hourly-arrow" class="transition-transform duration-200 inline-block">▾</span>
               </span>
-            </div>
-            <div id="weather-hourly-slider" class="flex overflow-x-auto gap-2 sm:gap-2.5 pb-2 no-scrollbar scroll-smooth">
-              <!-- Populated by VayuWeather.renderHourlySlider() -->
+            </button>
+
+            <!-- Collapsible Hourly Slider Container (Hidden by default) -->
+            <div id="weather-hourly-slider-wrap" class="hidden flex-col gap-1.5 transition-all">
+              <div class="flex items-center justify-between text-[11px] font-semibold text-earth-300 px-1 pt-1">
+                <span class="flex items-center gap-1.5">
+                  <span class="text-xs">📊</span> <span class="font-bold">Hourly Details (Temp, Rain % &amp; Wind Speed)</span>
+                </span>
+                <span class="text-[10px] text-cyan-400 font-mono flex items-center gap-1 sm:hidden">
+                  <span>Swipe</span> <span>↔</span>
+                </span>
+              </div>
+              <div id="weather-hourly-slider" class="flex overflow-x-auto gap-2 sm:gap-2.5 pb-2 no-scrollbar scroll-smooth">
+                <!-- Populated by VayuWeather.renderHourlySlider() -->
+              </div>
             </div>
           </div>
         </div>
@@ -12552,6 +12579,26 @@
         `;
 
         container.innerHTML = svg;
+      },
+
+      toggleHourlySlider() {
+        const wrap = document.getElementById('weather-hourly-slider-wrap');
+        const txt = document.getElementById('toggle-hourly-text');
+        const arr = document.getElementById('toggle-hourly-arrow');
+        if (!wrap) return;
+        const isHidden = wrap.classList.contains('hidden');
+        if (isHidden) {
+          wrap.classList.remove('hidden');
+          wrap.classList.add('flex');
+          if (txt) txt.innerText = 'Hide Details';
+          if (arr) arr.style.transform = 'rotate(180deg)';
+          this.renderHourlySlider();
+        } else {
+          wrap.classList.add('hidden');
+          wrap.classList.remove('flex');
+          if (txt) txt.innerText = 'Show Details';
+          if (arr) arr.style.transform = 'rotate(0deg)';
+        }
       },
 
       renderHourlySlider() {
