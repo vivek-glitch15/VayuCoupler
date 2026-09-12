@@ -106,7 +106,11 @@
     .font-mono, .font-mono-data, .font-mono-tag, .font-serif-display, .font-sans-ui { font-family: 'Inter', system-ui, sans-serif !important; }
 
     /* Hamburger drawer */
-    #vayu-side-drawer { transform: translateX(-100%); }
+    #vayu-side-drawer {
+      transform: translateX(-100%);
+      background: #0A0B0A;
+      border-right: 1px solid #1C201C;
+    }
     #vayu-side-drawer.drawer-open { transform: translateX(0); }
     .vayu-drawer-item {
       display: flex; align-items: center; gap: 12px; width: 100%;
@@ -140,25 +144,48 @@
       touch-action: manipulation;
       user-select: none;
       -webkit-user-select: none;
+      position: relative;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     }
     
-    /* Smooth global scrolling & touch flow */
+    /* Top active tab indicator glow bar */
+    .bnav-btn::after {
+      content: '';
+      position: absolute;
+      top: -1px;
+      left: 50%;
+      transform: translateX(-50%) scaleX(0);
+      width: 22px;
+      height: 3px;
+      border-radius: 9999px;
+      background: #8FFFB0;
+      box-shadow: 0 0 8px rgba(143, 255, 176, 0.6);
+      transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .bnav-btn.active::after {
+      transform: translateX(-50%) scaleX(1);
+    }
+    
+    /* Smooth global scrolling & touch flow - Precision Touchpad & Mobile Gestures */
     html {
       max-width: 100%;
-      overflow-x: clip;
-      overflow-y: auto;
+      overflow-x: hidden;
+      overflow-y: scroll;
       -webkit-overflow-scrolling: touch;
+      touch-action: pan-y;
       scroll-behavior: smooth;
     }
     body {
       max-width: 100%;
-      overflow-x: clip;
+      overflow-x: hidden;
       overflow-y: visible;
       -webkit-overflow-scrolling: touch;
+      touch-action: pan-y;
     }
     main, .tab-panel {
-      overflow-x: clip;
+      overflow-x: hidden;
       overflow-y: visible;
+      touch-action: pan-y;
     }
 
     /* Hide desktop tab nav by default */
@@ -1950,6 +1977,103 @@
       display: block !important;
     }
 
+    /* Route A, B, C Cards in Light Theme (Image 2) */
+    html.light-theme #route-card-0-aqi {
+      color: #059669 !important;
+    }
+    html.light-theme #route-card-0-status {
+      color: #047857 !important;
+    }
+    html.light-theme #route-card-0-sub {
+      color: #065f46 !important;
+      font-weight: 600 !important;
+    }
+    html.light-theme #panel-commute .bg-earth-900\/90 {
+      background: #f8fafc !important;
+      border-color: #cbd5e1 !important;
+    }
+    html.light-theme #panel-commute .bg-earth-900\/90 .text-white {
+      color: #0f172a !important;
+    }
+    html.light-theme #panel-commute .bg-earth-900\/90 .text-earth-400 {
+      color: #64748b !important;
+    }
+
+    /* Smart Route Recommendation Verdict Banner (Image 2) */
+    html.light-theme #panel-commute .from-emerald-950\/80 {
+      background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%) !important;
+      border: 1.5px solid #a7f3d0 !important;
+      box-shadow: 0 4px 16px rgba(5, 150, 105, 0.08) !important;
+    }
+    html.light-theme #commute-verdict-title {
+      color: #065f46 !important;
+      font-weight: 800 !important;
+    }
+    html.light-theme #commute-verdict-text {
+      color: #1e293b !important;
+    }
+    html.light-theme #commute-verdict-text strong {
+      color: #047857 !important;
+      font-weight: 800 !important;
+    }
+    html.light-theme #panel-commute #commute-timing-rec {
+      background: #fffbeb !important;
+      border: 1.5px solid #f59e0b !important;
+      color: #b45309 !important;
+      font-weight: 800 !important;
+    }
+
+    /* --- Hamburger Side Drawer Light Theme (Image 3) --- */
+    html.light-theme #vayu-side-drawer {
+      background: #ffffff !important;
+      border-right: 1px solid #e2e8f0 !important;
+      box-shadow: 10px 0 30px rgba(0, 0, 0, 0.1) !important;
+    }
+    html.light-theme #vayu-side-drawer .border-\[\#1C201C\],
+    html.light-theme #vayu-side-drawer [class*="border-\[#1C201C\]"] {
+      border-color: #e2e8f0 !important;
+    }
+    html.light-theme #vayu-side-drawer .text-white {
+      color: #0f172a !important;
+    }
+    html.light-theme #vayu-side-drawer .text-\[\#8C948B\] {
+      color: #64748b !important;
+    }
+    html.light-theme #vayu-side-drawer .text-\[\#EEF0EC\] {
+      color: #0f172a !important;
+    }
+    html.light-theme #vayu-side-drawer button[onclick="closeHamburgerMenu()"] {
+      background: #f1f5f9 !important;
+      color: #475569 !important;
+    }
+    html.light-theme #vayu-side-drawer button[onclick="closeHamburgerMenu()"]:hover {
+      background: #e2e8f0 !important;
+      color: #0f172a !important;
+    }
+    html.light-theme #vayu-side-drawer .bg-\[\#131513\] {
+      background: #f8fafc !important;
+      border-color: #e2e8f0 !important;
+    }
+    html.light-theme .vayu-drawer-item {
+      color: #1e293b !important;
+    }
+    html.light-theme .vayu-drawer-item:hover {
+      background: #f1f5f9 !important;
+      color: #0f172a !important;
+    }
+    html.light-theme .vayu-drawer-section {
+      color: #94a3b8 !important;
+      font-weight: 700 !important;
+    }
+    html.light-theme #drawer-aqi-mini {
+      color: #0f172a !important;
+    }
+    html.light-theme #vayu-side-drawer .bg-\[\#0f201a\] {
+      background: #ecfdf5 !important;
+      color: #047857 !important;
+      border-color: #a7f3d0 !important;
+    }
+
     /* --- 11. TAB: WEATHER ENGINE (#panel-weather) --- */
     html.light-theme #panel-weather .natural-glass {
       background: #ffffff !important;
@@ -2416,22 +2540,31 @@
     html.light-theme .bnav-btn span {
       color: #64748b !important;
     }
-    /* Active bnav tab in light mode */
+    /* Active bnav tab in light mode - Distinct Pill, Micro-elevation & Animation (Image 1) */
     html.light-theme .bnav-btn.active {
       color: #047857 !important;
+      font-weight: 800 !important;
+    }
+    html.light-theme .bnav-btn.active::after {
+      background: #059669 !important;
+      box-shadow: 0 0 10px rgba(5, 150, 105, 0.5) !important;
+      transform: translateX(-50%) scaleX(1) !important;
     }
     html.light-theme .bnav-btn.active .bnav-icon-box {
       background: #d1fae5 !important;
-      box-shadow: 0 0 10px rgba(16, 185, 129, 0.22) !important;
+      box-shadow: 0 2px 12px rgba(16, 185, 129, 0.35) !important;
       color: #047857 !important;
+      transform: translateY(-2px) scale(1.08) !important;
     }
     html.light-theme .bnav-btn.active svg {
       color: #047857 !important;
       stroke: #047857 !important;
+      stroke-width: 2.3 !important;
     }
     html.light-theme .bnav-btn.active span {
       color: #047857 !important;
-      font-weight: 700 !important;
+      font-weight: 800 !important;
+      transform: translateY(-1px) !important;
     }
 
     html.light-theme .mobile-nav-item,
@@ -5957,7 +6090,7 @@
       
       <!-- 1. Home -->
       <button type="button" onclick="vayuNavigateTo('home')" id="bnav-home"
-        class="bnav-btn w-full py-1 px-0.5 flex flex-col items-center justify-center gap-1 rounded-xl transition cursor-pointer active:scale-95 text-[#8FFFB0] font-bold">
+        class="bnav-btn active w-full py-1 px-0.5 flex flex-col items-center justify-center gap-1 rounded-xl transition cursor-pointer active:scale-95 text-[#8FFFB0] font-bold">
         <div class="bnav-icon-box w-7 h-7 rounded-xl flex items-center justify-center bg-[#8FFFB0]/15 text-[#8FFFB0] shadow-[0_0_12px_rgba(143,255,176,0.3)] transition">
           <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
             <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
@@ -11504,7 +11637,8 @@
               zoom: 11,
               zoomControl: false,
               attributionControl: false,
-              preferCanvas: true
+              preferCanvas: true,
+              scrollWheelZoom: false
             });
 
             L.control.zoom({ position: 'bottomleft' }).addTo(this.map);
@@ -14253,6 +14387,7 @@
             zoomControl: false,
             attributionControl: false,
             preferCanvas: true,
+            scrollWheelZoom: false,
             inertia: true,
             inertiaDeceleration: 3000,
             fadeAnimation: true,
@@ -14986,7 +15121,7 @@
   <!-- Drawer Panel -->
   <div id="vayu-side-drawer"
     class="fixed top-0 left-0 bottom-0 z-[110] w-[290px] max-w-[82vw] flex flex-col shadow-2xl"
-    style="background:#0A0B0A;border-right:1px solid #1C201C;transition:transform 0.28s cubic-bezier(0.4,0,0.2,1);">
+    style="transition:transform 0.28s cubic-bezier(0.4,0,0.2,1);">
 
     <!-- Drawer Header -->
     <div class="flex items-center justify-between p-4 border-b border-[#1C201C]">
@@ -15323,8 +15458,8 @@
         var box = btn.querySelector('.bnav-icon-box');
         var isCurrent = (k === tabId) || (k === 'copilot' && (tabId === 'vayuai' || tabId === 'copilot'));
         if (isCurrent) {
-          btn.className = 'bnav-btn w-full py-1 px-0.5 flex flex-col items-center justify-center gap-1 rounded-xl transition cursor-pointer active:scale-95 text-[#8FFFB0] font-bold';
-          if (box) box.className = 'bnav-icon-box w-7 h-7 rounded-xl flex items-center justify-center bg-[#8FFFB0]/15 text-[#8FFFB0] shadow-[0_0_12px_rgba(143,255,176,0.3)] transition';
+          btn.className = 'bnav-btn active w-full py-1 px-0.5 flex flex-col items-center justify-center gap-1 rounded-xl transition cursor-pointer active:scale-95 text-[#8FFFB0] font-bold';
+          if (box) box.className = 'bnav-icon-box w-7 h-7 rounded-xl flex items-center justify-center bg-[#8FFFB0]/15 text-[#8FFFB0] shadow-[0_0_12px_rgba(143,255,176,0.3)] transition scale-105';
         } else {
           btn.className = 'bnav-btn w-full py-1 px-0.5 flex flex-col items-center justify-center gap-1 rounded-xl transition cursor-pointer active:scale-95 text-[#8C948B] hover:text-[#EEF0EC]';
           if (box) box.className = 'bnav-icon-box w-7 h-7 rounded-xl flex items-center justify-center transition text-[#8C948B]';
@@ -15335,8 +15470,8 @@
         var isMoreTab = ['windows', 'planner', 'grap', 'attribution', 'dispatches', 'citizen', 'caqm', 'interstate'].indexOf(tabId) !== -1;
         var moreBox = moreBtn.querySelector('.bnav-icon-box');
         if (isMoreTab) {
-          moreBtn.className = 'bnav-btn w-full py-1 px-0.5 flex flex-col items-center justify-center gap-1 rounded-xl transition cursor-pointer active:scale-95 text-[#8FFFB0] font-bold';
-          if (moreBox) moreBox.className = 'bnav-icon-box w-7 h-7 rounded-xl flex items-center justify-center bg-[#8FFFB0]/15 text-[#8FFFB0] shadow-[0_0_12px_rgba(143,255,176,0.3)] transition';
+          moreBtn.className = 'bnav-btn active w-full py-1 px-0.5 flex flex-col items-center justify-center gap-1 rounded-xl transition cursor-pointer active:scale-95 text-[#8FFFB0] font-bold';
+          if (moreBox) moreBox.className = 'bnav-icon-box w-7 h-7 rounded-xl flex items-center justify-center bg-[#8FFFB0]/15 text-[#8FFFB0] shadow-[0_0_12px_rgba(143,255,176,0.3)] transition scale-105';
         } else {
           moreBtn.className = 'bnav-btn w-full py-1 px-0.5 flex flex-col items-center justify-center gap-1 rounded-xl transition cursor-pointer active:scale-95 text-[#8C948B] hover:text-[#EEF0EC]';
           if (moreBox) moreBox.className = 'bnav-icon-box w-7 h-7 rounded-xl flex items-center justify-center transition text-[#8C948B]';
