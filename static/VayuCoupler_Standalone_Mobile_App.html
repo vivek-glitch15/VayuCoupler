@@ -13958,7 +13958,7 @@
       }
       // 11:00 to 16:30 - Midday Steady Urban Flow
       if (mins > 660 && mins < 990) {
-        return 1.12;
+        return 1.18;
       }
       // 17:00 to 20:45 - Evening Peak Rush Hour (Gridlock at key flyovers & ring roads)
       if (mins >= 1020 && mins <= 1245) {
@@ -14370,21 +14370,26 @@
           }
         }
 
-        // Base driving duration in Delhi:
-        // Urban arterial baseline is ~36 km/h free-flow (~1.65 mins/km) + distance-scaled signal delay
-        // Calibrated driving durations (Grounded in real Delhi-NCR daytime traffic speeds):
-        // Intra-city trips (<=15 km): Urban arterial speed is ~23 km/h (~2.60 mins/km) + traffic signal delays (3-4 mins)
-        // For a 10 km trip in Delhi: 10 * 2.6 + 3.5 = 29.5 mins * traffic multiplier (1.12 to 1.38) = 33 to 41 mins
-        // Regional trips (>15 km): First 15 km urban (~43 mins) + remaining on NCR expressways/highways @ ~65-75 km/h (~0.92 mins/km)
+        // ====================================================================
+        // REAL-WORLD DELHI TRAFFIC SIGNAL & CONGESTION MODEL (Google Maps Parity)
+        // Grounded in Delhi-NCR urban signal density (~1 signal per 1.2 km)
+        // + average signal dwell time (80-90 sec wait per red light)
+        // + actual urban cruise speed (~29 km/h = 2.05 mins/km)
+        // ====================================================================
         let baseDrivingMins;
         if (baseRoadKm <= 15.0) {
-          const signalDelayMins = Math.min(6.5, Math.max(1.5, baseRoadKm * 0.35));
-          baseDrivingMins = (baseRoadKm * 2.55) + signalDelayMins;
+          const numSignals = Math.max(1, Math.round(baseRoadKm * 0.85));
+          const signalDelayMins = numSignals * 1.35; // 81 sec wait + deceleration/acceleration per signal
+          const rollingMins = baseRoadKm * 2.05;     // ~29.2 km/h moving cruise speed
+          baseDrivingMins = rollingMins + signalDelayMins;
         } else {
-          const urbanMins = (15.0 * 2.55) + 5.5;
-          const highwayKm = baseRoadKm - 15.0;
-          const highwayMins = highwayKm * 0.92;
-          baseDrivingMins = urbanMins + highwayMins;
+          // Regional Trips (>15 km): First 14 km urban corridor + remaining on NCR Expressways (DND/Barapullah/Peripheral @ ~68 km/h)
+          const urbanKm = 14.0;
+          const urbanSignals = Math.round(urbanKm * 0.85);
+          const urbanMins = (urbanKm * 2.05) + (urbanSignals * 1.35);
+          const expresswayKm = baseRoadKm - urbanKm;
+          const expresswayMins = expresswayKm * 0.88; // ~68 km/h expressway speed
+          baseDrivingMins = urbanMins + expresswayMins;
         }
 
         // Mode multipliers
@@ -14419,28 +14424,28 @@
         let r0_time, r1_time, r2_time;
         if (mode === 'car') {
           r1_time = Math.max(3, Math.round(baseDrivingMins * trafficMult));
-          r0_time = Math.max(3, Math.round((baseDrivingMins * 1.04) * (trafficMult * 0.97)));
-          r2_time = Math.max(4, Math.round((baseDrivingMins * 1.14) * (trafficMult * 1.12)));
+          r0_time = Math.max(r1_time + 1, Math.round((baseDrivingMins * 1.04) * (trafficMult * 0.98)));
+          r2_time = Math.max(r1_time + 4, Math.round((baseDrivingMins * 1.15) * (trafficMult * 1.18)));
         } else if (mode === 'two_wheeler') {
-          const bikeMult = 1.0 + (trafficMult - 1.0) * 0.55;
-          r1_time = Math.max(2, Math.round(baseDrivingMins * bikeMult * 0.85));
-          r0_time = Math.max(2, Math.round((baseDrivingMins * 1.04) * bikeMult * 0.82));
-          r2_time = Math.max(3, Math.round((baseDrivingMins * 1.14) * bikeMult * 0.95));
+          const bikeMult = 1.0 + (trafficMult - 1.0) * 0.52;
+          r1_time = Math.max(2, Math.round(baseDrivingMins * bikeMult * 0.78));
+          r0_time = Math.max(r1_time + 1, Math.round((baseDrivingMins * 1.04) * bikeMult * 0.77));
+          r2_time = Math.max(r1_time + 3, Math.round((baseDrivingMins * 1.15) * bikeMult * 0.90));
         } else if (mode === 'walking') {
           // Pedestrian: 4.8 km/h = 12.5 mins per km
           r1_time = Math.max(4, Math.round(parseFloat(r1_dist) * 12.5));
-          r0_time = Math.max(4, Math.round(parseFloat(r0_dist) * 12.5));
-          r2_time = Math.max(5, Math.round(parseFloat(r2_dist) * 12.5));
+          r0_time = Math.max(r1_time + 1, Math.round(parseFloat(r0_dist) * 12.5));
+          r2_time = Math.max(r1_time + 2, Math.round(parseFloat(r2_dist) * 12.5));
         } else if (mode === 'metro') {
           // Delhi Metro: rapid rail speed (~32 km/h commercial speed + 4 min station dwell)
           r1_time = Math.max(5, Math.round(parseFloat(r1_dist) * 1.85 + 4));
-          r0_time = Math.max(5, Math.round(parseFloat(r0_dist) * 1.85 + 5));
-          r2_time = Math.max(6, Math.round(parseFloat(r2_dist) * 1.85 + 7));
+          r0_time = Math.max(r1_time + 1, Math.round(parseFloat(r0_dist) * 1.85 + 5));
+          r2_time = Math.max(r1_time + 2, Math.round(parseFloat(r2_dist) * 1.85 + 7));
         } else if (mode === 'bus') {
           // Bus: traffic delays + frequent bus stops
-          r1_time = Math.max(6, Math.round(baseDrivingMins * trafficMult * 1.25 + 4));
-          r0_time = Math.max(6, Math.round((baseDrivingMins * 1.04) * trafficMult * 1.22 + 4));
-          r2_time = Math.max(7, Math.round((baseDrivingMins * 1.14) * trafficMult * 1.35 + 6));
+          r1_time = Math.max(6, Math.round(baseDrivingMins * trafficMult * 1.25 + 5));
+          r0_time = Math.max(r1_time + 2, Math.round((baseDrivingMins * 1.04) * trafficMult * 1.22 + 5));
+          r2_time = Math.max(r1_time + 7, Math.round((baseDrivingMins * 1.15) * trafficMult * 1.38 + 7));
         }
 
         // AQI calculation
