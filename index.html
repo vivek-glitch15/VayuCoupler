@@ -464,6 +464,15 @@
       box-shadow: 0 0 14px rgba(143, 255, 176, 0.2) !important;
     }
 
+    .weather-hourly-card {
+      transition: all 0.2s ease;
+      user-select: none;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    }
+    .weather-hourly-card:hover {
+      transform: translateY(-2px);
+    }
+
     /* ==========================================================================
        Complete Full-Application Light Mode (Daylight Pearl)
        ========================================================================== */
@@ -2272,6 +2281,35 @@
     html.light-theme #panel-weather .bg-earth-950\/60 .text-earth-400 {
       color: #475569 !important;
       font-weight: 700 !important;
+    }
+
+    /* Hourly Weather Slider Cards in Light Theme */
+    html.light-theme .weather-hourly-card {
+      background: #ffffff !important;
+      border: 1.5px solid #cbd5e1 !important;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04) !important;
+    }
+    html.light-theme .weather-hourly-card:hover {
+      background: #f8fafc !important;
+      border-color: #94a3b8 !important;
+    }
+    html.light-theme .weather-hourly-card .text-white {
+      color: #0f172a !important;
+    }
+    html.light-theme .weather-hourly-card .text-earth-300 {
+      color: #475569 !important;
+      font-weight: 700 !important;
+    }
+    html.light-theme .weather-hourly-card .text-amber-300 {
+      color: #b45309 !important;
+    }
+    html.light-theme .weather-hourly-card .bg-sky-950\/30 {
+      background: #f0f9ff !important;
+      color: #0284c7 !important;
+    }
+    html.light-theme .weather-hourly-card .bg-emerald-950\/30 {
+      background: #ecfdf5 !important;
+      color: #059669 !important;
     }
 
     /* Clean Map Tab (#panel-overview) in Light Theme */
@@ -4249,12 +4287,12 @@
   </header>
 
   <!-- ============ SECONDARY PANEL BACK BAR ============ -->
-  <div id="vayu-secondary-bar" class="sticky top-[56px] z-[55] bg-[#0A0B0A]/98 backdrop-blur-xl border-b border-[#1C201C] px-4 py-2.5 flex items-center gap-3 w-full">
-    <button onclick="vayuNavigateTo('home')" class="flex items-center gap-1.5 text-sm font-medium text-[#7FD4FF] hover:text-white transition">
+  <div id="vayu-secondary-bar" class="sticky top-[48px] sm:top-[56px] z-[55] bg-[#0A0B0A] border-b border-[#1C201C] px-3.5 sm:px-4 py-2 sm:py-2.5 flex items-center gap-3 w-full shadow-md">
+    <button onclick="vayuNavigateTo('home')" class="flex items-center gap-1.5 text-sm font-medium text-[#7FD4FF] hover:text-white transition cursor-pointer shrink-0">
       <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
       Back
     </button>
-    <span class="text-sm font-semibold text-white" id="vayu-secondary-title"></span>
+    <span class="text-sm font-semibold text-white truncate" id="vayu-secondary-title"></span>
   </div>
 
 
@@ -4448,13 +4486,13 @@
     </div><!-- /panel-home -->
 
     <!-- === TAB: LIVE WEATHER ENGINE (GOOGLE WEATHER STYLE) === -->
-    <div id="panel-weather" class="tab-panel hidden flex flex-col gap-4 sm:gap-6 w-full min-w-0">
+    <div id="panel-weather" class="tab-panel hidden flex flex-col gap-4 sm:gap-6 w-full min-w-0 pb-32 sm:pb-12">
       
-      <div class="natural-glass p-4 sm:p-6 rounded-3xl flex flex-col gap-6 shadow-xl border border-earth-700/80">
+      <div class="natural-glass p-3.5 sm:p-6 rounded-3xl flex flex-col gap-5 sm:gap-6 shadow-xl border border-earth-700/80">
         
         <!-- Top Section: Big Temp, Condition, Location & Clean Metrics -->
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-earth-700/60">
-          <div class="flex items-center gap-4 sm:gap-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 pb-4 border-b border-earth-700/60">
+          <div class="flex items-center gap-3.5 sm:gap-6">
             <!-- Animated Weather SVG Symbol -->
             <div id="weather-main-icon-container" class="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center shrink-0">
               <svg class="w-16 h-16 sm:w-20 sm:h-20 drop-shadow-md" viewBox="0 0 64 64" fill="none">
@@ -4466,13 +4504,13 @@
               <div class="flex items-baseline gap-2">
                 <span class="text-4xl sm:text-6xl font-black font-mono tracking-tighter" id="weather-main-temp">33</span>
                 <div class="text-lg sm:text-xl font-bold font-mono text-slate-400">
-                  <button onclick="VayuWeather.setUnit('C')" id="unit-c-btn" class="text-white hover:text-amber-400 transition font-black">°C</button>
+                  <button onclick="VayuWeather.setUnit('C')" id="unit-c-btn" class="text-white hover:text-amber-400 transition font-black cursor-pointer">°C</button>
                   <span class="text-slate-500">|</span>
-                  <button onclick="VayuWeather.setUnit('F')" id="unit-f-btn" class="text-slate-400 hover:text-white transition">°F</button>
+                  <button onclick="VayuWeather.setUnit('F')" id="unit-f-btn" class="text-slate-400 hover:text-white transition cursor-pointer">°F</button>
                 </div>
               </div>
               <div class="text-sm font-bold text-white mt-0.5" id="weather-condition-desc">Partly Cloudy</div>
-              <div class="text-xs font-mono flex items-center gap-2 mt-0.5 text-earth-300">
+              <div class="text-xs font-mono flex items-center gap-2 mt-0.5 text-earth-300 flex-wrap">
                 <span>Feels like <b id="weather-feels-val" class="text-amber-300 font-bold">33°C</b></span>
                 <span class="text-slate-600">•</span>
                 <span>H: <b id="weather-high-val" class="text-white font-bold">33°</b> / L: <b id="weather-low-val" class="text-slate-400 font-bold">27°</b></span>
@@ -4488,71 +4526,89 @@
           </div>
         </div>
 
-        <!-- Clean Key Metrics Strip (4 Balanced Cards) -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-mono">
-          <div class="p-2.5 rounded-xl bg-earth-950/60 border border-earth-700/60 flex items-center gap-2.5">
-            <span class="text-lg">💧</span>
-            <div>
-              <span class="text-[10px] text-earth-400 block font-sans uppercase font-bold tracking-wider">Rain</span>
+        <!-- Clean Key Metrics Strip (Responsive Carousel on Mobile, 4 Cards on Desktop) -->
+        <div class="flex overflow-x-auto gap-2.5 sm:gap-3 pb-1 no-scrollbar sm:grid sm:grid-cols-4 text-xs font-mono scroll-smooth">
+          <div class="min-w-[135px] sm:min-w-0 flex-1 p-3 rounded-2xl bg-earth-950/70 border border-earth-700/60 flex items-center gap-2.5 shadow-sm shrink-0">
+            <span class="text-xl shrink-0">💧</span>
+            <div class="min-w-0">
+              <span class="text-[10px] text-earth-400 block font-sans uppercase font-bold tracking-wider">Rain Chance</span>
               <b class="text-sm text-white" id="weather-precip-val">25%</b>
             </div>
           </div>
-          <div class="p-2.5 rounded-xl bg-earth-950/60 border border-earth-700/60 flex items-center gap-2.5">
-            <span class="text-lg">🍃</span>
-            <div>
-              <span class="text-[10px] text-earth-400 block font-sans uppercase font-bold tracking-wider">Wind</span>
-              <b class="text-sm text-white" id="weather-wind-val">11 km/h WNW</b>
+          <div class="min-w-[160px] sm:min-w-0 flex-1 p-3 rounded-2xl bg-earth-950/70 border border-earth-700/60 flex items-center gap-2.5 shadow-sm shrink-0">
+            <span class="text-xl shrink-0">🍃</span>
+            <div class="min-w-0">
+              <span class="text-[10px] text-earth-400 block font-sans uppercase font-bold tracking-wider">Wind Speed</span>
+              <b class="text-sm text-white whitespace-nowrap block" id="weather-wind-val">11 km/h WNW</b>
             </div>
           </div>
-          <div class="p-2.5 rounded-xl bg-earth-950/60 border border-earth-700/60 flex items-center gap-2.5">
-            <span class="text-lg">💦</span>
-            <div>
+          <div class="min-w-[135px] sm:min-w-0 flex-1 p-3 rounded-2xl bg-earth-950/70 border border-earth-700/60 flex items-center gap-2.5 shadow-sm shrink-0">
+            <span class="text-xl shrink-0">💦</span>
+            <div class="min-w-0">
               <span class="text-[10px] text-earth-400 block font-sans uppercase font-bold tracking-wider">Humidity</span>
               <b class="text-sm text-white" id="weather-humidity-val">59%</b>
             </div>
           </div>
-          <div class="p-2.5 rounded-xl bg-earth-950/60 border border-earth-700/60 flex items-center gap-2.5">
-            <span class="text-lg">☀️</span>
-            <div>
+          <div class="min-w-[165px] sm:min-w-0 flex-1 p-3 rounded-2xl bg-earth-950/70 border border-earth-700/60 flex items-center gap-2.5 shadow-sm shrink-0">
+            <span class="text-xl shrink-0">☀️</span>
+            <div class="min-w-0">
               <span class="text-[10px] text-earth-400 block font-sans uppercase font-bold tracking-wider">Sun Hours</span>
-              <span class="text-xs text-earth-200 font-bold block truncate" id="weather-sun-val">06:02 • 18:35</span>
+              <span class="text-xs text-earth-200 font-bold block whitespace-nowrap font-mono" id="weather-sun-val">06:02 • 18:35</span>
             </div>
           </div>
         </div>
 
         <!-- Metric Switcher Tabs (Temperature | Precipitation | Wind) -->
         <div class="flex flex-col gap-3">
-          <div class="flex items-center gap-6 border-b border-earth-700/60 pb-1 text-sm font-semibold">
-            <button onclick="VayuWeather.setMetric('temp')" id="weather-tab-temp" class="weather-metric-tab active">
-              Temperature
-            </button>
-            <button onclick="VayuWeather.setMetric('precip')" id="weather-tab-precip" class="weather-metric-tab">
-              Precipitation
-            </button>
-            <button onclick="VayuWeather.setMetric('wind')" id="weather-tab-wind" class="weather-metric-tab">
-              Wind
-            </button>
+          <div class="flex items-center justify-between border-b border-earth-700/60 pb-1 text-sm font-semibold">
+            <div class="flex items-center gap-4 sm:gap-6">
+              <button onclick="VayuWeather.setMetric('temp')" id="weather-tab-temp" class="weather-metric-tab active flex items-center gap-1.5">
+                <span>🌡️</span> <span>Temperature</span>
+              </button>
+              <button onclick="VayuWeather.setMetric('precip')" id="weather-tab-precip" class="weather-metric-tab flex items-center gap-1.5">
+                <span>💧</span> <span>Precipitation</span>
+              </button>
+              <button onclick="VayuWeather.setMetric('wind')" id="weather-tab-wind" class="weather-metric-tab flex items-center gap-1.5">
+                <span>🍃</span> <span>Wind</span>
+              </button>
+            </div>
+            <span class="text-[10px] text-earth-400 font-mono hidden sm:inline">24-Hour Synoptic Projection</span>
           </div>
 
           <!-- Continuous Hourly Curve Graph -->
-          <div class="relative w-full h-56 sm:h-64 bg-[#0a0d0a] rounded-2xl p-2 sm:p-4 border border-earth-700/60 overflow-hidden flex flex-col justify-between">
+          <div class="relative w-full h-48 sm:h-56 bg-[#0a0d0a] rounded-2xl p-2 sm:p-4 border border-earth-700/60 overflow-hidden flex flex-col justify-between">
             <div id="weather-curve-container" class="w-full h-full relative">
               <!-- Dynamically generated SVG continuous smooth curve -->
+            </div>
+          </div>
+
+          <!-- Hourly Forecast Slider (Google Weather Style: Time, Icon, Temp, Rain, Wind) -->
+          <div class="flex flex-col gap-1.5 mt-1">
+            <div class="flex items-center justify-between text-[11px] font-semibold text-earth-300 px-1">
+              <span class="flex items-center gap-1.5">
+                <span>⏱️</span> <span>Hourly Breakdown (Swipe Hours)</span>
+              </span>
+              <span class="text-[10px] text-cyan-400 font-mono flex items-center gap-1 sm:hidden">
+                <span>Swipe</span> <span>↔</span>
+              </span>
+            </div>
+            <div id="weather-hourly-slider" class="flex overflow-x-auto gap-2 sm:gap-2.5 pb-2 no-scrollbar scroll-smooth">
+              <!-- Populated by VayuWeather.renderHourlySlider() -->
             </div>
           </div>
         </div>
 
         <!-- 7-Day Synoptic Forecast Strip -->
-        <div class="flex flex-col gap-2.5 pt-1">
+        <div class="flex flex-col gap-2.5 pt-2 border-t border-earth-700/50">
           <div class="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-earth-300">
             <span class="flex items-center gap-1.5">
               <i data-lucide="calendar" class="w-3.5 h-3.5 text-amber-400"></i>
               <span>7-Day Daily Forecast Outlook</span>
             </span>
-            <span class="text-[10px] text-earth-400 font-mono normal-case">Tap day card to view hourly chart</span>
+            <span class="text-[10px] text-earth-400 font-mono normal-case">Tap day card to view hourly</span>
           </div>
-          <div class="grid grid-cols-4 sm:grid-cols-8 gap-2 overflow-x-auto no-scrollbar py-1" id="weather-days-strip">
-            <!-- 8 dynamic cards loaded by VayuWeather.renderDays() -->
+          <div class="flex overflow-x-auto gap-2 sm:gap-2.5 pb-2 no-scrollbar scroll-smooth sm:grid sm:grid-cols-7" id="weather-days-strip">
+            <!-- 7 dynamic cards loaded by VayuWeather.renderDays() -->
           </div>
         </div>
 
@@ -12234,6 +12290,7 @@
           }
         });
         this.renderChart();
+        this.renderHourlySlider();
         this.renderDays();
       },
 
@@ -12349,6 +12406,7 @@
         if (locTitle) locTitle.innerText = this.locationName || 'Delhi-NCR';
 
         this.renderChart();
+        this.renderHourlySlider();
         this.renderDays();
       },
 
@@ -12496,12 +12554,55 @@
         container.innerHTML = svg;
       },
 
+      renderHourlySlider() {
+        const slider = document.getElementById('weather-hourly-slider');
+        if (!slider) return;
+        const day = this.forecastDays[this.selectedDayIndex] || this.forecastDays[0];
+        if (!day || !day.hourly || !day.hourly.length) return;
+
+        slider.innerHTML = day.hourly.map((h, idx) => {
+          const tVal = this.convertTemp(h.temp);
+          const isTemp = this.metric === 'temp';
+          const isPrecip = this.metric === 'precip';
+          const isWind = this.metric === 'wind';
+
+          let iconType = 'sunny';
+          if (h.precip >= 50) iconType = 'rain';
+          else if (h.precip >= 20) iconType = 'partly-cloudy';
+          else if (h.time.includes('am') && (h.time.startsWith('12') || h.time.startsWith('3') || h.time.startsWith('6'))) iconType = 'partly-cloudy';
+
+          return `
+            <div class="weather-hourly-card flex flex-col items-center justify-between p-2.5 rounded-2xl min-w-[76px] sm:min-w-[88px] flex-1 text-center transition cursor-pointer shrink-0 border ${
+              isTemp ? 'bg-amber-950/20 border-amber-500/30' : (isPrecip ? 'bg-sky-950/20 border-sky-500/30' : 'bg-emerald-950/20 border-emerald-500/30')
+            } hover:scale-102">
+              <span class="text-[11px] font-mono font-semibold text-earth-300 whitespace-nowrap">${h.time}</span>
+              <div class="my-1 flex items-center justify-center">
+                ${this.getWeatherSvg(iconType, 'w-6 h-6')}
+              </div>
+              <span class="text-sm font-mono font-bold ${isTemp ? 'text-amber-300 font-extrabold' : 'text-white'}">${tVal}°</span>
+              <div class="flex flex-col gap-0.5 mt-1 w-full">
+                <span class="text-[9.5px] font-mono py-0.5 px-1 rounded-md flex items-center justify-center gap-0.5 ${
+                  isPrecip ? 'bg-sky-500/20 text-sky-300 font-bold border border-sky-500/40' : 'text-sky-400/80 bg-sky-950/30'
+                }">
+                  💧 ${h.precip}%
+                </span>
+                <span class="text-[9.5px] font-mono py-0.5 px-1 rounded-md flex items-center justify-center gap-0.5 ${
+                  isWind ? 'bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/40' : 'text-emerald-400/80 bg-emerald-950/30'
+                }">
+                  🍃 ${h.wind}<span class="text-[7.5px]">km/h</span>
+                </span>
+              </div>
+            </div>
+          `;
+        }).join('');
+      },
+
       renderDays() {
         const strip = document.getElementById('weather-days-strip');
         if (!strip) return;
         const isEn = (typeof VayuSettings !== 'undefined' ? VayuSettings.language : 'en') !== 'hi';
 
-        strip.innerHTML = this.forecastDays.map((d, idx) => {
+        strip.innerHTML = this.forecastDays.slice(0, 7).map((d, idx) => {
           const isActive = idx === this.selectedDayIndex;
           const maxT = this.convertTemp(d.tempMax);
           const minT = this.convertTemp(d.tempMin);
@@ -12510,7 +12611,7 @@
           // Metric-specific bottom badge per tab selection
           let metricBadge = '';
           if (this.metric === 'temp') {
-            metricBadge = `<div class="flex items-center gap-1 font-mono text-[10px] mt-0.5">
+            metricBadge = `<div class="flex items-center justify-center gap-1 font-mono text-[10px] mt-0.5">
               <span class="font-bold text-white">${maxT}°</span>
               <span class="text-slate-400">${minT}°</span>
             </div>`;
@@ -12530,7 +12631,7 @@
           }
 
           return `
-            <div onclick="VayuWeather.selectDay(${idx})" class="weather-day-card ${isActive ? 'active' : ''}" style="transition:transform 0.18s,box-shadow 0.18s" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">
+            <div onclick="VayuWeather.selectDay(${idx})" class="weather-day-card min-w-[80px] sm:min-w-0 flex-1 ${isActive ? 'active' : ''}" style="transition:transform 0.18s,box-shadow 0.18s" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">
               <div class="text-[11px] font-bold ${isActive ? 'text-amber-400' : 'text-slate-300'}">${dayLabel}</div>
               <div class="text-[9px] font-mono font-medium ${isActive ? 'text-amber-500' : 'text-slate-400'} -mt-0.5">${d.date}</div>
               <div class="my-1 flex items-center justify-center">
