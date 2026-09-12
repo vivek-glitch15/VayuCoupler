@@ -26,6 +26,7 @@ OFFICIAL_HERO_BULB = os.path.join(ASSETS_DIR, "sih_bulb_official.png")
 REAL_MOBILE_MOCKUP = os.path.join(ASSETS_DIR, "framed_real_mobile.png")
 TECH_CENTER_COMP = os.path.join(ASSETS_DIR, "technical_center_composition.png")
 REAL_APP_DESKTOP = os.path.join(ASSETS_DIR, "real_app_desktop.png")
+APP_INTERACTION_MODEL_IMG = os.path.join(ASSETS_DIR, "app_interaction_model.png")
 
 def set_slide_background(slide, color=COLOR_WHITE):
     bg = slide.background
@@ -354,70 +355,18 @@ def build_deck(output_pptx_path):
     run_st2.font.color.rgb = COLOR_TEXT_MAIN
 
     # ---------------------------------------------------------
-    # SLIDE 3: Technical Approach (Real App System Screens)
+    # SLIDE 3: Technical Approach & App Interaction Model
     # ---------------------------------------------------------
     slide3 = prs.slides.add_slide(blank_layout)
     set_slide_background(slide3)
-    add_header(slide3, "TECHNICAL APPROACH")
+    add_header(slide3, "TECHNICAL APPROACH & APP INTERACTION MODEL")
     add_footer(slide3, 3)
 
-    # Left Column Bubbles
-    left_bubbles = [
-        "using Interactive Maps\nto Enable region-based\nsearch and intuitive\ndata discovery.",
-        "Converts multi-source feeds\ninto structured databases,\nsimplifying access and enabling\nfast, queryable insights.",
-        "Answering Queries on\nFeatures like PM2.5, PM10,\nVentilation Index (VI), PBLH,\nThermal Inversion (ΔT)",
-        "Using Figma To Designing\nOur website\nUsing React.Js / HTML5 for\nbuilding interface of website"
-    ]
-
-    bubble_top = Inches(1.2)
-    bubble_height = Inches(1.25)
-    bubble_gap = Inches(0.18)
-
-    for i, btxt in enumerate(left_bubbles):
-        shp = slide3.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.5), bubble_top + i * (bubble_height + bubble_gap), Inches(2.7), bubble_height)
-        shp.fill.solid()
-        shp.fill.fore_color.rgb = COLOR_BUBBLE_BG
-        shp.line.color.rgb = COLOR_BUBBLE_BORDER
-        shp.line.width = Pt(1.5)
-        tf_b = shp.text_frame
-        tf_b.word_wrap = True
-        tf_b.vertical_anchor = MSO_ANCHOR.MIDDLE
-        p_b = tf_b.paragraphs[0]
-        p_b.alignment = PP_ALIGN.CENTER
-        p_b.text = btxt
-        p_b.font.name = "Arial"
-        p_b.font.size = Pt(10.5)
-        p_b.font.bold = True
-        p_b.font.color.rgb = COLOR_NAVY_HEADING
-
-    # Center Composition: Architecture Flow + Real App Screens
-    if os.path.exists(TECH_CENTER_COMP):
-        slide3.shapes.add_picture(TECH_CENTER_COMP, Inches(3.35), Inches(1.18), width=Inches(6.5))
-
-    # Right Column Bubbles
-    right_bubbles = [
-        "using LLM + RAG\nPipelines\nto Allow citizens to ask\nquestions in natural\nlanguage to VayuAI.",
-        "Safe Commute Engine\nCalculates Cleanest Route\n→ Cuts toxic particulate\ninhalation by 35%–48%.",
-        "Using Cloud Deployment\nDeploying on Vercel & Render\nfor scalability, reliability +\n100% offline standalone mode.",
-        "Google Weather Integration\nReal-time temp, rain chance,\nwind speed, humidity & UV\ndirectly beside AQI."
-    ]
-
-    for i, btxt in enumerate(right_bubbles):
-        shp = slide3.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(10.1), bubble_top + i * (bubble_height + bubble_gap), Inches(2.7), bubble_height)
-        shp.fill.solid()
-        shp.fill.fore_color.rgb = COLOR_BUBBLE_BG
-        shp.line.color.rgb = COLOR_BUBBLE_BORDER
-        shp.line.width = Pt(1.5)
-        tf_b = shp.text_frame
-        tf_b.word_wrap = True
-        tf_b.vertical_anchor = MSO_ANCHOR.MIDDLE
-        p_b = tf_b.paragraphs[0]
-        p_b.alignment = PP_ALIGN.CENTER
-        p_b.text = btxt
-        p_b.font.name = "Arial"
-        p_b.font.size = Pt(10.5)
-        p_b.font.bold = True
-        p_b.font.color.rgb = COLOR_NAVY_HEADING
+    # Full-width high-definition App Interaction Model & Closed-Loop Architecture
+    if os.path.exists(APP_INTERACTION_MODEL_IMG):
+        slide3.shapes.add_picture(APP_INTERACTION_MODEL_IMG, Inches(0.52), Inches(1.15), width=Inches(12.3), height=Inches(5.85))
+    elif os.path.exists(TECH_CENTER_COMP):
+        slide3.shapes.add_picture(TECH_CENTER_COMP, Inches(1.5), Inches(1.18), width=Inches(10.33))
 
     # ---------------------------------------------------------
     # SLIDE 4: Feasibility and Viability
