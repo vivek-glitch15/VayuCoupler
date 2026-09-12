@@ -1,14 +1,14 @@
-const CACHE_NAME = 'vayucoupler-v31';
+const CACHE_NAME = 'vayucoupler-v32';
 const ASSETS = [
   '/',
   '/?source=pwa',
-  '/static/manifest.json?v=31',
-  '/static/css/styles.css?v=31',
-  '/static/css/mobile.css?v=31',
-  '/static/icon-192.png?v=31',
-  '/static/icon-512.png?v=31',
-  '/static/icon-maskable-512.png?v=31',
-  '/static/apple-touch-icon.png?v=31'
+  '/static/manifest.json?v=32',
+  '/static/css/styles.css?v=32',
+  '/static/css/mobile.css?v=32',
+  '/static/icon-192.png?v=32',
+  '/static/icon-512.png?v=32',
+  '/static/icon-maskable-512.png?v=32',
+  '/static/apple-touch-icon.png?v=32'
 ];
 
 self.addEventListener('install', (e) => {

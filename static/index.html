@@ -2052,6 +2052,47 @@
       font-weight: 600 !important;
     }
 
+    /* Clean Weather 4-Card Strip in Light Theme */
+    html.light-theme #panel-weather .bg-earth-950\/60 {
+      background: #ffffff !important;
+      border: 1.5px solid #cbd5e1 !important;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04) !important;
+    }
+    html.light-theme #panel-weather .bg-earth-950\/60 .text-white,
+    html.light-theme #panel-weather .bg-earth-950\/60 .text-earth-200 {
+      color: #0f172a !important;
+      font-weight: 800 !important;
+    }
+    html.light-theme #panel-weather .bg-earth-950\/60 .text-earth-400 {
+      color: #475569 !important;
+      font-weight: 700 !important;
+    }
+
+    /* Clean Map Tab (#panel-overview) in Light Theme */
+    html.light-theme #panel-overview .natural-glass {
+      background: #ffffff !important;
+      border: 1.5px solid #cbd5e1 !important;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05) !important;
+    }
+    html.light-theme #panel-overview h2.text-white {
+      color: #0f172a !important;
+    }
+    html.light-theme #station-inspector {
+      background: #f8fafc !important;
+      border: 1.5px solid #cbd5e1 !important;
+    }
+    html.light-theme #station-inspector h3.text-white {
+      color: #0f172a !important;
+    }
+    html.light-theme #station-inspector .bg-earth-900\/90,
+    html.light-theme #station-inspector .bg-earth-900\/80 {
+      background: #ffffff !important;
+      border: 1.5px solid #cbd5e1 !important;
+    }
+    html.light-theme #station-inspector .text-white {
+      color: #0f172a !important;
+    }
+
     /* --- 11B. TAB: SIMPLIFIED HOME SCREEN (#panel-home) in Light Mode --- */
     html.light-theme #panel-home {
       background: #f1f5f9 !important;
@@ -3672,8 +3713,8 @@
       
       <div class="natural-glass p-4 sm:p-6 rounded-3xl flex flex-col gap-6 shadow-xl border border-earth-700/80">
         
-        <!-- Top Section: Big Temp, Animated Symbol, Conditions & Location -->
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-5 border-b border-earth-700/60">
+        <!-- Top Section: Big Temp, Condition, Location & Clean Metrics -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-earth-700/60">
           <div class="flex items-center gap-4 sm:gap-6">
             <!-- Animated Weather SVG Symbol -->
             <div id="weather-main-icon-container" class="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center shrink-0">
@@ -3691,32 +3732,51 @@
                   <button onclick="VayuWeather.setUnit('F')" id="unit-f-btn" class="text-slate-400 hover:text-white transition">°F</button>
                 </div>
               </div>
-              <div class="text-xs font-mono flex flex-wrap items-center gap-x-2.5 gap-y-1 mt-0.5 text-earth-300">
-                <span>Feels like <b id="weather-feels-val" class="text-amber-300 font-bold">37°C</b></span>
+              <div class="text-sm font-bold text-white mt-0.5" id="weather-condition-desc">Partly Cloudy</div>
+              <div class="text-xs font-mono flex items-center gap-2 mt-0.5 text-earth-300">
+                <span>Feels like <b id="weather-feels-val" class="text-amber-300 font-bold">33°C</b></span>
                 <span class="text-slate-600">•</span>
-                <span>High: <b id="weather-high-val" class="text-white font-bold">33°</b> / Low: <b id="weather-low-val" class="text-slate-400 font-bold">25°</b></span>
-              </div>
-              <div class="text-xs text-earth-300/90 font-mono flex flex-wrap items-center gap-x-3 gap-y-1 mt-1.5">
-                <span>Rain: <b class="text-white font-bold" id="weather-precip-val">25%</b></span>
-                <span class="text-slate-500">•</span>
-                <span>Humidity: <b class="text-white font-bold" id="weather-humidity-val">59%</b></span>
-                <span class="text-slate-500">•</span>
-                <span>Wind: <b class="text-white font-bold" id="weather-wind-val">11 km/h WNW</b></span>
-                <span class="text-slate-500">•</span>
-                <span id="weather-sun-val" class="text-earth-200">🌅 06:02 • 🌇 18:35</span>
+                <span>H: <b id="weather-high-val" class="text-white font-bold">33°</b> / L: <b id="weather-low-val" class="text-slate-400 font-bold">27°</b></span>
               </div>
             </div>
           </div>
 
-          <div class="flex flex-col md:items-end justify-center">
-            <div class="text-xl sm:text-2xl font-bold text-white font-serif-display flex items-center gap-2" id="weather-location-title">
-              <span id="weather-location-title-text">Delhi-NCR (Safdarjung)</span>
+          <div class="flex flex-col sm:items-end justify-center">
+            <div class="text-xl sm:text-2xl font-bold text-white font-serif-display" id="weather-location-title">
+              <span id="weather-location-title-text">Punjabi Bagh, Delhi-NCR</span>
             </div>
-            <div class="text-sm sm:text-base font-semibold text-earth-200 mt-0.5" id="weather-day-name">Tuesday, 8 Sep</div>
-            <div class="text-xs text-earth-300/90" id="weather-condition-desc">Partly Cloudy • High Humidity (59%) • Safdarjung IMD Ground Telemetry</div>
-            <div class="mt-2 flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span class="text-[10px] font-mono-tag text-emerald-400">IMD Live • Open-Meteo Ensemble</span>
+            <div class="text-xs sm:text-sm font-semibold text-earth-300 mt-0.5" id="weather-day-name">Sunday, 13 Sep</div>
+          </div>
+        </div>
+
+        <!-- Clean Key Metrics Strip (4 Balanced Cards) -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-mono">
+          <div class="p-2.5 rounded-xl bg-earth-950/60 border border-earth-700/60 flex items-center gap-2.5">
+            <span class="text-lg">💧</span>
+            <div>
+              <span class="text-[10px] text-earth-400 block font-sans uppercase font-bold tracking-wider">Rain</span>
+              <b class="text-sm text-white" id="weather-precip-val">25%</b>
+            </div>
+          </div>
+          <div class="p-2.5 rounded-xl bg-earth-950/60 border border-earth-700/60 flex items-center gap-2.5">
+            <span class="text-lg">🍃</span>
+            <div>
+              <span class="text-[10px] text-earth-400 block font-sans uppercase font-bold tracking-wider">Wind</span>
+              <b class="text-sm text-white" id="weather-wind-val">11 km/h WNW</b>
+            </div>
+          </div>
+          <div class="p-2.5 rounded-xl bg-earth-950/60 border border-earth-700/60 flex items-center gap-2.5">
+            <span class="text-lg">💦</span>
+            <div>
+              <span class="text-[10px] text-earth-400 block font-sans uppercase font-bold tracking-wider">Humidity</span>
+              <b class="text-sm text-white" id="weather-humidity-val">59%</b>
+            </div>
+          </div>
+          <div class="p-2.5 rounded-xl bg-earth-950/60 border border-earth-700/60 flex items-center gap-2.5">
+            <span class="text-lg">☀️</span>
+            <div>
+              <span class="text-[10px] text-earth-400 block font-sans uppercase font-bold tracking-wider">Sun Hours</span>
+              <span class="text-xs text-earth-200 font-bold block truncate" id="weather-sun-val">06:02 • 18:35</span>
             </div>
           </div>
         </div>
@@ -3762,517 +3822,386 @@
     </div>
 
     <!-- === TAB 1: COMMAND CENTER (MAP + FORECAST + ATTRIBUTION) === -->
-    <div id="panel-overview" class="tab-panel hidden flex flex-col gap-3 sm:gap-6 w-full min-w-0">
+    <!-- === TAB 1: COMMAND CENTER (STREAMLINED CLEAN AIR QUALITY MAP) === -->
+    <div id="panel-overview" class="tab-panel hidden flex flex-col gap-4 sm:gap-6 w-full max-w-6xl mx-auto min-w-0">
 
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
-        
-        <!-- Left: Interactive Map (7 Cols) -->
-        <div class="lg:col-span-7 natural-glass p-4 sm:p-5 rounded-3xl flex flex-col shadow-xl shadow-earth-950/40">
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3 pb-3 border-b border-earth-700/60">
-            <div>
-              <h2 class="text-sm sm:text-base font-bold text-white flex items-center gap-2">
-                <i data-lucide="map" class="w-4 h-4 text-emerald-400"></i> Delhi NCR Spatial Grid & Trans-boundary Smoke Corridor
-              </h2>
-              <p class="text-[11px] text-earth-300/75 mt-0.5">Real-time station monitors with animated NW wind transport streamlines and active fire clusters</p>
+      <div class="natural-glass p-3.5 sm:p-5 rounded-3xl flex flex-col shadow-xl shadow-earth-950/40 border border-earth-700/80">
+        <!-- Clean Header -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3 pb-3 border-b border-earth-700/60">
+          <div>
+            <h2 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+              <i data-lucide="map" class="w-5 h-5 text-emerald-400"></i> Delhi-NCR Live Air Quality Map
+            </h2>
+            <p class="text-xs text-earth-300/80 mt-0.5">Real-time CPCB station monitors and wind flow streamlines</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="openStationPickerModal()" class="px-3 py-1.5 rounded-xl bg-earth-900/90 hover:bg-earth-800 text-earth-200 hover:text-white border border-earth-700 text-xs font-semibold flex items-center gap-1.5 transition shadow-sm cursor-pointer">
+              <span>🔍</span> <span>Find Station</span>
+            </button>
+            <span class="inline-flex items-center gap-1.5 text-emerald-400 bg-emerald-950/90 px-3 py-1.5 rounded-xl border border-emerald-800 text-xs font-mono font-bold shadow-sm">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>58 Active Stations</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Live Leaflet Atmospheric Spatial Map & Vector Streamlines -->
+        <div class="relative w-full aspect-[16/11] sm:aspect-[16/9] min-h-[380px] sm:min-h-[500px] bg-[#050807] rounded-2xl border border-earth-700/90 overflow-hidden shadow-2xl flex flex-col" id="atmospheric-map-wrapper">
+          
+          <!-- Leaflet Interactive Map Container -->
+          <div id="vayu-leaflet-map" class="absolute inset-0 w-full h-full z-0 bg-[#060706]"></div>
+
+          <!-- Animated Wind Vector Streamline Canvas Overlay (pointer-events-none) -->
+          <canvas id="wind-canvas" class="absolute inset-0 w-full h-full pointer-events-none z-10"></canvas>
+
+          <!-- Top Left: Minimal Wind HUD -->
+          <div class="absolute top-3 left-3 z-20 pointer-events-none">
+            <div class="bg-earth-950/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-earth-700/80 shadow-lg text-xs flex items-center gap-2 pointer-events-auto">
+              <span class="w-2 h-2 rounded-full bg-accent-green animate-pulse"></span>
+              <span class="font-bold text-white font-mono" id="hud-synoptic-wind">NW 12.8 km/h</span>
             </div>
-            <div class="flex items-center gap-1.5 text-[11px] font-mono">
-              <button type="button" onclick="switchTab('weather')" class="inline-flex items-center gap-1.5 text-emerald-300 bg-emerald-950/90 hover:bg-emerald-900 border border-emerald-500/50 px-2.5 py-1 rounded-lg font-sans font-semibold transition cursor-pointer shadow-sm active:scale-95" title="Switch to Full Live Weather & WRF-Chem Radar">
-                <i data-lucide="cloud-sun" class="w-3.5 h-3.5 text-amber-400"></i>
-                <span>Live Weather</span>
-                <span class="text-[9px] bg-emerald-500/20 text-emerald-300 px-1 py-0.2 rounded font-mono">7-DAY</span>
-              </button>
-              <span class="inline-flex items-center gap-1 text-earth-200 bg-earth-950 px-2 py-0.5 rounded-md border border-earth-700">
-                <span class="w-2 h-2 rounded-full bg-orange-500"></span> Upwind Fires
-              </span>
-              <span class="inline-flex items-center gap-1 text-earth-200 bg-earth-950 px-2 py-0.5 rounded-md border border-earth-700">
-                <span class="w-2 h-2 rounded-full bg-emerald-400"></span> Stations
-              </span>
+            <span id="hud-synoptic-pressure" class="hidden"></span>
+            <span id="hud-pblh-val" class="hidden"></span>
+            <span id="hud-vi-val" class="hidden"></span>
+          </div>
+
+          <!-- Top Right: Clean Zoom & Location Controls -->
+          <div class="absolute top-3 right-3 z-20 flex items-center gap-2">
+            <button type="button" id="btn-zoom-delhi" class="px-3 py-1.5 rounded-xl bg-earth-950/90 backdrop-blur border border-earth-700 text-xs font-bold text-accent-green hover:bg-emerald-950 transition flex items-center gap-1.5 shadow-lg cursor-pointer">
+              📍 Delhi
+            </button>
+            <button type="button" id="btn-zoom-gps" class="px-3 py-1.5 rounded-xl bg-earth-950/90 backdrop-blur border border-earth-700 text-xs font-bold text-earth-200 hover:text-white hover:bg-earth-800 transition flex items-center gap-1.5 shadow-lg cursor-pointer">
+              🎯 GPS
+            </button>
+            <div class="flex flex-col rounded-xl overflow-hidden border border-earth-700 bg-earth-950/90 backdrop-blur shadow-xl">
+              <button type="button" id="btn-map-zoom-in" class="w-8 h-8 flex items-center justify-center text-white hover:bg-earth-800 font-bold text-sm border-b border-earth-800 cursor-pointer" title="Zoom In">+</button>
+              <button type="button" id="btn-map-zoom-out" class="w-8 h-8 flex items-center justify-center text-white hover:bg-earth-800 font-bold text-sm cursor-pointer" title="Zoom Out">−</button>
+            </div>
+            <!-- Hidden compatibility buttons -->
+            <button type="button" id="btn-zoom-punjab" class="hidden"></button>
+            <button type="button" id="btn-zoom-regional" class="hidden"></button>
+            <button type="button" id="btn-map-reset" class="hidden"></button>
+          </div>
+
+          <!-- Bottom Left: AQI Color Scale & Active Station Count -->
+          <div class="absolute bottom-12 sm:bottom-11 left-3 z-20 bg-earth-950/90 backdrop-blur-md px-2.5 py-2 rounded-xl border border-earth-700 text-[10px] flex flex-col gap-1.5 shadow-lg">
+            <div class="font-bold text-earth-200 flex items-center justify-between gap-3">
+              <span>AQI Scale</span>
+              <span class="text-earth-400 font-mono text-[9px]" id="map-active-station-count">58 Stations</span>
+            </div>
+            <div class="flex items-center gap-1.5 font-mono">
+              <span class="w-3 h-3 rounded-full bg-emerald-500" title="Good (0-50)"></span>
+              <span class="w-3 h-3 rounded-full bg-lime-500" title="Satisfactory (51-100)"></span>
+              <span class="w-3 h-3 rounded-full bg-yellow-500" title="Moderate (101-200)"></span>
+              <span class="w-3 h-3 rounded-full bg-orange-500" title="Poor (201-300)"></span>
+              <span class="w-3 h-3 rounded-full bg-red-500" title="Very Poor (301-400)"></span>
+              <span class="w-3 h-3 rounded-full bg-red-900" title="Severe (401-500)"></span>
+              <span class="w-3 h-3 rounded-full bg-fuchsia-700 animate-pulse" title="Severe+ (500+)"></span>
             </div>
           </div>
 
-          <!-- Live Leaflet Atmospheric Spatial Map & Vector Streamlines -->
-          <div class="relative w-full aspect-[16/11] sm:aspect-[16/10] lg:aspect-[16/9.5] bg-[#050807] rounded-2xl border border-earth-700/90 overflow-hidden shadow-2xl flex flex-col" id="atmospheric-map-wrapper">
-            
-            <!-- Leaflet Interactive Map Container -->
-            <div id="vayu-leaflet-map" class="absolute inset-0 w-full h-full z-0 bg-[#060706]"></div>
-
-            <!-- Animated Wind Vector Streamline Canvas Overlay (pointer-events-none) -->
-            <canvas id="wind-canvas" class="absolute inset-0 w-full h-full pointer-events-none z-10"></canvas>
-
-            <!-- Top Left: Atmospheric Synoptic Telemetry HUD -->
-            <div class="absolute top-2.5 left-2.5 z-20 flex flex-col gap-1 pointer-events-none">
-              <div class="bg-earth-950/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-earth-700/80 shadow-lg text-[11px] flex items-center gap-2 pointer-events-auto">
-                <span class="w-2 h-2 rounded-full bg-accent-green animate-pulse"></span>
-                <span class="font-bold text-white font-mono" id="hud-synoptic-wind">NW 312° @ 12.8 km/h</span>
-                <span class="text-earth-400">|</span>
-                <span class="text-amber-300 font-mono text-[10px]" id="hud-synoptic-pressure">1016.4 hPa (Ridge)</span>
-              </div>
-              <div class="hidden sm:flex items-center gap-1.5 text-[10px] font-mono pointer-events-auto">
-                <span class="bg-earth-950/80 backdrop-blur px-2 py-0.5 rounded-md border border-earth-700 text-earth-300">
-                  PBL: <b class="text-white" id="hud-pblh-val">340m (Inversion)</b>
-                </span>
-                <span class="bg-earth-950/80 backdrop-blur px-2 py-0.5 rounded-md border border-earth-700 text-earth-300">
-                  Ventilation: <b class="text-rose-300" id="hud-vi-val">1,380 m²/s</b>
-                </span>
-              </div>
-            </div>
-
-            <!-- Top Right: Zoom & Navigation HUD Controls -->
-            <div class="absolute top-2.5 right-2.5 z-20 flex flex-col items-end gap-1.5">
-              <!-- Quick Jump Pills -->
-              <div class="hidden md:flex items-center gap-1 bg-earth-950/90 backdrop-blur-md p-1 rounded-xl border border-earth-700 text-[10px] font-semibold">
-                <button type="button" onclick="switchTab('weather')" class="px-2 py-1 rounded-lg text-emerald-300 hover:bg-emerald-950/80 border border-emerald-600/40 transition flex items-center gap-1" title="Open Full Live Weather">
-                  🌦️ Weather
-                </button>
-                <button type="button" id="btn-zoom-delhi" class="px-2 py-1 rounded-lg bg-emerald-950/80 text-accent-green hover:bg-emerald-900 border border-emerald-800/60 transition">
-                  📍 Delhi NCR
-                </button>
-                <button type="button" id="btn-zoom-punjab" class="px-2 py-1 rounded-lg text-earth-200 hover:bg-earth-800 hover:text-white transition">
-                  🌾 Fire Corridor
-                </button>
-                <button type="button" id="btn-zoom-regional" class="px-2 py-1 rounded-lg text-earth-200 hover:bg-earth-800 hover:text-white transition">
-                  🌐 Synoptic View
-                </button>
-                <button type="button" id="btn-zoom-gps" class="px-2 py-1 rounded-lg text-earth-200 hover:bg-earth-800 hover:text-white transition flex items-center gap-1">
-                  🎯 My GPS
-                </button>
-              </div>
-
-              <!-- Dedicated [+] and [-] Zoom Buttons -->
-              <div class="flex flex-col rounded-xl overflow-hidden border border-earth-700 bg-earth-950/90 backdrop-blur shadow-xl">
-                <button type="button" id="btn-map-zoom-in" class="w-8 h-8 flex items-center justify-center text-white hover:bg-earth-800 active:bg-earth-700 transition font-bold text-base border-b border-earth-800" title="Zoom In">
-                  +
-                </button>
-                <button type="button" id="btn-map-zoom-out" class="w-8 h-8 flex items-center justify-center text-white hover:bg-earth-800 active:bg-earth-700 transition font-bold text-base border-b border-earth-800" title="Zoom Out">
-                  −
-                </button>
-                <button type="button" id="btn-map-reset" class="w-8 h-8 flex items-center justify-center text-earth-300 hover:text-white hover:bg-earth-800 active:bg-earth-700 transition text-[11px]" title="Reset View">
-                  ⟲
-                </button>
-              </div>
-            </div>
-
-            <!-- Bottom Left: AQI Color Scale & Active Station Count -->
-            <div class="absolute bottom-11 sm:bottom-10 left-2.5 z-20 bg-earth-950/90 backdrop-blur-md p-2 rounded-xl border border-earth-700 text-[10px] flex flex-col gap-1 shadow-lg">
-              <div class="font-bold text-earth-200 flex items-center justify-between gap-3">
-                <span>AQI Scale</span>
-                <span class="text-earth-400 font-mono text-[9px]" id="map-active-station-count">58 Stations</span>
-              </div>
-              <div class="flex items-center gap-1 font-mono">
-                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500" title="Good (0-50)"></span>
-                <span class="w-2.5 h-2.5 rounded-full bg-lime-500" title="Satisfactory (51-100)"></span>
-                <span class="w-2.5 h-2.5 rounded-full bg-yellow-500" title="Moderate (101-200)"></span>
-                <span class="w-2.5 h-2.5 rounded-full bg-orange-500" title="Poor (201-300)"></span>
-                <span class="w-2.5 h-2.5 rounded-full bg-red-500" title="Very Poor (301-400)"></span>
-                <span class="w-2.5 h-2.5 rounded-full bg-red-900" title="Severe (401-500)"></span>
-                <span class="w-2.5 h-2.5 rounded-full bg-fuchsia-700 animate-pulse" title="Severe+ (500+)"></span>
-              </div>
-            </div>
-
-            <!-- Bottom Right: Floating Layer Controls Dock -->
-            <div class="absolute bottom-11 sm:bottom-10 right-2.5 z-20 flex items-center gap-1 bg-earth-950/95 backdrop-blur-md p-1.5 rounded-xl border border-earth-700 text-[10px] font-semibold shadow-2xl">
-              <button type="button" id="layer-toggle-wind" class="px-2 py-1 rounded-lg bg-emerald-950/90 text-accent-green border border-emerald-800/80 flex items-center gap-1 transition" title="Toggle Wind Streamlines">
-                <span>🍃</span> <span class="hidden sm:inline">Wind</span>
-              </button>
-              <button type="button" id="layer-toggle-pressure" class="px-2 py-1 rounded-lg bg-emerald-950/90 text-accent-green border border-emerald-800/80 flex items-center gap-1 transition" title="Toggle Barometric Isobars">
-                <span>🌡️</span> <span class="hidden sm:inline">Pressure</span>
-              </button>
-              <button type="button" id="layer-toggle-plume" class="px-2 py-1 rounded-lg bg-emerald-950/90 text-accent-green border border-emerald-800/80 flex items-center gap-1 transition" title="Toggle Smoke Dispersion Plume">
-                <span>💨</span> <span class="hidden sm:inline">Plume</span>
-              </button>
-              <button type="button" id="layer-toggle-fires" class="px-2 py-1 rounded-lg bg-orange-950/90 text-orange-300 border border-orange-800/80 flex items-center gap-1 transition" title="Toggle Upwind Fires">
-                <span>🔥</span> <span class="hidden sm:inline">Fires</span>
-              </button>
-              <button type="button" id="layer-toggle-stations" class="px-2 py-1 rounded-lg bg-emerald-950/90 text-accent-green border border-emerald-800/80 flex items-center gap-1 transition" title="Toggle Monitoring Stations">
-                <span>📍</span> <span class="hidden sm:inline">Stations</span>
-              </button>
-            </div>
-
-            <!-- Bottom Bar: 72-Hour Forecast Time Simulation Scrub Bar -->
-            <div class="absolute bottom-0 inset-x-0 z-20 bg-earth-950/95 border-t border-earth-700/80 px-3 py-1.5 flex items-center justify-between gap-3 text-[11px]">
-              <div class="flex items-center gap-2 shrink-0">
-                <button type="button" id="btn-map-play-forecast" class="px-2 py-0.5 rounded-md bg-emerald-950 text-accent-green border border-emerald-800 hover:bg-emerald-900 font-bold flex items-center gap-1">
-                  <span id="map-play-icon">▶</span> <span class="text-[10px]">Play 72h</span>
-                </button>
-                <span class="font-mono text-earth-300 text-[10px] hidden sm:inline" id="map-timeline-label">T+0h (Live Ground State)</span>
-              </div>
-              <div class="flex-1 max-w-md flex items-center gap-2">
-                <input type="range" id="map-forecast-slider" min="0" max="72" step="6" value="0" class="w-full accent-[#6fe2a3] cursor-pointer h-1.5 bg-earth-800 rounded-lg">
-                <span class="font-mono text-white text-[10px] shrink-0" id="map-forecast-step-text">Now</span>
-              </div>
-            </div>
-
+          <!-- Bottom Right: Floating Layer Controls Dock -->
+          <div class="absolute bottom-12 sm:bottom-11 right-3 z-20 flex items-center gap-1.5 bg-earth-950/95 backdrop-blur-md p-1.5 rounded-xl border border-earth-700 text-xs font-semibold shadow-2xl">
+            <button type="button" id="layer-toggle-wind" class="px-2.5 py-1 rounded-lg bg-emerald-950/90 text-accent-green border border-emerald-800/80 flex items-center gap-1.5 transition cursor-pointer" title="Toggle Wind Streamlines">
+              <span>🍃</span> <span>Wind</span>
+            </button>
+            <button type="button" id="layer-toggle-fires" class="px-2.5 py-1 rounded-lg bg-orange-950/90 text-orange-300 border border-orange-800/80 flex items-center gap-1.5 transition cursor-pointer" title="Toggle Upwind Fires">
+              <span>🔥</span> <span>Fires</span>
+            </button>
+            <button type="button" id="layer-toggle-stations" class="px-2.5 py-1 rounded-lg bg-emerald-950/90 text-accent-green border border-emerald-800/80 flex items-center gap-1.5 transition cursor-pointer" title="Toggle Monitoring Stations">
+              <span>📍</span> <span>Stations</span>
+            </button>
+            <!-- Hidden compatibility layer buttons -->
+            <button type="button" id="layer-toggle-pressure" class="hidden"></button>
+            <button type="button" id="layer-toggle-plume" class="hidden"></button>
           </div>
 
-          <!-- Interactive Station Inspector Card -->
-          <div id="station-inspector" class="mt-3.5 p-3.5 rounded-2xl bg-earth-950/95 border border-earth-700/90 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
-            <div class="flex-1">
-              <div class="flex items-center gap-2">
-                <span class="text-[10px] font-bold font-mono text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded border border-emerald-800" id="inspect-station-id">DEL001</span>
-                <h3 class="text-sm font-bold text-white flex items-center gap-1.5" id="inspect-station-name">Punjabi Bagh</h3>
-                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold font-mono bg-amber-950 text-amber-300 border border-amber-700" id="inspect-station-category-badge">MODERATE</span>
-              </div>
-              <p class="text-[11px] text-earth-300/80 mt-0.5" id="inspect-station-desc">West Delhi • Commercial & Ring Road Corridor • DPCC</p>
-            </div>
-            
-            <div class="flex flex-wrap items-center gap-4 text-xs font-mono">
-              <div>
-                <span class="text-earth-400 text-[10px] block">Live AQI</span>
-                <b class="text-base text-amber-300" id="inspect-station-aqi">163</b>
-              </div>
-              <div>
-                <span class="text-earth-400 text-[10px] block">PM2.5</span>
-                <b class="text-white" id="inspect-station-pm25">284 μg/m³</b>
-              </div>
-              <div>
-                <span class="text-earth-400 text-[10px] block">PM10</span>
-                <b class="text-white" id="inspect-station-pm10">410 μg/m³</b>
-              </div>
-              <div>
-                <span class="text-earth-400 text-[10px] block">Pressure</span>
-                <b class="text-amber-300" id="inspect-station-pressure">1016.2 hPa</b>
-              </div>
-              <div>
-                <span class="text-earth-400 text-[10px] block">Wind</span>
-                <b class="text-emerald-300" id="inspect-station-wind">8.5 km/h</b>
-              </div>
-              <button type="button" id="btn-inspect-set-active" class="px-3 py-1.5 rounded-xl bg-emerald-950 text-accent-green hover:bg-emerald-900 border border-emerald-700 text-[11px] font-bold transition flex items-center gap-1 shadow-md">
-                <span>✓</span> Set Active Station
+          <!-- Bottom Bar: 72-Hour Forecast Time Simulation Scrub Bar -->
+          <div class="absolute bottom-0 inset-x-0 z-20 bg-earth-950/95 border-t border-earth-700/80 px-3.5 py-2 flex items-center justify-between gap-3 text-xs">
+            <div class="flex items-center gap-2 shrink-0">
+              <button type="button" id="btn-map-play-forecast" class="px-2.5 py-1 rounded-lg bg-emerald-950 text-accent-green border border-emerald-800 hover:bg-emerald-900 font-bold flex items-center gap-1.5 cursor-pointer">
+                <span id="map-play-icon">▶</span> <span>Play 72h</span>
               </button>
+              <span class="font-mono text-earth-300 text-xs hidden sm:inline" id="map-timeline-label">T+0h (Live Ground State)</span>
+            </div>
+            <div class="flex-1 max-w-md flex items-center gap-3">
+              <input type="range" id="map-forecast-slider" min="0" max="72" step="6" value="0" class="w-full accent-[#6fe2a3] cursor-pointer h-2 bg-earth-800 rounded-lg">
+              <span class="font-mono text-white text-xs shrink-0 font-bold" id="map-forecast-step-text">Now</span>
             </div>
           </div>
 
         </div>
 
-        <!-- Right: Forecast Curve + Source Attribution (5 Cols) -->
-        <div class="lg:col-span-5 flex flex-col gap-4 sm:gap-6">
+        <!-- Interactive Station Inspector Card -->
+        <div id="station-inspector" class="mt-4 p-4 rounded-2xl bg-earth-950/95 border border-earth-700/90 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div>
+            <div class="flex items-center gap-2.5">
+              <h3 class="text-base sm:text-lg font-bold text-white" id="inspect-station-name">Punjabi Bagh</h3>
+              <span class="px-2.5 py-0.5 rounded-full text-xs font-bold font-mono bg-amber-950 text-amber-300 border border-amber-700" id="inspect-station-category-badge">MODERATE</span>
+            </div>
+            <p class="text-xs text-earth-300 mt-1" id="inspect-station-desc">West Delhi • Continuous CPCB Ground Station</p>
+          </div>
           
-          <div class="natural-glass p-3.5 sm:p-5 rounded-3xl flex flex-col shadow-xl shadow-earth-950/40">
-            <div class="flex items-center justify-between gap-2 mb-3 pb-2 border-b border-earth-700/60">
-              <div class="min-w-0 flex-1">
-                <h2 class="text-sm sm:text-base font-bold text-white flex items-center gap-1.5 truncate">
-                  <i data-lucide="trending-up" class="w-4 h-4 text-sky-400 shrink-0"></i> 
-                  <span class="truncate">Coupled 72-Hour Forecast</span>
-                </h2>
-                <p class="text-[10px] sm:text-[11px] text-earth-300/75 truncate">Physics modulated with Boundary Layer & Inversion</p>
-              </div>
-              <span class="text-[10px] font-mono text-emerald-300 bg-emerald-950/90 px-2 py-1 rounded-lg border border-emerald-800 shrink-0 max-w-[125px] truncate text-right" id="forecast-station-badge">Punjabi Bagh</span>
+          <div class="flex items-center flex-wrap gap-2.5 text-xs font-mono w-full md:w-auto justify-between md:justify-end">
+            <div class="bg-earth-900/90 px-3.5 py-2 rounded-xl border border-earth-700 text-center min-w-[70px]">
+              <span class="text-earth-400 text-[9px] block uppercase font-bold">AQI</span>
+              <b class="text-lg text-amber-300 font-bold" id="inspect-station-aqi">163</b>
             </div>
-
-            <!-- Milestone Forecast Badges -->
-            <div class="grid grid-cols-3 gap-1.5 sm:gap-2 my-1.5">
-              <div class="p-2 sm:p-2.5 rounded-2xl bg-earth-950/90 border border-earth-700 text-center min-w-0 overflow-hidden">
-                <span class="text-[8px] sm:text-[9px] font-bold text-earth-300 uppercase font-mono truncate block">+24h Lead</span>
-                <span class="text-lg sm:text-2xl font-black font-mono my-0.5 block truncate" id="fc-24h-val">--</span>
-                <span class="text-[8px] sm:text-[9px] px-1.5 py-0.5 rounded-full font-semibold inline-block truncate max-w-full" id="fc-24h-cat">Loading...</span>
-              </div>
-              <div class="p-2 sm:p-2.5 rounded-2xl bg-earth-950/90 border border-emerald-700/80 text-center ring-1 ring-emerald-400/30 min-w-0 overflow-hidden">
-                <span class="text-[8px] sm:text-[9px] font-bold text-emerald-400 uppercase font-mono truncate block">+48h Lead ⚡</span>
-                <span class="text-lg sm:text-2xl font-black font-mono text-emerald-300 my-0.5 block truncate" id="fc-48h-val">--</span>
-                <span class="text-[8px] sm:text-[9px] px-1.5 py-0.5 rounded-full font-semibold inline-block truncate max-w-full" id="fc-48h-cat">Loading...</span>
-              </div>
-              <div class="p-2 sm:p-2.5 rounded-2xl bg-earth-950/90 border border-earth-700 text-center min-w-0 overflow-hidden">
-                <span class="text-[8px] sm:text-[9px] font-bold text-purple-300 uppercase font-mono truncate block">+72h Lead</span>
-                <span class="text-lg sm:text-2xl font-black font-mono my-0.5 block truncate" id="fc-72h-val">--</span>
-                <span class="text-[8px] sm:text-[9px] px-1.5 py-0.5 rounded-full font-semibold inline-block truncate max-w-full" id="fc-72h-cat">Loading...</span>
-              </div>
+            <div class="bg-earth-900/90 px-3.5 py-2 rounded-xl border border-earth-700 text-center min-w-[80px]">
+              <span class="text-earth-400 text-[9px] block uppercase font-bold">PM2.5</span>
+              <b class="text-sm text-white font-bold" id="inspect-station-pm25">284 μg/m³</b>
             </div>
-
-            <!-- SVG Forecast Line Chart -->
-            <div class="mt-2 relative w-full aspect-[16/9] bg-[#06100E] rounded-2xl border border-earth-700/80 p-2">
-              <svg id="forecast-chart-svg" viewBox="0 0 500 240" class="w-full h-full overflow-visible select-none">
-                <defs>
-                  <linearGradient id="fc-ci-grad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stop-color="#34D399" stop-opacity="0.30"/>
-                    <stop offset="100%" stop-color="#34D399" stop-opacity="0.04"/>
-                  </linearGradient>
-                </defs>
-
-                <!-- Y-Axis Grid Lines -->
-                <line x1="42" y1="30" x2="480" y2="30" stroke="#1D3832" stroke-dasharray="3 3" />
-                <line x1="42" y1="66" x2="480" y2="66" stroke="#EF4444" stroke-width="1.2" stroke-dasharray="4 4" opacity="0.85"/>
-                <line x1="42" y1="102" x2="480" y2="102" stroke="#1D3832" stroke-dasharray="3 3" />
-                <line x1="42" y1="138" x2="480" y2="138" stroke="#1D3832" stroke-dasharray="3 3" />
-                <line x1="42" y1="174" x2="480" y2="174" stroke="#1D3832" stroke-dasharray="3 3" />
-                <line x1="42" y1="210" x2="480" y2="210" stroke="#2C4A45" stroke-width="1.5" />
-
-                <!-- Y-Axis Numeric Labels -->
-                <text x="36" y="33" text-anchor="end" fill="#94A3B8" font-size="9" font-family="monospace">500</text>
-                <text x="36" y="69" text-anchor="end" fill="#EF4444" font-size="9" font-family="monospace">400</text>
-                <text x="36" y="105" text-anchor="end" fill="#F97316" font-size="9" font-family="monospace">300</text>
-                <text x="36" y="141" text-anchor="end" fill="#EAB308" font-size="9" font-family="monospace">200</text>
-                <text x="36" y="177" text-anchor="end" fill="#06B6D4" font-size="9" font-family="monospace">100</text>
-                <text x="36" y="213" text-anchor="end" fill="#10B981" font-size="9" font-family="monospace">0</text>
-
-                <!-- Severe 400 AQI Benchmark Text -->
-                <text x="478" y="60" text-anchor="end" fill="#EF4444" font-size="9" font-weight="bold" font-family="monospace" opacity="0.9">GRAP IV (400 AQI)</text>
-
-                <!-- Vertical Milestone Guidelines -->
-                <line x1="188" y1="30" x2="188" y2="210" stroke="#38BDF8" stroke-dasharray="3 3" opacity="0.35"/>
-                <line x1="334" y1="30" x2="334" y2="210" stroke="#34D399" stroke-dasharray="3 3" opacity="0.35"/>
-                <line x1="480" y1="30" x2="480" y2="210" stroke="#A855F7" stroke-dasharray="3 3" opacity="0.35"/>
-
-                <!-- X-Axis Milestone Labels -->
-                <text x="42" y="228" text-anchor="middle" fill="#94A3B8" font-size="9" font-family="monospace">Now</text>
-                <text x="115" y="228" text-anchor="middle" fill="#64748B" font-size="9" font-family="monospace">+12h</text>
-                <text x="188" y="228" text-anchor="middle" fill="#38BDF8" font-size="9" font-weight="bold" font-family="monospace">+24h</text>
-                <text x="261" y="228" text-anchor="middle" fill="#64748B" font-size="9" font-family="monospace">+36h</text>
-                <text x="334" y="228" text-anchor="middle" fill="#34D399" font-size="9" font-weight="bold" font-family="monospace">+48h</text>
-                <text x="407" y="228" text-anchor="middle" fill="#64748B" font-size="9" font-family="monospace">+60h</text>
-                <text x="480" y="228" text-anchor="middle" fill="#A855F7" font-size="9" font-weight="bold" font-family="monospace">+72h</text>
-
-                <!-- Confidence Interval & Forecast Curves -->
-                <polygon id="svg-ci-band" points="" fill="url(#fc-ci-grad)" stroke="none" />
-                <polyline id="svg-fc-line" points="" fill="none" stroke="#34D399" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
-
-                <!-- Milestone Pin Dots -->
-                <circle id="svg-pin-24" cx="188" cy="120" r="4" fill="#38BDF8" stroke="#06100E" stroke-width="2"/>
-                <circle id="svg-pin-48" cx="334" cy="100" r="4" fill="#34D399" stroke="#06100E" stroke-width="2"/>
-                <circle id="svg-pin-72" cx="480" cy="140" r="4" fill="#A855F7" stroke="#06100E" stroke-width="2"/>
-
-                <!-- Interactive Hover Crosshair / Tooltip -->
-                <g id="fc-hover-group" opacity="0" class="pointer-events-none transition-opacity duration-150">
-                  <line id="fc-hover-line" x1="0" y1="28" x2="0" y2="210" stroke="#FFFFFF" stroke-dasharray="2 2" stroke-width="1" opacity="0.6"/>
-                  <circle id="fc-hover-circle" cx="0" cy="0" r="4.5" fill="#FFFFFF" stroke="#34D399" stroke-width="2"/>
-                  <g id="fc-hover-box-group">
-                    <rect id="fc-hover-bg" x="0" y="0" width="100" height="34" rx="6" fill="#030712" stroke="#374151" stroke-width="1" opacity="0.95"/>
-                    <text id="fc-hover-lead" x="6" y="14" fill="#9CA3AF" font-size="9" font-family="monospace">+0h Lead</text>
-                    <text id="fc-hover-val" x="6" y="27" fill="#34D399" font-size="11" font-weight="bold" font-family="monospace">AQI --</text>
-                  </g>
-                </g>
-              </svg>
+            <div class="bg-earth-900/90 px-3.5 py-2 rounded-xl border border-earth-700 text-center min-w-[80px]">
+              <span class="text-earth-400 text-[9px] block uppercase font-bold">Wind</span>
+              <b class="text-sm text-emerald-300 font-bold" id="inspect-station-wind">8.5 km/h</b>
             </div>
-
-            <!-- Physics Decomposition -->
-            <div class="mt-2.5 p-2.5 rounded-2xl bg-earth-950/90 border border-earth-700 text-xs">
-              <div class="font-bold text-earth-200 flex items-center justify-between text-[11px]">
-                <span>Physics Coupling Breakdown (+48h)</span>
-                <span class="text-emerald-400 font-mono text-[10px]">Explained</span>
-              </div>
-              <div class="grid grid-cols-3 gap-1.5 mt-2 font-mono text-[10px]">
-                <div class="p-1.5 rounded-xl bg-earth-900 border border-earth-700/80">
-                  <div class="text-orange-400 font-bold" id="decomp-stubble">+-- AQI</div>
-                  <div class="text-[9px] text-earth-300/70 truncate">Stubble NW Plume</div>
-                </div>
-                <div class="p-1.5 rounded-xl bg-earth-900 border border-earth-700/80">
-                  <div class="text-amber-400 font-bold" id="decomp-inversion">+-- AQI</div>
-                  <div class="text-[9px] text-earth-300/70 truncate">Inversion Trapping</div>
-                </div>
-                <div class="p-1.5 rounded-xl bg-earth-900 border border-earth-700/80">
-                  <div class="text-earth-200 font-bold" id="decomp-urban">+-- AQI</div>
-                  <div class="text-[9px] text-earth-300/70 truncate">Urban Baseline</div>
-                </div>
-              </div>
-            </div>
-
+            <button type="button" id="btn-inspect-set-active" class="px-4 py-2.5 rounded-xl bg-emerald-950 text-accent-green hover:bg-emerald-900 border border-emerald-700 text-xs font-bold transition flex items-center gap-1.5 shadow-md cursor-pointer ml-auto md:ml-0">
+              <span>✓</span> <span>Set Active Station</span>
+            </button>
+            <!-- Hidden data elements for JS compatibility -->
+            <span id="inspect-station-id" class="hidden">DEL001</span>
+            <span id="inspect-station-pm10" class="hidden">410 μg/m³</span>
+            <span id="inspect-station-pressure" class="hidden">1016.2 hPa</span>
           </div>
+        </div>
 
-          <!-- Dynamic Source Apportionment -->
-          <div class="natural-glass p-4 sm:p-5 rounded-3xl flex flex-col shadow-xl shadow-earth-950/40">
-            <div class="flex items-center justify-between mb-2.5 pb-2 border-b border-earth-700/60">
-              <h2 class="text-sm sm:text-base font-bold text-white flex items-center gap-2">
-                <i data-lucide="pie-chart" class="w-4 h-4 text-emerald-400"></i> Dynamic Source Apportionment
-              </h2>
-            </div>
-            <div class="flex flex-col gap-2" id="source-attribution-list"></div>
-          </div>
-
+        <!-- Clean Quick Zone Filters Strip -->
+        <div class="mt-3 flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
+          <span class="text-[11px] font-mono text-earth-400 uppercase font-bold shrink-0">Zones:</span>
+          <button type="button" onclick="filterStationsByZone(''); openStationPickerModal();" class="px-2.5 py-1 rounded-lg bg-earth-900/80 hover:bg-earth-800 text-earth-200 border border-earth-800 text-xs font-medium shrink-0 transition cursor-pointer">All (58)</button>
+          <button type="button" onclick="filterStationsByZone('West Delhi'); openStationPickerModal();" class="px-2.5 py-1 rounded-lg bg-earth-900/80 hover:bg-earth-800 text-earth-200 border border-earth-800 text-xs font-medium shrink-0 transition cursor-pointer">West Delhi</button>
+          <button type="button" onclick="filterStationsByZone('Central Delhi'); openStationPickerModal();" class="px-2.5 py-1 rounded-lg bg-earth-900/80 hover:bg-earth-800 text-earth-200 border border-earth-800 text-xs font-medium shrink-0 transition cursor-pointer">Central Delhi</button>
+          <button type="button" onclick="filterStationsByZone('South Delhi'); openStationPickerModal();" class="px-2.5 py-1 rounded-lg bg-earth-900/80 hover:bg-earth-800 text-earth-200 border border-earth-800 text-xs font-medium shrink-0 transition cursor-pointer">South Delhi</button>
+          <button type="button" onclick="filterStationsByZone('North Delhi'); openStationPickerModal();" class="px-2.5 py-1 rounded-lg bg-earth-900/80 hover:bg-earth-800 text-earth-200 border border-earth-800 text-xs font-medium shrink-0 transition cursor-pointer">North Delhi</button>
+          <button type="button" onclick="filterStationsByZone('East Delhi'); openStationPickerModal();" class="px-2.5 py-1 rounded-lg bg-earth-900/80 hover:bg-earth-800 text-earth-200 border border-earth-800 text-xs font-medium shrink-0 transition cursor-pointer">East Delhi</button>
+          <button type="button" onclick="filterStationsByZone('NCR'); openStationPickerModal();" class="px-2.5 py-1 rounded-lg bg-earth-900/80 hover:bg-earth-800 text-earth-200 border border-earth-800 text-xs font-medium shrink-0 transition cursor-pointer">NCR Fringe</button>
         </div>
 
       </div>
 
-      <!-- ================= 1. HERO AQI READING PANEL ================= -->
-      <section class="hero-card p-4 sm:p-5 rounded-[14px] border border-[#262A26] bg-[#131513] flex flex-col gap-3.5 w-full">
-        <!-- Top Row: Active Station & Status Badge -->
-        <div class="flex items-center justify-between gap-3 flex-wrap">
-          <button onclick="openStationPickerModal()" class="flex items-center gap-2 text-xs font-mono-data bg-[#191C19] hover:bg-[#1E221E] px-3 py-1.5 rounded-xl border border-[#262A26] text-[#EEF0EC] transition cursor-pointer active:scale-98">
-            <span class="w-2 h-2 rounded-full bg-[#8FFFB0] animate-pulse"></span>
-            <span id="mob-hero-station-name" class="font-bold text-xs truncate max-w-[200px] sm:max-w-none">Punjabi Bagh, Delhi</span>
-            <span class="text-[11px] text-[#8C948B]">Change station</span>
-          </button>
-          
-          <div class="flex items-center gap-2">
-            <span id="mob-hero-live-badge" class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-950/80 text-emerald-300 border border-emerald-500/30 text-[10px] font-mono-tag font-bold"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> LIVE WAQI</span>
-            <button id="live-waqi-refresh-btn" onclick="VayuWaqiService.refresh()" title="Refresh live telemetry" class="p-1.5 rounded-lg bg-[#191C19] border border-[#262A26] hover:border-emerald-500/40 text-slate-300 hover:text-emerald-300 transition cursor-pointer flex items-center justify-center">
-              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+      <!-- Hidden Telemetry & Compatibility Data Bridge -->
+      <div class="hidden" aria-hidden="true" style="display:none !important">
+        <!-- Hidden Forecast elements for JS compatibility -->
+        <div id="forecast-station-badge">Punjabi Bagh</div>
+        <span id="fc-24h-val">--</span>
+        <span id="fc-24h-cat">--</span>
+        <span id="fc-48h-val">--</span>
+        <span id="fc-48h-cat">--</span>
+        <span id="fc-72h-val">--</span>
+        <span id="fc-72h-cat">--</span>
+        <svg id="forecast-chart-svg" viewBox="0 0 500 240">
+          <polygon id="svg-ci-band" points="" />
+          <polyline id="svg-fc-line" points="" />
+          <circle id="svg-pin-24" cx="188" cy="120" r="4" />
+          <circle id="svg-pin-48" cx="334" cy="100" r="4" />
+          <circle id="svg-pin-72" cx="480" cy="140" r="4" />
+          <g id="fc-hover-group">
+            <line id="fc-hover-line" x1="0" y1="28" x2="0" y2="210" />
+            <circle id="fc-hover-circle" cx="0" cy="0" r="4.5" />
+            <g id="fc-hover-box-group">
+              <rect id="fc-hover-bg" x="0" y="0" width="100" height="34" />
+              <text id="fc-hover-lead" x="6" y="14"></text>
+              <text id="fc-hover-val" x="6" y="27"></text>
+            </g>
+          </g>
+        </svg>
+        <div id="decomp-stubble"></div>
+        <div id="decomp-inversion"></div>
+        <div id="decomp-urban"></div>
+        <div id="source-attribution-list"></div>
+        <!-- ================= 1. HERO AQI READING PANEL ================= -->
+        <section class="hero-card p-4 sm:p-5 rounded-[14px] border border-[#262A26] bg-[#131513] flex flex-col gap-3.5 w-full">
+          <!-- Top Row: Active Station & Status Badge -->
+          <div class="flex items-center justify-between gap-3 flex-wrap">
+            <button onclick="openStationPickerModal()" class="flex items-center gap-2 text-xs font-mono-data bg-[#191C19] hover:bg-[#1E221E] px-3 py-1.5 rounded-xl border border-[#262A26] text-[#EEF0EC] transition cursor-pointer active:scale-98">
+              <span class="w-2 h-2 rounded-full bg-[#8FFFB0] animate-pulse"></span>
+              <span id="mob-hero-station-name" class="font-bold text-xs truncate max-w-[200px] sm:max-w-none">Punjabi Bagh, Delhi</span>
+              <span class="text-[11px] text-[#8C948B]">Change station</span>
             </button>
-            <span id="mob-hero-category" class="text-[10px] font-bold px-2.5 py-1 rounded-full badge-orange font-mono-tag">SEVERE</span>
-            <span class="text-[10px] font-mono-tag font-bold px-2.5 py-1 rounded-full badge-orange" id="mob-hero-grap-stage">GRAP IV</span>
-          </div>
-        </div>
-
-        <!-- Central AQI Number & MoES Official Advisory -->
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 py-1">
-          <div>
-            <div class="flex items-center gap-2 text-[11px] font-mono-data text-[#8C948B]">
-              <span>COUPLED REAL-TIME NAQI</span>
-              <span id="live-source-subtext" class="text-[10px] text-emerald-400/90">• CPCB Ground Monitor</span>
-            </div>
-            <div class="flex items-baseline gap-2.5">
-              <span id="mob-hero-aqi-val" class="text-5xl sm:text-6xl font-bold font-serif-display text-[#FF9D7F]">157</span>
-              <!-- Desktop synced id element -->
-              <span id="curr-aqi-val" class="hidden">157</span>
-              <span id="curr-aqi-category-badge" class="hidden">Moderate</span>
-              <span class="text-xs font-mono-data text-[#8C948B]">NAQI</span>
-            </div>
-            <div id="mob-hero-advisory" class="text-xs text-[#EEF0EC] mt-1 font-sans-ui max-w-[70ch] leading-relaxed">
-              Air quality is moderate. Sensitive groups should limit prolonged outdoor exertion.
+            
+            <div class="flex items-center gap-2">
+              <span id="mob-hero-live-badge" class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-950/80 text-emerald-300 border border-emerald-500/30 text-[10px] font-mono-tag font-bold"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> LIVE WAQI</span>
+              <button id="live-waqi-refresh-btn" onclick="VayuWaqiService.refresh()" title="Refresh live telemetry" class="p-1.5 rounded-lg bg-[#191C19] border border-[#262A26] hover:border-emerald-500/40 text-slate-300 hover:text-emerald-300 transition cursor-pointer flex items-center justify-center">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+              </button>
+              <span id="mob-hero-category" class="text-[10px] font-bold px-2.5 py-1 rounded-full badge-orange font-mono-tag">SEVERE</span>
+              <span class="text-[10px] font-mono-tag font-bold px-2.5 py-1 rounded-full badge-orange" id="mob-hero-grap-stage">GRAP IV</span>
             </div>
           </div>
 
-          <!-- Secondary Action Pill -->
-          <div class="flex items-center gap-2 shrink-0 self-start sm:self-center">
-            <button onclick="switchTab('grap')" class="px-3.5 py-2 rounded-xl bg-[#191C19] hover:bg-[#202520] border border-[#262A26] text-xs font-sans-ui text-[#EEF0EC] font-semibold transition cursor-pointer">
-              View response plan
+          <!-- Central AQI Number & MoES Official Advisory -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 py-1">
+            <div>
+              <div class="flex items-center gap-2 text-[11px] font-mono-data text-[#8C948B]">
+                <span>COUPLED REAL-TIME NAQI</span>
+                <span id="live-source-subtext" class="text-[10px] text-emerald-400/90">• CPCB Ground Monitor</span>
+              </div>
+              <div class="flex items-baseline gap-2.5">
+                <span id="mob-hero-aqi-val" class="text-5xl sm:text-6xl font-bold font-serif-display text-[#FF9D7F]">157</span>
+                <!-- Desktop synced id element -->
+                <span id="curr-aqi-val" class="hidden">157</span>
+                <span id="curr-aqi-category-badge" class="hidden">Moderate</span>
+                <span class="text-xs font-mono-data text-[#8C948B]">NAQI</span>
+              </div>
+              <div id="mob-hero-advisory" class="text-xs text-[#EEF0EC] mt-1 font-sans-ui max-w-[70ch] leading-relaxed">
+                Air quality is moderate. Sensitive groups should limit prolonged outdoor exertion.
+              </div>
+            </div>
+
+            <!-- Secondary Action Pill -->
+            <div class="flex items-center gap-2 shrink-0 self-start sm:self-center">
+              <button onclick="switchTab('grap')" class="px-3.5 py-2 rounded-xl bg-[#191C19] hover:bg-[#202520] border border-[#262A26] text-xs font-sans-ui text-[#EEF0EC] font-semibold transition cursor-pointer">
+                View response plan
+              </button>
+              <button onclick="switchTab('copilot')" class="px-3.5 py-2 rounded-xl bg-[#191C19] hover:bg-[#202520] border border-[#262A26] text-xs font-sans-ui text-[#7FD4FF] font-semibold transition cursor-pointer">
+                Ask VayuAI
+              </button>
+            </div>
+          </div>
+
+          <!-- Ground Meteorological Telemetry Strip -->
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 pt-3 border-t border-[#262A26] text-xs font-mono-data">
+            <!-- Temp -->
+            <div class="bg-[#191C19] p-2.5 rounded-xl border border-[#262A26]">
+              <div class="text-[10px] text-[#8C948B]">TEMPERATURE</div>
+              <div id="mob-hero-temp" class="text-sm font-bold text-[#EEF0EC] mt-0.5">24°C</div>
+            </div>
+            <!-- Wind -->
+            <div class="bg-[#191C19] p-2.5 rounded-xl border border-[#262A26]">
+              <div class="text-[10px] text-[#8C948B]">WIND VECTOR</div>
+              <div class="flex items-center gap-1.5 mt-0.5">
+                <span id="curr-wind-speed" class="text-sm font-bold text-[#EEF0EC]">8.5 km/h</span>
+                <span id="curr-wind-dir" class="text-[10px] text-[#8C948B]">NW</span>
+                <span id="mob-hero-wind" class="hidden">8.5 NW</span>
+                <span id="wind-compass-needle" class="hidden"></span>
+              </div>
+            </div>
+            <!-- PM2.5 -->
+            <div class="bg-[#191C19] p-2.5 rounded-xl border border-[#262A26]">
+              <div class="text-[10px] text-[#8C948B]">PM2.5 SENSOR</div>
+              <div class="text-sm font-bold text-[#FF9D7F] mt-0.5"><span id="curr-pm25-val">284</span> <span class="text-[10px] text-[#8C948B]">μg/m³</span></div>
+              <span id="mob-hero-pm25" class="hidden">284</span>
+            </div>
+            <!-- PBLH -->
+            <div class="bg-[#191C19] p-2.5 rounded-xl border border-[#262A26]">
+              <div class="text-[10px] text-[#8C948B]">PBL HEIGHT</div>
+              <div class="text-sm font-bold text-[#7FD4FF] mt-0.5" id="curr-pblh-val">340 m</div>
+              <span id="mob-hero-pbl" class="hidden">340m</span>
+              <div class="hidden" id="pblh-bar"></div>
+              <span class="hidden" id="pblh-subtext"></span>
+            </div>
+            <!-- Ventilation Index -->
+            <div class="bg-[#191C19] p-2.5 rounded-xl border border-[#262A26]">
+              <div class="text-[10px] text-[#8C948B]">VENTILATION</div>
+              <div class="text-sm font-bold text-[#FFE270] mt-0.5" id="curr-vi-val">1,380 m²/s</div>
+              <span class="hidden" id="curr-vi-status">Evaluating</span>
+            </div>
+            <!-- Inversion / Fires -->
+            <div class="bg-[#191C19] p-2.5 rounded-xl border border-[#262A26]">
+              <div class="text-[10px] text-[#8C948B]">FARM FIRES</div>
+              <div class="text-sm font-bold text-[#FF9D7F] mt-0.5" id="curr-fire-count">1,420 fires</div>
+              <span class="hidden" id="curr-inversion-val"></span>
+              <span class="hidden" id="curr-trapping-status"></span>
+              <span class="hidden" id="stubble-share-badge"></span>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= 2. HORIZONTAL ZONE BREAKDOWN STRIP ================= -->
+        <section class="w-full flex flex-col gap-2">
+          <div class="flex items-center justify-between px-0.5">
+            <span class="text-[11px] font-mono-data text-[#8C948B]">DELHI-NCR REGIONAL ZONES</span>
+            <button onclick="openStationPickerModal()" class="text-[11px] font-mono-data text-[#7FD4FF] hover:underline cursor-pointer">
+              View all 58 stations
             </button>
-            <button onclick="switchTab('copilot')" class="px-3.5 py-2 rounded-xl bg-[#191C19] hover:bg-[#202520] border border-[#262A26] text-xs font-sans-ui text-[#7FD4FF] font-semibold transition cursor-pointer">
-              Ask VayuAI
-            </button>
           </div>
-        </div>
+          <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1" id="command-center-zone-strip">
+            <div onclick="filterStationsByZone('West Delhi'); openStationPickerModal();" class="surface-card p-3 rounded-xl border border-[#262A26] hover:border-[#383E38] transition cursor-pointer min-w-[140px] shrink-0 flex flex-col gap-1.5">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold text-[#EEF0EC]">West Delhi</span>
+                <span id="zone-dot-west" class="w-2 h-2 rounded-full bg-[#7FD4FF]"></span>
+              </div>
+              <div class="flex items-baseline gap-1.5">
+                <span id="zone-aqi-west" class="text-xl font-bold font-serif-display text-[#7FD4FF]">187</span>
+                <span class="text-[10px] font-mono-data text-[#8C948B]">AQI</span>
+              </div>
+              <span class="text-[10px] font-mono-data text-[#8C948B]">5 stations</span>
+            </div>
 
-        <!-- Ground Meteorological Telemetry Strip -->
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 pt-3 border-t border-[#262A26] text-xs font-mono-data">
-          <!-- Temp -->
-          <div class="bg-[#191C19] p-2.5 rounded-xl border border-[#262A26]">
-            <div class="text-[10px] text-[#8C948B]">TEMPERATURE</div>
-            <div id="mob-hero-temp" class="text-sm font-bold text-[#EEF0EC] mt-0.5">24°C</div>
-          </div>
-          <!-- Wind -->
-          <div class="bg-[#191C19] p-2.5 rounded-xl border border-[#262A26]">
-            <div class="text-[10px] text-[#8C948B]">WIND VECTOR</div>
-            <div class="flex items-center gap-1.5 mt-0.5">
-              <span id="curr-wind-speed" class="text-sm font-bold text-[#EEF0EC]">8.5 km/h</span>
-              <span id="curr-wind-dir" class="text-[10px] text-[#8C948B]">NW</span>
-              <span id="mob-hero-wind" class="hidden">8.5 NW</span>
-              <span id="wind-compass-needle" class="hidden"></span>
+            <div onclick="filterStationsByZone('North Delhi'); openStationPickerModal();" class="surface-card p-3 rounded-xl border border-[#262A26] hover:border-[#383E38] transition cursor-pointer min-w-[140px] shrink-0 flex flex-col gap-1.5">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold text-[#EEF0EC]">North Delhi</span>
+                <span id="zone-dot-north" class="w-2 h-2 rounded-full bg-[#FFE270]"></span>
+              </div>
+              <div class="flex items-baseline gap-1.5">
+                <span id="zone-aqi-north" class="text-xl font-bold font-serif-display text-[#FFE270]">256</span>
+                <span class="text-[10px] font-mono-data text-[#8C948B]">AQI</span>
+              </div>
+              <span class="text-[10px] font-mono-data text-[#8C948B]">14 stations</span>
             </div>
-          </div>
-          <!-- PM2.5 -->
-          <div class="bg-[#191C19] p-2.5 rounded-xl border border-[#262A26]">
-            <div class="text-[10px] text-[#8C948B]">PM2.5 SENSOR</div>
-            <div class="text-sm font-bold text-[#FF9D7F] mt-0.5"><span id="curr-pm25-val">284</span> <span class="text-[10px] text-[#8C948B]">μg/m³</span></div>
-            <span id="mob-hero-pm25" class="hidden">284</span>
-          </div>
-          <!-- PBLH -->
-          <div class="bg-[#191C19] p-2.5 rounded-xl border border-[#262A26]">
-            <div class="text-[10px] text-[#8C948B]">PBL HEIGHT</div>
-            <div class="text-sm font-bold text-[#7FD4FF] mt-0.5" id="curr-pblh-val">340 m</div>
-            <span id="mob-hero-pbl" class="hidden">340m</span>
-            <div class="hidden" id="pblh-bar"></div>
-            <span class="hidden" id="pblh-subtext"></span>
-          </div>
-          <!-- Ventilation Index -->
-          <div class="bg-[#191C19] p-2.5 rounded-xl border border-[#262A26]">
-            <div class="text-[10px] text-[#8C948B]">VENTILATION</div>
-            <div class="text-sm font-bold text-[#FFE270] mt-0.5" id="curr-vi-val">1,380 m²/s</div>
-            <span class="hidden" id="curr-vi-status">Evaluating</span>
-          </div>
-          <!-- Inversion / Fires -->
-          <div class="bg-[#191C19] p-2.5 rounded-xl border border-[#262A26]">
-            <div class="text-[10px] text-[#8C948B]">FARM FIRES</div>
-            <div class="text-sm font-bold text-[#FF9D7F] mt-0.5" id="curr-fire-count">1,420 fires</div>
-            <span class="hidden" id="curr-inversion-val"></span>
-            <span class="hidden" id="curr-trapping-status"></span>
-            <span class="hidden" id="stubble-share-badge"></span>
-          </div>
-        </div>
-      </section>
 
-      <!-- ================= 2. HORIZONTAL ZONE BREAKDOWN STRIP ================= -->
-      <section class="w-full flex flex-col gap-2">
-        <div class="flex items-center justify-between px-0.5">
-          <span class="text-[11px] font-mono-data text-[#8C948B]">DELHI-NCR REGIONAL ZONES</span>
-          <button onclick="openStationPickerModal()" class="text-[11px] font-mono-data text-[#7FD4FF] hover:underline cursor-pointer">
-            View all 58 stations
-          </button>
-        </div>
-        <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1" id="command-center-zone-strip">
-          <div onclick="filterStationsByZone('West Delhi'); openStationPickerModal();" class="surface-card p-3 rounded-xl border border-[#262A26] hover:border-[#383E38] transition cursor-pointer min-w-[140px] shrink-0 flex flex-col gap-1.5">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-semibold text-[#EEF0EC]">West Delhi</span>
-              <span id="zone-dot-west" class="w-2 h-2 rounded-full bg-[#7FD4FF]"></span>
+            <div onclick="filterStationsByZone('East Delhi'); openStationPickerModal();" class="surface-card p-3 rounded-xl border border-[#262A26] hover:border-[#383E38] transition cursor-pointer min-w-[140px] shrink-0 flex flex-col gap-1.5">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold text-[#EEF0EC]">East Delhi</span>
+                <span id="zone-dot-east" class="w-2 h-2 rounded-full bg-[#7FD4FF]"></span>
+              </div>
+              <div class="flex items-baseline gap-1.5">
+                <span id="zone-aqi-east" class="text-xl font-bold font-serif-display text-[#7FD4FF]">177</span>
+                <span class="text-[10px] font-mono-data text-[#8C948B]">AQI</span>
+              </div>
+              <span class="text-[10px] font-mono-data text-[#8C948B]">6 stations</span>
             </div>
-            <div class="flex items-baseline gap-1.5">
-              <span id="zone-aqi-west" class="text-xl font-bold font-serif-display text-[#7FD4FF]">187</span>
-              <span class="text-[10px] font-mono-data text-[#8C948B]">AQI</span>
-            </div>
-            <span class="text-[10px] font-mono-data text-[#8C948B]">5 stations</span>
-          </div>
 
-          <div onclick="filterStationsByZone('North Delhi'); openStationPickerModal();" class="surface-card p-3 rounded-xl border border-[#262A26] hover:border-[#383E38] transition cursor-pointer min-w-[140px] shrink-0 flex flex-col gap-1.5">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-semibold text-[#EEF0EC]">North Delhi</span>
-              <span id="zone-dot-north" class="w-2 h-2 rounded-full bg-[#FFE270]"></span>
+            <div onclick="filterStationsByZone('South Delhi'); openStationPickerModal();" class="surface-card p-3 rounded-xl border border-[#262A26] hover:border-[#383E38] transition cursor-pointer min-w-[140px] shrink-0 flex flex-col gap-1.5">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold text-[#EEF0EC]">South Delhi</span>
+                <span id="zone-dot-south" class="w-2 h-2 rounded-full bg-[#7FD4FF]"></span>
+              </div>
+              <div class="flex items-baseline gap-1.5">
+                <span id="zone-aqi-south" class="text-xl font-bold font-serif-display text-[#7FD4FF]">151</span>
+                <span class="text-[10px] font-mono-data text-[#8C948B]">AQI</span>
+              </div>
+              <span class="text-[10px] font-mono-data text-[#8C948B]">11 stations</span>
             </div>
-            <div class="flex items-baseline gap-1.5">
-              <span id="zone-aqi-north" class="text-xl font-bold font-serif-display text-[#FFE270]">256</span>
-              <span class="text-[10px] font-mono-data text-[#8C948B]">AQI</span>
-            </div>
-            <span class="text-[10px] font-mono-data text-[#8C948B]">14 stations</span>
-          </div>
 
-          <div onclick="filterStationsByZone('East Delhi'); openStationPickerModal();" class="surface-card p-3 rounded-xl border border-[#262A26] hover:border-[#383E38] transition cursor-pointer min-w-[140px] shrink-0 flex flex-col gap-1.5">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-semibold text-[#EEF0EC]">East Delhi</span>
-              <span id="zone-dot-east" class="w-2 h-2 rounded-full bg-[#7FD4FF]"></span>
+            <div onclick="filterStationsByZone('Central Delhi'); openStationPickerModal();" class="surface-card p-3 rounded-xl border border-[#262A26] hover:border-[#383E38] transition cursor-pointer min-w-[140px] shrink-0 flex flex-col gap-1.5">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold text-[#EEF0EC]">Central Delhi</span>
+                <span id="zone-dot-central" class="w-2 h-2 rounded-full bg-[#7FD4FF]"></span>
+              </div>
+              <div class="flex items-baseline gap-1.5">
+                <span id="zone-aqi-central" class="text-xl font-bold font-serif-display text-[#7FD4FF]">122</span>
+                <span class="text-[10px] font-mono-data text-[#8C948B]">AQI</span>
+              </div>
+              <span class="text-[10px] font-mono-data text-[#8C948B]">7 stations</span>
             </div>
-            <div class="flex items-baseline gap-1.5">
-              <span id="zone-aqi-east" class="text-xl font-bold font-serif-display text-[#7FD4FF]">177</span>
-              <span class="text-[10px] font-mono-data text-[#8C948B]">AQI</span>
-            </div>
-            <span class="text-[10px] font-mono-data text-[#8C948B]">6 stations</span>
-          </div>
 
-          <div onclick="filterStationsByZone('South Delhi'); openStationPickerModal();" class="surface-card p-3 rounded-xl border border-[#262A26] hover:border-[#383E38] transition cursor-pointer min-w-[140px] shrink-0 flex flex-col gap-1.5">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-semibold text-[#EEF0EC]">South Delhi</span>
-              <span id="zone-dot-south" class="w-2 h-2 rounded-full bg-[#7FD4FF]"></span>
+            <div onclick="filterStationsByZone('South West Delhi'); openStationPickerModal();" class="surface-card p-3 rounded-xl border border-[#262A26] hover:border-[#383E38] transition cursor-pointer min-w-[140px] shrink-0 flex flex-col gap-1.5">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold text-[#EEF0EC]">SW Delhi</span>
+                <span id="zone-dot-sw" class="w-2 h-2 rounded-full bg-[#7FD4FF]"></span>
+              </div>
+              <div class="flex items-baseline gap-1.5">
+                <span id="zone-aqi-sw" class="text-xl font-bold font-serif-display text-[#7FD4FF]">132</span>
+                <span class="text-[10px] font-mono-data text-[#8C948B]">AQI</span>
+              </div>
+              <span class="text-[10px] font-mono-data text-[#8C948B]">4 stations</span>
             </div>
-            <div class="flex items-baseline gap-1.5">
-              <span id="zone-aqi-south" class="text-xl font-bold font-serif-display text-[#7FD4FF]">151</span>
-              <span class="text-[10px] font-mono-data text-[#8C948B]">AQI</span>
-            </div>
-            <span class="text-[10px] font-mono-data text-[#8C948B]">11 stations</span>
-          </div>
 
-          <div onclick="filterStationsByZone('Central Delhi'); openStationPickerModal();" class="surface-card p-3 rounded-xl border border-[#262A26] hover:border-[#383E38] transition cursor-pointer min-w-[140px] shrink-0 flex flex-col gap-1.5">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-semibold text-[#EEF0EC]">Central Delhi</span>
-              <span id="zone-dot-central" class="w-2 h-2 rounded-full bg-[#7FD4FF]"></span>
+            <div onclick="filterStationsByZone('NCR'); openStationPickerModal();" class="surface-card p-3 rounded-xl border border-[#262A26] hover:border-[#383E38] transition cursor-pointer min-w-[140px] shrink-0 flex flex-col gap-1.5">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold text-[#EEF0EC]">NCR Fringe</span>
+                <span id="zone-dot-ncr" class="w-2 h-2 rounded-full bg-[#7FD4FF]"></span>
+              </div>
+              <div class="flex items-baseline gap-1.5">
+                <span id="zone-aqi-ncr" class="text-xl font-bold font-serif-display text-[#7FD4FF]">173</span>
+                <span class="text-[10px] font-mono-data text-[#8C948B]">AQI</span>
+              </div>
+              <span class="text-[10px] font-mono-data text-[#8C948B]">11 stations</span>
             </div>
-            <div class="flex items-baseline gap-1.5">
-              <span id="zone-aqi-central" class="text-xl font-bold font-serif-display text-[#7FD4FF]">122</span>
-              <span class="text-[10px] font-mono-data text-[#8C948B]">AQI</span>
-            </div>
-            <span class="text-[10px] font-mono-data text-[#8C948B]">7 stations</span>
           </div>
-
-          <div onclick="filterStationsByZone('South West Delhi'); openStationPickerModal();" class="surface-card p-3 rounded-xl border border-[#262A26] hover:border-[#383E38] transition cursor-pointer min-w-[140px] shrink-0 flex flex-col gap-1.5">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-semibold text-[#EEF0EC]">SW Delhi</span>
-              <span id="zone-dot-sw" class="w-2 h-2 rounded-full bg-[#7FD4FF]"></span>
-            </div>
-            <div class="flex items-baseline gap-1.5">
-              <span id="zone-aqi-sw" class="text-xl font-bold font-serif-display text-[#7FD4FF]">132</span>
-              <span class="text-[10px] font-mono-data text-[#8C948B]">AQI</span>
-            </div>
-            <span class="text-[10px] font-mono-data text-[#8C948B]">4 stations</span>
-          </div>
-
-          <div onclick="filterStationsByZone('NCR'); openStationPickerModal();" class="surface-card p-3 rounded-xl border border-[#262A26] hover:border-[#383E38] transition cursor-pointer min-w-[140px] shrink-0 flex flex-col gap-1.5">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-semibold text-[#EEF0EC]">NCR Fringe</span>
-              <span id="zone-dot-ncr" class="w-2 h-2 rounded-full bg-[#7FD4FF]"></span>
-            </div>
-            <div class="flex items-baseline gap-1.5">
-              <span id="zone-aqi-ncr" class="text-xl font-bold font-serif-display text-[#7FD4FF]">173</span>
-              <span class="text-[10px] font-mono-data text-[#8C948B]">AQI</span>
-            </div>
-            <span class="text-[10px] font-mono-data text-[#8C948B]">11 stations</span>
-          </div>
-        </div>
-      </section>
+        </section>
+      </div>
 
     </div>
 
@@ -10374,8 +10303,8 @@
             icon: cond.icon,
             conditionEn: cond.en,
             conditionHi: cond.hi,
-            descEn: `${cond.en} • Safdarjung IMD Ground Telemetry`,
-            descHi: `${cond.hi} • आईएमडी मौसम वेधशाला`,
+            descEn: cond.en,
+            descHi: cond.hi,
             tempMax: high,
             tempMin: low,
             precip: baseRains[i] || 20,
@@ -10551,8 +10480,8 @@
             target.icon = meta.icon;
             target.conditionEn = meta.en;
             target.conditionHi = meta.hi;
-            target.descEn = `${meta.en} • Safdarjung IMD Ground Telemetry`;
-            target.descHi = `${meta.hi} • आईएमडी मौसम वेधशाला`;
+            target.descEn = meta.en;
+            target.descHi = meta.hi;
 
             // Hourly chronological data (8 checkpoints: 00:00, 03:00, 06:00, 09:00, 12:00, 15:00, 18:00, 21:00)
             if (om.hourly && om.hourly.time) {
@@ -10701,7 +10630,7 @@
 
         const sunEl = document.getElementById('weather-sun-val');
         if (sunEl && this.sunrise && this.sunset) {
-          sunEl.innerText = `🌅 ${this.sunrise} • 🌇 ${this.sunset}`;
+          sunEl.innerText = `${this.sunrise} • ${this.sunset}`;
         }
 
         const dayNameEl = document.getElementById('weather-day-name');
