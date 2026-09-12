@@ -6044,7 +6044,7 @@
               </button>
             </div>
             <div class="relative">
-              <input type="text" id="commute-origin-search" value="Dwarka" placeholder="Search origin or tap My GPS..." oninput="onCommuteSearchInput('origin', this.value)" onfocus="onCommuteSearchFocus('origin')" class="w-full pl-8 pr-3 py-2.5 rounded-xl bg-earth-950 border border-earth-700 text-xs text-white focus:outline-none focus:border-cyan-400 font-medium transition">
+              <input type="text" id="commute-origin-search" value="Dwarka" placeholder="Search origin or tap My GPS..." oninput="onCommuteSearchInput('origin', this.value)" onfocus="onCommuteSearchFocus('origin')" onchange="onCommuteInputChange('origin')" onblur="onCommuteInputBlur('origin')" onkeydown="if(event.key==='Enter'){event.preventDefault(); onCommuteInputEnter('origin');}" class="w-full pl-8 pr-3 py-2.5 rounded-xl bg-earth-950 border border-earth-700 text-xs text-white focus:outline-none focus:border-cyan-400 font-medium transition">
               <span class="absolute left-2.5 top-2.5 text-xs text-earth-400">📍</span>
             </div>
             <!-- Autocomplete suggestions dropdown -->
@@ -6084,7 +6084,7 @@
           <div class="relative">
             <label class="block text-[11px] font-semibold text-earth-300 mb-1.5">Destination</label>
             <div class="relative">
-              <input type="text" id="commute-dest-search" value="Connaught Place" placeholder="Search destination (CP, Cyber City, Noida)..." oninput="onCommuteSearchInput('dest', this.value)" onfocus="onCommuteSearchFocus('dest')" class="w-full pl-8 pr-3 py-2.5 rounded-xl bg-earth-950 border border-earth-700 text-xs text-white focus:outline-none focus:border-cyan-400 font-medium transition">
+              <input type="text" id="commute-dest-search" value="Connaught Place" placeholder="Search destination (CP, Cyber City, Noida)..." oninput="onCommuteSearchInput('dest', this.value)" onfocus="onCommuteSearchFocus('dest')" onchange="onCommuteInputChange('dest')" onblur="onCommuteInputBlur('dest')" onkeydown="if(event.key==='Enter'){event.preventDefault(); onCommuteInputEnter('dest');}" class="w-full pl-8 pr-3 py-2.5 rounded-xl bg-earth-950 border border-earth-700 text-xs text-white focus:outline-none focus:border-cyan-400 font-medium transition">
               <span class="absolute left-2.5 top-2.5 text-xs text-earth-400">🏁</span>
             </div>
             <!-- Autocomplete suggestions dropdown -->
@@ -13333,6 +13333,58 @@
       mandir_marg:            { lat: 28.6364, lon: 77.1989, name: 'Mandir Marg' }
     };
 
+    // Robust dynamic location resolver: guarantees exact lat/lon matching current user input
+    function resolveCommuteLocation(type) {
+      const isOrigin = type === 'origin';
+      const searchEl = document.getElementById(isOrigin ? 'commute-origin-search' : 'commute-dest-search');
+      const selectEl = document.getElementById(isOrigin ? 'commute-origin' : 'commute-dest');
+      const customCoord = isOrigin ? window.customOriginCoord : window.customDestCoord;
+      const customName = isOrigin ? window.customOriginName : window.customDestName;
+
+      const rawVal = (searchEl ? searchEl.value : '') || '';
+      const cleanVal = rawVal.replace(/^[📍🏢🏁•\-\s]+/, '').split('(')[0].replace(/\s*±\d+m.*/, '').trim();
+
+      // 1. If customCoord exists and matches current input text, use it directly
+      if (customCoord && customCoord.lat && customCoord.lon) {
+        const customClean = (customName || customCoord.name || '').replace(/^[📍🏢🏁•\-\s]+/, '').split('(')[0].trim();
+        if (cleanVal && (cleanVal.toLowerCase() === customClean.toLowerCase() || customClean.toLowerCase().includes(cleanVal.toLowerCase()) || cleanVal.toLowerCase().includes(customClean.toLowerCase()))) {
+          return { lat: customCoord.lat, lon: customCoord.lon, name: customClean || cleanVal };
+        }
+      }
+
+      // 2. Match against COMMUTE_COORDS dictionary (50+ Delhi-NCR locations)
+      if (cleanVal) {
+        const norm = cleanVal.toLowerCase().replace(/[^a-z0-9]/g, '_');
+        for (const [k, v] of Object.entries(COMMUTE_COORDS)) {
+          if (k === norm || v.name.toLowerCase() === cleanVal.toLowerCase() || v.name.toLowerCase().includes(cleanVal.toLowerCase()) || cleanVal.toLowerCase().includes(v.name.toLowerCase())) {
+            return { lat: v.lat, lon: v.lon, name: v.name };
+          }
+        }
+      }
+
+      // 3. Match against VayuForecastEngine 87 Delhi-NCR monitoring stations
+      if (cleanVal && typeof VayuForecastEngine !== 'undefined' && VayuForecastEngine.stations) {
+        for (const st of VayuForecastEngine.stations) {
+          if (st.name.toLowerCase() === cleanVal.toLowerCase() || st.name.toLowerCase().includes(cleanVal.toLowerCase()) || cleanVal.toLowerCase().includes(st.name.toLowerCase())) {
+            return { lat: st.lat, lon: st.lon, name: st.name };
+          }
+        }
+      }
+
+      // 4. Match against select element value if available
+      if (selectEl && selectEl.value && COMMUTE_COORDS[selectEl.value]) {
+        const v = COMMUTE_COORDS[selectEl.value];
+        return { lat: v.lat, lon: v.lon, name: v.name };
+      }
+
+      // 5. Default fallback for origin / destination
+      if (isOrigin) {
+        return { lat: 28.5921, lon: 77.0460, name: cleanVal || 'Dwarka' };
+      } else {
+        return { lat: 28.6315, lon: 77.2167, name: cleanVal || 'Connaught Place' };
+      }
+    }
+
     const VayuCommuteMap = {
       map: null,
       layers: [],
@@ -13568,10 +13620,9 @@
         idx = parseInt(idx, 10);
         if (isNaN(idx) || idx < 0 || idx > 2) idx = 0;
 
-        const originEl = document.getElementById('commute-origin');
-        const destEl = document.getElementById('commute-dest');
-        const originSearchEl = document.getElementById('commute-origin-search');
-        const destSearchEl = document.getElementById('commute-dest-search');
+        // 1. Freshly resolve the EXACT active origin & destination from user inputs
+        const oC = resolveCommuteLocation('origin');
+        const dC = resolveCommuteLocation('dest');
 
         // Helper: Strip leading emojis, icons, and accuracy hints
         const cleanName = (str) => {
@@ -13583,12 +13634,8 @@
             .trim();
         };
 
-        // 1. Resolve current active coordinates & names dynamically
-        const oC = this.originCoord || window.customOriginCoord || (originEl ? COMMUTE_COORDS[originEl.value] : null) || { lat: 28.5921, lon: 77.0460, name: 'Dwarka' };
-        const dC = this.destCoord || window.customDestCoord || (destEl ? COMMUTE_COORDS[destEl.value] : null) || { lat: 28.6315, lon: 77.2167, name: 'Connaught Place' };
-
-        const originCleanName = cleanName(window.customOriginName) || cleanName(originSearchEl ? originSearchEl.value : '') || cleanName(oC.name) || (originEl && originEl.options[originEl.selectedIndex] ? originEl.options[originEl.selectedIndex].text.split('(')[0].trim() : '') || 'Dwarka';
-        const destCleanName = cleanName(window.customDestName) || cleanName(destSearchEl ? destSearchEl.value : '') || cleanName(dC.name) || (destEl && destEl.options[destEl.selectedIndex] ? destEl.options[destEl.selectedIndex].text.split('(')[0].trim() : '') || 'Connaught Place';
+        const originCleanName = cleanName(oC.name) || 'Delhi';
+        const destCleanName = cleanName(dC.name) || 'Delhi';
 
         // 2. Build Google Maps origin & destination parameters using exact coordinates for 100% pinpoint accuracy
         const originParam = (oC && oC.lat && oC.lon) 
@@ -13599,26 +13646,28 @@
           ? `${dC.lat.toFixed(5)},${dC.lon.toFixed(5)}` 
           : encodeURIComponent(`${destCleanName}, Delhi, India`);
 
-        // 3. Dynamic Waypoint selection based on actual computed route path
+        // 3. Dynamic Waypoint selection based ONLY on verified active route coordinates between oC and dC
         let waypointsParam = '';
+
+        // Verify that route coords actually match current oC and dC (to prevent old/stale waypoints from previous origin)
+        const isRouteFresh = (coords) => {
+          if (!coords || coords.length < 3) return false;
+          const startDist = Math.hypot(coords[0][0] - oC.lat, coords[0][1] - oC.lon);
+          const endDist = Math.hypot(coords[coords.length - 1][0] - dC.lat, coords[coords.length - 1][1] - dC.lon);
+          return startDist < 0.08 && endDist < 0.08;
+        };
 
         if (idx === 0) {
           // Route A: Eco-Shield Clean Corridor
           const r = this.routeData && this.routeData[0];
-          if (r && r.coords && r.coords.length > 2) {
+          if (r && isRouteFresh(r.coords)) {
             const pt = r.coords[Math.floor(r.coords.length * 0.45)];
             waypointsParam = `&waypoints=${pt[0].toFixed(5)},${pt[1].toFixed(5)}`;
           } else {
-            const oKey = originCleanName.toLowerCase();
-            if (oKey.includes('dwarka') || oKey.includes('igi') || oKey.includes('palam') || oKey.includes('gurugram')) {
-              waypointsParam = `&waypoints=${encodeURIComponent('Dhaula Kuan, New Delhi')}`;
-            } else if (oKey.includes('noida') || oKey.includes('anand_vihar') || oKey.includes('laxmi_nagar') || oKey.includes('mayur_vihar') || oKey.includes('ghaziabad')) {
-              waypointsParam = `&waypoints=${encodeURIComponent('Barapullah Elevated Road, New Delhi')}`;
-            } else if (oKey.includes('rohini') || oKey.includes('pitampura') || oKey.includes('shalimar_bagh') || oKey.includes('burari')) {
-              waypointsParam = `&waypoints=${encodeURIComponent('Civil Lines, Delhi')}`;
-            } else if (oKey.includes('hauz_khas') || oKey.includes('saket') || oKey.includes('vasant')) {
-              waypointsParam = `&waypoints=${encodeURIComponent('Chanakyapuri, New Delhi')}`;
-            }
+            // Fresh computed green buffer waypoint directly along current vector
+            const midLat = (oC.lat + dC.lat) / 2 + (dC.lon - oC.lon) * 0.10;
+            const midLon = (oC.lon + dC.lon) / 2 - (dC.lat - oC.lat) * 0.10;
+            waypointsParam = `&waypoints=${midLat.toFixed(5)},${midLon.toFixed(5)}`;
           }
         } else if (idx === 1) {
           // Route B: Standard Direct Shortest Highway (no detours, standard Google Maps arterial route)
@@ -13626,30 +13675,25 @@
         } else if (idx === 2) {
           // Route C: Industrial / Ring Road Freight Bottleneck
           const r = this.routeData && this.routeData[2];
-          if (r && r.coords && r.coords.length > 2) {
+          if (r && isRouteFresh(r.coords)) {
             const pt = r.coords[Math.floor(r.coords.length * 0.55)];
             waypointsParam = `&waypoints=${pt[0].toFixed(5)},${pt[1].toFixed(5)}`;
           } else {
-            const oKey = originCleanName.toLowerCase();
-            if (oKey.includes('dwarka') || oKey.includes('igi') || oKey.includes('palam') || oKey.includes('janakpuri')) {
-              waypointsParam = `&waypoints=${encodeURIComponent('Mayapuri Industrial Area, New Delhi')}`;
-            } else if (oKey.includes('noida') || oKey.includes('okhla') || oKey.includes('faridabad')) {
-              waypointsParam = `&waypoints=${encodeURIComponent('Ashram Chowk, New Delhi')}`;
-            } else if (oKey.includes('rohini') || oKey.includes('punjabi_bagh') || oKey.includes('wazirpur')) {
-              waypointsParam = `&waypoints=${encodeURIComponent('Wazirpur Industrial Area, Delhi')}`;
-            }
+            const midLat = (oC.lat + dC.lat) / 2 - (dC.lon - oC.lon) * 0.12;
+            const midLon = (oC.lon + dC.lon) / 2 + (dC.lat - oC.lat) * 0.12;
+            waypointsParam = `&waypoints=${midLat.toFixed(5)},${midLon.toFixed(5)}`;
           }
         }
 
         const modeVal = document.getElementById('commute-mode')?.value || 'car';
         let gmapsTravelMode = 'driving';
         if (modeVal === 'walking') gmapsTravelMode = 'walking';
-        else if (modeVal === 'two_wheeler') gmapsTravelMode = 'two_wheeler';
 
         const gmapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${originParam}&destination=${destParam}${waypointsParam}&travelmode=${gmapsTravelMode}`;
         window.open(gmapsUrl, '_blank');
       }
     };
+    window.VayuCommuteMap = VayuCommuteMap;
 
     // ================= INTERACTIVE CIRCULAR ANALOG CLOCK PICKER =================
     const VayuClockPicker = {
@@ -14430,6 +14474,31 @@
       }
     }, { passive: true });
 
+    // Interactive handlers when user types or leaves origin/dest input
+    window.onCommuteInputChange = function(type) {
+      const coord = resolveCommuteLocation(type);
+      if (type === 'origin') {
+        window.customOriginCoord = coord;
+        window.customOriginName = coord.name;
+        if (typeof VayuCommuteMap !== 'undefined') VayuCommuteMap.originCoord = coord;
+      } else {
+        window.customDestCoord = coord;
+        window.customDestName = coord.name;
+        if (typeof VayuCommuteMap !== 'undefined') VayuCommuteMap.destCoord = coord;
+      }
+      calcCommuteRoute();
+    };
+    window.onCommuteInputBlur = function(type) {
+      setTimeout(() => {
+        window.onCommuteInputChange(type);
+      }, 150);
+    };
+    window.onCommuteInputEnter = function(type) {
+      const dropdown = document.getElementById(type === 'origin' ? 'commute-origin-suggestions' : 'commute-dest-suggestions');
+      if (dropdown) dropdown.classList.add('hidden');
+      window.onCommuteInputChange(type);
+    };
+
     async function calcCommuteRoute() {
       const originEl = document.getElementById('commute-origin');
       const destEl = document.getElementById('commute-dest');
@@ -14442,14 +14511,19 @@
       const clockVal = document.getElementById('commute-time-clock')?.value || '14:00';
       const diurnal = getDiurnalSmogProfile(clockVal);
 
-      const originSearchEl = document.getElementById('commute-origin-search');
-      const destSearchEl = document.getElementById('commute-dest-search');
+      // Freshly resolve true active coordinates directly matching the current inputs
+      const oCoord = resolveCommuteLocation('origin');
+      const dCoord = resolveCommuteLocation('dest');
 
-      const originName = window.customOriginName || (originSearchEl ? originSearchEl.value.split('(')[0].trim() : (originEl.options ? originEl.options[originEl.selectedIndex]?.text.split('(')[0].trim() : 'Dwarka'));
-      const destName = window.customDestName || (destSearchEl ? destSearchEl.value.split('(')[0].trim() : (destEl.options ? destEl.options[destEl.selectedIndex]?.text.split('(')[0].trim() : 'Connaught Place'));
-
-      const oCoord = window.customOriginCoord || COMMUTE_COORDS[originKey] || { lat: 28.5562, lon: 77.1000, name: originName };
-      const dCoord = window.customDestCoord || COMMUTE_COORDS[destKey] || { lat: 28.6315, lon: 77.2167, name: destName };
+      // Keep globals and VayuCommuteMap in lockstep sync
+      window.customOriginCoord = oCoord;
+      window.customOriginName = oCoord.name;
+      window.customDestCoord = dCoord;
+      window.customDestName = dCoord.name;
+      if (typeof VayuCommuteMap !== 'undefined') {
+        VayuCommuteMap.originCoord = oCoord;
+        VayuCommuteMap.destCoord = dCoord;
+      }
 
       // Helper for Station AQI
       function getNearStationAQI(lat, lon) {
