@@ -13425,16 +13425,38 @@
 
     
     // ==========================================================================
-    // COMMUTE GPS LOCATION & AUTOCOMPLETE SEARCH MODULE
+    // COMMUTE GPS LOCATION & LIVE NOMINATIM AUTOCOMPLETE SEARCH MODULE
     // ==========================================================================
     window.customOriginCoord = null;
     window.customDestCoord = null;
     window.customOriginName = null;
     window.customDestName = null;
 
+    let commuteSearchDebounceTimer = null;
+    let commuteSearchSeq = 0;
+
+    // Helper: Clean human-readable address from Nominatim
+    function formatNominatimAddress(item, fallbackName) {
+      if (!item) return fallbackName;
+      const addr = item.address || {};
+      const primary = addr.amenity || addr.building || addr.shop || addr.suburb || addr.neighbourhood || addr.residential || addr.road || addr.quarter || addr.city_district || '';
+      const secondary = addr.city_district || addr.state_district || addr.city || addr.town || addr.county || 'Delhi';
+      
+      if (primary && primary !== secondary) {
+        return `${primary}, ${secondary}`;
+      }
+      if (item.display_name) {
+        const tokens = item.display_name.split(',').map(s => s.trim()).filter(Boolean);
+        if (tokens.length >= 2) return `${tokens[0]}, ${tokens[1]}`;
+        if (tokens.length === 1) return tokens[0];
+      }
+      return fallbackName;
+    }
+
+    // 1. Live Accurate GPS Detection with Free Reverse Geocoding
     window.useCurrentLocationForOrigin = function() {
       const originInput = document.getElementById('commute-origin-search');
-      if (originInput) originInput.value = "Fetching live accurate GPS...";
+      if (originInput) originInput.value = "Fetching live point-to-point GPS...";
 
       if (!navigator.geolocation) {
         if (originInput) originInput.value = "GPS not supported on device";
@@ -13442,26 +13464,47 @@
       }
 
       navigator.geolocation.getCurrentPosition(
-        (pos) => {
+        async (pos) => {
           const lat = pos.coords.latitude;
           const lon = pos.coords.longitude;
-          const acc = Math.round(pos.coords.accuracy || 15);
+          const acc = Math.round(pos.coords.accuracy || 10);
 
-          // Find closest station or known hub name for readable label
-          let closestName = "Delhi-NCR";
+          // Find closest monitoring station
+          let closestStationName = "Delhi-NCR";
           let minDist = Infinity;
           if (typeof VayuForecastEngine !== 'undefined' && VayuForecastEngine.stations) {
             for (const st of VayuForecastEngine.stations) {
               const d = Math.hypot(st.lat - lat, st.lon - lon);
               if (d < minDist) {
                 minDist = d;
-                closestName = st.name;
+                closestStationName = st.name;
               }
             }
           }
 
-          const displayName = `📍 Current GPS (${closestName} ±${acc}m)`;
+          let displayName = `📍 Current Location (${closestStationName} ±${acc}m)`;
           if (originInput) originInput.value = displayName;
+
+          // Attempt fast reverse geocode via Nominatim for real street/colony name
+          try {
+            const controller = new AbortController();
+            const timer = setTimeout(() => controller.abort(), 2200);
+            const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=17&addressdetails=1`, {
+              signal: controller.signal,
+              headers: { 'Accept': 'application/json' }
+            });
+            clearTimeout(timer);
+            if (res.ok) {
+              const data = await res.json();
+              const revName = formatNominatimAddress(data, closestStationName);
+              if (revName && revName.length > 2) {
+                displayName = `📍 ${revName}`;
+                if (originInput) originInput.value = displayName;
+              }
+            }
+          } catch(e) {
+            console.log("Nominatim reverse geocode fallback to nearest station", e);
+          }
 
           window.customOriginName = displayName;
           window.customOriginCoord = { lat: lat, lon: lon, name: displayName };
@@ -13471,7 +13514,7 @@
 
           calcCommuteRoute();
           if (typeof showFloatingToast === 'function') {
-            showFloatingToast(`🎯 GPS Location locked: ${closestName} (${lat.toFixed(4)}, ${lon.toFixed(4)})`);
+            showFloatingToast(`🎯 GPS Location locked: ${displayName} (${lat.toFixed(4)}, ${lon.toFixed(4)})`);
           }
         },
         (err) => {
@@ -13490,14 +13533,16 @@
       );
     };
 
+    // 2. Comprehensive Search for Origin & Destination (Local 87 Hubs + Live Delhi-NCR Nominatim)
     window.onCommuteSearchInput = function(type, query) {
       const dropdown = document.getElementById(type === 'origin' ? 'commute-origin-suggestions' : 'commute-dest-suggestions');
       if (!dropdown) return;
 
       const q = (query || '').toLowerCase().trim();
-      const allLocations = [];
+      const currentSeq = ++commuteSearchSeq;
 
-      // Gather from VayuForecastEngine stations and COMMUTE_COORDS
+      // Local 87 Hubs for instant 0ms response
+      const allLocations = [];
       if (typeof VayuForecastEngine !== 'undefined' && VayuForecastEngine.stations) {
         VayuForecastEngine.stations.forEach(st => {
           allLocations.push({
@@ -13506,35 +13551,81 @@
             lat: st.lat,
             lon: st.lon,
             zone: st.zone,
-            key: st.name.toLowerCase().replace(/[^a-z0-9]/g, '_')
+            key: st.name.toLowerCase().replace(/[^a-z0-9]/g, '_'),
+            isLive: false
           });
         });
       }
 
-      const filtered = allLocations.filter(loc => {
+      const localFiltered = allLocations.filter(loc => {
         if (!q) return true;
         return loc.name.toLowerCase().includes(q) || loc.cleanName.toLowerCase().includes(q) || loc.zone.toLowerCase().includes(q);
-      }).slice(0, 8);
+      }).slice(0, 6);
 
-      if (filtered.length === 0) {
-        dropdown.innerHTML = `<div class="p-2.5 text-center text-xs text-[#8C948B]">Koi location match nahi hui. "Dwarka", "CP", "Cyber City", ya "Noida" search karein.</div>`;
+      const renderList = (items, showLoadingHint = false) => {
+        if (items.length === 0 && !showLoadingHint) {
+          dropdown.innerHTML = `<div class="p-2.5 text-center text-xs text-[#8C948B]">Koi location match nahi hui. "Dwarka", "CP", "Max Saket", "Gaur City", ya "Cyber Hub" search karein.</div>`;
+          dropdown.classList.remove('hidden');
+          return;
+        }
+
+        dropdown.innerHTML = items.map(loc => `
+          <button type="button" 
+            onclick="selectCommuteLocation('${type}', '${loc.cleanName.replace(/'/g, "\'")}', '${loc.name.replace(/'/g, "\'")}', ${loc.lat}, ${loc.lon}, '${loc.key}')" 
+            class="w-full text-left p-2 rounded-lg hover:bg-earth-800 transition flex items-center justify-between text-xs text-white">
+            <div class="flex items-center gap-2 truncate">
+              <span class="text-xs ${loc.isLive ? 'text-amber-400' : 'text-cyan-400'}">${loc.isLive ? '🏢' : '📍'}</span>
+              <span class="font-medium truncate">${loc.name}</span>
+            </div>
+            <span class="text-[10px] font-mono ${loc.isLive ? 'text-amber-300 bg-amber-950/40 border border-amber-500/30 px-1.5 py-0.2 rounded' : 'text-earth-400'} shrink-0 ml-2">
+              ${loc.zone}
+            </span>
+          </button>
+        `).join('') + (showLoadingHint ? `<div class="px-2 py-1 text-[10px] text-earth-400 italic flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span> Delhi-NCR landmarks search ho rahe hain...</div>` : '');
+
         dropdown.classList.remove('hidden');
-        return;
+      };
+
+      // Show immediate local matches
+      renderList(localFiltered, q.length >= 2);
+
+      // Debounce live Nominatim search bounded to Delhi-NCR (lat: 28.2 to 28.9, lon: 76.7 to 77.7)
+      if (commuteSearchDebounceTimer) clearTimeout(commuteSearchDebounceTimer);
+      if (q.length >= 2) {
+        commuteSearchDebounceTimer = setTimeout(async () => {
+          try {
+            const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}&viewbox=76.7,28.9,77.7,28.2&bounded=1&limit=6&addressdetails=1`;
+            const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+            if (res.ok && commuteSearchSeq === currentSeq) {
+              const nominatimData = await res.json();
+              const liveResults = nominatimData.map(item => {
+                const formatted = formatNominatimAddress(item, item.display_name.split(',')[0]);
+                return {
+                  name: formatted,
+                  cleanName: formatted.split(',')[0].trim(),
+                  lat: parseFloat(item.lat),
+                  lon: parseFloat(item.lon),
+                  zone: 'Delhi-NCR',
+                  key: 'live_' + Math.round(parseFloat(item.lat)*1000),
+                  isLive: true
+                };
+              });
+
+              // Merge unique results (avoid duplicates with local list)
+              const merged = [...localFiltered];
+              for (const lr of liveResults) {
+                if (!merged.some(m => Math.hypot(m.lat - lr.lat, m.lon - lr.lon) < 0.005)) {
+                  merged.push(lr);
+                }
+              }
+              renderList(merged.slice(0, 8), false);
+            }
+          } catch(e) {
+            console.log("Nominatim live search fallback", e);
+            renderList(localFiltered, false);
+          }
+        }, 220);
       }
-
-      dropdown.innerHTML = filtered.map(loc => `
-        <button type="button" 
-          onclick="selectCommuteLocation('${type}', '${loc.cleanName.replace(/'/g, "\'")}', '${loc.name.replace(/'/g, "\'")}', ${loc.lat}, ${loc.lon}, '${loc.key}')" 
-          class="w-full text-left p-2 rounded-lg hover:bg-earth-800 transition flex items-center justify-between text-xs text-white">
-          <div class="flex items-center gap-2 truncate">
-            <span class="text-xs text-cyan-400">📍</span>
-            <span class="font-medium truncate">${loc.name}</span>
-          </div>
-          <span class="text-[10px] font-mono text-earth-400 shrink-0 ml-2">${loc.zone}</span>
-        </button>
-      `).join('');
-
-      dropdown.classList.remove('hidden');
     };
 
     window.onCommuteSearchFocus = function(type) {
@@ -13664,13 +13755,14 @@
 
       function renderOutputs(osrm) {
         // True Delhi road distance calculation:
-        // When straight-line euclidean is measured, Delhi's radial-ring road topology
-        // has a 1.28x to 1.32x road curvature factor (verified against Google Maps).
+        // When straight-line euclidean is measured across Delhi's radial-ring network:
+        // Local trips (<3km) have a curvature factor of ~1.18x; cross-city trips have ~1.28x to 1.32x.
         const dLat = (dCoord.lat - oCoord.lat) * 111.0;
         const dLon = (dCoord.lon - oCoord.lon) * 98.0;
         const euclideanDistKm = Math.sqrt(dLat * dLat + dLon * dLon);
         
-        let baseRoadKm = Math.max(2.5, Math.round((euclideanDistKm * 1.30) * 10) / 10);
+        const curvatureFactor = euclideanDistKm < 3.0 ? 1.18 : 1.30;
+        let baseRoadKm = Math.max(0.6, Math.round((euclideanDistKm * curvatureFactor) * 10) / 10);
         let hasOSRM = false;
         let r0_coords = null;
         let r1_coords = null;
@@ -13688,8 +13780,9 @@
         }
 
         // Base driving duration in Delhi:
-        // Google Maps urban baseline across Delhi arterials is ~38 km/h free-flow (~1.55 mins/km) + 2.5 mins signal delays.
-        const baseDrivingMins = (baseRoadKm * 1.55) + 2.5;
+        // Urban arterial baseline is ~36 km/h free-flow (~1.65 mins/km) + distance-scaled signal delay
+        const signalDelayMins = Math.min(6.0, Math.max(1.0, baseRoadKm * 0.28));
+        const baseDrivingMins = (baseRoadKm * 1.65) + signalDelayMins;
 
         // Mode multipliers
         let modeFactor = 0.55;
@@ -13712,39 +13805,39 @@
         // Distances for 3 routes (calibrated to Google Maps alternative routes)
         // Route B: Standard Direct
         const r1_dist = baseRoadKm.toFixed(1);
-        // Route A: Eco-Shield Clean Corridor (+6% distance via outer green bypasses)
-        const r0_dist = (baseRoadKm * 1.06).toFixed(1);
-        // Route C: Industrial Bypass (+14% distance via older bypasses)
+        // Route A: Eco-Shield Clean Corridor (+5-6% distance via outer green bypasses)
+        const r0_dist = (baseRoadKm * (baseRoadKm < 3.0 ? 1.03 : 1.06)).toFixed(1);
+        // Route C: Industrial Bypass (+12-14% distance via older ring bypasses)
         const r2_dist = (osrm && osrm.length > 1) 
           ? (osrm[1].distance / 1000).toFixed(1) 
-          : (baseRoadKm * 1.14).toFixed(1);
+          : (baseRoadKm * (baseRoadKm < 3.0 ? 1.08 : 1.14)).toFixed(1);
 
         // Google Maps-calibrated transit durations across modes & time-of-day traffic
         let r0_time, r1_time, r2_time;
         if (mode === 'car') {
-          r1_time = Math.max(8, Math.round(baseDrivingMins * trafficMult));
-          r0_time = Math.max(8, Math.round((baseDrivingMins * 1.04) * (trafficMult * 0.98)));
-          r2_time = Math.max(10, Math.round((baseDrivingMins * 1.12) * (trafficMult * 1.10)));
+          r1_time = Math.max(3, Math.round(baseDrivingMins * trafficMult));
+          r0_time = Math.max(3, Math.round((baseDrivingMins * 1.04) * (trafficMult * 0.97)));
+          r2_time = Math.max(4, Math.round((baseDrivingMins * 1.14) * (trafficMult * 1.12)));
         } else if (mode === 'two_wheeler') {
-          const bikeMult = 1.0 + (trafficMult - 1.0) * 0.60;
-          r1_time = Math.max(6, Math.round(baseDrivingMins * bikeMult * 0.90));
-          r0_time = Math.max(6, Math.round((baseDrivingMins * 1.04) * bikeMult * 0.88));
-          r2_time = Math.max(8, Math.round((baseDrivingMins * 1.12) * bikeMult * 0.98));
+          const bikeMult = 1.0 + (trafficMult - 1.0) * 0.55;
+          r1_time = Math.max(2, Math.round(baseDrivingMins * bikeMult * 0.85));
+          r0_time = Math.max(2, Math.round((baseDrivingMins * 1.04) * bikeMult * 0.82));
+          r2_time = Math.max(3, Math.round((baseDrivingMins * 1.14) * bikeMult * 0.95));
         } else if (mode === 'walking') {
           // Pedestrian: 4.8 km/h = 12.5 mins per km
-          r1_time = Math.max(10, Math.round(parseFloat(r1_dist) * 12.5));
-          r0_time = Math.max(10, Math.round(parseFloat(r0_dist) * 12.5));
-          r2_time = Math.max(12, Math.round(parseFloat(r2_dist) * 12.5));
+          r1_time = Math.max(4, Math.round(parseFloat(r1_dist) * 12.5));
+          r0_time = Math.max(4, Math.round(parseFloat(r0_dist) * 12.5));
+          r2_time = Math.max(5, Math.round(parseFloat(r2_dist) * 12.5));
         } else if (mode === 'metro') {
-          // Delhi Metro: rapid rail speed (~32 km/h commercial speed + 5 min station dwell/access)
-          r1_time = Math.max(12, Math.round(parseFloat(r1_dist) * 1.85 + 5));
-          r0_time = Math.max(12, Math.round(parseFloat(r0_dist) * 1.85 + 6));
-          r2_time = Math.max(14, Math.round(parseFloat(r2_dist) * 1.85 + 8));
+          // Delhi Metro: rapid rail speed (~32 km/h commercial speed + 4 min station dwell)
+          r1_time = Math.max(5, Math.round(parseFloat(r1_dist) * 1.85 + 4));
+          r0_time = Math.max(5, Math.round(parseFloat(r0_dist) * 1.85 + 5));
+          r2_time = Math.max(6, Math.round(parseFloat(r2_dist) * 1.85 + 7));
         } else if (mode === 'bus') {
           // Bus: traffic delays + frequent bus stops
-          r1_time = Math.max(12, Math.round(baseDrivingMins * trafficMult * 1.25 + 6));
-          r0_time = Math.max(12, Math.round((baseDrivingMins * 1.04) * trafficMult * 1.22 + 6));
-          r2_time = Math.max(15, Math.round((baseDrivingMins * 1.12) * trafficMult * 1.35 + 8));
+          r1_time = Math.max(6, Math.round(baseDrivingMins * trafficMult * 1.25 + 4));
+          r0_time = Math.max(6, Math.round((baseDrivingMins * 1.04) * trafficMult * 1.22 + 4));
+          r2_time = Math.max(7, Math.round((baseDrivingMins * 1.14) * trafficMult * 1.35 + 6));
         }
 
         // AQI calculation
