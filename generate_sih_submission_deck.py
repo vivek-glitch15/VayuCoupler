@@ -683,6 +683,12 @@ def build_deck(output_pptx_path):
     prs.save(output_pptx_path)
     print(f"Presentation saved successfully to: {output_pptx_path}")
 
+    import shutil
+    for folder in ["docs", "static", "backend/app/static"]:
+        os.makedirs(folder, exist_ok=True)
+        shutil.copyfile(output_pptx_path, os.path.join(folder, output_pptx_path))
+    print("Copied idea submission deck to docs/, static/, and backend/app/static/.")
+
 if __name__ == "__main__":
     out_path = "VayuCoupler_SIH_AtomX_Idea_Submission.pptx"
     build_deck(out_path)
