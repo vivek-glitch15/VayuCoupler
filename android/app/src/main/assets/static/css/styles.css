@@ -1,0 +1,1697 @@
+/* ==========================================================================
+   VayuCoupler — Official Atmospheric Midnight Design System
+   Delhi-NCR Coupled AQI Forecasting & Government Response System
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@600;700&display=swap');
+
+:root {
+  /* Exact Design Tokens */
+  --bg:              #0A0B0A;
+  --panel:           #131513;
+  --panel-elevated:  #191C19;
+  --border:          #262A26;
+  --text-primary:    #EEF0EC;
+  --text-muted:      #8C948B;
+
+  /* Semantic Signal Colors — Never Decorative */
+  --signal-green:    #8FFFB0;   /* good / nominal / safe status only */
+  --signal-blue:     #7FD4FF;   /* informational / predictive / AI content only */
+  --signal-yellow:   #FFE270;   /* caution / moderate / pending status only */
+  --warning-orange:  #FF9D7F;   /* severe / urgent status only */
+
+  /* Component Aliases */
+  --surface:         var(--panel);
+  --surface-2:       var(--panel-elevated);
+  --accent-green:    var(--signal-green);
+  --accent-blue:     var(--signal-blue);
+  --accent-yellow:   var(--signal-yellow);
+  --accent-red:      var(--warning-orange);
+  --color-bg-base:   var(--bg);
+  --color-bg-surface:var(--panel);
+  --color-bg-card:   var(--panel-elevated);
+  --color-border:    var(--border);
+
+  /* Tinted Token Pairs for Badges & Status */
+  --green-bg:        rgba(143, 255, 176, 0.08);
+  --green-border:    rgba(143, 255, 176, 0.22);
+  --blue-bg:         rgba(127, 212, 255, 0.08);
+  --blue-border:     rgba(127, 212, 255, 0.22);
+  --yellow-bg:       rgba(255, 226, 112, 0.08);
+  --yellow-border:   rgba(255, 226, 112, 0.22);
+  --orange-bg:       rgba(255, 157, 127, 0.08);
+  --orange-border:   rgba(255, 157, 127, 0.22);
+  --red-bg:          rgba(255, 157, 127, 0.08);
+  --red-border:      rgba(255, 157, 127, 0.22);
+
+  --radius:          14px;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text-primary);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Typography Hierarchy */
+h1, h2, h3, h4, h5, h6,
+.font-heading,
+.font-serif-display,
+.font-headline,
+.aqi-val,
+.aqi-number {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.font-mono-data,
+.font-mono-tag,
+.font-mono {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+  letter-spacing: 0;
+}
+
+.font-sans-ui,
+.font-sans {
+  font-family: 'Inter', -apple-system, sans-serif !important;
+}
+
+p, .body-copy {
+  max-width: 75ch;
+}
+
+/* Card & Surface Classes: rounded 14px, 1px hairline border, no drop shadows except hero card */
+.surface-panel,
+.surface-card,
+.natural-glass {
+  background: var(--panel) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius) !important;
+  box-shadow: none !important;
+}
+
+.surface-card {
+  background: var(--panel-elevated) !important;
+}
+
+.hero-card {
+  background: var(--panel) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius) !important;
+  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.5) !important;
+}
+
+.natural-glass-hover {
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.natural-glass-hover:hover {
+  background: var(--panel-elevated) !important;
+  border-color: #383E38 !important;
+}
+
+/* Semantic Badges & Pills (1px border + tinted background, never solid) */
+.badge-green {
+  background: var(--green-bg) !important;
+  border: 1px solid var(--green-border) !important;
+  color: var(--signal-green) !important;
+}
+
+.badge-blue {
+  background: var(--blue-bg) !important;
+  border: 1px solid var(--blue-border) !important;
+  color: var(--signal-blue) !important;
+}
+
+.badge-yellow {
+  background: var(--yellow-bg) !important;
+  border: 1px solid var(--yellow-border) !important;
+  color: var(--signal-yellow) !important;
+}
+
+.badge-orange,
+.badge-red {
+  background: var(--orange-bg) !important;
+  border: 1px solid var(--orange-border) !important;
+  color: var(--warning-orange) !important;
+}
+
+/* Custom SVG Line Icon Helpers */
+.svg-icon-line {
+  stroke-width: 1.8px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+
+/* Slider Overrides */
+input[type=range] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: #151815;
+  border: 1px solid var(--border);
+  border-radius: 9999px;
+  height: 6px;
+  outline: none;
+}
+
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 18px;
+  width: 18px;
+  border-radius: 50%;
+  background: var(--signal-green);
+  border: 2px solid var(--bg);
+  box-shadow: none;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+input[type=range]::-webkit-slider-thumb:active {
+  transform: scale(1.2);
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: #1c1f1c; border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: #282e28; }
+
+/* ==========================================================================
+   Leaflet Dark Mode & Atmospheric Map Customizations
+   ========================================================================== */
+#vayu-leaflet-map {
+  background: #050807 !important;
+  font-family: 'Inter', -apple-system, sans-serif;
+}
+
+.leaflet-container {
+  background: #050807 !important;
+  outline: none;
+}
+
+/* Darken tiles slightly to match deep atmospheric midnight background */
+.leaflet-tile-pane {
+  filter: brightness(0.92) contrast(1.1) saturate(0.8);
+}
+
+.leaflet-control-attribution {
+  display: none !important;
+}
+
+/* Custom Zoom-Aware Station Markers */
+.vayu-station-node {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  color: #ffffff;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+}
+
+/* Small dot at low zoom */
+.vayu-station-node.node-small {
+  width: 22px;
+  height: 22px;
+  font-size: 8.5px;
+  border: 1.5px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+}
+
+/* Expanded pill at high zoom */
+.vayu-station-node.node-pill {
+  padding: 3px 8px;
+  border-radius: 9999px;
+  font-size: 10px;
+  gap: 5px;
+  background: rgba(11, 12, 11, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.7);
+  white-space: nowrap;
+}
+
+.vayu-station-node.node-pill .station-pill-name {
+  color: #f2f5f3;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  max-width: 90px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.vayu-station-node.node-pill .station-pill-aqi {
+  padding: 1px 5px;
+  border-radius: 6px;
+  color: #fff;
+  font-weight: 800;
+}
+
+.vayu-station-node:hover {
+  transform: scale(1.18);
+  z-index: 1000 !important;
+}
+
+.vayu-station-node.node-selected {
+  transform: scale(1.25);
+  box-shadow: 0 0 0 3px var(--signal-green, #8FFFB0), 0 0 20px rgba(143, 255, 176, 0.6) !important;
+  z-index: 1001 !important;
+  animation: selectedStationPulse 2s infinite;
+}
+
+@keyframes selectedStationPulse {
+  0%, 100% { box-shadow: 0 0 0 3px var(--signal-green, #8FFFB0), 0 0 15px rgba(143, 255, 176, 0.6); }
+  50% { box-shadow: 0 0 0 4px var(--signal-blue, #7FD4FF), 0 0 20px rgba(127, 212, 255, 0.6); }
+}
+
+/* Satellite Fire Hotspot Markers */
+.vayu-fire-pin {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+}
+
+.vayu-fire-halo {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(249, 115, 22, 0.45) 0%, rgba(239, 68, 68, 0) 70%);
+  animation: fireHaloPulse 1.8s ease-in-out infinite;
+}
+
+.vayu-fire-core {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #f97316;
+  border: 1.5px solid #ffffff;
+  box-shadow: 0 0 12px #f97316;
+  z-index: 2;
+}
+
+@keyframes fireHaloPulse {
+  0%, 100% { transform: scale(0.9); opacity: 0.6; }
+  50% { transform: scale(1.4); opacity: 0.95; }
+}
+
+/* Isobaric Contour Path & Labels */
+.isobar-label {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 9.5px;
+  font-weight: 700;
+  fill: var(--signal-yellow, #FFE270);
+  text-shadow: 0 0 6px rgba(0, 0, 0, 0.9);
+  letter-spacing: 0;
+}
+
+/* Leaflet Dark Custom Popup */
+.leaflet-popup-content-wrapper {
+  background: var(--panel, #131513) !important;
+  color: var(--text-primary, #EEF0EC) !important;
+  border: 1px solid var(--border, #262A26) !important;
+  border-radius: var(--radius, 14px) !important;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6) !important;
+  padding: 0 !important;
+}
+
+.leaflet-popup-content {
+  margin: 12px 14px !important;
+  line-height: 1.4 !important;
+}
+
+.leaflet-popup-tip {
+  background: var(--panel, #131513) !important;
+  border: 1px solid var(--border, #262A26) !important;
+}
+
+/* ==========================================================================
+   Daylight Pearl / Light Mode Theme System
+   ========================================================================== */
+html.light-theme {
+  --bg:            #f8fafc;
+  --panel:         #ffffff;
+  --panel-elevated:#f1f5f9;
+  --border:        #cbd5e1;
+  --border-subtle: rgba(0, 0, 0, 0.08);
+
+  --surface:       #ffffff;
+  --surface-2:     #f1f5f9;
+
+  --text-primary:  #0f172a;
+  --text-secondary:#334155;
+  --text-muted:    #475569;
+  --text-tertiary: #64748b;
+
+  --signal-green:  #047857;
+  --signal-blue:   #0369a1;
+  --signal-yellow: #b45309;
+  --warning-orange:#b91c1c;
+
+  --accent-green:  #047857;
+  --accent-blue:   #0369a1;
+  --accent-yellow: #b45309;
+  --accent-red:    #b91c1c;
+
+  --green-bg:      #ecfdf5;  --green-border:  #a7f3d0;
+  --blue-bg:       #f0f9ff;  --blue-border:   #bae6fd;
+  --yellow-bg:     #fffbeb;  --yellow-border: #fde68a;
+  --red-bg:        #fef2f2;  --red-border:    #fecaca;
+}
+
+html.light-theme,
+html.light-theme body {
+  background-color: var(--bg, #f8fafc) !important;
+  background-image: 
+    radial-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+    radial-gradient(ellipse at 50% 0%, rgba(4, 120, 87, 0.05) 0%, transparent 60%) !important;
+  color: var(--text-primary, #0f172a) !important;
+}
+
+/* ==========================================================================
+   Header & Dedicated Navigation in Light Mode
+   ========================================================================== */
+html.light-theme header,
+html.light-theme header > div,
+html.light-theme .bg-earth-950,
+html.light-theme .bg-earth-950\/70,
+html.light-theme .bg-earth-950\/80,
+html.light-theme .bg-earth-950\/90,
+html.light-theme .bg-earth-950\/95,
+html.light-theme .bg-earth-900,
+html.light-theme .bg-earth-900\/90,
+html.light-theme .bg-earth-900\/80,
+html.light-theme .bg-earth-850,
+html.light-theme .bg-earth-800,
+html.light-theme .bg-earth-700 {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+/* Navigation Tab Buttons in Light Mode (Desktop Header) */
+html.light-theme header nav button {
+  color: #475569 !important;
+  background-color: transparent !important;
+  border: 1px solid transparent !important;
+  box-shadow: none !important;
+}
+html.light-theme header nav button:hover {
+  background-color: #f1f5f9 !important;
+  border-color: transparent !important;
+  color: #0f172a !important;
+}
+html.light-theme header nav button.active,
+html.light-theme header nav button[class*="text-cyan-300"],
+html.light-theme header nav button[class*="bg-cyan-950"],
+html.light-theme header nav button[class*="active"] {
+  background-color: #ecfdf5 !important;
+  border: 1.5px solid #059669 !important;
+  color: #047857 !important;
+  font-weight: 700 !important;
+  box-shadow: 0 0 10px rgba(5, 150, 105, 0.15) !important;
+}
+
+/* Crisis Scrubber Bar in Light Mode */
+html.light-theme section.bg-earth-900\/90,
+html.light-theme section[class*="bg-earth-900"] {
+  background-color: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+}
+html.light-theme #step-hour-badge {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #047857 !important;
+}
+html.light-theme section.bg-earth-900\/90 button,
+html.light-theme section[class*="bg-earth-900"] button {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #334155 !important;
+}
+html.light-theme section.bg-earth-900\/90 button:hover,
+html.light-theme section[class*="bg-earth-900"] button:hover {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+/* Typography Overrides in Light Mode */
+html.light-theme .text-white,
+html.light-theme .text-\[\#EEF0EC\],
+html.light-theme .text-\[\#eef0ec\],
+html.light-theme .text-\[\#f2f5f3\],
+html.light-theme .text-slate-100,
+html.light-theme .text-slate-200,
+html.light-theme .text-earth-100,
+html.light-theme .text-earth-200,
+html.light-theme .text-earth-300 {
+  color: #0f172a !important;
+}
+
+html.light-theme .text-\[\#8C948B\],
+html.light-theme .text-\[\#8c948b\],
+html.light-theme .text-\[\#8b9390\],
+html.light-theme .text-slate-300,
+html.light-theme .text-slate-400,
+html.light-theme .text-slate-500,
+html.light-theme .text-earth-400 {
+  color: #475569 !important;
+}
+
+html.light-theme .text-\[\#545a57\] {
+  color: #64748b !important;
+}
+
+/* Crisp High-Contrast Signals for Light Mode */
+html.light-theme .text-\[\#8FFFB0\],
+html.light-theme .text-\[\#8fffb0\] {
+  color: #047857 !important;
+}
+
+html.light-theme .text-\[\#7FD4FF\],
+html.light-theme .text-\[\#7fd4ff\] {
+  color: #0369a1 !important;
+}
+
+html.light-theme .text-\[\#FFE270\],
+html.light-theme .text-\[\#ffe270\] {
+  color: #b45309 !important;
+}
+
+html.light-theme .text-\[\#FF9D7F\],
+html.light-theme .text-\[\#ff9d7f\] {
+  color: #b91c1c !important;
+}
+
+/* Borders in Light Mode */
+html.light-theme .border-\[\#262A26\],
+html.light-theme .border-\[\#262a26\],
+html.light-theme .border-\[\#283028\],
+html.light-theme .border-\[\#1c1f1c\],
+html.light-theme .border-\[\#1f3d30\],
+html.light-theme .border-\[\#1f3a4a\],
+html.light-theme .border-earth-700,
+html.light-theme .border-earth-700\/50,
+html.light-theme .border-earth-700\/60,
+html.light-theme .border-earth-700\/70,
+html.light-theme .border-earth-700\/80,
+html.light-theme .border-earth-700\/90,
+html.light-theme .border-earth-800,
+html.light-theme .border-slate-700,
+html.light-theme .border-slate-800 {
+  border-color: #cbd5e1 !important;
+}
+
+/* Surfaces, Panels and Cards in Light Mode */
+html.light-theme .hero-card,
+html.light-theme .surface-panel,
+html.light-theme .surface-card,
+html.light-theme .natural-glass,
+html.light-theme .bg-\[\#131513\],
+html.light-theme .bg-\[\#060706\],
+html.light-theme .bg-\[\#0b0c0b\],
+html.light-theme .bg-\[\#0f110f\],
+html.light-theme .bg-\[\#151815\],
+html.light-theme .bg-\[\#1c1f1c\],
+html.light-theme .bg-slate-900,
+html.light-theme .bg-slate-900\/90,
+html.light-theme .bg-slate-950 {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+  box-shadow: 0 4px 18px -2px rgba(15, 23, 42, 0.06);
+}
+
+html.light-theme .bg-\[\#191C19\],
+html.light-theme .bg-\[\#191c19\],
+html.light-theme .bg-\[\#0A0B0A\],
+html.light-theme .bg-\[\#0a0b0a\],
+html.light-theme .bg-\[\#141714\],
+html.light-theme .bg-\[\#10201a\] {
+  background-color: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+html.light-theme .badge-green {
+  background-color: #ecfdf5 !important;
+  color: #047857 !important;
+  border-color: #a7f3d0 !important;
+}
+
+html.light-theme .badge-blue {
+  background-color: #f0f9ff !important;
+  color: #0369a1 !important;
+  border-color: #bae6fd !important;
+}
+
+html.light-theme .badge-yellow {
+  background-color: #fffbeb !important;
+  color: #b45309 !important;
+  border-color: #fde68a !important;
+}
+
+html.light-theme .badge-orange,
+html.light-theme .badge-red {
+  background-color: #fef2f2 !important;
+  color: #b91c1c !important;
+  border-color: #fecaca !important;
+}
+
+html.light-theme .natural-glass {
+  background: rgba(255, 255, 255, 0.96) !important;
+  backdrop-filter: blur(20px);
+}
+
+html.light-theme .hover\:bg-\[\#161a16\]:hover,
+html.light-theme .hover\:bg-\[\#141714\]:hover,
+html.light-theme .hover\:bg-earth-800:hover,
+html.light-theme .hover\:bg-slate-800:hover {
+  background-color: #f1f5f9 !important;
+}
+
+/* Input Fields in Light Mode */
+html.light-theme input[type="text"],
+html.light-theme select,
+html.light-theme textarea {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+html.light-theme input::placeholder {
+  color: #94a3b8 !important;
+}
+
+/* Modals in Light Mode */
+html.light-theme #settings-modal,
+html.light-theme #station-picker-modal {
+  background: rgba(15, 23, 42, 0.45) !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+html.light-theme #settings-modal .surface-panel,
+html.light-theme #station-picker-modal .surface-panel {
+  background-color: #ffffff !important;
+  border-color: #e2e8e5 !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+}
+
+html.light-theme #settings-modal-title,
+html.light-theme #settings-lang-label,
+html.light-theme #settings-theme-label {
+  color: #0f172a !important;
+}
+
+html.light-theme #settings-modal-subtitle {
+  color: #64748b !important;
+}
+
+/* Gemini status card in settings modal */
+html.light-theme #settings-modal div.bg-\[\#10201a\] {
+  background-color: #ecfdf5 !important;
+  border-color: #a7f3d0 !important;
+}
+html.light-theme #settings-modal div.bg-\[\#10201a\] .text-white {
+  color: #064e3b !important;
+}
+html.light-theme #settings-modal div.bg-\[\#10201a\] .text-\[\#8b9390\] {
+  color: #047857 !important;
+}
+html.light-theme #settings-modal span.bg-\[\#1f3d30\] {
+  background-color: #a7f3d0 !important;
+  color: #065f46 !important;
+}
+
+/* Leaflet in Light Mode */
+html.light-theme #vayu-leaflet-map,
+html.light-theme .leaflet-container {
+  background: #eef2f0 !important;
+}
+
+html.light-theme .leaflet-tile-pane {
+  filter: none !important;
+}
+
+html.light-theme .leaflet-popup-content-wrapper {
+  background: rgba(255, 255, 255, 0.98) !important;
+  color: #0f172a !important;
+  border: 1px solid #e2e8e5 !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12) !important;
+}
+
+html.light-theme .leaflet-popup-tip {
+  background: #ffffff !important;
+  border: 1px solid #e2e8e5 !important;
+}
+
+/* VayuAI Chat in Light Mode */
+html.light-theme .vayuai-question-card {
+  background: #ffffff !important;
+  border-color: #e2e8e5 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+html.light-theme .vayuai-question-card:hover {
+  background: #f0fdf4 !important;
+  border-color: #86efac !important;
+}
+
+html.light-theme .vayuai-question-card p {
+  color: #0f172a !important;
+}
+
+html.light-theme .chat-bubble-user {
+  background: #ecfdf5 !important;
+  border-color: #a7f3d0 !important;
+  color: #064e3b !important;
+}
+
+html.light-theme .chat-bubble-bot {
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+html.light-theme #vayuai-chat-history {
+  background: #ffffff !important;
+  border-color: #e2e8e5 !important;
+}
+
+html.light-theme .mobile-nav-bar {
+  background: rgba(255, 255, 255, 0.98) !important;
+  border-top-color: #e2e8f0 !important;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05) !important;
+}
+
+html.light-theme .mobile-nav-item {
+  color: #64748b !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  border: 1px solid transparent !important;
+  box-shadow: none !important;
+}
+
+html.light-theme .mobile-nav-item svg {
+  color: #64748b !important;
+  stroke: #64748b !important;
+}
+
+html.light-theme .mobile-nav-item span {
+  color: #64748b !important;
+}
+
+html.light-theme .mobile-nav-item.active {
+  color: #047857 !important;
+  background: #ecfdf5 !important;
+  background-color: #ecfdf5 !important;
+  border: 1.5px solid #10b981 !important;
+  border-radius: 14px !important;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.16) !important;
+  font-weight: 700 !important;
+}
+
+html.light-theme .mobile-nav-item.active svg {
+  color: #047857 !important;
+  stroke: #047857 !important;
+}
+
+html.light-theme .mobile-nav-item.active span {
+  color: #047857 !important;
+  font-weight: 700 !important;
+}
+
+/* ==========================================================================
+   Tactile & High-Contrast Settings Modal Options (Cards + Click Animations)
+   ========================================================================== */
+.setting-card-option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: #141714;
+  border: 2px solid #283028;
+  cursor: pointer;
+  transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+  user-select: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+.setting-card-option:hover {
+  border-color: #3f4e3f;
+  background: #181e18;
+  transform: translateY(-1px);
+}
+
+.setting-card-option:active {
+  transform: scale(0.95);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.setting-card-option.active {
+  background: var(--panel-elevated, #191C19) !important;
+  border-color: var(--signal-green, #8FFFB0) !important;
+  box-shadow: 0 0 16px rgba(143, 255, 176, 0.2) !important;
+}
+
+.setting-opt-title {
+  color: var(--text-primary, #EEF0EC);
+  transition: color 0.2s ease;
+}
+
+.setting-card-option.active .setting-opt-title {
+  color: var(--signal-green, #8FFFB0) !important;
+}
+
+.setting-opt-desc {
+  color: var(--text-muted, #8C948B);
+  transition: color 0.2s ease;
+}
+
+.setting-card-option.active .setting-opt-desc {
+  color: var(--text-primary, #EEF0EC) !important;
+}
+
+.setting-check-indicator {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid var(--border, #262A26);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: transparent;
+  background: transparent;
+  transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+  flex-shrink: 0;
+}
+
+.setting-check-indicator svg {
+  transform: scale(0);
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.setting-card-option.active .setting-check-indicator {
+  background: var(--signal-green, #8FFFB0);
+  border-color: var(--signal-green, #8FFFB0);
+  color: var(--bg, #0A0B0A);
+  box-shadow: 0 0 10px rgba(143, 255, 176, 0.4);
+}
+
+.setting-card-option.active .setting-check-indicator svg {
+  transform: scale(1);
+}
+
+/* Light Theme overrides for Settings Cards */
+html.light-theme .setting-card-option {
+  background: #ffffff !important;
+  border: 2px solid #cbd5e1 !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05) !important;
+}
+
+html.light-theme .setting-card-option:hover {
+  border-color: #94a3b8 !important;
+  background: #f8fafc !important;
+}
+
+html.light-theme .setting-card-option.active {
+  background: #ecfdf5 !important;
+  border-color: #059669 !important;
+  box-shadow: 0 0 18px rgba(5, 150, 105, 0.18), 0 2px 6px rgba(0, 0, 0, 0.06) !important;
+}
+
+html.light-theme .setting-opt-title {
+  color: #0f172a !important;
+}
+
+html.light-theme .setting-card-option.active .setting-opt-title {
+  color: #064e3b !important;
+}
+
+html.light-theme .setting-opt-desc {
+  color: #64748b !important;
+}
+
+html.light-theme .setting-card-option.active .setting-opt-desc {
+  color: #047857 !important;
+}
+
+html.light-theme .setting-check-indicator {
+  border: 2px solid #cbd5e1 !important;
+}
+
+html.light-theme .setting-card-option.active .setting-check-indicator {
+  background: #059669 !important;
+  border-color: #059669 !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 8px rgba(5, 150, 105, 0.3) !important;
+}
+
+/* ==========================================================================
+   Google Weather-Style Live Weather Engine Styles
+   ========================================================================== */
+.weather-metric-tab {
+  position: relative;
+  padding-bottom: 8px;
+  color: #8b9390;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.weather-metric-tab:hover {
+  color: #f2f5f3;
+}
+.weather-metric-tab.active {
+  color: #f2f5f3;
+  font-weight: 700;
+}
+.weather-metric-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #f59e0b;
+  border-radius: 9999px;
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+}
+
+html.light-theme .weather-metric-tab {
+  color: #64748b;
+}
+html.light-theme .weather-metric-tab:hover {
+  color: #0f172a;
+}
+html.light-theme .weather-metric-tab.active {
+  color: #0f172a;
+}
+html.light-theme .weather-metric-tab.active::after {
+  background: #d97706;
+}
+
+.weather-day-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px 8px;
+  border-radius: 14px;
+  background: #111411;
+  border: 1.5px solid #232a23;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  text-align: center;
+  user-select: none;
+}
+.weather-day-card:hover {
+  background: #182018;
+  border-color: #384638;
+  transform: translateY(-2px);
+}
+.weather-day-card:active {
+  transform: scale(0.95);
+}
+.weather-day-card.active {
+  background: var(--panel-elevated, #191C19) !important;
+  border-color: var(--signal-green, #8FFFB0) !important;
+  box-shadow: 0 0 14px rgba(143, 255, 176, 0.2) !important;
+}
+
+html.light-theme .weather-day-card {
+  background: #ffffff !important;
+  border: 1.5px solid #e2e8f0 !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
+}
+html.light-theme .weather-day-card:hover {
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+}
+html.light-theme .weather-day-card.active {
+  background: #ecfdf5 !important;
+  border-color: #059669 !important;
+  box-shadow: 0 0 14px rgba(5, 150, 105, 0.2) !important;
+}
+html.light-theme .weather-day-card span.text-white {
+  color: #0f172a !important;
+}
+html.light-theme .weather-day-card .text-slate-300 {
+  color: #475569 !important;
+}
+html.light-theme .weather-day-card .text-slate-400 {
+  color: #64748b !important;
+}
+html.light-theme #panel-weather .bg-\[\#0a0d0a\] {
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
+html.light-theme #weather-main-temp {
+  color: #0f172a !important;
+}
+html.light-theme #weather-precip-val,
+html.light-theme #weather-humidity-val,
+html.light-theme #weather-wind-val {
+  color: #0f172a !important;
+}
+html.light-theme #weather-location-title span:first-child {
+  color: #0f172a !important;
+}
+html.light-theme #weather-day-name {
+  color: #334155 !important;
+}
+html.light-theme #weather-condition-desc {
+  color: #64748b !important;
+}
+html.light-theme #unit-c-btn.text-white,
+html.light-theme #unit-f-btn.text-white {
+  color: #0f172a !important;
+}
+
+/* Attribution Light Theme Rules */
+html.light-theme #panel-attribution .bg-earth-950\/70,
+html.light-theme #panel-attribution .bg-earth-950\/60,
+html.light-theme #panel-attribution .bg-earth-950\/80 {
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
+html.light-theme #panel-attribution .bg-earth-900 {
+  background: #e2e8f0 !important;
+}
+html.light-theme #attrib-main-title {
+  color: #0f172a !important;
+}
+html.light-theme #attrib-main-subtitle {
+  color: #64748b !important;
+}
+html.light-theme #attrib-sectors-container .text-white {
+  color: #0f172a !important;
+}
+html.light-theme #attrib-stations-grid > div,
+html.light-theme #attrib-stations-grid .bg-earth-950\/70 {
+  background-color: #ffffff !important;
+  border: 1.5px solid #cbd5e1 !important;
+  box-shadow: 0 3px 10px rgba(15, 23, 42, 0.05) !important;
+}
+html.light-theme #attrib-stations-grid > div:hover {
+  border-color: #059669 !important;
+  box-shadow: 0 6px 16px rgba(5, 150, 105, 0.1) !important;
+}
+html.light-theme #attrib-stations-grid .font-bold.text-xs,
+html.light-theme #attrib-stations-grid .text-white {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+  font-size: 13px !important;
+}
+html.light-theme #attrib-stations-grid .bg-rose-950,
+html.light-theme #attrib-stations-grid .bg-red-950,
+html.light-theme #attrib-stations-grid .bg-rose-100,
+html.light-theme #attrib-stations-grid .bg-red-100 {
+  background-color: #fee2e2 !important;
+  border: 1.5px solid #ef4444 !important;
+  color: #991b1b !important;
+  font-weight: 800 !important;
+}
+html.light-theme #attrib-stations-grid .bg-amber-950,
+html.light-theme #attrib-stations-grid .bg-amber-100 {
+  background-color: #fff7ed !important;
+  border: 1.5px solid #f97316 !important;
+  color: #c2410c !important;
+  font-weight: 800 !important;
+}
+html.light-theme #attrib-stations-grid .text-slate-400 {
+  color: #475569 !important;
+  font-weight: 700 !important;
+}
+html.light-theme #attrib-stations-grid .text-orange-300 {
+  color: #c2410c !important;
+  font-weight: 800 !important;
+}
+html.light-theme #attrib-stations-grid .text-amber-300 {
+  color: #b45309 !important;
+  font-weight: 700 !important;
+}
+html.light-theme #attrib-stations-grid .text-slate-300 {
+  color: #0f172a !important;
+  font-weight: 600 !important;
+}
+html.light-theme #attrib-stations-grid .text-emerald-400 {
+  color: #047857 !important;
+  font-weight: 800 !important;
+}
+html.light-theme #attrib-stations-grid .bg-emerald-400 {
+  background-color: #059669 !important;
+}
+html.light-theme #attrib-stations-grid .text-earth-400 {
+  color: #475569 !important;
+  font-weight: 600 !important;
+}
+html.light-theme #attrib-stations-grid .border-earth-800 {
+  border-color: #e2e8f0 !important;
+}
+html.light-theme #panel-attribution span[class*="bg-cyan-950"],
+html.light-theme #panel-attribution span[class*="bg-cyan-900"] {
+  background-color: #f0f9ff !important;
+  border: 1.5px solid #bae6fd !important;
+  color: #0284c7 !important;
+  font-weight: 700 !important;
+}
+html.light-theme #panel-attribution span[class*="bg-cyan-950"] i,
+html.light-theme #panel-attribution span[class*="bg-cyan-900"] i {
+  color: #0284c7 !important;
+}
+
+/* ==========================================================================
+   COMPREHENSIVE HIGH-CONTRAST LIGHT MODE SYSTEM (ALL TABS & METRICS)
+   Fixes washed-out / bleached colors across Overview, Weather, GRAP, Commute,
+   Dispatches, What-If, VayuAI, Health, and Navigation.
+   ========================================================================== */
+
+/* 1. Global High-Contrast Color Replacements in Light Mode */
+html.light-theme .text-emerald-100,
+html.light-theme .text-emerald-200,
+html.light-theme .text-emerald-300 {
+  color: #047857 !important; /* Deep Emerald 700 */
+}
+
+html.light-theme .text-emerald-400,
+html.light-theme .text-emerald-500 {
+  color: #065f46 !important; /* Deep Emerald 800 */
+}
+
+html.light-theme .text-teal-100,
+html.light-theme .text-teal-200,
+html.light-theme .text-teal-300 {
+  color: #0f766e !important; /* Deep Teal 700 */
+}
+
+html.light-theme .text-teal-400,
+html.light-theme .text-teal-500 {
+  color: #115e59 !important; /* Deep Teal 800 */
+}
+
+html.light-theme .text-cyan-100,
+html.light-theme .text-cyan-200,
+html.light-theme .text-cyan-300 {
+  color: #0369a1 !important; /* Sky / Cyan 700 */
+}
+
+html.light-theme .text-cyan-400,
+html.light-theme .text-cyan-500 {
+  color: #075985 !important; /* Sky / Cyan 800 */
+}
+
+html.light-theme .text-sky-100,
+html.light-theme .text-sky-200,
+html.light-theme .text-sky-300 {
+  color: #0284c7 !important; /* Sky 600/700 */
+}
+
+html.light-theme .text-sky-400,
+html.light-theme .text-sky-500 {
+  color: #0369a1 !important; /* Sky 700 */
+}
+
+html.light-theme .text-amber-100,
+html.light-theme .text-amber-200,
+html.light-theme .text-amber-300 {
+  color: #b45309 !important; /* Amber 700 */
+}
+
+html.light-theme .text-amber-400,
+html.light-theme .text-amber-500 {
+  color: #92400e !important; /* Amber 800 */
+}
+
+html.light-theme .text-yellow-100,
+html.light-theme .text-yellow-200,
+html.light-theme .text-yellow-300,
+html.light-theme .text-yellow-400 {
+  color: #b45309 !important; /* Deep Amber */
+}
+
+html.light-theme .text-orange-100,
+html.light-theme .text-orange-200,
+html.light-theme .text-orange-300 {
+  color: #c2410c !important; /* Orange 700 */
+}
+
+html.light-theme .text-orange-400,
+html.light-theme .text-orange-500 {
+  color: #9a3412 !important; /* Orange 800 */
+}
+
+html.light-theme .text-rose-200,
+html.light-theme .text-rose-300 {
+  color: #be123c !important; /* Rose 700 */
+}
+
+html.light-theme .text-rose-400,
+html.light-theme .text-rose-500 {
+  color: #9f1239 !important; /* Rose 800 */
+}
+
+html.light-theme .text-purple-300,
+html.light-theme .text-purple-400 {
+  color: #7e22ce !important; /* Purple 700 */
+}
+
+html.light-theme .text-\[\#6fe2a3\] {
+  color: #047857 !important;
+}
+
+html.light-theme .text-\[\#6ec8f2\] {
+  color: #0284c7 !important;
+}
+
+html.light-theme .text-\[\#f2d666\] {
+  color: #b45309 !important;
+}
+
+html.light-theme .text-\[\#f2966e\] {
+  color: #c2410c !important;
+}
+
+html.light-theme [class*="text-earth-300"] {
+  color: #475569 !important;
+}
+
+html.light-theme [class*="text-earth-400"] {
+  color: #64748b !important;
+}
+
+/* 2. Overview Tab: 6 Telemetry Cards & Metric Numbers */
+html.light-theme #panel-overview .natural-glass span[class*="tracking-wider"] {
+  color: #334155 !important;
+  font-weight: 700 !important;
+}
+
+html.light-theme #curr-aqi-val {
+  color: #0f172a !important;
+}
+
+html.light-theme #curr-pm25-val {
+  color: #0f172a !important;
+}
+
+html.light-theme #curr-vi-val {
+  color: #047857 !important;
+  font-weight: 900 !important;
+}
+
+html.light-theme #curr-vi-val span {
+  color: #065f46 !important;
+}
+
+html.light-theme #curr-vi-status {
+  color: #b45309 !important;
+  font-weight: 700 !important;
+}
+
+html.light-theme #curr-pblh-val {
+  color: #0369a1 !important;
+  font-weight: 900 !important;
+}
+
+html.light-theme #curr-pblh-val span {
+  color: #475569 !important;
+}
+
+html.light-theme #pblh-subtext {
+  color: #475569 !important;
+}
+
+html.light-theme #curr-inversion-val {
+  color: #b45309 !important;
+  font-weight: 900 !important;
+}
+
+html.light-theme #curr-inversion-val span {
+  color: #475569 !important;
+}
+
+html.light-theme #curr-trapping-status {
+  color: #92400e !important;
+}
+
+html.light-theme #curr-wind-speed {
+  color: #0f766e !important;
+  font-weight: 900 !important;
+}
+
+html.light-theme #curr-wind-dir {
+  color: #475569 !important;
+}
+
+html.light-theme #wind-alignment-text {
+  color: #475569 !important;
+}
+
+html.light-theme #curr-fire-count {
+  color: #c2410c !important;
+  font-weight: 900 !important;
+}
+
+html.light-theme #curr-fire-count span {
+  color: #475569 !important;
+}
+
+html.light-theme #stubble-share-badge {
+  color: #c2410c !important;
+  font-weight: 700 !important;
+}
+
+/* Map Header & Subtitle in Light Mode */
+html.light-theme #panel-overview h2 {
+  color: #0f172a !important;
+}
+
+html.light-theme #panel-overview p {
+  color: #475569 !important;
+}
+
+/* 3. Scrubber Timeline & Badge Overrides in Light Mode */
+html.light-theme section.bg-earth-900\/90,
+html.light-theme section[class*="bg-earth-900"] {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04) !important;
+}
+
+html.light-theme #step-hour-badge {
+  background-color: #ecfdf5 !important;
+  border-color: #a7f3d0 !important;
+  color: #065f46 !important;
+  font-weight: 800 !important;
+}
+
+html.light-theme #step-hour-badge span {
+  color: #047857 !important;
+}
+
+html.light-theme section.bg-earth-900\/90 button,
+html.light-theme section[class*="bg-earth-900"] button {
+  background-color: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  color: #1e293b !important;
+  font-weight: 600 !important;
+}
+
+html.light-theme section.bg-earth-900\/90 button:hover,
+html.light-theme section[class*="bg-earth-900"] button:hover {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+
+/* 4. Mobile Native Hero & Glance Card in Light Mode */
+html.light-theme #mobile-hero-container .natural-glass {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.06) !important;
+}
+
+html.light-theme #mobile-hero-container button[onclick*="openStationPickerModal"] {
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+html.light-theme #mob-hero-station-name {
+  color: #0f172a !important;
+}
+
+html.light-theme #mob-hero-aqi-number {
+  color: #0f172a !important;
+}
+
+html.light-theme #mobile-hero-container .grid-cols-4 > div {
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
+
+html.light-theme #mob-hero-temp {
+  color: #0f172a !important;
+}
+
+html.light-theme #mob-hero-wind {
+  color: #0f766e !important;
+}
+
+html.light-theme #mob-hero-pm25 {
+  color: #be123c !important;
+}
+
+html.light-theme #mob-hero-pbl {
+  color: #0369a1 !important;
+}
+
+/* Mobile Action Banner (GRAP Stage IV) */
+html.light-theme #mobile-hero-container div[class*="from-rose-950"] {
+  background: #fff1f2 !important;
+  border-color: #fecdd3 !important;
+  color: #9f1239 !important;
+}
+
+html.light-theme #mobile-hero-container div[class*="from-rose-950"] .text-white {
+  color: #881337 !important;
+}
+
+html.light-theme #mobile-hero-container div[class*="from-rose-950"] .text-rose-200 {
+  color: #9f1239 !important;
+}
+
+html.light-theme #mobile-hero-container div[class*="from-rose-950"] button {
+  background: #f43f5e !important;
+  color: #ffffff !important;
+  border-color: #e11d48 !important;
+}
+
+/* 5. Weather Tab Overrides in Light Mode */
+html.light-theme #weather-main-temp {
+  color: #0f172a !important;
+}
+
+html.light-theme #weather-location-title span:first-child {
+  color: #0f172a !important;
+}
+
+html.light-theme #weather-day-name {
+  color: #334155 !important;
+}
+
+html.light-theme #weather-condition-desc {
+  color: #475569 !important;
+}
+
+html.light-theme #weather-precip-val,
+html.light-theme #weather-humidity-val,
+html.light-theme #weather-wind-val {
+  color: #0f172a !important;
+}
+
+html.light-theme #panel-weather .bg-\[\#0a0d0a\] {
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+}
+
+html.light-theme #panel-weather .weather-metric-tab {
+  color: #64748b !important;
+}
+
+html.light-theme #panel-weather .weather-metric-tab.active {
+  color: #0f172a !important;
+}
+
+/* 6. Predictive GRAP Tab Overrides in Light Mode */
+html.light-theme #grap-max-lead-gained {
+  color: #047857 !important;
+}
+
+html.light-theme #panel-grap .timeline-track-line {
+  background: #cbd5e1 !important;
+}
+
+html.light-theme #panel-grap .timeline-node-dot {
+  background: #ffffff !important;
+}
+
+html.light-theme #panel-grap .surface-card {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+}
+
+html.light-theme #panel-grap .surface-card div[class*="bg-[#060706]"] {
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+  color: #1e293b !important;
+}
+
+html.light-theme #panel-grap .surface-card .text-\[\#cfdade\] {
+  color: #0f172a !important;
+}
+
+html.light-theme #panel-grap h3 {
+  color: #0f172a !important;
+}
+
+/* 7. Stakeholder Action Dispatches in Light Mode */
+html.light-theme .agency-tile {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+}
+
+html.light-theme .agency-tile:hover {
+  background: #f8fafc !important;
+  border-color: #94a3b8 !important;
+}
+
+html.light-theme .agency-tile h4 {
+  color: #0f172a !important;
+}
+
+html.light-theme .agency-tile div.bg-\[\#10201a\] {
+  background: #ecfdf5 !important;
+  border-color: #a7f3d0 !important;
+  color: #047857 !important;
+}
+
+html.light-theme .agency-tile span.text-\[\#6fe2a3\] {
+  color: #047857 !important;
+}
+
+html.light-theme #dispatch-severity-headline {
+  color: #be123c !important;
+}
+
+html.light-theme #dispatch-lead-time-text {
+  color: #047857 !important;
+}
+
+/* 8. Counterfactual What-If Simulator in Light Mode */
+html.light-theme #panel-whatif .bg-earth-950\/80,
+html.light-theme #panel-whatif .bg-earth-950 {
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
+
+html.light-theme #panel-whatif span.text-earth-100 {
+  color: #0f172a !important;
+}
+
+html.light-theme #slider-val-stubble {
+  color: #c2410c !important;
+}
+
+html.light-theme #slider-val-truck {
+  color: #be123c !important;
+}
+
+html.light-theme #slider-val-dust {
+  color: #b45309 !important;
+}
+
+html.light-theme #slider-val-industry {
+  color: #7e22ce !important;
+}
+
+html.light-theme #whatif-status-badge {
+  background-color: #ecfdf5 !important;
+  color: #047857 !important;
+  border-color: #a7f3d0 !important;
+  box-shadow: 0 1px 3px rgba(5, 150, 105, 0.1) !important;
+}
+html.light-theme #whatif-status-badge > span.animate-pulse {
+  background-color: #059669 !important;
+}
+
+html.light-theme #whatif-results-box {
+  background: #ffffff !important;
+  border: 1.5px solid #cbd5e1 !important;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05) !important;
+}
+
+html.light-theme #whatif-results-box h3 {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+}
+
+html.light-theme #whatif-uncontrolled-card {
+  background-color: #fef2f2 !important;
+  border: 1.5px solid #fecaca !important;
+}
+
+html.light-theme #whatif-uncontrolled-card .text-\[\#8C948B\],
+html.light-theme #whatif-uncontrolled-card [class*="text-[#8C948B]"] {
+  color: #991b1b !important;
+  font-weight: 800 !important;
+}
+
+html.light-theme #whatif-base-peak {
+  color: #b91c1c !important;
+  font-weight: 900 !important;
+}
+
+html.light-theme #whatif-uncontrolled-card div:last-child {
+  color: #dc2626 !important;
+  font-weight: 700 !important;
+}
+
+html.light-theme #whatif-predictive-card {
+  background-color: #f0fdf4 !important;
+  border: 1.5px solid #a7f3d0 !important;
+}
+
+html.light-theme #whatif-predictive-card .text-\[\#7FD4FF\],
+html.light-theme #whatif-predictive-card [class*="text-[#7FD4FF]"] {
+  color: #047857 !important;
+  font-weight: 800 !important;
+}
+
+html.light-theme #whatif-mitigated-peak {
+  color: #059669 !important;
+  font-weight: 900 !important;
+}
+
+html.light-theme #whatif-stage-label {
+  color: #047857 !important;
+  font-weight: 700 !important;
+}
+
+html.light-theme #whatif-summary-card {
+  background-color: #f8fafc !important;
+  border: 1.5px solid #cbd5e1 !important;
+}
+
+html.light-theme #whatif-summary-card .text-\[\#8C948B\],
+html.light-theme #whatif-summary-card [class*="text-[#8C948B]"] {
+  color: #475569 !important;
+  font-weight: 800 !important;
+}
+
+html.light-theme #whatif-avoided-pts {
+  color: #0284c7 !important;
+  font-weight: 900 !important;
+}
+
+html.light-theme #whatif-mitigation-pct {
+  color: #059669 !important;
+  font-weight: 900 !important;
+}
+
+html.light-theme .whatif-preset-btn {
+  background-color: #f8fafc !important;
+  border: 1.5px solid #cbd5e1 !important;
+  color: #334155 !important;
+  font-weight: 700 !important;
+}
+
+html.light-theme .whatif-preset-btn:hover {
+  background-color: #ecfdf5 !important;
+  border-color: #059669 !important;
+  color: #047857 !important;
+}
+
+/* 9. Clean Air Commute & Route Shield in Light Mode */
+html.light-theme #panel-commute .natural-glass {
+  border-color: #cbd5e1 !important;
+}
+
+html.light-theme #commute-std-dose {
+  color: #be123c !important;
+}
+
+html.light-theme #commute-eco-dose {
+  color: #047857 !important;
+}
+
+html.light-theme #commute-saved-pct {
+  color: #047857 !important;
+}
+
+html.light-theme #commute-timing-rec {
+  color: #92400e !important;
+}
+
+html.light-theme #panel-commute .bg-cyan-950\/70,
+html.light-theme #panel-commute .bg-cyan-950 {
+  background: #ecfdf5 !important;
+  border-color: #a7f3d0 !important;
+}
+
+html.light-theme #panel-commute .text-cyan-300,
+html.light-theme #panel-commute .text-cyan-200 {
+  color: #065f46 !important;
+}
+
+html.light-theme #panel-commute select {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+/* 10. Vulnerable Cohorts Health Tab in Light Mode */
+html.light-theme #panel-health .natural-glass {
+  border-color: #cbd5e1 !important;
+}
+
+html.light-theme #panel-health div[class*="bg-earth-950"] {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+}
+
+html.light-theme #panel-health .text-white {
+  color: #0f172a !important;
+}
+
+html.light-theme #panel-health .text-cyan-300 {
+  color: #0369a1 !important;
+}
+
+/* 11. VayuAI Assistant in Light Mode */
+html.light-theme #vayuai-hub-title {
+  color: #0f172a !important;
+}
+
+html.light-theme #vayuai-hub-subtitle {
+  color: #475569 !important;
+}
+
+html.light-theme #orb-status-pill {
+  color: #047857 !important;
+}
+
+html.light-theme #panel-copilot div.bg-\[\#060706\] {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+}
+
+html.light-theme #vayuai-quick-en {
+  color: #475569 !important;
+}
+
+html.light-theme #vayuai-chat-history {
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+}
+
+
+
