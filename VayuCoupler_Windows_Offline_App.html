@@ -409,32 +409,116 @@
     }
 
     /* ==========================================================================
-       Google Weather-Style Live Weather Engine Styles
+       Weather Metric Swipe Carousel — 90fps GPU-accelerated
        ========================================================================== */
-    .weather-metric-tab {
+    .wx-metric-pills {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .wx-pill {
       position: relative;
-      padding-bottom: 8px;
-      color: var(--text-muted, #8C948B);
-      transition: all 0.2s ease;
-      cursor: pointer;
-    }
-    .weather-metric-tab:hover {
-      color: var(--text-primary, #EEF0EC);
-    }
-    .weather-metric-tab.active {
-      color: var(--text-primary, #EEF0EC);
-      font-weight: 700;
-    }
-    .weather-metric-tab.active::after {
-      content: '';
-      position: absolute;
-      bottom: -1px;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: var(--signal-yellow, #FFE270);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 12px 5px 10px;
       border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted, #8C948B);
+      background: transparent;
+      border: 1.5px solid transparent;
+      cursor: pointer;
+      transition: color 0.22s ease, background 0.22s ease, border-color 0.22s ease;
+      white-space: nowrap;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
     }
+    .wx-pill.active {
+      color: var(--text-primary, #EEF0EC);
+      background: rgba(255,226,112,0.10);
+      border-color: rgba(255,226,112,0.35);
+    }
+    .wx-pill.active.precip {
+      background: rgba(56,189,248,0.10);
+      border-color: rgba(56,189,248,0.35);
+      color: #7dd3fc;
+    }
+    .wx-pill.active.wind {
+      background: rgba(52,211,153,0.10);
+      border-color: rgba(52,211,153,0.35);
+      color: #6ee7b7;
+    }
+    html.light-theme .wx-pill { color: #64748b; }
+    html.light-theme .wx-pill.active { color: #1e293b; background: rgba(217,119,6,0.10); border-color: rgba(217,119,6,0.4); }
+    html.light-theme .wx-pill.active.precip { color: #0369a1; background: rgba(2,132,199,0.10); border-color: rgba(2,132,199,0.4); }
+    html.light-theme .wx-pill.active.wind { color: #047857; background: rgba(5,150,105,0.10); border-color: rgba(5,150,105,0.4); }
+
+    /* Swipe track */
+    .wx-carousel-viewport {
+      width: 100%;
+      overflow: hidden;
+      border-radius: 16px;
+      position: relative;
+    }
+    .wx-carousel-track {
+      display: flex;
+      width: 300%;
+      will-change: transform;
+      transform: translate3d(0%, 0, 0);
+      transition: transform 0.32s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    .wx-carousel-track.no-transition {
+      transition: none !important;
+    }
+    .wx-chart-panel {
+      width: 33.3333%;
+      flex-shrink: 0;
+      position: relative;
+      background: #0a0d0a;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.07);
+      padding: 8px;
+      min-height: 192px;
+      display: flex;
+      flex-direction: column;
+      justify-content: stretch;
+    }
+    html.light-theme .wx-chart-panel {
+      background: #f8fafc;
+      border-color: rgba(0,0,0,0.08);
+    }
+    /* Swipe dot indicators */
+    .wx-dots {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .wx-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 9999px;
+      background: rgba(255,255,255,0.2);
+      transition: width 0.22s ease, background 0.22s ease;
+    }
+    .wx-dot.active {
+      width: 18px;
+      background: #FFE270;
+    }
+    .wx-dot.active.precip { background: #38bdf8; }
+    .wx-dot.active.wind   { background: #34d399; }
+    html.light-theme .wx-dot { background: rgba(0,0,0,0.15); }
+    html.light-theme .wx-dot.active { background: #d97706; }
+    html.light-theme .wx-dot.active.precip { background: #0284c7; }
+    html.light-theme .wx-dot.active.wind { background: #059669; }
+
+    /* Legacy class kept for compatibility */
+    .weather-metric-tab { display: none; }
+
 
     .weather-day-card {
       display: flex;
@@ -4658,28 +4742,46 @@
           </div>
         </div>
 
-        <!-- Metric Switcher Tabs (Temperature | Precipitation | Wind) -->
+        <!-- Metric Switcher Pills -->
         <div class="flex flex-col gap-3">
-          <div class="flex items-center justify-between border-b border-earth-700/60 pb-1 text-sm font-semibold">
-            <div class="flex items-center gap-4 sm:gap-6">
-              <button onclick="VayuWeather.setMetric('temp')" id="weather-tab-temp" class="weather-metric-tab active flex items-center gap-1.5">
+          <div class="flex items-center justify-between">
+            <div class="wx-metric-pills" id="wx-pills">
+              <button onclick="VayuWeather.setMetric('temp')" id="weather-tab-temp" class="wx-pill active" aria-label="Temperature">
                 <span>🌡️</span> <span>Temperature</span>
               </button>
-              <button onclick="VayuWeather.setMetric('precip')" id="weather-tab-precip" class="weather-metric-tab flex items-center gap-1.5">
+              <button onclick="VayuWeather.setMetric('precip')" id="weather-tab-precip" class="wx-pill precip" aria-label="Precipitation">
                 <span>💧</span> <span>Precipitation</span>
               </button>
-              <button onclick="VayuWeather.setMetric('wind')" id="weather-tab-wind" class="weather-metric-tab flex items-center gap-1.5">
+              <button onclick="VayuWeather.setMetric('wind')" id="weather-tab-wind" class="wx-pill wind" aria-label="Wind">
                 <span>🍃</span> <span>Wind</span>
               </button>
             </div>
-            <span class="text-[10px] text-earth-400 font-mono hidden sm:inline">24-Hour Synoptic Projection</span>
+            <span class="text-[10px] text-earth-400 font-mono hidden sm:inline">24-Hour Synoptic</span>
           </div>
 
-          <!-- Continuous Hourly Curve Graph -->
-          <div class="relative w-full h-48 sm:h-56 bg-[#0a0d0a] rounded-2xl p-2 sm:p-4 border border-earth-700/60 overflow-hidden flex flex-col justify-between">
-            <div id="weather-curve-container" class="w-full h-full relative">
-              <!-- Dynamically generated SVG continuous smooth curve -->
+          <!-- Swipeable Chart Carousel -->
+          <div class="wx-carousel-viewport" id="wx-carousel-viewport">
+            <div class="wx-carousel-track" id="wx-carousel-track">
+              <!-- Panel 0: Temperature -->
+              <div class="wx-chart-panel" id="weather-curve-container-0">
+                <div id="weather-curve-container" class="w-full h-full relative" style="min-height:168px"></div>
+              </div>
+              <!-- Panel 1: Precipitation -->
+              <div class="wx-chart-panel" id="weather-curve-container-1" style="margin-left:8px;margin-right:8px">
+                <div id="weather-curve-container-precip" class="w-full h-full relative" style="min-height:168px"></div>
+              </div>
+              <!-- Panel 2: Wind -->
+              <div class="wx-chart-panel" id="weather-curve-container-2">
+                <div id="weather-curve-container-wind" class="w-full h-full relative" style="min-height:168px"></div>
+              </div>
             </div>
+          </div>
+
+          <!-- Swipe dots -->
+          <div class="wx-dots" id="wx-dots">
+            <div class="wx-dot active" data-idx="0"></div>
+            <div class="wx-dot precip" data-idx="1"></div>
+            <div class="wx-dot wind" data-idx="2"></div>
           </div>
 
           <!-- View Hourly Forecast Option (Collapsible Toggle) -->
@@ -12636,14 +12738,25 @@
 
       setMetric(m) {
         this.metric = m;
-        ['temp', 'precip', 'wind'].forEach(tab => {
-          const el = document.getElementById(`weather-tab-${tab}`);
-          if (el) {
-            if (tab === m) el.classList.add('active');
-            else el.classList.remove('active');
-          }
+        const metricIdx = { temp: 0, precip: 1, wind: 2 };
+        const idx = metricIdx[m] ?? 0;
+        // Drive carousel
+        const track = document.getElementById('wx-carousel-track');
+        if (track) {
+          const pct = idx * (100 / 3);
+          track.style.transform = `translate3d(-${pct}%, 0, 0)`;
+        }
+        // Sync pills
+        ['temp', 'precip', 'wind'].forEach((tab, i) => {
+          const pill = document.getElementById(`weather-tab-${tab}`);
+          if (!pill) return;
+          if (i === idx) pill.classList.add('active');
+          else pill.classList.remove('active');
         });
-        this.renderChart();
+        // Sync dots
+        document.querySelectorAll('.wx-dot').forEach((dot, i) => {
+          dot.classList.toggle('active', i === idx);
+        });
         this.renderHourlySlider();
         this.renderDays();
       },
@@ -12765,7 +12878,19 @@
       },
 
       renderChart() {
-        const container = document.getElementById('weather-curve-container');
+        // Render all 3 chart panels into their dedicated containers
+        const containers = [
+          { id: 'weather-curve-container',       metric: 'temp'   },
+          { id: 'weather-curve-container-precip', metric: 'precip' },
+          { id: 'weather-curve-container-wind',   metric: 'wind'   },
+        ];
+        containers.forEach(({ id, metric }) => this._renderSingleChart(id, metric));
+        // Init swipe handler after first render
+        if (!this._swipeInited) { this._swipeInited = true; this.initWxSwipe(); }
+      },
+
+      _renderSingleChart(containerId, metric) {
+        const container = document.getElementById(containerId);
         if (!container) return;
         if (!this.forecastDays || !this.forecastDays.length) return;
 
@@ -12780,13 +12905,13 @@
         let fillGradStart = 'rgba(245, 158, 11, 0.4)';
         let fillGradEnd = 'rgba(245, 158, 11, 0.01)';
 
-        if (this.metric === 'temp') {
+        if (metric === 'temp') {
           values = hourly.map(h => this.convertTemp(h.temp));
           unitSuffix = '°';
           strokeColor = '#eab308';
           fillGradStart = 'rgba(234, 179, 8, 0.45)';
           fillGradEnd = 'rgba(234, 179, 8, 0.02)';
-        } else if (this.metric === 'precip') {
+        } else if (metric === 'precip') {
           values = hourly.map(h => h.precip);
           unitSuffix = '%';
           strokeColor = '#38bdf8';
@@ -12841,10 +12966,10 @@
         let chartStroke = strokeColor;
         let chartLabelFill = strokeColor;
         if (isLight) {
-          if (this.metric === 'temp') {
+          if (metric === 'temp') {
             chartStroke = '#d97706';
             chartLabelFill = '#9a3412';
-          } else if (this.metric === 'precip') {
+          } else if (metric === 'precip') {
             chartStroke = '#0284c7';
             chartLabelFill = '#0369a1';
           } else {
@@ -12852,27 +12977,28 @@
             chartLabelFill = '#047857';
           }
         }
+        const gradId = `weatherAreaGrad_${metric}`;
         let svg = `
-          <svg viewBox="0 0 ${width} ${height}" class="w-full h-full overflow-visible" preserveAspectRatio="none" id="weather-hourly-svg" style="cursor:crosshair">
+          <svg viewBox="0 0 ${width} ${height}" class="w-full h-full overflow-visible" preserveAspectRatio="none" style="cursor:crosshair">
             <defs>
-              <linearGradient id="weatherAreaGrad" x1="0" y1="0" x2="0" y2="1">
+              <linearGradient id="${gradId}" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stop-color="${fillGradStart}" />
                 <stop offset="100%" stop-color="${fillGradEnd}" />
               </linearGradient>
             </defs>
-            
-            <path d="${areaD}" fill="url(#weatherAreaGrad)" />
+
+            <path d="${areaD}" fill="url(#${gradId})" />
             <line x1="${padX}" y1="${height - padBottom}" x2="${width - padX}" y2="${height - padBottom}" stroke="${axisColor}" stroke-width="1" />
             <path d="${pathD}" fill="none" stroke="${chartStroke}" stroke-width="3.5" stroke-linecap="round" />
 
             ${points.map((pt, idx) => `
-              <line id="chart-tt-line-${idx}" x1="${pt.x}" y1="${padTop}" x2="${pt.x}" y2="${height - padBottom}" stroke="${chartStroke}" stroke-width="1.5" stroke-dasharray="4 3" opacity="0" style="pointer-events:none;transition:opacity 0.15s" />
+              <line id="chart-tt-line-${metric}-${idx}" x1="${pt.x}" y1="${padTop}" x2="${pt.x}" y2="${height - padBottom}" stroke="${chartStroke}" stroke-width="1.5" stroke-dasharray="4 3" opacity="0" style="pointer-events:none;transition:opacity 0.15s" />
 
-              <circle cx="${pt.x}" cy="${pt.y}" r="4.5" fill="${chartStroke}" stroke="${nodeStroke}" stroke-width="2" class="chart-node-${idx}"
+              <circle cx="${pt.x}" cy="${pt.y}" r="4.5" fill="${chartStroke}" stroke="${nodeStroke}" stroke-width="2" class="chart-node-${metric}-${idx}"
                 style="transition:r 0.18s,filter 0.18s;pointer-events:none"
               />
 
-              <text x="${pt.x}" y="${pt.y - 12}" fill="${chartLabelFill}" font-size="13" font-family="'IBM Plex Mono', monospace" font-weight="800" text-anchor="middle" class="chart-label-${idx}" style="transition:font-size 0.18s,opacity 0.18s;pointer-events:none">
+              <text x="${pt.x}" y="${pt.y - 12}" fill="${chartLabelFill}" font-size="13" font-family="'IBM Plex Mono', monospace" font-weight="800" text-anchor="middle" class="chart-label-${metric}-${idx}" style="transition:font-size 0.18s,opacity 0.18s;pointer-events:none">
                 ${pt.val}${unitSuffix}
               </text>
 
@@ -12880,26 +13006,25 @@
                 ${pt.time}
               </text>
 
-              <!-- Full column hover hit area for smooth intuitive interaction -->
               <rect x="${pt.x - stepX/2}" y="0" width="${stepX}" height="${height}" fill="transparent" style="cursor:pointer"
-                onmouseover="(function(el,idx){
+                onmouseover="(function(el,m,idx){
                   var svg=el.closest('svg');
-                  var node=svg.querySelector('.chart-node-'+idx);
-                  var lbl=svg.querySelector('.chart-label-'+idx);
-                  var ttLine=svg.getElementById('chart-tt-line-'+idx);
+                  var node=svg.querySelector('.chart-node-'+m+'-'+idx);
+                  var lbl=svg.querySelector('.chart-label-'+m+'-'+idx);
+                  var ttLine=document.getElementById('chart-tt-line-'+m+'-'+idx);
                   if(node){node.setAttribute('r','8');node.style.filter='drop-shadow(0 0 8px ${chartStroke})';}
                   if(lbl){lbl.setAttribute('font-size','16');lbl.setAttribute('font-weight','900');}
                   if(ttLine){ttLine.setAttribute('opacity','1');}
-                })(this,${idx})"
-                onmouseout="(function(el,idx){
+                })(this,'${metric}',${idx})"
+                onmouseout="(function(el,m,idx){
                   var svg=el.closest('svg');
-                  var node=svg.querySelector('.chart-node-'+idx);
-                  var lbl=svg.querySelector('.chart-label-'+idx);
-                  var ttLine=svg.getElementById('chart-tt-line-'+idx);
+                  var node=svg.querySelector('.chart-node-'+m+'-'+idx);
+                  var lbl=svg.querySelector('.chart-label-'+m+'-'+idx);
+                  var ttLine=document.getElementById('chart-tt-line-'+m+'-'+idx);
                   if(node){node.setAttribute('r','4.5');node.style.filter='none';}
                   if(lbl){lbl.setAttribute('font-size','13');lbl.setAttribute('font-weight','800');}
                   if(ttLine){ttLine.setAttribute('opacity','0');}
-                })(this,${idx})"
+                })(this,'${metric}',${idx})"
               />
             `).join('')}
           </svg>
@@ -12907,6 +13032,69 @@
 
         container.innerHTML = svg;
       },
+
+      initWxSwipe() {
+        const viewport = document.getElementById('wx-carousel-viewport');
+        const track    = document.getElementById('wx-carousel-track');
+        if (!viewport || !track) return;
+        const metrics = ['temp', 'precip', 'wind'];
+        let startX = 0, startY = 0, curX = 0, isDragging = false, isHoriz = null;
+        let startTime = 0;
+
+        const goTo = (idx) => {
+          const m = metrics[Math.max(0, Math.min(2, idx))];
+          VayuWeather.setMetric(m);
+        };
+
+        const getCurIdx = () => metrics.indexOf(VayuWeather.metric);
+
+        viewport.addEventListener('touchstart', (e) => {
+          const t = e.touches[0];
+          startX = curX = t.clientX;
+          startY = t.clientY;
+          isDragging = true;
+          isHoriz = null;
+          startTime = Date.now();
+          track.classList.add('no-transition');
+        }, { passive: true });
+
+        viewport.addEventListener('touchmove', (e) => {
+          if (!isDragging) return;
+          const t = e.touches[0];
+          const dx = t.clientX - startX;
+          const dy = t.clientY - startY;
+          if (isHoriz === null) {
+            isHoriz = Math.abs(dx) > Math.abs(dy);
+          }
+          if (!isHoriz) return; // let vertical scroll through
+          e.preventDefault();
+          curX = t.clientX;
+          const curIdx = getCurIdx();
+          const basePct = curIdx * (100 / 3);
+          const deltaPct = -(dx / viewport.offsetWidth) * (100 / 3);
+          const clampedPct = Math.max(0, Math.min(200/3, basePct + deltaPct));
+          track.style.transform = `translate3d(-${clampedPct}%, 0, 0)`;
+        }, { passive: false });
+
+        viewport.addEventListener('touchend', (e) => {
+          if (!isDragging || !isHoriz) { isDragging = false; return; }
+          isDragging = false;
+          track.classList.remove('no-transition');
+          const dx = curX - startX;
+          const dt = Date.now() - startTime;
+          const velocity = Math.abs(dx) / dt; // px/ms
+          const threshold = viewport.offsetWidth * 0.2;
+          const curIdx = getCurIdx();
+          if ((Math.abs(dx) > threshold || velocity > 0.3)) {
+            if (dx < 0 && curIdx < 2) goTo(curIdx + 1);
+            else if (dx > 0 && curIdx > 0) goTo(curIdx - 1);
+            else goTo(curIdx); // snap back
+          } else {
+            goTo(curIdx); // snap back
+          }
+        }, { passive: true });
+      },
+
 
       toggleHourlySlider() {
         const wrap = document.getElementById('weather-hourly-slider-wrap');
