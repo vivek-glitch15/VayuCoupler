@@ -2591,6 +2591,18 @@
       color: #0f172a !important;
       font-weight: 700 !important;
     }
+        /* Header Dual-Mode Online/Offline Pill Light Theme */
+    html.light-theme #vayu-network-pill {
+      background-color: #ecfdf5 !important;
+      border-color: #a7f3d0 !important;
+      color: #065f46 !important;
+    }
+    html.light-theme #vayu-network-pill.vayu-offline {
+      background-color: #fffbeb !important;
+      border-color: #fde68a !important;
+      color: #92400e !important;
+    }
+
     html.light-theme header button[onclick*="refreshGPSLocation"] {
       background-color: #f8fafc !important;
       border: 1.5px solid #cbd5e1 !important;
@@ -4272,6 +4284,14 @@
           <span class="text-[9px] uppercase hidden sm:inline" id="header-aqi-severity"></span>
         </div>
 
+        <!-- Network Dual-Mode Status Pill -->
+        <button id="vayu-network-pill" onclick="VayuSyncManager.toggleStatusToast()"
+          class="flex items-center gap-1 px-2 py-1 sm:px-2.5 sm:py-1 rounded-xl bg-emerald-950/80 hover:bg-emerald-900 text-emerald-300 border border-emerald-500/30 text-[10px] sm:text-[11px] font-mono-tag font-bold transition shadow-sm shrink-0 cursor-pointer"
+          title="Network Status: Online (Live CPCB & MoES Telemetry Active)">
+          <span id="vayu-network-dot" class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span id="vayu-network-label" class="tracking-wide">ONLINE</span>
+        </button>
+
         <!-- GPS refresh -->
         <button onclick="refreshGPSLocation()"
           class="w-8 h-8 rounded-xl bg-[#131513] hover:bg-[#191C19] border border-[#262A26] flex items-center justify-center transition shrink-0 cursor-pointer" title="Auto-detect my location">
@@ -4300,6 +4320,15 @@
     </div>
 
   </header>
+
+  <!-- ============ DYNAMIC NETWORK TOAST (SLIDE DOWN NOTIFICATION) ============ -->
+  <div id="vayu-network-toast" class="fixed top-14 left-1/2 -translate-x-1/2 z-[60] max-w-[92vw] sm:max-w-md w-full px-4 py-2.5 rounded-2xl border backdrop-blur-2xl shadow-2xl transition-all duration-500 pointer-events-none opacity-0 -translate-y-6 flex items-center justify-between gap-3 text-xs">
+    <div class="flex items-center gap-2.5 min-w-0">
+      <span id="vayu-toast-icon" class="w-2.5 h-2.5 rounded-full bg-emerald-400 shrink-0"></span>
+      <span id="vayu-toast-msg" class="text-white font-medium truncate"></span>
+    </div>
+    <button onclick="VayuSyncManager.hideToast()" class="text-slate-400 hover:text-white shrink-0 pointer-events-auto p-1 text-sm font-bold">&times;</button>
+  </div>
 
   <!-- ============ SECONDARY PANEL BACK BAR ============ -->
   <div id="vayu-secondary-bar" class="sticky top-[48px] sm:top-[56px] z-[55] bg-[#0A0B0A] border-b border-[#1C201C] px-3.5 sm:px-4 py-2 sm:py-2.5 flex items-center gap-3 w-full shadow-md">
@@ -6918,7 +6947,7 @@
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         checkIfInstalled();
-        navigator.serviceWorker.register('/static/sw.js?v=30').then(reg => {
+        navigator.serviceWorker.register('/static/sw.js?v=36').then(reg => {
           reg.update();
           reg.onupdatefound = () => {
             const installing = reg.installing;
@@ -9226,6 +9255,164 @@
     // ==========================================================================
     // 2.5 LIVE WAQI (WORLD AIR QUALITY INDEX) TELEMETRY ENGINE
     // ==========================================================================
+    // ==========================================================================
+    // 2.45 SEAMLESS DUAL-MODE ONLINE/OFFLINE PERSISTENCE & SYNC MANAGER
+    // ==========================================================================
+    const VayuSyncManager = {
+      isOnline: typeof navigator !== 'undefined' ? navigator.onLine : true,
+      lastSyncTimestamp: Date.now(),
+      toastTimer: null,
+
+      init() {
+        this.bindEvents();
+        this.updatePillUI(this.isOnline);
+        if (!this.isOnline) {
+          console.log('[VayuSyncManager] Initialized in OFFLINE mode. Hydrating local cache...');
+          this.hydrateOfflineData();
+        }
+      },
+
+      bindEvents() {
+        window.addEventListener('online', () => this.handleNetworkChange(true));
+        window.addEventListener('offline', () => this.handleNetworkChange(false));
+      },
+
+      handleNetworkChange(online) {
+        this.isOnline = online;
+        this.updatePillUI(online);
+        if (online) {
+          this.showToast("🟢 Network Connected — Synchronizing live CPCB, MoES & satellite atmospheric telemetry...", 'online', 4500);
+          this.syncAll();
+        } else {
+          this.showToast("📡 Offline Mode Activated — 100% operational on local edge cache & atmospheric physics model.", 'offline', 5000);
+          this.hydrateOfflineData();
+        }
+      },
+
+      updatePillUI(online) {
+        const pill = document.getElementById('vayu-network-pill');
+        const dot = document.getElementById('vayu-network-dot');
+        const label = document.getElementById('vayu-network-label');
+        if (!pill || !dot || !label) return;
+
+        if (online) {
+          pill.className = "flex items-center gap-1 px-2 py-1 sm:px-2.5 sm:py-1 rounded-xl bg-emerald-950/80 hover:bg-emerald-900 text-emerald-300 border border-emerald-500/30 text-[10px] sm:text-[11px] font-mono-tag font-bold transition shadow-sm shrink-0 cursor-pointer";
+          pill.classList.remove('vayu-offline');
+          dot.className = "w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse";
+          label.textContent = "ONLINE";
+          pill.title = "Network Status: Online (Live CPCB & MoES Telemetry Active)";
+        } else {
+          pill.className = "flex items-center gap-1 px-2 py-1 sm:px-2.5 sm:py-1 rounded-xl bg-amber-950/80 hover:bg-amber-900 text-amber-300 border border-amber-500/40 text-[10px] sm:text-[11px] font-mono-tag font-bold transition shadow-sm shrink-0 cursor-pointer vayu-offline";
+          pill.classList.add('vayu-offline');
+          dot.className = "w-1.5 h-1.5 rounded-full bg-amber-400";
+          label.textContent = "OFFLINE";
+          pill.title = "Network Status: Offline (Local Diurnal Model & Telemetry Cache Active)";
+        }
+      },
+
+      showToast(msg, type = 'online', duration = 4000) {
+        const toast = document.getElementById('vayu-network-toast');
+        const toastMsg = document.getElementById('vayu-toast-msg');
+        const toastIcon = document.getElementById('vayu-toast-icon');
+        if (!toast || !toastMsg || !toastIcon) return;
+
+        toastMsg.textContent = msg;
+        if (type === 'online') {
+          toast.className = "fixed top-14 left-1/2 -translate-x-1/2 z-[60] max-w-[92vw] sm:max-w-md w-full px-4 py-2.5 rounded-2xl border border-emerald-500/40 bg-emerald-950/95 text-emerald-200 backdrop-blur-2xl shadow-2xl transition-all duration-500 pointer-events-auto opacity-100 translate-y-0 flex items-center justify-between gap-3 text-xs";
+          toastIcon.className = "w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping shrink-0";
+        } else {
+          toast.className = "fixed top-14 left-1/2 -translate-x-1/2 z-[60] max-w-[92vw] sm:max-w-md w-full px-4 py-2.5 rounded-2xl border border-amber-500/40 bg-amber-950/95 text-amber-200 backdrop-blur-2xl shadow-2xl transition-all duration-500 pointer-events-auto opacity-100 translate-y-0 flex items-center justify-between gap-3 text-xs";
+          toastIcon.className = "w-2.5 h-2.5 rounded-full bg-amber-400 shrink-0";
+        }
+
+        if (this.toastTimer) clearTimeout(this.toastTimer);
+        this.toastTimer = setTimeout(() => this.hideToast(), duration);
+      },
+
+      hideToast() {
+        const toast = document.getElementById('vayu-network-toast');
+        if (!toast) return;
+        toast.classList.add('opacity-0', '-translate-y-6', 'pointer-events-none');
+        toast.classList.remove('opacity-100', 'translate-y-0', 'pointer-events-auto');
+      },
+
+      toggleStatusToast() {
+        if (this.isOnline) {
+          this.showToast("🟢 VayuCoupler is ONLINE: Real-time telemetry is synced with CPCB, MoES Safdarjung ground sensors and satellite feeds.", 'online', 4000);
+        } else {
+          this.showToast("📡 VayuCoupler is OFFLINE: Operating autonomously using cached station telemetry and regional atmospheric physics.", 'offline', 4000);
+        }
+      },
+
+      async syncAll() {
+        console.log('[VayuSyncManager] Starting full live synchronization...');
+        try {
+          if (typeof VayuWaqiService !== 'undefined') {
+            await VayuWaqiService.fetchLiveStations();
+          }
+          if (typeof VayuWeather !== 'undefined') {
+            VayuWeather.tryFetchLiveWeather(VayuWeather.lat || 28.6139, VayuWeather.lon || 77.2090, VayuWeather.locationName || 'Delhi-NCR');
+          }
+          if (typeof VayuAtmosphericMap !== 'undefined' && VayuAtmosphericMap.map) {
+            VayuAtmosphericMap.renderStations();
+          }
+        } catch (e) {
+          console.warn('[VayuSyncManager] Background sync error:', e);
+        }
+      },
+
+      hydrateOfflineData() {
+        if (typeof VayuForecastEngine !== 'undefined' && Array.isArray(VayuForecastEngine.stations)) {
+          const cachedRaw = localStorage.getItem('vayu_cached_live_stations');
+          if (cachedRaw) {
+            try {
+              const cached = JSON.parse(cachedRaw);
+              if (Array.isArray(cached.data) && cached.data.length) {
+                cached.data.forEach(cachedSt => {
+                  const target = VayuForecastEngine.stations.find(s => s.id === cachedSt.id || s.name.toLowerCase() === cachedSt.name.toLowerCase());
+                  if (target) {
+                    target.aqi = cachedSt.aqi || cachedSt.baseAQI;
+                    target.baseAQI = target.aqi;
+                    target.pm25 = cachedSt.pm25 || Math.round(target.aqi * 0.65);
+                    target.pm10 = cachedSt.pm10 || Math.round(target.aqi * 0.95);
+                    target.is_live = false;
+                    target.live_source = 'Cached Telemetry';
+                  }
+                });
+                console.log(`[VayuSyncManager] Successfully restored ${cached.data.length} stations from offline cache.`);
+              }
+            } catch (e) {
+              console.warn('[VayuSyncManager] Failed parsing offline stations cache:', e);
+            }
+          }
+          const cur = VayuForecastEngine.currentStation;
+          if (cur && typeof VayuLocationService !== 'undefined') {
+            const updatedCur = VayuForecastEngine.stations.find(s => s.id === cur.id) || cur;
+            VayuLocationService.applyResolvedStation(updatedCur, VayuForecastEngine.stationDistanceKm || 5.6, false);
+          }
+          if (typeof renderRegionalZoneStrip === 'function') {
+            renderRegionalZoneStrip();
+          }
+        }
+
+        if (typeof VayuWeather !== 'undefined') {
+          const cachedWeatherRaw = localStorage.getItem('vayu_cached_weather');
+          if (cachedWeatherRaw) {
+            try {
+              const cachedW = JSON.parse(cachedWeatherRaw);
+              if (cachedW.om || cachedW.wa) {
+                VayuWeather.applyAccurateWeatherData(cachedW.om, cachedW.wa, cachedW.locName || 'Delhi-NCR (Offline Cache)');
+                VayuWeather.render();
+                console.log('[VayuSyncManager] Restored offline weather telemetry.');
+              }
+            } catch (e) {
+              console.warn('[VayuSyncManager] Failed parsing offline weather cache:', e);
+            }
+          }
+        }
+      }
+    };
+
     const VayuWaqiService = {
       token: '64804e6a2aa6b6bea50aeb7ada6733af50cca796',
       isLive: false,
@@ -9236,36 +9423,65 @@
         await this.fetchLiveStations();
       },
 
+      isCachedOffline: false,
+
       async fetchLiveStations() {
         try {
-          // 1. Try backend proxy endpoint first
           let liveList = null;
-          try {
-            const res = await fetch('/api/live/stations');
-            if (res.ok) {
-              const data = await res.json();
-              if (Array.isArray(data) && data.length) {
-                liveList = data;
+          this.isCachedOffline = false;
+
+          if (navigator.onLine) {
+            // 1. Try backend proxy endpoint first
+            try {
+              const res = await fetch('/api/live/stations');
+              if (res.ok) {
+                const data = await res.json();
+                if (Array.isArray(data) && data.length) {
+                  liveList = data;
+                }
+              }
+            } catch (e) {
+              // Backend offline, will try direct WAQI endpoint
+            }
+
+            // 2. Fallback to direct client-side WAQI bounds API call (with 2500ms timeout)
+            if (!liveList || !liveList.length) {
+              const controller = new AbortController();
+              const tid = setTimeout(() => controller.abort(), 2500);
+              const directUrl = `https://api.waqi.info/map/bounds/?latlng=28.1,76.6,29.1,77.8&token=${this.token}`;
+              const res = await fetch(directUrl, { signal: controller.signal });
+              clearTimeout(tid);
+              const json = await res.json();
+              if (json.status === 'ok' && json.data && json.data.length) {
+                liveList = this.mapWaqiToStations(json.data);
               }
             }
-          } catch (e) {
-            // Backend offline, will try direct WAQI endpoint
           }
 
-          // 2. Fallback to direct client-side WAQI bounds API call (with 2500ms timeout)
+          // 3. Fallback to offline localStorage cache if offline or fetch failed
           if (!liveList || !liveList.length) {
-            const controller = new AbortController();
-            const tid = setTimeout(() => controller.abort(), 2500);
-            const directUrl = `https://api.waqi.info/map/bounds/?latlng=28.1,76.6,29.1,77.8&token=${this.token}`;
-            const res = await fetch(directUrl, { signal: controller.signal });
-            clearTimeout(tid);
-            const json = await res.json();
-            if (json.status === 'ok' && json.data && json.data.length) {
-              liveList = this.mapWaqiToStations(json.data);
+            const cachedRaw = localStorage.getItem('vayu_cached_live_stations');
+            if (cachedRaw) {
+              try {
+                const parsed = JSON.parse(cachedRaw);
+                if (Array.isArray(parsed.data) && parsed.data.length) {
+                  liveList = parsed.data;
+                  this.isCachedOffline = true;
+                  console.log('[VayuWaqiService] Loaded ' + liveList.length + ' stations from offline telemetry cache.');
+                }
+              } catch(e) {}
             }
           }
 
           if (liveList && liveList.length) {
+            if (navigator.onLine && !this.isCachedOffline) {
+              try {
+                localStorage.setItem('vayu_cached_live_stations', JSON.stringify({
+                  timestamp: Date.now(),
+                  data: liveList
+                }));
+              } catch(e) {}
+            }
             this.isLive = true;
             this.lastUpdated = new Date();
             this.stationsData = liveList;
@@ -9352,10 +9568,13 @@
       updateLiveIndicator(active) {
         const badge = document.getElementById('mob-hero-live-badge');
         if (badge) {
-          if (active) {
+          if (active && !this.isCachedOffline && navigator.onLine) {
             const timeStr = this.lastUpdated ? this.lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Live';
             badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> LIVE WAQI (${timeStr})`;
             badge.className = "flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-950/80 text-emerald-300 border border-emerald-500/30 text-[10px] font-mono-tag font-bold";
+          } else if (this.isCachedOffline || !navigator.onLine) {
+            badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span> OFFLINE MODEL`;
+            badge.className = "flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-950/80 text-amber-300 border border-amber-500/30 text-[10px] font-mono-tag font-bold";
           } else {
             badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span> BASELINE`;
             badge.className = "flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-950/80 text-amber-300 border border-amber-500/30 text-[10px] font-mono-tag font-bold";
@@ -12126,7 +12345,20 @@
       },
 
       async tryFetchLiveWeather(lat = 28.6139, lon = 77.2090, locName = 'Delhi-NCR (Safdarjung)') {
-        if (!navigator.onLine) return;
+        if (!navigator.onLine) {
+          const cachedRaw = localStorage.getItem('vayu_cached_weather');
+          if (cachedRaw) {
+            try {
+              const cached = JSON.parse(cachedRaw);
+              if (cached.om || cached.wa) {
+                this.applyAccurateWeatherData(cached.om, cached.wa, locName);
+                this.render();
+                return;
+              }
+            } catch(e) {}
+          }
+          return;
+        }
 
         let openMeteoData = null;
         let weatherApiData = null;
@@ -12149,6 +12381,15 @@
         }
 
         if (openMeteoData || weatherApiData) {
+          try {
+            localStorage.setItem('vayu_cached_weather', JSON.stringify({
+              timestamp: Date.now(),
+              om: openMeteoData,
+              wa: weatherApiData,
+              locName: locName
+            }));
+          } catch(e) {}
+
           this.applyAccurateWeatherData(openMeteoData, weatherApiData, locName);
           this.render();
         }
@@ -13097,6 +13338,7 @@
 
     function initVayuApp() {
       try {
+        VayuSyncManager.init();
         VayuForecastEngine.init();
         VayuLocationService.init();
         VayuWeather.init();
@@ -14183,6 +14425,16 @@
         return window.VayuOSRMRouteCache[cacheKey];
       }
       try {
+        const localStored = localStorage.getItem('vayu_osrm_' + cacheKey);
+        if (localStored) {
+          const parsed = JSON.parse(localStored);
+          if (parsed && parsed.length) {
+            window.VayuOSRMRouteCache[cacheKey] = parsed;
+            return parsed;
+          }
+        }
+      } catch(e) {}
+      try {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 4800);
         const url = `https://router.project-osrm.org/route/v1/driving/${oCoord.lon},${oCoord.lat};${dCoord.lon},${dCoord.lat}?overview=full&geometries=geojson&alternatives=true`;
@@ -14192,6 +14444,9 @@
         const data = await resp.json();
         if (data && data.code === 'Ok' && data.routes && data.routes.length > 0) {
           window.VayuOSRMRouteCache[cacheKey] = data.routes;
+          try {
+            localStorage.setItem('vayu_osrm_' + cacheKey, JSON.stringify(data.routes));
+          } catch(e) {}
           return data.routes;
         }
       } catch (err) {
