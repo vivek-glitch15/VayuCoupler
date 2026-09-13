@@ -6,7 +6,10 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
+import android.net.NetworkRequest;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,6 +24,7 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -31,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Live Production Frontend on Vercel (Proxied to Render Backend)
     public static final String TARGET_URL = "https://vayucoupler.vercel.app";
+    public static final String OFFLINE_URL = "file:///android_asset/offline.html";
     private static final int LOCATION_PERMISSION_REQUEST = 1001;
 
     private WebView webView;
@@ -40,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
     private Button retryBtn;
     private GeolocationPermissions.Callback geoCallback;
     private String geoOrigin;
+    private boolean isOfflineFallbackActive = false;
+    private ConnectivityManager.NetworkCallback networkCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,30 +64,36 @@ public class MainActivity extends AppCompatActivity {
         swipeRefresh.setProgressBackgroundColorSchemeColor(ContextCompat.getColor(this, R.color.header_dark));
         swipeRefresh.setOnRefreshListener(() -> {
             if (isNetworkAvailable()) {
+                isOfflineFallbackActive = false;
                 offlineLayout.setVisibility(View.GONE);
                 webView.setVisibility(View.VISIBLE);
-                webView.reload();
+                webView.loadUrl(TARGET_URL);
             } else {
                 swipeRefresh.setRefreshing(false);
-                showOfflineScreen();
+                loadOfflineApp();
             }
         });
 
         retryBtn.setOnClickListener(v -> {
             if (isNetworkAvailable()) {
+                isOfflineFallbackActive = false;
                 offlineLayout.setVisibility(View.GONE);
                 webView.setVisibility(View.VISIBLE);
                 webView.loadUrl(TARGET_URL);
+            } else {
+                loadOfflineApp();
             }
         });
 
         configureWebView();
 
         if (isNetworkAvailable()) {
-            webView.loadUrl(TARGET_URL);
+            loadOnlineApp();
         } else {
-            showOfflineScreen();
+            loadOfflineApp();
         }
+
+        registerNetworkMonitor();
     }
 
     private void configureWebView() {
@@ -94,12 +107,17 @@ public class MainActivity extends AppCompatActivity {
         settings.setSupportZoom(false);
         settings.setBuiltInZoomControls(false);
 
-        // Always check network first for instant auto-updates from Vercel
+        // Allow local assets and offline storage
+        settings.setAllowFileAccess(true);
+        settings.setAllowContentAccess(true);
+        settings.setAllowFileAccessFromFileURLs(true);
+        settings.setAllowUniversalAccessFromFileURLs(true);
+
         settings.setCacheMode(WebSettings.LOAD_DEFAULT);
 
         // Custom User Agent suffix for app analytics
         String defaultUa = settings.getUserAgentString();
-        settings.setUserAgentString(defaultUa + " VayuCoupler-Android-App/1.0");
+        settings.setUserAgentString(defaultUa + " VayuCoupler-Android-Hybrid/2.0");
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
@@ -136,10 +154,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 String url = request.getUrl().toString();
-                if (url.startsWith("https://vayucoupler.vercel.app") || url.contains("onrender.com")) {
+                if (url.startsWith("https://vayucoupler.vercel.app") || 
+                    url.contains("onrender.com") || 
+                    url.startsWith("file:///android_asset/")) {
                     return false; // Keep inside webview
                 }
-                // Open external links (e.g. docs, mailto, phone) in external apps
+                // Open external links in default browser
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                 startActivity(intent);
                 return true;
@@ -149,29 +169,82 @@ public class MainActivity extends AppCompatActivity {
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
                 offlineLayout.setVisibility(View.GONE);
+                webView.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
                 if (request.isForMainFrame()) {
-                    showOfflineScreen();
+                    // Fall back gracefully to the embedded 100% offline standalone engine
+                    if (!isOfflineFallbackActive) {
+                        runOnUiThread(() -> loadOfflineApp());
+                    }
                 }
             }
         });
     }
 
-    private void showOfflineScreen() {
-        webView.setVisibility(View.GONE);
-        offlineLayout.setVisibility(View.VISIBLE);
+    private void loadOnlineApp() {
+        isOfflineFallbackActive = false;
+        offlineLayout.setVisibility(View.GONE);
+        webView.setVisibility(View.VISIBLE);
+        webView.loadUrl(TARGET_URL);
+    }
+
+    private void loadOfflineApp() {
+        isOfflineFallbackActive = true;
+        offlineLayout.setVisibility(View.GONE);
+        webView.setVisibility(View.VISIBLE);
         swipeRefresh.setRefreshing(false);
         progressBar.setVisibility(View.GONE);
+        webView.loadUrl(OFFLINE_URL);
+    }
+
+    private void registerNetworkMonitor() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            if (cm != null) {
+                networkCallback = new ConnectivityManager.NetworkCallback() {
+                    @Override
+                    public void onAvailable(@NonNull Network network) {
+                        runOnUiThread(() -> {
+                            if (isOfflineFallbackActive) {
+                                Toast.makeText(MainActivity.this, "🟢 Network restored! Syncing live CPCB/MoES telemetry...", Toast.LENGTH_SHORT).show();
+                                loadOnlineApp();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onLost(@NonNull Network network) {
+                        runOnUiThread(() -> {
+                            if (!isOfflineFallbackActive) {
+                                Toast.makeText(MainActivity.this, "📡 Offline Mode Activated — Running autonomous local model.", Toast.LENGTH_SHORT).show();
+                                loadOfflineApp();
+                            }
+                        });
+                    }
+                };
+                cm.registerDefaultNetworkCallback(networkCallback);
+            }
+        }
     }
 
     private boolean isNetworkAvailable() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         if (cm != null) {
-            NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-            return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                Network network = cm.getActiveNetwork();
+                if (network != null) {
+                    NetworkCapabilities caps = cm.getNetworkCapabilities(network);
+                    return caps != null && (caps.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
+                                            caps.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ||
+                                            caps.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET));
+                }
+            } else {
+                NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+                return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+            }
         }
         return false;
     }
@@ -191,6 +264,19 @@ public class MainActivity extends AppCompatActivity {
             webView.goBack();
         } else {
             super.onBackPressed();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (networkCallback != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            if (cm != null) {
+                try {
+                    cm.unregisterNetworkCallback(networkCallback);
+                } catch (Exception ignored) {}
+            }
         }
     }
 }
