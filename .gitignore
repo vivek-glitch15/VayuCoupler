@@ -20,11 +20,50 @@ ENV/
 *.swp
 *.swo
 
-# Temporary and build artifacts
+# Build artifacts & Android
 scratch/
+docs/
 android/.gradle/
 android/build/
 android/app/build/
 android/local.properties
 .vercel/
+node_modules/
+frontend/node_modules/
+frontend/dist/
+
+# Presentation & SIH files (never commit these)
+*.pptx
+*.ppt
+sih_presentation.html
+*SIH*.html
+*SIH*.pptx
+static/sih_assets/
+docs/
+
+# Large binaries (use releases instead)
+*.apk
+*.zip
+*.dmg
+*.exe
+
+# Temp / generated scripts (scratch work)
+generate_sih*.py
+generate_slide*.py
+generate_icons.py
+capture_real_app_photos.py
+prepare_real_assets.py
+render.yaml
+
+# Temp render/test HTML snapshots
+scratch/*.html
+scratch/*.png
+scratch/*.js
+scratch/*.py
+scratch/slide_previews/
+
+# Node
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 

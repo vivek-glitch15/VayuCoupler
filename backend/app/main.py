@@ -5,6 +5,7 @@ Ministry of Earth Sciences (MoES) — SIH 2026
 """
 
 import os
+import requests
 from fastapi import FastAPI, Query, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -26,6 +27,15 @@ app = FastAPI(
     version="1.0.0"
 )
 
+# CORS must be added BEFORE routes are registered
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 STATIC_DIR = os.path.join(os.path.dirname(__file__), "static")
 if os.path.exists(STATIC_DIR):
     app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
@@ -36,15 +46,6 @@ def serve_dashboard():
     if os.path.exists(index_file):
         return FileResponse(index_file)
     return {"status": "ONLINE", "message": "MoES Coupled AQI API"}
-
-# Enable CORS for React frontend (Vite default port 5173 / 3000)
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 @app.get("/api/health")
 def health_check():
@@ -288,12 +289,13 @@ def _resolve_gemini_key(client_key: Optional[str] = None) -> Optional[str]:
     key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
     if key:
         return key.strip()
-    for env_path in [
+    # Search project-relative .env only — no hardcoded absolute paths
+    env_candidates = [
         os.path.expanduser("~/.env"),
         os.path.join(os.path.dirname(__file__), "..", "..", ".env"),
-        "/Users/vivekraj/VayuCoupler/.env",
-        "/Users/vivekraj/Desktop/VayuCoupler/.env"
-    ]:
+    ]
+    for env_path in env_candidates:
+        env_path = os.path.normpath(env_path)
         if os.path.exists(env_path):
             try:
                 with open(env_path, "r", encoding="utf-8") as f:
@@ -322,16 +324,15 @@ def set_vayuai_key(payload: SetKeyRequest):
     if not key:
         raise HTTPException(status_code=400, detail="Key cannot be empty")
     os.environ["GEMINI_API_KEY"] = key
-    for env_path in [
-        os.path.join(os.path.dirname(__file__), "..", "..", ".env"),
-        "/Users/vivekraj/VayuCoupler/.env",
-        "/Users/vivekraj/Desktop/VayuCoupler/.env"
-    ]:
-        try:
-            with open(env_path, "a", encoding="utf-8") as f:
-                f.write(f"\nGEMINI_API_KEY={key}\n")
-        except Exception:
-            pass
+    # Write to project-relative .env only
+    project_env = os.path.normpath(
+        os.path.join(os.path.dirname(__file__), "..", "..", ".env")
+    )
+    try:
+        with open(project_env, "a", encoding="utf-8") as f:
+            f.write(f"\nGEMINI_API_KEY={key}\n")
+    except Exception:
+        pass
     return {"success": True, "message": "Gemini API Key activated successfully!"}
 
 def _synthesize_atmospheric_reply(payload: VayuAIChatRequest, is_english: bool) -> str:
@@ -459,8 +460,8 @@ def vayuai_chat(payload: VayuAIChatRequest):
             f"\nUSER QUERY: {payload.query}"
         )
 
-        import requests
-        models_to_try = ["gemini-flash-lite-latest", "gemini-3-flash-preview", "gemini-flash-latest"]
+        # Use correct, stable Gemini model names
+        models_to_try = ["gemini-1.5-flash-latest", "gemini-1.5-pro-latest", "gemini-pro"]
         headers = {"Content-Type": "application/json"}
         body = {
             "contents": [{"parts": [{"text": f"SYSTEM INSTRUCTION:\n{system_instruction}\n\n{context_prompt}"}]}],
@@ -532,22 +533,16 @@ def mobile_download_hub():
         <div class="text-[11px] font-normal text-emerald-100 mt-0.5">Live coupled map, simulation & voice alerts</div>
       </a>
 
-      <!-- Option 2: Download Standalone HTML App -->
+      <!-- Option 2: Download Standalone Mobile App -->
       <a href="/static/VayuCoupler_Standalone_Mobile_App.html" download="VayuCoupler_Mobile_App.html" class="block p-4 rounded-2xl bg-slate-800/90 hover:bg-slate-800 border border-slate-700 text-white transition text-center">
         <div class="text-base font-bold text-cyan-300 flex items-center justify-center gap-2">📱 Download Standalone App (.html)</div>
         <div class="text-[11px] text-slate-400 mt-0.5">Saved to phone Downloads • 100% Offline ready</div>
       </a>
 
-      <!-- Option 3: Download Windows Edition ZIP -->
-      <a href="/static/VayuCoupler_Windows_Edition.zip" download="VayuCoupler_Windows_Edition.zip" class="block p-4 rounded-2xl bg-gradient-to-r from-blue-900/60 to-indigo-900/60 hover:from-blue-900 hover:to-indigo-900 border border-blue-500/50 text-white transition text-center shadow-lg shadow-blue-950/50">
-        <div class="text-base font-bold text-sky-300 flex items-center justify-center gap-2">💻 Download Windows Edition (.zip)</div>
-        <div class="text-[11px] text-sky-200 mt-0.5">Includes 1-Click "Launch_VayuCoupler_Windows.bat" + Offline App</div>
-      </a>
-
-      <!-- Option 5: Download Complete ZIP -->
-      <a href="/static/VayuCoupler_App_Source.zip" download="VayuCoupler_App_Source.zip" class="block p-4 rounded-2xl bg-slate-800/90 hover:bg-slate-800 border border-slate-700 text-white transition text-center">
-        <div class="text-base font-bold text-indigo-300 flex items-center justify-center gap-2">📦 Download Full Project Source (.zip)</div>
-        <div class="text-[11px] text-slate-400 mt-0.5">Full FastAPI backend + Frontend codebase archive</div>
+      <!-- Option 3: Download Offline App -->
+      <a href="/static/VayuCoupler_Windows_Offline_App.html" download="VayuCoupler_Offline_App.html" class="block p-4 rounded-2xl bg-gradient-to-r from-blue-900/60 to-indigo-900/60 hover:from-blue-900 hover:to-indigo-900 border border-blue-500/50 text-white transition text-center shadow-lg shadow-blue-950/50">
+        <div class="text-base font-bold text-sky-300 flex items-center justify-center gap-2">💻 Download Offline App (.html)</div>
+        <div class="text-[11px] text-sky-200 mt-0.5">Full offline-capable app — works without internet</div>
       </a>
 
     </div>
