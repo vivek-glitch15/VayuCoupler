@@ -14994,9 +14994,12 @@
           return;
         }
 
-        dropdown.innerHTML = items.map(loc => `
+        window._commuteSearchCache = window._commuteSearchCache || {};
+        window._commuteSearchCache[type] = items;
+
+        dropdown.innerHTML = items.map((loc, idx) => `
           <button type="button" 
-            onclick="selectCommuteLocation('${type}', '${loc.cleanName.replace(/'/g, "\'")}', '${loc.name.replace(/'/g, "\'")}', ${loc.lat}, ${loc.lon}, '${loc.key}')" 
+            onclick="selectCommuteLocationByIdx('${type}', ${idx})" 
             class="w-full text-left p-2 rounded-lg hover:bg-earth-800 transition flex items-center justify-between text-xs text-white">
             <div class="flex items-center gap-2 truncate">
               <span class="text-xs ${loc.isLive ? 'text-amber-400' : 'text-cyan-400'}">${loc.isLive ? '🏢' : '📍'}</span>
@@ -15065,6 +15068,13 @@
     window.onCommuteSearchFocus = function(type) {
       const input = document.getElementById(type === 'origin' ? 'commute-origin-search' : 'commute-dest-search');
       window.onCommuteSearchInput(type, input ? input.value : '');
+    };
+
+    window.selectCommuteLocationByIdx = function(type, idx) {
+      const items = window._commuteSearchCache && window._commuteSearchCache[type];
+      const loc = items && items[idx];
+      if (!loc) return;
+      window.selectCommuteLocation(type, loc.cleanName, loc.name, loc.lat, loc.lon, loc.key);
     };
 
     window.selectCommuteLocation = function(type, cleanName, fullName, lat, lon, key) {
