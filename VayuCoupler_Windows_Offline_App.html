@@ -512,8 +512,8 @@
       background: rgba(0, 0, 0, 0.2);
     }
     .wx-chart-inner {
-      width: 1560px;
-      min-width: 1560px;
+      width: 1024px;
+      min-width: 1024px;
       height: 185px;
       position: relative;
     }
@@ -6340,9 +6340,9 @@
           <div>
             <label class="block text-[11px] font-semibold text-earth-300 mb-1.5">Commute Mode</label>
             <select id="commute-mode" onchange="calcCommuteRoute()" class="w-full px-3 py-2.5 rounded-xl bg-earth-950 border border-earth-700 text-xs text-white focus:outline-none focus:border-cyan-400 font-medium">
-              <option value="car" selected>🚗 Car (HEPA Cabin Filter Active)</option>
-              <option value="two_wheeler">🛵 Motorcycle / Scooter (Direct Ambient)</option>
-              <option value="walking">🚶 Walking / Pedestrian (Unfiltered Inhalation)</option>
+              <option value="car" selected>🚗 Car</option>
+              <option value="two_wheeler">🛵 Motorcycle / Scooter</option>
+              <option value="walking">🚶 Walking / Pedestrian</option>
             </select>
           </div>
           <div class="relative">
@@ -12932,8 +12932,8 @@
 
       scrollToCurrentHour() {
         const nowH = new Date().getHours();
-        const stepX = 64;
-        const padX = 40;
+        const stepX = 42;
+        const padX = 28;
         ['temp', 'precip', 'wind'].forEach(m => {
           const wrap = document.getElementById(`wx-scroll-${m}`);
           if (wrap && wrap.clientWidth) {
@@ -13012,11 +13012,11 @@
           fillGradEnd = 'rgba(52, 211, 153, 0.02)';
         }
 
-        const stepX = 64;
-        const padX = 40;
+        const stepX = 42;
+        const padX = 28;
         const width = padX * 2 + (hourly.length - 1) * stepX;
         const height = 185;
-        const padTop = 46;
+        const padTop = 44;
         const padBottom = 34;
         const chartHeight = height - padTop - padBottom;
 
@@ -13029,7 +13029,6 @@
           minVal = 0;
           maxVal = Math.max(24, Math.max(...values) + 4);
         } else {
-          // Temperature padding so line doesn't clip
           minVal = minVal - 1;
           maxVal = maxVal + 1;
         }
@@ -13111,45 +13110,41 @@
             <line x1="${padX}" y1="${height - padBottom}" x2="${width - padX}" y2="${height - padBottom}" stroke="${axisColor}" stroke-width="1" />
 
             <!-- Smooth Spline Curve Line -->
-            <path d="${pathD}" fill="none" stroke="${chartStroke}" stroke-width="3" stroke-linecap="round" />
+            <path d="${pathD}" fill="none" stroke="${chartStroke}" stroke-width="2.75" stroke-linecap="round" />
 
             ${points.map((pt, idx) => {
-              // Weather condition glyph for temperature
               let iconContent = '';
               if (metric === 'temp') {
                 const isNight = pt.hour >= 20 || pt.hour < 5;
                 const emoji = pt.icon === 'rain' ? '🌧️' : (pt.icon === 'partly-cloudy' ? '⛅' : (isNight ? '🌙' : '☀️'));
-                iconContent = `<text x="${pt.x}" y="${pt.y - 23}" font-size="13" text-anchor="middle" style="pointer-events:none">${emoji}</text>`;
+                iconContent = `<text x="${pt.x}" y="${pt.y - 20}" font-size="11" text-anchor="middle" style="pointer-events:none">${emoji}</text>`;
               } else if (metric === 'precip') {
                 const barH = Math.max(0, (height - padBottom) - pt.y);
                 iconContent = `
-                  <rect x="${pt.x - 9}" y="${pt.y}" width="18" height="${barH}" rx="4" fill="${chartStroke}" opacity="0.25"/>
-                  <text x="${pt.x}" y="${pt.y - 23}" font-size="12" text-anchor="middle" style="pointer-events:none">💧</text>
+                  <rect x="${pt.x - 7}" y="${pt.y}" width="14" height="${barH}" rx="3.5" fill="${chartStroke}" opacity="0.25"/>
+                  <text x="${pt.x}" y="${pt.y - 19}" font-size="10.5" text-anchor="middle" style="pointer-events:none">💧</text>
                 `;
               } else {
-                // Wind vector compass arrow
                 const deg = compassToDeg(pt.windDir);
                 iconContent = `
-                  <g transform="translate(${pt.x}, ${pt.y - 25}) rotate(${deg})" opacity="0.9">
-                    <path d="M 0 -6 L 3.5 4 L 0 2 L -3.5 4 Z" fill="${chartStroke}"/>
+                  <g transform="translate(${pt.x}, ${pt.y - 21}) rotate(${deg})" opacity="0.9">
+                    <path d="M 0 -5 L 3 3.5 L 0 1.5 L -3 3.5 Z" fill="${chartStroke}"/>
                   </g>
                 `;
               }
 
-              // Value string
               const valStr = metric === 'wind' ? `${pt.val}` : `${pt.val}${unitSuffix}`;
 
-              // Highlight vertical line and NOW badge if current hour
               let nowIndicator = '';
               if (pt.isNow) {
                 nowIndicator = `
-                  <line x1="${pt.x}" y1="${padTop - 14}" x2="${pt.x}" y2="${height - padBottom}" stroke="${chartStroke}" stroke-width="1.5" stroke-dasharray="3 3" opacity="0.75" />
-                  <rect x="${pt.x - 17}" y="${height - padBottom + 4}" width="34" height="18" rx="5" fill="rgba(245,158,11,0.22)" stroke="${chartStroke}" stroke-width="1" />
-                  <text x="${pt.x}" y="${height - padBottom + 16}" fill="${chartStroke}" font-size="9.5" font-family="'Inter', sans-serif" font-weight="900" text-anchor="middle">NOW</text>
+                  <line x1="${pt.x}" y1="${padTop - 12}" x2="${pt.x}" y2="${height - padBottom}" stroke="${chartStroke}" stroke-width="1.5" stroke-dasharray="3 3" opacity="0.75" />
+                  <rect x="${pt.x - 14}" y="${height - padBottom + 4}" width="28" height="16" rx="4.5" fill="rgba(245,158,11,0.22)" stroke="${chartStroke}" stroke-width="1" />
+                  <text x="${pt.x}" y="${height - padBottom + 15}" fill="${chartStroke}" font-size="8.5" font-family="'Inter', sans-serif" font-weight="900" text-anchor="middle">NOW</text>
                 `;
               } else {
                 nowIndicator = `
-                  <text x="${pt.x}" y="${height - padBottom + 17}" fill="${timeColor}" font-size="11" font-family="'Inter', sans-serif" font-weight="600" text-anchor="middle" style="pointer-events:none">
+                  <text x="${pt.x}" y="${height - padBottom + 16}" fill="${timeColor}" font-size="9.5" font-family="'Inter', sans-serif" font-weight="600" text-anchor="middle" style="pointer-events:none">
                     ${pt.time}
                   </text>
                 `;
@@ -13162,13 +13157,13 @@
                   ${iconContent}
 
                   <!-- Tooltip guideline on hover -->
-                  <line id="chart-tt-line-${metric}-${idx}" x1="${pt.x}" y1="${padTop - 10}" x2="${pt.x}" y2="${height - padBottom}" stroke="${chartStroke}" stroke-width="1.5" stroke-dasharray="4 3" opacity="0" style="pointer-events:none;transition:opacity 0.15s" />
+                  <line id="chart-tt-line-${metric}-${idx}" x1="${pt.x}" y1="${padTop - 8}" x2="${pt.x}" y2="${height - padBottom}" stroke="${chartStroke}" stroke-width="1.5" stroke-dasharray="3 3" opacity="0" style="pointer-events:none;transition:opacity 0.15s" />
 
                   <!-- Node Circle -->
-                  <circle cx="${pt.x}" cy="${pt.y}" r="${pt.isNow ? 5 : 3.8}" fill="${pt.isNow ? '#fbbf24' : chartStroke}" stroke="${nodeStroke}" stroke-width="2" class="chart-node-${metric}-${idx}" style="transition:r 0.18s;pointer-events:none" />
+                  <circle cx="${pt.x}" cy="${pt.y}" r="${pt.isNow ? 4.2 : 3}" fill="${pt.isNow ? '#fbbf24' : chartStroke}" stroke="${nodeStroke}" stroke-width="1.5" class="chart-node-${metric}-${idx}" style="transition:r 0.18s;pointer-events:none" />
 
                   <!-- Value Label -->
-                  <text x="${pt.x}" y="${pt.y - 9}" fill="${chartLabelFill}" font-size="12" font-family="'IBM Plex Mono', monospace" font-weight="800" text-anchor="middle" class="chart-label-${metric}-${idx}" style="transition:font-size 0.18s;pointer-events:none">
+                  <text x="${pt.x}" y="${pt.y - 8}" fill="${chartLabelFill}" font-size="11" font-family="'IBM Plex Mono', monospace" font-weight="800" text-anchor="middle" class="chart-label-${metric}-${idx}" style="transition:font-size 0.18s;pointer-events:none">
                     ${valStr}
                   </text>
 
@@ -13179,8 +13174,8 @@
                       var node=svg.querySelector('.chart-node-'+m+'-'+idx);
                       var lbl=svg.querySelector('.chart-label-'+m+'-'+idx);
                       var ttLine=document.getElementById('chart-tt-line-'+m+'-'+idx);
-                      if(node){node.setAttribute('r','7');node.style.filter='drop-shadow(0 0 6px ${chartStroke})';}
-                      if(lbl){lbl.setAttribute('font-size','14.5');lbl.setAttribute('font-weight','900');}
+                      if(node){node.setAttribute('r','6');node.style.filter='drop-shadow(0 0 5px ${chartStroke})';}
+                      if(lbl){lbl.setAttribute('font-size','13');lbl.setAttribute('font-weight','900');}
                       if(ttLine){ttLine.setAttribute('opacity','1');}
                     })(this,'${metric}',${idx})"
                     onmouseout="(function(el,m,idx){
@@ -13188,8 +13183,8 @@
                       var node=svg.querySelector('.chart-node-'+m+'-'+idx);
                       var lbl=svg.querySelector('.chart-label-'+m+'-'+idx);
                       var ttLine=document.getElementById('chart-tt-line-'+m+'-'+idx);
-                      if(node){node.setAttribute('r','${pt.isNow ? 5 : 3.8}');node.style.filter='none';}
-                      if(lbl){lbl.setAttribute('font-size','12');lbl.setAttribute('font-weight','800');}
+                      if(node){node.setAttribute('r','${pt.isNow ? 4.2 : 3}');node.style.filter='none';}
+                      if(lbl){lbl.setAttribute('font-size','11');lbl.setAttribute('font-weight','800');}
                       if(ttLine){ttLine.setAttribute('opacity','0');}
                     })(this,'${metric}',${idx})"
                   />
