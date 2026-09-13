@@ -7063,7 +7063,7 @@
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         checkIfInstalled();
-        navigator.serviceWorker.register('/static/sw.js?v=36').then(reg => {
+        navigator.serviceWorker.register('/static/sw.js?v=37').then(reg => {
           reg.update();
           reg.onupdatefound = () => {
             const installing = reg.installing;
@@ -13132,9 +13132,40 @@
         if (!slider) return;
         const day = this.forecastDays[this.selectedDayIndex] || this.forecastDays[0];
         if (!day) return;
-        const hourlyList = (day.hourly24 && day.hourly24.length) ? day.hourly24 : (day.hourly || []);
-        if (!hourlyList.length) return;
 
+        // Guarantee 24 hours even if missing from cache
+        if (!day.hourly24 || day.hourly24.length < 24) {
+          const low = day.tempMin ?? 24;
+          const high = day.tempMax ?? 34;
+          const baseRain = day.precip ?? 20;
+          const baseWind = day.windSpeed ?? 11;
+          const baseDir = day.windDir || 'WNW';
+          const condIcon = day.icon || 'sunny';
+          day.hourly24 = [];
+          for (let h = 0; h < 24; h++) {
+            const phase = ((h - 15) / 24) * 2 * Math.PI;
+            const frac = 0.5 * (1 + Math.cos(phase));
+            const t = Math.round(low + (high - low) * frac);
+            const rainFactor = (h >= 13 && h <= 19) ? 1.0 : (h >= 8 && h < 13 ? 0.6 : 0.25);
+            const p = Math.min(100, Math.round(baseRain * rainFactor));
+            const windFactor = (h >= 11 && h <= 17) ? 1.25 : 0.75;
+            const w = Math.round(baseWind * windFactor);
+            const tLabel = h === 0 ? '12 am' : (h === 12 ? '12 pm' : (h < 12 ? `${h} am` : `${h - 12} pm`));
+            let hIcon = condIcon;
+            if (h >= 20 || h < 5) hIcon = p >= 40 ? 'rain' : 'partly-cloudy';
+            day.hourly24.push({
+              hour: h,
+              time: tLabel,
+              temp: t,
+              precip: p,
+              wind: w,
+              windDir: baseDir,
+              icon: hIcon
+            });
+          }
+        }
+
+        const hourlyList = day.hourly24;
         const currentH = new Date().getHours();
         const isToday = this.selectedDayIndex === 0;
 

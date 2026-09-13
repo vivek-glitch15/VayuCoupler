@@ -1,14 +1,14 @@
-const CACHE_NAME = 'vayucoupler-v36';
+const CACHE_NAME = 'vayucoupler-v37';
 const ASSETS = [
   '/',
   '/?source=pwa',
-  '/static/manifest.json?v=36',
-  '/static/css/styles.css?v=36',
-  '/static/css/mobile.css?v=36',
-  '/static/icon-192.png?v=36',
-  '/static/icon-512.png?v=36',
-  '/static/icon-maskable-512.png?v=36',
-  '/static/apple-touch-icon.png?v=36',
+  '/static/manifest.json?v=37',
+  '/static/css/styles.css?v=37',
+  '/static/css/mobile.css?v=37',
+  '/static/icon-192.png?v=37',
+  '/static/icon-512.png?v=37',
+  '/static/icon-maskable-512.png?v=37',
+  '/static/apple-touch-icon.png?v=37',
   'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
   'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js',
   'https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js',
