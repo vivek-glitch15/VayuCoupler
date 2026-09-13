@@ -1277,13 +1277,53 @@ html.light-theme #stubble-share-badge {
   font-weight: 700 !important;
 }
 
+/* Map Header & Controls Theme Overrides */
+#btn-map-find-station {
+  background-color: #142017;
+  border: 1px solid #284431;
+  color: #ecfdf5;
+  font-weight: 600;
+}
+#btn-map-find-station:hover {
+  background-color: #1f3327;
+  border-color: #3e6b4f;
+  color: #ffffff;
+}
+.vayu-station-marker-wrapper {
+  background: transparent !important;
+  border: none !important;
+}
+
 /* Map Header & Subtitle in Light Mode */
-html.light-theme #panel-overview h2 {
+html.light-theme #panel-overview h2,
+html.light-theme #panel-overview h2.text-white {
   color: #0f172a !important;
 }
 
+html.light-theme #map-header-subtext,
 html.light-theme #panel-overview p {
   color: #475569 !important;
+  font-weight: 500 !important;
+}
+
+html.light-theme #btn-map-find-station {
+  background-color: #ffffff !important;
+  border: 1.5px solid #cbd5e1 !important;
+  color: #0f172a !important;
+  font-weight: 700 !important;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08) !important;
+}
+
+html.light-theme #btn-map-find-station:hover {
+  background-color: #f1f5f9 !important;
+  border-color: #059669 !important;
+  color: #047857 !important;
+}
+
+html.light-theme #btn-map-active-badge {
+  background-color: #ecfdf5 !important;
+  border-color: #a7f3d0 !important;
+  color: #047857 !important;
 }
 
 /* 3. Scrubber Timeline & Badge Overrides in Light Mode */

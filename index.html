@@ -2323,14 +2323,54 @@
       border-color: #94a3b8 !important;
     }
 
+    /* Clean Map Tab (#panel-overview) Theme Styles */
+    #btn-map-find-station {
+      background-color: #142017;
+      border: 1px solid #284431;
+      color: #ecfdf5;
+      font-weight: 600;
+    }
+    #btn-map-find-station:hover {
+      background-color: #1f3327;
+      border-color: #3e6b4f;
+      color: #ffffff;
+    }
+    .vayu-station-marker-wrapper {
+      background: transparent !important;
+      border: none !important;
+    }
+
     /* Clean Map Tab (#panel-overview) in Light Theme */
     html.light-theme #panel-overview .natural-glass {
       background: #ffffff !important;
       border: 1.5px solid #cbd5e1 !important;
       box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05) !important;
     }
-    html.light-theme #panel-overview h2.text-white {
+    html.light-theme #panel-overview h2.text-white,
+    html.light-theme #panel-overview h2 {
       color: #0f172a !important;
+    }
+    html.light-theme #map-header-subtext,
+    html.light-theme #panel-overview p {
+      color: #475569 !important;
+      font-weight: 500 !important;
+    }
+    html.light-theme #btn-map-find-station {
+      background-color: #ffffff !important;
+      border: 1.5px solid #cbd5e1 !important;
+      color: #0f172a !important;
+      font-weight: 700 !important;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08) !important;
+    }
+    html.light-theme #btn-map-find-station:hover {
+      background-color: #f1f5f9 !important;
+      border-color: #059669 !important;
+      color: #047857 !important;
+    }
+    html.light-theme #btn-map-active-badge {
+      background-color: #ecfdf5 !important;
+      border-color: #a7f3d0 !important;
+      color: #047857 !important;
     }
     html.light-theme #station-inspector {
       background: #f8fafc !important;
@@ -4703,15 +4743,15 @@
             <h2 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
               <i data-lucide="map" class="w-5 h-5 text-emerald-400"></i> Delhi-NCR Live Air Quality Map
             </h2>
-            <p class="text-xs text-earth-300/80 mt-0.5">Real-time CPCB station monitors and wind flow streamlines</p>
+            <p class="text-xs text-earth-300/80 mt-0.5" id="map-header-subtext">Real-time CPCB station monitors and wind flow streamlines</p>
           </div>
           <div class="flex items-center gap-2">
-            <button type="button" onclick="openStationPickerModal()" class="px-3 py-1.5 rounded-xl bg-earth-900/90 hover:bg-earth-800 text-earth-200 hover:text-white border border-earth-700 text-xs font-semibold flex items-center gap-1.5 transition shadow-sm cursor-pointer">
+            <button type="button" onclick="openStationPickerModal()" id="btn-map-find-station" class="px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition shadow-sm cursor-pointer border">
               <span>🔍</span> <span>Find Station</span>
             </button>
-            <span class="inline-flex items-center gap-1.5 text-emerald-400 bg-emerald-950/90 px-3 py-1.5 rounded-xl border border-emerald-800 text-xs font-mono font-bold shadow-sm">
+            <span class="inline-flex items-center gap-1.5 text-emerald-400 bg-emerald-950/90 px-3 py-1.5 rounded-xl border border-emerald-800 text-xs font-mono font-bold shadow-sm" id="btn-map-active-badge">
               <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span>58 Active Stations</span>
+              <span id="map-header-station-count">58 Active Stations</span>
             </span>
           </div>
         </div>
@@ -17033,25 +17073,75 @@
         const activeSt = typeof VayuForecastEngine !== 'undefined' ? VayuForecastEngine.currentStation : null;
         const currentActiveId = activeSt ? (activeSt.id || activeSt.station_id) : selectedStationId;
 
-        stations.forEach(s => {
+        // Anti-collision distance check at regional overview zoom to prevent overlapping clutter blobs
+        const renderedPoints = [];
+        const minScreenDist = zoom <= 9 ? 22 : (zoom <= 10 ? 15 : 0);
+
+        // Sort so active/selected station and higher-severity AQI stations render first
+        const sortedStations = [...stations].sort((a, b) => {
+          const aId = a.id || a.station_id;
+          const bId = b.id || b.station_id;
+          if (aId === currentActiveId || aId === selectedStationId) return -1;
+          if (bId === currentActiveId || bId === selectedStationId) return 1;
+          return (b.aqi || 0) - (a.aqi || 0);
+        });
+
+        sortedStations.forEach(s => {
           const stId = s.id || s.station_id;
           const aqi = s.aqi || s.baseAQI || 400;
           const catColor = this.getCategoryColor(aqi);
           const isSelected = stId === currentActiveId || stId === selectedStationId;
 
+          // Screen collision check for overview zoom levels
+          if (minScreenDist > 0 && !isSelected) {
+            try {
+              const pt = this.map.latLngToContainerPoint([s.lat, s.lon]);
+              const tooClose = renderedPoints.some(p => {
+                const dx = p.x - pt.x;
+                const dy = p.y - pt.y;
+                return Math.sqrt(dx * dx + dy * dy) < minScreenDist;
+              });
+              if (tooClose) return; // Skip overlapping clutter at this low zoom level
+              renderedPoints.push(pt);
+            } catch (e) {}
+          }
+
           let iconHtml = '';
-          if (zoom >= 11) {
-            // Expanded Pill Badge with Name & AQI
+          let iconWidth = 22;
+          let iconHeight = 22;
+
+          if (zoom >= 13) {
+            // Close-up street view: Expanded Pill Badge with Name & AQI
+            iconWidth = 110;
+            iconHeight = 24;
             iconHtml = `
-              <div class="vayu-station-node node-pill ${isSelected ? 'node-selected' : ''}" style="border-color:${isSelected ? '#6fe2a3' : catColor};">
-                <span class="station-pill-name">${s.name}</span>
-                <span class="station-pill-aqi" style="background:${catColor};">${aqi}</span>
+              <div class="vayu-station-node node-pill ${isSelected ? 'node-selected' : ''}" style="width:${iconWidth}px; height:${iconHeight}px; border-radius:9999px; background:rgba(10,13,11,0.92); border:1.5px solid ${isSelected ? '#10b981' : catColor}; display:flex; align-items:center; justify-content:space-between; padding:2px 6px; box-shadow:0 3px 10px rgba(0,0,0,0.6); user-select:none; cursor:pointer;">
+                <span style="color:#f2f5f3; font-size:10px; font-weight:700; font-family:Inter,sans-serif; max-width:65px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${s.name}</span>
+                <span style="background:${catColor}; color:#fff; font-size:9.5px; font-weight:800; font-family:Inter,sans-serif; padding:1px 5px; border-radius:6px; min-width:24px; text-align:center;">${aqi}</span>
+              </div>
+            `;
+          } else if (isSelected) {
+            // Selected active station: Pulsing illuminated circle with station name badge
+            iconWidth = 26;
+            iconHeight = 26;
+            iconHtml = `
+              <div style="position:relative; width:${iconWidth}px; height:${iconHeight}px; display:flex; align-items:center; justify-content:center;">
+                <div style="position:absolute; inset:-4px; border-radius:50%; background:${catColor}; opacity:0.35; animation:ping 1.5s cubic-bezier(0,0,0.2,1) infinite;"></div>
+                <div style="width:${iconWidth}px; height:${iconHeight}px; border-radius:50%; background:${catColor}; color:#ffffff; font-size:10px; font-weight:800; font-family:Inter,sans-serif; display:flex; align-items:center; justify-content:center; border:2px solid #ffffff; box-shadow:0 0 0 2px #10b981, 0 4px 12px rgba(0,0,0,0.7); cursor:pointer; user-select:none;">
+                  ${aqi}
+                </div>
+                <div style="position:absolute; bottom:30px; left:50%; transform:translateX(-50%); background:rgba(10,13,11,0.92); color:#ffffff; font-size:10px; font-weight:700; font-family:Inter,sans-serif; padding:2px 8px; border-radius:8px; border:1px solid #10b981; white-space:nowrap; pointer-events:none; box-shadow:0 4px 12px rgba(0,0,0,0.7); z-index:9999;">
+                  ${s.name} • ${aqi}
+                </div>
               </div>
             `;
           } else {
-            // Compact Glowing Node with AQI inside
+            // Sleek, compact circular AQI badge with high-contrast font and clean white border
+            iconWidth = zoom >= 11 ? 24 : 20;
+            iconHeight = iconWidth;
+            const fontSize = zoom >= 11 ? 9.5 : 8.5;
             iconHtml = `
-              <div class="vayu-station-node node-small ${isSelected ? 'node-selected' : ''}" style="background:${catColor};">
+              <div class="vayu-station-node node-small" style="width:${iconWidth}px; height:${iconHeight}px; border-radius:50% !important; background:${catColor}; color:#ffffff; font-size:${fontSize}px; font-weight:800; font-family:Inter,sans-serif; display:flex; align-items:center; justify-content:center; border:1.5px solid rgba(255,255,255,0.95); box-shadow:0 2px 6px rgba(0,0,0,0.5); cursor:pointer; user-select:none; transition:transform 0.15s ease;">
                 ${aqi}
               </div>
             `;
@@ -17059,20 +17149,26 @@
 
           const icon = L.divIcon({
             html: iconHtml,
-            className: '',
-            iconSize: zoom >= 11 ? [120, 26] : [24, 24],
-            iconAnchor: zoom >= 11 ? [60, 13] : [12, 12]
+            className: 'vayu-station-marker-wrapper',
+            iconSize: [iconWidth, iconHeight],
+            iconAnchor: [Math.floor(iconWidth / 2), Math.floor(iconHeight / 2)]
           });
 
-          const marker = L.marker([s.lat, s.lon], { icon }).addTo(this.stationsLayer);
+          const marker = L.marker([s.lat, s.lon], { 
+            icon, 
+            zIndexOffset: isSelected ? 2000 : (aqi >= 400 ? 500 : 100)
+          }).addTo(this.stationsLayer);
+
           marker.on('click', () => {
             this.inspectStation(s);
           });
         });
 
-        // Update station count on map scale
+        // Update station count on map header & scale
+        const countHeaderEl = document.getElementById('map-header-station-count');
+        if (countHeaderEl) countHeaderEl.innerText = `${stations.length} Active Stations`;
         const countEl = document.getElementById('map-active-station-count');
-        if (countEl) countEl.innerText = `${stations.length} Stations`;
+        if (countEl) countEl.innerText = `${stations.length} Active Stations`;
       },
 
       inspectStation(station) {
@@ -17205,22 +17301,23 @@
         if (!this.map || !this.isobarLayer) return;
         this.isobarLayer.clearLayers();
 
-        // Render isobar curves
+        // Render isobar curves (subtle atmospheric guidance lines)
         this.isobars.forEach(iso => {
           L.polyline(iso.path, {
             color: '#f2d666',
-            weight: 1.8,
-            opacity: 0.75,
-            dashArray: '4, 6'
+            weight: 1.2,
+            opacity: 0.45,
+            dashArray: '4, 6',
+            interactive: false
           }).addTo(this.isobarLayer);
 
           // Add label marker at midpoint of curve
           const midPt = iso.path[Math.floor(iso.path.length / 2)];
           const labelIcon = L.divIcon({
-            html: `<div class="isobar-label">${iso.label}</div>`,
-            className: '',
-            iconSize: [200, 16],
-            iconAnchor: [100, 8]
+            html: `<div class="isobar-label" style="opacity:0.65; pointer-events:none;">${iso.label}</div>`,
+            className: 'vayu-station-marker-wrapper',
+            iconSize: [180, 16],
+            iconAnchor: [90, 8]
           });
           L.marker(midPt, { icon: labelIcon, interactive: false }).addTo(this.isobarLayer);
         });
@@ -17228,17 +17325,17 @@
         // High Pressure Center [ H 1018.8 hPa ] over Central Punjab
         const highCenterIcon = L.divIcon({
           html: `
-            <div class="flex flex-col items-center justify-center p-1 rounded-lg bg-yellow-950/80 border border-yellow-600/70 shadow-xl backdrop-blur text-center">
+            <div class="flex flex-col items-center justify-center p-1 rounded-lg bg-yellow-950/80 border border-yellow-600/70 shadow-xl backdrop-blur text-center" style="pointer-events:none;">
               <span class="font-extrabold text-amber-300 font-mono text-xs">H 1018.8 hPa</span>
               <span class="text-[9px] text-amber-200/90 font-mono">Anticyclone Ridge</span>
               <span class="text-[8px] text-amber-300/80">↓ Subsidence Inversion</span>
             </div>
           `,
-          className: '',
+          className: 'vayu-station-marker-wrapper',
           iconSize: [110, 48],
           iconAnchor: [55, 24]
         });
-        L.marker([30.70, 75.30], { icon: highCenterIcon }).addTo(this.isobarLayer);
+        L.marker([30.70, 75.30], { icon: highCenterIcon, interactive: false }).addTo(this.isobarLayer);
       },
 
       renderSmokePlume(hour) {
@@ -17247,22 +17344,26 @@
 
         const expansion = 1 + (hour / 72) * 0.6;
 
-        // Delhi Basin Inversion Smoke Trap
+        // Delhi Basin Inversion Smoke Trap (soft atmospheric ambient tint, non-intrusive)
         L.circle([28.65, 77.15], {
-          radius: 28000 * expansion,
-          color: '#881337',
-          weight: 1.5,
+          radius: 22000 * expansion,
+          color: 'rgba(239, 68, 68, 0.3)',
+          weight: 1,
           fillColor: '#ef4444',
-          fillOpacity: 0.22 * expansion
+          fillOpacity: 0.05 * expansion,
+          dashArray: '4, 4',
+          interactive: false
         }).addTo(this.plumeLayer);
 
         // Punjab Primary Farm Fire Plume
         L.circle([30.30, 75.60], {
-          radius: 45000 * expansion,
-          color: '#f97316',
-          weight: 1.5,
+          radius: 38000 * expansion,
+          color: 'rgba(249, 115, 22, 0.35)',
+          weight: 1,
           fillColor: '#f97316',
-          fillOpacity: 0.20
+          fillOpacity: 0.07,
+          dashArray: '5, 5',
+          interactive: false
         }).addTo(this.plumeLayer);
       },
 
