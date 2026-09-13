@@ -4749,7 +4749,7 @@
               <span class="flex items-center gap-2">
                 <span class="text-sm">⏱️</span>
                 <span class="font-bold">View Hourly Forecast &amp; Wind Breakdown</span>
-                <span class="text-[10px] py-0.5 px-2 rounded-full bg-amber-400/10 text-amber-300 border border-amber-400/20 font-mono hidden sm:inline">Key Hours</span>
+                <span class="text-[10px] py-0.5 px-2 rounded-full bg-amber-400/10 text-amber-300 border border-amber-400/20 font-mono hidden sm:inline">24 Hours</span>
               </span>
               <span class="flex items-center gap-1.5 text-[11px] text-amber-400 font-mono font-semibold">
                 <span id="toggle-hourly-text">Show Details</span>
@@ -4761,10 +4761,10 @@
             <div id="weather-hourly-slider-wrap" class="hidden flex-col gap-1.5 transition-all">
               <div class="flex items-center justify-between text-[11px] font-semibold text-earth-300 px-1 pt-1">
                 <span class="flex items-center gap-1.5">
-                  <span class="text-xs">📊</span> <span class="font-bold">Hourly Details (Temp, Rain % &amp; Wind Speed)</span>
+                  <span class="text-xs">📊</span> <span class="font-bold">24-Hour Details (Temp, Rain % &amp; Wind Speed)</span>
                 </span>
-                <span class="text-[10px] text-cyan-400 font-mono flex items-center gap-1 sm:hidden">
-                  <span>Swipe</span> <span>↔</span>
+                <span class="text-[10px] text-cyan-400 font-mono flex items-center gap-1">
+                  <span>Swipe 24h</span> <span>↔</span>
                 </span>
               </div>
               <div id="weather-hourly-slider" class="flex overflow-x-auto gap-2 sm:gap-2.5 pb-2 no-scrollbar scroll-smooth">
@@ -12434,20 +12434,20 @@
           const high = baseHighs[i] || 33;
           const low = baseLows[i] || 25;
 
-          // 6 Key distinct synoptic diurnal hours (06:00, 09:00, 12:00, 15:00, 18:00, 21:00)
-          const keyHours = [6, 9, 12, 15, 18, 21];
-          const hourly = keyHours.map(h => {
+          // Full 24-hour diurnal profile (00:00 to 23:00)
+          const hourly24 = [];
+          for (let h = 0; h < 24; h++) {
             const phase = ((h - 15) / 24) * 2 * Math.PI;
             const frac = 0.5 * (1 + Math.cos(phase));
             const t = Math.round(low + (high - low) * frac);
-            const rainFactor = (h >= 12 && h <= 18) ? 1.0 : (h === 9 ? 0.6 : 0.25);
+            const rainFactor = (h >= 13 && h <= 19) ? 1.0 : (h >= 8 && h < 13 ? 0.6 : 0.25);
             const p = Math.min(100, Math.round((baseRains[i] || 20) * rainFactor));
-            const windFactor = (h >= 12 && h <= 18) ? 1.25 : 0.75;
+            const windFactor = (h >= 11 && h <= 17) ? 1.25 : 0.75;
             const w = Math.round(11 * windFactor);
-            const tLabel = h === 12 ? '12 pm' : (h < 12 ? `${h} am` : `${h - 12} pm`);
+            const tLabel = h === 0 ? '12 am' : (h === 12 ? '12 pm' : (h < 12 ? `${h} am` : `${h - 12} pm`));
             let hIcon = cond.icon;
-            if (h === 21) hIcon = p >= 40 ? 'rain' : 'partly-cloudy';
-            return {
+            if (h >= 20 || h < 5) hIcon = p >= 40 ? 'rain' : 'partly-cloudy';
+            hourly24.push({
               hour: h,
               time: tLabel,
               temp: t,
@@ -12455,8 +12455,12 @@
               wind: w,
               windDir: 'WNW',
               icon: hIcon
-            };
-          });
+            });
+          }
+
+          // 6 Key distinct synoptic diurnal hours (06:00, 09:00, 12:00, 15:00, 18:00, 21:00) for top curve
+          const keyHours = [6, 9, 12, 15, 18, 21];
+          const hourly = hourly24.filter(h => keyHours.includes(h.hour));
 
           days.push({
             day: dayNamesEn[dayIdx],
@@ -12475,7 +12479,8 @@
             humidity: 59,
             windSpeed: 11,
             windDir: 'WNW',
-            hourly: hourly
+            hourly: hourly,
+            hourly24: hourly24
           });
         }
         return days;
@@ -12660,22 +12665,21 @@
             target.descEn = meta.en;
             target.descHi = meta.hi;
 
-            // 6 Distinct Synoptic checkpoints (06:00, 09:00, 12:00, 15:00, 18:00, 21:00)
+            // Full 24-hour hourly array and 6 distinct synoptic checkpoints
             if (om.hourly && om.hourly.time) {
-              const keyHours = [6, 9, 12, 15, 18, 21];
-              target.hourly = keyHours.map(h => {
+              const h24 = [];
+              for (let h = 0; h < 24; h++) {
                 const hIdx = i * 24 + h;
-                const tLabel = h === 12 ? '12 pm' : (h < 12 ? `${h} am` : `${h - 12} pm`);
+                const tLabel = h === 0 ? '12 am' : (h === 12 ? '12 pm' : (h < 12 ? `${h} am` : `${h - 12} pm`));
                 const hCode = om.hourly.weather_code && hIdx < om.hourly.weather_code.length ? om.hourly.weather_code[hIdx] : code;
                 const hMeta = wmoMapping[hCode] || meta;
                 const hTemp = hIdx < om.hourly.temperature_2m.length ? Math.round(om.hourly.temperature_2m[hIdx]) : target.tempMax;
                 const hPrecip = om.hourly.precipitation_probability && hIdx < om.hourly.precipitation_probability.length ? Math.round(om.hourly.precipitation_probability[hIdx]) : target.precip;
                 const hWind = om.hourly.wind_speed_10m && hIdx < om.hourly.wind_speed_10m.length ? Math.round(om.hourly.wind_speed_10m[hIdx]) : target.windSpeed;
                 const hWindDir = om.hourly.wind_direction_10m && hIdx < om.hourly.wind_direction_10m.length ? degToCompass(om.hourly.wind_direction_10m[hIdx]) : target.windDir;
+                let hIcon = (h >= 20 || h < 5) ? (hPrecip >= 40 ? 'rain' : 'partly-cloudy') : hMeta.icon;
 
-                let hIcon = h === 21 ? (hPrecip >= 40 ? 'rain' : 'partly-cloudy') : hMeta.icon;
-
-                return {
+                h24.push({
                   hour: h,
                   time: tLabel,
                   temp: hTemp,
@@ -12683,8 +12687,12 @@
                   wind: hWind,
                   windDir: hWindDir,
                   icon: hIcon
-                };
-              });
+                });
+              }
+
+              target.hourly24 = h24;
+              const keyHours = [6, 9, 12, 15, 18, 21];
+              target.hourly = h24.filter(item => keyHours.includes(item.hour));
             }
           }
         }
@@ -13105,6 +13113,12 @@
           if (txt) txt.innerText = 'Hide Details';
           if (arr) arr.style.transform = 'rotate(180deg)';
           this.renderHourlySlider();
+          setTimeout(() => {
+            const nowCard = wrap.querySelector('.weather-hourly-card.is-now');
+            if (nowCard && nowCard.scrollIntoView) {
+              nowCard.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+            }
+          }, 50);
         } else {
           wrap.classList.add('hidden');
           wrap.classList.remove('flex');
@@ -13117,24 +13131,35 @@
         const slider = document.getElementById('weather-hourly-slider');
         if (!slider) return;
         const day = this.forecastDays[this.selectedDayIndex] || this.forecastDays[0];
-        if (!day || !day.hourly || !day.hourly.length) return;
+        if (!day) return;
+        const hourlyList = (day.hourly24 && day.hourly24.length) ? day.hourly24 : (day.hourly || []);
+        if (!hourlyList.length) return;
 
-        slider.innerHTML = day.hourly.map((h, idx) => {
+        const currentH = new Date().getHours();
+        const isToday = this.selectedDayIndex === 0;
+
+        slider.innerHTML = hourlyList.map((h, idx) => {
           const tVal = this.convertTemp(h.temp);
           const isTemp = this.metric === 'temp';
           const isPrecip = this.metric === 'precip';
           const isWind = this.metric === 'wind';
+          const isNow = isToday && (h.hour === currentH);
 
           let iconType = 'sunny';
           if (h.precip >= 50) iconType = 'rain';
           else if (h.precip >= 20) iconType = 'partly-cloudy';
-          else if (h.time.includes('am') && (h.time.startsWith('12') || h.time.startsWith('3') || h.time.startsWith('6'))) iconType = 'partly-cloudy';
+          else if (h.hour >= 20 || h.hour < 5) iconType = 'partly-cloudy';
 
           return `
-            <div class="weather-hourly-card flex flex-col items-center justify-between p-2.5 rounded-2xl min-w-[76px] sm:min-w-[88px] flex-1 text-center transition cursor-pointer shrink-0 border ${
+            <div class="weather-hourly-card flex flex-col items-center justify-between p-2.5 rounded-2xl min-w-[76px] sm:min-w-[84px] text-center transition cursor-pointer shrink-0 border ${
+              isNow ? 'ring-2 ring-amber-400 bg-amber-950/40 is-now shadow-md shadow-amber-950/50' : ''
+            } ${
               isTemp ? 'bg-amber-950/20 border-amber-500/30' : (isPrecip ? 'bg-sky-950/20 border-sky-500/30' : 'bg-emerald-950/20 border-emerald-500/30')
             } hover:scale-102">
-              <span class="text-[11px] font-mono font-semibold text-earth-300 whitespace-nowrap">${h.time}</span>
+              <div class="flex items-center gap-1">
+                <span class="text-[11px] font-mono font-semibold text-earth-300 whitespace-nowrap">${h.time}</span>
+                ${isNow ? '<span class="text-[7.5px] font-black px-1 rounded bg-amber-400 text-black">NOW</span>' : ''}
+              </div>
               <div class="my-1 flex items-center justify-center">
                 ${this.getWeatherSvg(iconType, 'w-6 h-6')}
               </div>
