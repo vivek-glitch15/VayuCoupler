@@ -3847,6 +3847,19 @@
       color: #0284c7 !important;
     }
 
+  
+    #commute-leaflet-map {
+      background: #090C0A !important;
+    }
+    #commute-leaflet-map .leaflet-container {
+      background: #090C0A !important;
+    }
+    #vayu-leaflet-map {
+      background: #060807 !important;
+    }
+    #vayu-leaflet-map .leaflet-container {
+      background: #060807 !important;
+    }
   </style>
 </head>
 <body class="min-h-screen text-[#f2f5f3] flex flex-col antialiased selection:bg-[#10201a] selection:text-[#6fe2a3] max-w-full w-full">
@@ -13732,10 +13745,12 @@
 
             L.control.zoom({ position: 'bottomleft' }).addTo(this.map);
 
-            L.tileLayer('https://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+            const esriBase = L.tileLayer('https://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
               maxZoom: 16,
               attribution: 'Esri'
-            }).addTo(this.map);
+            });
+            esriBase.on('tileerror', function() {});
+            esriBase.addTo(this.map);
 
             L.tileLayer('https://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}', {
               maxZoom: 16,
@@ -14523,20 +14538,53 @@
     // 1. Live Accurate GPS Detection with Free Reverse Geocoding
     window.useCurrentLocationForOrigin = function() {
       const originInput = document.getElementById('commute-origin-search');
-      if (originInput) originInput.value = "Fetching live point-to-point GPS...";
+      if (originInput) originInput.value = "Acquiring satellite GPS lock...";
+
+      const fallbackToResolvedLocation = () => {
+        let bestLoc = null;
+        const saved = localStorage.getItem('vayucoupler_resolved_location');
+        if (saved) {
+          try {
+            const parsed = JSON.parse(saved);
+            if (typeof VayuForecastEngine !== 'undefined' && VayuForecastEngine.stations) {
+              const found = VayuForecastEngine.stations.find(s => s.id === parsed.stationId);
+              if (found) bestLoc = { lat: found.lat, lon: found.lon, name: found.name };
+            }
+          } catch(e) {}
+        }
+        if (!bestLoc && typeof VayuForecastEngine !== 'undefined' && VayuForecastEngine.currentStation) {
+          bestLoc = { lat: VayuForecastEngine.currentStation.lat, lon: VayuForecastEngine.currentStation.lon, name: VayuForecastEngine.currentStation.name };
+        }
+        if (!bestLoc) {
+          bestLoc = { lat: 28.6315, lon: 77.2167, name: 'Connaught Place' };
+        }
+
+        const dName = `📍 ${bestLoc.name} (Location Locked)`;
+        if (originInput) originInput.value = dName;
+        window.customOriginName = dName;
+        window.customOriginCoord = { lat: bestLoc.lat, lon: bestLoc.lon, name: dName };
+        if (typeof VayuCommuteMap !== 'undefined') {
+          VayuCommuteMap.originCoord = window.customOriginCoord;
+        }
+        calcCommuteRoute();
+      };
 
       if (!navigator.geolocation) {
-        if (originInput) originInput.value = "GPS not supported on device";
+        fallbackToResolvedLocation();
         return;
       }
 
+      const geoTimeout = setTimeout(() => {
+        fallbackToResolvedLocation();
+      }, 4500);
+
       navigator.geolocation.getCurrentPosition(
         async (pos) => {
+          clearTimeout(geoTimeout);
           const lat = pos.coords.latitude;
           const lon = pos.coords.longitude;
           const acc = Math.round(pos.coords.accuracy || 10);
 
-          // Find closest monitoring station
           let closestStationName = "Delhi-NCR";
           let minDist = Infinity;
           if (typeof VayuForecastEngine !== 'undefined' && VayuForecastEngine.stations) {
@@ -14549,35 +14597,30 @@
             }
           }
 
-          let displayName = `📍 Current Location (${closestStationName} ±${acc}m)`;
+          let displayName = `📍 ${closestStationName} (Live GPS ±${acc}m)`;
           if (originInput) originInput.value = displayName;
 
-          // Attempt fast accurate reverse geocode via Geoapify (clean English colony, road, city)
-          try {
-            const controller = new AbortController();
-            const timer = setTimeout(() => controller.abort(), 2600);
-            const geoUrl = `https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${lon}&format=json&apiKey=${VAYU_GEOAPIFY_KEY}`;
-            const res = await fetch(geoUrl, {
-              signal: controller.signal,
-              headers: { 'Accept': 'application/json' }
-            });
-            clearTimeout(timer);
-            if (res.ok) {
-              const data = await res.json();
-              if (data && data.results && data.results.length > 0) {
-                const r = data.results[0];
-                const main = r.suburb || r.neighbourhood || r.street || r.quarter || r.name || closestStationName;
-                const dist = r.district || r.city || 'Delhi';
-                const cleanLoc = (main !== dist) ? `${main}, ${dist}` : main;
-                displayName = `📍 ${cleanLoc}`;
-                if (originInput) originInput.value = displayName;
+          if (navigator.onLine) {
+            try {
+              const controller = new AbortController();
+              const timer = setTimeout(() => controller.abort(), 2000);
+              const geoUrl = `https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${lon}&format=json&apiKey=${VAYU_GEOAPIFY_KEY}`;
+              const res = await fetch(geoUrl, {
+                signal: controller.signal,
+                headers: { 'Accept': 'application/json' }
+              });
+              clearTimeout(timer);
+              if (res.ok) {
+                const data = await res.json();
+                if (data && data.results && data.results.length > 0) {
+                  const r = data.results[0];
+                  const main = r.suburb || r.neighbourhood || r.street || r.quarter || r.name || closestStationName;
+                  const dist = r.district || r.city || 'Delhi';
+                  displayName = `📍 ${main}${main !== dist ? ', ' + dist : ''}`;
+                  if (originInput) originInput.value = displayName;
+                }
               }
-            }
-          } catch(e) {
-            console.log("Geoapify reverse geocode fallback", e);
-            // Fallback to nearest station clean label
-            displayName = `📍 ${closestStationName}`;
-            if (originInput) originInput.value = displayName;
+            } catch(e) {}
           }
 
           window.customOriginName = displayName;
@@ -14586,43 +14629,20 @@
             VayuCommuteMap.originCoord = window.customOriginCoord;
           }
 
-          const hiddenSelect = document.getElementById('commute-origin');
-          if (hiddenSelect) {
-            let opt = document.getElementById('commute-origin-gps-opt');
-            if (!opt) {
-              opt = document.createElement('option');
-              opt.id = 'commute-origin-gps-opt';
-              hiddenSelect.insertBefore(opt, hiddenSelect.firstChild);
-            }
-            opt.value = 'gps_live';
-            opt.text = displayName;
-            opt.selected = true;
-            hiddenSelect.selectedIndex = 0;
-            hiddenSelect.value = 'gps_live';
-          }
-
           calcCommuteRoute();
           if (typeof showFloatingToast === 'function') {
-            showFloatingToast(`🎯 GPS Location locked: ${displayName} (${lat.toFixed(4)}, ${lon.toFixed(4)})`);
+            showFloatingToast(`🎯 GPS Location locked: ${displayName}`);
           }
         },
         (err) => {
-          console.warn("GPS lookup failed", err);
-          const cached = (typeof VayuLocationService !== 'undefined' && VayuLocationService.lastUserCoords) ? VayuLocationService.lastUserCoords : { lat: 28.6692, lon: 77.1314 };
-          const displayName = "📍 Current GPS (Punjabi Bagh)";
-          if (originInput) originInput.value = displayName;
-          window.customOriginName = displayName;
-          window.customOriginCoord = { lat: cached.lat, lon: cached.lon, name: displayName };
-          if (typeof VayuCommuteMap !== 'undefined') {
-            VayuCommuteMap.originCoord = window.customOriginCoord;
-          }
-          calcCommuteRoute();
+          clearTimeout(geoTimeout);
+          fallbackToResolvedLocation();
         },
-        { enableHighAccuracy: true, timeout: 8000, maximumAge: 20000 }
+        { enableHighAccuracy: true, timeout: 4000, maximumAge: 60000 }
       );
     };
 
-    // 2. Comprehensive Search for Origin & Destination (Local 87 Hubs + Live Delhi-NCR Nominatim)
+    // 2. Comprehensive Search for Origin & Destination (Local 140+ Hubs + Live Delhi-NCR Geocoding)
     window.onCommuteSearchInput = function(type, query) {
       const dropdown = document.getElementById(type === 'origin' ? 'commute-origin-suggestions' : 'commute-dest-suggestions');
       if (!dropdown) return;
@@ -14630,8 +14650,19 @@
       const q = (query || '').toLowerCase().trim();
       const currentSeq = ++commuteSearchSeq;
 
-      // Local 87 Hubs for instant 0ms response
+      const POPULAR_DELHI_HUBS = [
+        { name: "Connaught Place", cleanName: "Connaught Place", lat: 28.6315, lon: 77.2167, zone: "Central Delhi", key: "cp" },
+        { name: "Anand Vihar ISBT", cleanName: "Anand Vihar", lat: 28.6476, lon: 77.3158, zone: "East Delhi", key: "anand_vihar" },
+        { name: "Punjabi Bagh", cleanName: "Punjabi Bagh", lat: 28.6692, lon: 77.1314, zone: "West Delhi", key: "punjabi_bagh" },
+        { name: "Dwarka Sector 8", cleanName: "Dwarka", lat: 28.5700, lon: 77.0700, zone: "South West Delhi", key: "dwarka" },
+        { name: "Rohini Sector 16", cleanName: "Rohini", lat: 28.7325, lon: 77.1199, zone: "North Delhi", key: "rohini" },
+        { name: "Hauz Khas / IIT", cleanName: "Hauz Khas", lat: 28.5494, lon: 77.2001, zone: "South Delhi", key: "hauz_khas" },
+        { name: "Noida Sector 62", cleanName: "Noida Sec 62", lat: 28.6258, lon: 77.3644, zone: "NCR East", key: "noida_sec62" },
+        { name: "DLF Cyber City", cleanName: "Cyber City Gurugram", lat: 28.4952, lon: 77.0895, zone: "NCR South", key: "cyber_city" }
+      ];
+
       const allLocations = [];
+      // Combine 87 monitoring stations + 56 commute coords
       if (typeof VayuForecastEngine !== 'undefined' && VayuForecastEngine.stations) {
         VayuForecastEngine.stations.forEach(st => {
           allLocations.push({
@@ -14645,11 +14676,30 @@
           });
         });
       }
+      if (typeof COMMUTE_COORDS !== 'undefined') {
+        Object.entries(COMMUTE_COORDS).forEach(([k, v]) => {
+          if (!allLocations.some(loc => Math.hypot(loc.lat - v.lat, loc.lon - v.lon) < 0.008)) {
+            allLocations.push({
+              name: v.name,
+              cleanName: v.name,
+              lat: v.lat,
+              lon: v.lon,
+              zone: 'Delhi-NCR',
+              key: k,
+              isLive: false
+            });
+          }
+        });
+      }
 
-      const localFiltered = allLocations.filter(loc => {
-        if (!q) return true;
-        return loc.name.toLowerCase().includes(q) || loc.cleanName.toLowerCase().includes(q) || loc.zone.toLowerCase().includes(q);
-      }).slice(0, 6);
+      let localFiltered = [];
+      if (!q) {
+        localFiltered = POPULAR_DELHI_HUBS;
+      } else {
+        localFiltered = allLocations.filter(loc => {
+          return loc.name.toLowerCase().includes(q) || loc.cleanName.toLowerCase().includes(q) || loc.zone.toLowerCase().includes(q);
+        }).slice(0, 8);
+      }
 
       const renderList = (items, showLoadingHint = false) => {
         if (items.length === 0 && !showLoadingHint) {
@@ -18027,23 +18077,37 @@
         if (!VayuAtmosphericMap.map && typeof VayuAtmosphericMap.init === 'function') {
           try { VayuAtmosphericMap.init(); } catch(e) {}
         }
-        if (typeof VayuAtmosphericMap.resumeWindAnimation === 'function') {
-          try { VayuAtmosphericMap.resumeWindAnimation(); } catch(e) {}
-        }
-        [50, 150, 300, 600].forEach(function(delay) {
+        [40, 120, 250, 500].forEach(function(delay) {
           setTimeout(function() {
             try {
-              if (VayuAtmosphericMap.map) VayuAtmosphericMap.map.invalidateSize();
+              if (VayuAtmosphericMap.map) {
+                VayuAtmosphericMap.map.invalidateSize();
+                VayuAtmosphericMap.map.setView([28.63, 77.18], 10, { animate: false });
+                if (typeof VayuAtmosphericMap.renderStations === 'function') {
+                  VayuAtmosphericMap.renderStations();
+                }
+              }
             } catch(e) {}
           }, delay);
         });
+        if (typeof VayuAtmosphericMap.resumeWindAnimation === 'function') {
+          try { VayuAtmosphericMap.resumeWindAnimation(); } catch(e) {}
+        }
       }
 
       if (tabId === 'commute' && typeof VayuCommuteMap !== 'undefined') {
-        [50, 150, 300, 600].forEach(function(delay) {
+        [40, 120, 250, 500].forEach(function(delay) {
           setTimeout(function() {
             try {
               VayuCommuteMap.initOrResize();
+              if (VayuCommuteMap.map) {
+                VayuCommuteMap.map.invalidateSize();
+                if (VayuCommuteMap.routeLines && VayuCommuteMap.routeLines.length > 0) {
+                  VayuCommuteMap.fitBounds();
+                } else {
+                  VayuCommuteMap.map.setView([28.63, 77.20], 11, { animate: false });
+                }
+              }
             } catch(e) {}
           }, delay);
         });
