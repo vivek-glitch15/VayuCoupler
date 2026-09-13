@@ -463,9 +463,8 @@
     }
     .wx-carousel-track {
       display: flex;
-      width: 300%;
       will-change: transform;
-      transform: translate3d(0%, 0, 0);
+      transform: translate3d(0px, 0, 0);
       transition: transform 0.32s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
@@ -474,8 +473,9 @@
       transition: none !important;
     }
     .wx-chart-panel {
-      width: 33.3333%;
-      flex-shrink: 0;
+      flex: 0 0 100%;
+      width: 100%;
+      min-width: 0;
       position: relative;
       background: #0a0d0a;
       border-radius: 16px;
@@ -485,6 +485,7 @@
       display: flex;
       flex-direction: column;
       justify-content: stretch;
+      box-sizing: border-box;
     }
     html.light-theme .wx-chart-panel {
       background: #f8fafc;
@@ -4767,7 +4768,7 @@
                 <div id="weather-curve-container" class="w-full h-full relative" style="min-height:168px"></div>
               </div>
               <!-- Panel 1: Precipitation -->
-              <div class="wx-chart-panel" id="weather-curve-container-1" style="margin-left:8px;margin-right:8px">
+              <div class="wx-chart-panel" id="weather-curve-container-1">
                 <div id="weather-curve-container-precip" class="w-full h-full relative" style="min-height:168px"></div>
               </div>
               <!-- Panel 2: Wind -->
@@ -12740,11 +12741,12 @@
         this.metric = m;
         const metricIdx = { temp: 0, precip: 1, wind: 2 };
         const idx = metricIdx[m] ?? 0;
-        // Drive carousel
+        // Drive carousel — pixel-based for correctness
         const track = document.getElementById('wx-carousel-track');
-        if (track) {
-          const pct = idx * (100 / 3);
-          track.style.transform = `translate3d(-${pct}%, 0, 0)`;
+        const viewport = document.getElementById('wx-carousel-viewport');
+        if (track && viewport) {
+          const panelW = viewport.offsetWidth;
+          track.style.transform = `translate3d(-${idx * panelW}px, 0, 0)`;
         }
         // Sync pills
         ['temp', 'precip', 'wind'].forEach((tab, i) => {
@@ -13070,10 +13072,10 @@
           e.preventDefault();
           curX = t.clientX;
           const curIdx = getCurIdx();
-          const basePct = curIdx * (100 / 3);
-          const deltaPct = -(dx / viewport.offsetWidth) * (100 / 3);
-          const clampedPct = Math.max(0, Math.min(200/3, basePct + deltaPct));
-          track.style.transform = `translate3d(-${clampedPct}%, 0, 0)`;
+          const panelW = viewport.offsetWidth;
+          const baseX = curIdx * panelW;
+          const clampedX = Math.max(0, Math.min(2 * panelW, baseX - dx));
+          track.style.transform = `translate3d(-${clampedX}px, 0, 0)`;
         }, { passive: false });
 
         viewport.addEventListener('touchend', (e) => {
