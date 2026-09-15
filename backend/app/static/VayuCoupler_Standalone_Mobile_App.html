@@ -13581,7 +13581,7 @@ html.light-theme .mobile-nav-item.active span {
           }
 
           if (modalStatus) {
-            const isOff = !navigator.onLine || this.manualOfflineOverride;
+            const isOff = this.isOffline || this.manualOfflineOverride;
             const lang = (typeof VayuSettings !== 'undefined' && VayuSettings.language) ? VayuSettings.language : 'en';
             if (isOff || (err && err.error === 'network')) {
               modalStatus.innerText = lang === 'en' ? "⚡ Offline: Speech requires net. Tap any question below:" : "⚡ Offline Mode: Voice ke liye net chahiye. Neeche kisi sawaal par tap karein:";
@@ -13625,7 +13625,7 @@ html.light-theme .mobile-nav-item.active span {
 
         const currentLang = (typeof VayuSettings !== 'undefined' && VayuSettings.language) ? VayuSettings.language : (localStorage.getItem('vayu_language') || 'en');
         const isEn = currentLang === 'en';
-        const isCurrentlyOffline = !navigator.onLine || this.manualOfflineOverride;
+        const isCurrentlyOffline = this.isOffline || this.manualOfflineOverride;
 
         // Transition into Chat Thread View
         if (hubView) hubView.classList.add('hidden');
@@ -13776,13 +13776,12 @@ html.light-theme .mobile-nav-item.active span {
           } catch (err) {
             console.warn('VayuAI cloud fetch error or timeout:', err);
             if (!navigator.onLine) {
-              this.isOffline = true;
-              this.updateNetworkStatus();
+              this.setOfflineState(true);
             }
           }
 
           if (!responseData) {
-            const reallyOffline = !navigator.onLine || this.manualOfflineOverride;
+            const reallyOffline = this.isOffline || this.manualOfflineOverride;
             responseData = this.computeDynamicAnswer(query, reallyOffline);
           }
         }
@@ -13862,7 +13861,7 @@ html.light-theme .mobile-nav-item.active span {
         history.scrollTop = history.scrollHeight;
       },
 
-      computeDynamicAnswer(query, isOffline = true) {
+      computeDynamicAnswer(query, isOffline = false) {
         const rawQ = query.toLowerCase();
         const q = this.normalizeQuery(query);
         const forecast = (typeof VayuForecastEngine !== 'undefined' && VayuForecastEngine.forecastArray && VayuForecastEngine.forecastArray.length > 0)
