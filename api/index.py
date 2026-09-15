@@ -12,15 +12,17 @@ from backend.app.main import app
 async def vercel_handler(scope, receive, send):
     if scope["type"] == "http":
         headers = dict(scope.get("headers", []))
+        matched_path = headers.get(b"x-matched-path", b"").decode("utf-8", errors="ignore").split("?")[0]
         fwd_uri = headers.get(b"x-forwarded-uri", b"").decode("utf-8", errors="ignore").split("?")[0]
-        path = scope.get("path", "")
+        raw_path = scope.get("path", "")
         
-        if fwd_uri and fwd_uri.startswith("/api"):
-            scope["path"] = fwd_uri
-        elif path in ("/api/index.py", "/api/index", "/index.py") and fwd_uri:
-            scope["path"] = fwd_uri if fwd_uri.startswith("/api") else f"/api{fwd_uri}"
-        elif not path.startswith("/api"):
-            scope["path"] = f"/api{path}"
+        target = matched_path or fwd_uri
+        if target and target not in ("/api/index.py", "/api/index", "/index.py", "/index"):
+            scope["path"] = target if target.startswith("/api") else f"/api{target}"
+        elif raw_path in ("/api/index.py", "/api/index", "/index.py", "/index") and target:
+            scope["path"] = target if target.startswith("/api") else f"/api{target}"
+        elif not raw_path.startswith("/api"):
+            scope["path"] = f"/api{raw_path}"
     await app(scope, receive, send)
 
 handler = vercel_handler
