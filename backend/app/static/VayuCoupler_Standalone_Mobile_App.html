@@ -13153,9 +13153,12 @@ html.light-theme .mobile-nav-item.active span {
       initNetworkListeners() {
         const updateNet = () => {
           if (!this.manualOfflineOverride) {
-            this.isOffline = !navigator.onLine;
-            this.updateNetworkStatus();
-            if (navigator.onLine) {
+            if (!navigator.onLine) {
+              // Browser says offline → set offline immediately
+              this.setOfflineState(true);
+            } else {
+              // Browser says online → trust it immediately, then confirm with probe
+              this.setOfflineState(false);
               this.probeConnectivity();
             }
           }
@@ -13174,7 +13177,7 @@ html.light-theme .mobile-nav-item.active span {
       },
 
       updateNetworkStatus() {
-        const isOff = !navigator.onLine || this.manualOfflineOverride;
+        const isOff = this.isOffline || this.manualOfflineOverride;
         const statusEl = document.getElementById('vayuai-engine-status');
         const threadBadge = document.getElementById('vayuai-thread-badge');
         const threadSubtext = document.getElementById('vayuai-thread-subtext');
