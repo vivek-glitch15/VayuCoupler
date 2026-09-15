@@ -48,6 +48,7 @@ def serve_dashboard():
     return {"status": "ONLINE", "message": "MoES Coupled AQI API"}
 
 @app.get("/api/health")
+@app.get("/health")
 def health_check():
     return {
         "status": "ONLINE",
@@ -59,11 +60,13 @@ def health_check():
     }
 
 @app.get("/api/stations")
+@app.get("/stations")
 def get_stations():
     # Hydrate stations with real-time live WAQI / CPCB readings
     return WAQI_SERVICE.get_live_stations()
 
 @app.get("/api/live/stations")
+@app.get("/live/stations")
 def get_live_stations():
     """
     Returns all 58 Delhi NCR monitoring stations updated with real-time live WAQI / CPCB telemetry.

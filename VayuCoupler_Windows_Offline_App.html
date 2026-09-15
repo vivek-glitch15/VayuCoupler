@@ -13151,9 +13151,14 @@ html.light-theme .mobile-nav-item.active span {
       initNetworkListeners() {
         const updateNet = () => {
           if (!this.manualOfflineOverride) {
-            this.isOffline = !navigator.onLine;
-            this.updateNetworkStatus();
-            this.probeConnectivity();
+            if (!navigator.onLine) {
+              // Browser says offline → set offline immediately
+              this.setOfflineState(true);
+            } else {
+              // Browser says online → trust it immediately, then confirm with probe
+              this.setOfflineState(false);
+              this.probeConnectivity();
+            }
           }
         };
         window.addEventListener('online', updateNet);
@@ -13161,14 +13166,16 @@ html.light-theme .mobile-nav-item.active span {
         window.addEventListener('focus', updateNet);
         document.addEventListener('visibilitychange', updateNet);
 
-        // Continuous active HTTP probe (1000ms) for sub-second offline drop detection
+        // Low-frequency check (every 60s)
         setInterval(() => {
-          this.probeConnectivity();
-        }, 1000);
+          if (navigator.onLine && !this.manualOfflineOverride) {
+            this.probeConnectivity();
+          }
+        }, 60000);
       },
 
       updateNetworkStatus() {
-        const isOff = !navigator.onLine || this.isOffline || this.manualOfflineOverride;
+        const isOff = this.isOffline || this.manualOfflineOverride;
         const statusEl = document.getElementById('vayuai-engine-status');
         const threadBadge = document.getElementById('vayuai-thread-badge');
         const threadSubtext = document.getElementById('vayuai-thread-subtext');
@@ -13217,7 +13224,6 @@ html.light-theme .mobile-nav-item.active span {
           if (isOff) {
             offlineShowcase.classList.remove('hidden');
             offlineShowcase.style.display = 'block';
-            // renderOfflineShowcase removed
           } else {
             offlineShowcase.classList.add('hidden');
             offlineShowcase.style.display = 'none';
@@ -13573,7 +13579,7 @@ html.light-theme .mobile-nav-item.active span {
           }
 
           if (modalStatus) {
-            const isOff = !navigator.onLine || this.isOffline || this.manualOfflineOverride;
+            const isOff = this.isOffline || this.manualOfflineOverride;
             const lang = (typeof VayuSettings !== 'undefined' && VayuSettings.language) ? VayuSettings.language : 'en';
             if (isOff || (err && err.error === 'network')) {
               modalStatus.innerText = lang === 'en' ? "⚡ Offline: Speech requires net. Tap any question below:" : "⚡ Offline Mode: Voice ke liye net chahiye. Neeche kisi sawaal par tap karein:";
@@ -13617,7 +13623,7 @@ html.light-theme .mobile-nav-item.active span {
 
         const currentLang = (typeof VayuSettings !== 'undefined' && VayuSettings.language) ? VayuSettings.language : (localStorage.getItem('vayu_language') || 'en');
         const isEn = currentLang === 'en';
-        const isCurrentlyOffline = !navigator.onLine || this.isOffline || this.manualOfflineOverride;
+        const isCurrentlyOffline = this.isOffline || this.manualOfflineOverride;
 
         // Transition into Chat Thread View
         if (hubView) hubView.classList.add('hidden');
@@ -13701,9 +13707,9 @@ html.light-theme .mobile-nav-item.active span {
               qLower.includes('nami')
             );
 
-            // Timeout controller for 3.5s
+            // Resilient timeout controller for 8s (permits Cloud Gemini generation)
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 3500);
+            const timeoutId = setTimeout(() => controller.abort(), 8000);
 
             const res = await fetch('/api/vayuai/chat', {
               signal: controller.signal,
@@ -13768,17 +13774,12 @@ html.light-theme .mobile-nav-item.active span {
           } catch (err) {
             console.warn('VayuAI cloud fetch error or timeout:', err);
             if (!navigator.onLine) {
-              this.isOffline = true;
-              this.updateNetworkStatus();
+              this.setOfflineState(true);
             }
           }
 
           if (!responseData) {
-            const reallyOffline = this.isOffline || !navigator.onLine;
-            if (reallyOffline) {
-              this.isOffline = true;
-              this.updateNetworkStatus();
-            }
+            const reallyOffline = this.isOffline || this.manualOfflineOverride;
             responseData = this.computeDynamicAnswer(query, reallyOffline);
           }
         }
@@ -13858,7 +13859,7 @@ html.light-theme .mobile-nav-item.active span {
         history.scrollTop = history.scrollHeight;
       },
 
-      computeDynamicAnswer(query, isOffline = true) {
+      computeDynamicAnswer(query, isOffline = false) {
         const rawQ = query.toLowerCase();
         const q = this.normalizeQuery(query);
         const forecast = (typeof VayuForecastEngine !== 'undefined' && VayuForecastEngine.forecastArray && VayuForecastEngine.forecastArray.length > 0)
