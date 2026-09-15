@@ -10642,23 +10642,39 @@
       async probeConnectivity() {
         if (this.manualOfflineOverride) return;
         if (this.probeInFlight) return;
+        // Primary: trust browser navigator.onLine first
+        if (!navigator.onLine) {
+          this.setOfflineState(true);
+          return;
+        }
         this.probeInFlight = true;
         try {
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 750);
-          const resp = await fetch('/static/manifest.json?probe=' + Date.now(), {
-            method: 'HEAD',
-            cache: 'no-store',
-            signal: controller.signal
-          });
-          clearTimeout(timeoutId);
-          if (resp && (resp.ok || resp.status < 500)) {
-            this.setOfflineState(false);
-          } else {
-            this.setOfflineState(true);
+          // Probe the backend status endpoint — works both locally and on Vercel
+          const probeUrls = [
+            '/api/vayuai/status',
+            '/static/manifest.json?probe=' + Date.now()
+          ];
+          let reachable = false;
+          for (const url of probeUrls) {
+            try {
+              const controller = new AbortController();
+              const timeoutId = setTimeout(() => controller.abort(), 3000);
+              const resp = await fetch(url, {
+                method: 'HEAD',
+                cache: 'no-store',
+                signal: controller.signal
+              });
+              clearTimeout(timeoutId);
+              // 404 or 405 still means server is reachable → online
+              if (resp && resp.status < 500) {
+                reachable = true;
+                break;
+              }
+            } catch (e) {
+              // Try next probe URL
+            }
           }
-        } catch (e) {
-          this.setOfflineState(true);
+          this.setOfflineState(!reachable);
         } finally {
           this.probeInFlight = false;
         }
