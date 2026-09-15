@@ -38,10 +38,15 @@ async def handler(scope, receive, send):
         params = parse_qs(qs_raw)
 
         if "__path" in params and params["__path"]:
-            # Vercel rewrite: /api/index.py?__path=health → /api/health
+            # Vercel rewrite: /api/foo → /api/index.py?__path=foo
             subpath = params["__path"][0].strip().lstrip("/")
-            scope["path"] = f"/api/{subpath}"
-            scope["raw_path"] = f"/api/{subpath}".encode("utf-8")
+            if not subpath:
+                scope["path"] = "/api/health"
+            elif subpath.startswith("api/"):
+                scope["path"] = f"/{subpath}"
+            else:
+                scope["path"] = f"/api/{subpath}"
+            scope["raw_path"] = scope["path"].encode("utf-8")
             # Remove __path from query string, keep other params
             filtered_params = {k: v for k, v in params.items() if k != "__path"}
             scope["query_string"] = urlencode(filtered_params, doseq=True).encode("utf-8")
@@ -50,7 +55,7 @@ async def handler(scope, receive, send):
             raw_headers = scope.get("headers", [])
             headers_map = {}
             for k, v in raw_headers:
-                key = k if isinstance(k, bytes) else k.encode()
+                key = (k if isinstance(k, bytes) else k.encode()).lower()
                 headers_map[key] = v
 
             fwd_uri = headers_map.get(b"x-forwarded-uri", b"").decode("utf-8", errors="ignore").split("?")[0]
@@ -58,10 +63,12 @@ async def handler(scope, receive, send):
 
             target = fwd_uri or matched
             if target and target not in ("/api/index.py", "/api/index", "/index.py", "/index"):
-                final_path = target if target.startswith("/api") else f"/api{target}"
+                final_path = target
             else:
-                raw = scope.get("path", "")
-                final_path = f"/api{raw}" if not raw.startswith("/api") else raw
+                final_path = scope.get("path", "")
+
+            if final_path in ("/api/index.py", "/api/index", "/index.py", "/index", ""):
+                final_path = "/api/health"
             
             scope["path"] = final_path
             scope["raw_path"] = final_path.encode("utf-8")

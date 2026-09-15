@@ -13032,41 +13032,39 @@ html.light-theme .mobile-nav-item.active span {
       async probeConnectivity() {
         if (this.manualOfflineOverride) return;
         if (this.probeInFlight) return;
-
-        // If browser reports offline, set offline immediately
+        // Primary: trust browser navigator.onLine first
         if (!navigator.onLine) {
           this.setOfflineState(true);
           return;
         }
-
-        // On local file protocol (offline app / standalone HTML), trust navigator.onLine
-        if (typeof window !== 'undefined' && window.location.protocol === 'file:') {
-          this.setOfflineState(!navigator.onLine);
-          return;
-        }
-
         this.probeInFlight = true;
         try {
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 4000);
-          const resp = await fetch('/static/manifest.json?probe=' + Date.now(), {
-            method: 'GET',
-            cache: 'no-cache',
-            signal: controller.signal
-          });
-          clearTimeout(timeoutId);
-          if (resp && (resp.ok || resp.status < 500)) {
-            this.setOfflineState(false);
-          } else if (!navigator.onLine) {
-            this.setOfflineState(true);
+          // Probe the backend status endpoint — works both locally and on Vercel
+          const probeUrls = [
+            '/api/vayuai/status',
+            '/static/manifest.json?probe=' + Date.now()
+          ];
+          let reachable = false;
+          for (const url of probeUrls) {
+            try {
+              const controller = new AbortController();
+              const timeoutId = setTimeout(() => controller.abort(), 3000);
+              const resp = await fetch(url, {
+                method: 'HEAD',
+                cache: 'no-store',
+                signal: controller.signal
+              });
+              clearTimeout(timeoutId);
+              // 404 or 405 still means server is reachable → online
+              if (resp && resp.status < 500) {
+                reachable = true;
+                break;
+              }
+            } catch (e) {
+              // Try next probe URL
+            }
           }
-        } catch (e) {
-          // If fetch fails but device is reported online by browser, do not falsely force offline
-          if (!navigator.onLine) {
-            this.setOfflineState(true);
-          } else {
-            this.setOfflineState(false);
-          }
+          this.setOfflineState(!reachable);
         } finally {
           this.probeInFlight = false;
         }
@@ -13153,9 +13151,12 @@ html.light-theme .mobile-nav-item.active span {
       initNetworkListeners() {
         const updateNet = () => {
           if (!this.manualOfflineOverride) {
-            this.isOffline = !navigator.onLine;
-            this.updateNetworkStatus();
-            if (navigator.onLine) {
+            if (!navigator.onLine) {
+              // Browser says offline → set offline immediately
+              this.setOfflineState(true);
+            } else {
+              // Browser says online → trust it immediately, then confirm with probe
+              this.setOfflineState(false);
               this.probeConnectivity();
             }
           }
@@ -13174,7 +13175,7 @@ html.light-theme .mobile-nav-item.active span {
       },
 
       updateNetworkStatus() {
-        const isOff = !navigator.onLine || this.manualOfflineOverride;
+        const isOff = this.isOffline || this.manualOfflineOverride;
         const statusEl = document.getElementById('vayuai-engine-status');
         const threadBadge = document.getElementById('vayuai-thread-badge');
         const threadSubtext = document.getElementById('vayuai-thread-subtext');
@@ -13578,7 +13579,7 @@ html.light-theme .mobile-nav-item.active span {
           }
 
           if (modalStatus) {
-            const isOff = !navigator.onLine || this.manualOfflineOverride;
+            const isOff = this.isOffline || this.manualOfflineOverride;
             const lang = (typeof VayuSettings !== 'undefined' && VayuSettings.language) ? VayuSettings.language : 'en';
             if (isOff || (err && err.error === 'network')) {
               modalStatus.innerText = lang === 'en' ? "⚡ Offline: Speech requires net. Tap any question below:" : "⚡ Offline Mode: Voice ke liye net chahiye. Neeche kisi sawaal par tap karein:";
@@ -13622,7 +13623,7 @@ html.light-theme .mobile-nav-item.active span {
 
         const currentLang = (typeof VayuSettings !== 'undefined' && VayuSettings.language) ? VayuSettings.language : (localStorage.getItem('vayu_language') || 'en');
         const isEn = currentLang === 'en';
-        const isCurrentlyOffline = !navigator.onLine || this.manualOfflineOverride;
+        const isCurrentlyOffline = this.isOffline || this.manualOfflineOverride;
 
         // Transition into Chat Thread View
         if (hubView) hubView.classList.add('hidden');
@@ -13773,14 +13774,18 @@ html.light-theme .mobile-nav-item.active span {
           } catch (err) {
             console.warn('VayuAI cloud fetch error or timeout:', err);
             if (!navigator.onLine) {
-              this.isOffline = true;
-              this.updateNetworkStatus();
+              this.setOfflineState(true);
             }
           }
 
           if (!responseData) {
-            const reallyOffline = !navigator.onLine || this.manualOfflineOverride;
-            responseData = this.computeDynamicAnswer(query, reallyOffline);
+            const reallyOffline = this.isOffline || !navigator.onLine;
+            if (reallyOffline) {
+              this.isOffline = true;
+              this.updateNetworkStatus();
+            }
+            // Pass reallyOffline so grounded synthesis shows Online badge when net is present
+            responseData = this.computeDynamicAnswer(query, reallyOffline ? true : false);
           }
         }
 
@@ -13859,7 +13864,7 @@ html.light-theme .mobile-nav-item.active span {
         history.scrollTop = history.scrollHeight;
       },
 
-      computeDynamicAnswer(query, isOffline = true) {
+      computeDynamicAnswer(query, isOffline = false) {
         const rawQ = query.toLowerCase();
         const q = this.normalizeQuery(query);
         const forecast = (typeof VayuForecastEngine !== 'undefined' && VayuForecastEngine.forecastArray && VayuForecastEngine.forecastArray.length > 0)

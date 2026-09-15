@@ -13779,8 +13779,13 @@ html.light-theme .mobile-nav-item.active span {
           }
 
           if (!responseData) {
-            const reallyOffline = this.isOffline || this.manualOfflineOverride;
-            responseData = this.computeDynamicAnswer(query, reallyOffline);
+            const reallyOffline = this.isOffline || !navigator.onLine;
+            if (reallyOffline) {
+              this.isOffline = true;
+              this.updateNetworkStatus();
+            }
+            // Pass reallyOffline so grounded synthesis shows Online badge when net is present
+            responseData = this.computeDynamicAnswer(query, reallyOffline ? true : false);
           }
         }
 
