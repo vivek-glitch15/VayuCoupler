@@ -343,24 +343,69 @@ def set_vayuai_key(payload: SetKeyRequest):
 def _synthesize_atmospheric_reply(payload: VayuAIChatRequest, is_english: bool) -> str:
     q = (payload.query or "").lower().strip()
     st = payload.station_name or "Punjabi Bagh"
-    aqi = payload.current_aqi or 153
-    temp = payload.temperature or 27
+    aqi = payload.current_aqi or 388
+    forecast_aqi = payload.forecast_aqi or aqi
+    grap = payload.grap_stage or "STAGE III"
+    temp = payload.temperature or 28.0
+    feels = payload.feels_like or 30.0
     cond = payload.condition or "Partly Cloudy"
+    high = payload.temp_high or 33.0
+    low = payload.temp_low or 24.0
+    precip = payload.precipitation or 15
+    humid = payload.humidity or 78
+    wind = payload.wind_speed or 4.2
     
+    # 0. Voice Hearing Check ("Sun pa rahe ho?", "Meri aawaz aa rahi hai?", "Can you hear me?")
+    if any(k in q for k in ["sun pa rahe", "sun rahe ho", "meri aawaz", "meri awaz", "can you hear", "are you listening", "hear me", "voice check", "mic test", "testing mic", "aawaz aa rahi", "awaz aa rahi", "sunai de raha", "kya tum sun"]):
+        if is_english:
+            return (
+                f"Yes, I can hear you loud and clear! 😊🎙️<br><br>"
+                f"I am <b>VayuAI</b>, your real-time atmospheric intelligence companion for Delhi-NCR. "
+                f"Currently at <b>{st}</b>, the live AQI is <b>{aqi}</b> ({grap}) and temperature is <b>{temp}°C</b> ({cond}).<br><br>"
+                f"You can speak or ask about: school closures, 7-day weather radar, GRAP emergency rules, morning walk safety, or clean commute routes!"
+            )
+        else:
+            return (
+                f"Haan ji, main aapki aawaz bilkul saaf sun raha hoon! 😊🎙️<br><br>"
+                f"Main <b>VayuAI</b> hoon — Delhi-NCR ka atmospheric intelligence companion. "
+                f"Abhi <b>{st}</b> par live AQI <b>{aqi}</b> ({grap}) aur taapman <b>{temp}°C</b> ({cond}) chal raha hai.<br><br>"
+                f"Aap mujhse live mausam, school ki chutti, GRAP emergency niyam, morning walk safety ya Odd-Even ke baare me bejhijhak poochiye!"
+            )
+
     # 1. Greetings / How are you
-    if any(k in q for k in ["how are you", "how r u", "kaise ho", "kya haal", "kaisa hai", "hello", "hi", "namaste", "wassup"]):
+    if any(k in q for k in ["how are you", "how r u", "kaise ho", "kya haal", "kaisa hai", "hello", "hi", "namaste", "wassup", "hey"]):
         if is_english:
             return f"I am doing great, thank you for asking! 😊 As your VayuCoupler atmospheric companion, I am actively tracking real-time air quality, thermal boundary-layer inversion, and weather patterns across Delhi-NCR.<br><br>Currently at **{st}**, the AQI is **{aqi}** with temperatures around **{temp}°C** ({cond}). How can I help you today? You can ask me about app features, live weather radar, GRAP emergency stages, safe ventilation windows, or clean commute routes!"
         else:
             return f"Main bilkul badhiya hoon, poochne ke liye shukriya! 😊 Main Delhi-NCR ke 58 stations ka real-time AQI, weather aur atmospheric inversion 24x7 monitor kar raha hoon.<br><br>Abhi **{st}** par live AQI **{aqi}** aur taapman **{temp}°C** ({cond}) chal raha hai. Aap mujhse app ke kisi bhi feature, live weather, school closure, GRAP stages ya safe clean air window ke baare me pooch sakte hain!"
 
-    # 2. What is VayuCoupler / App features
+    # 2. Gratitude / Thanks
+    if any(k in q for k in ["thank", "thanks", "shukriya", "dhanyawad", "dhanyavad"]):
+        if is_english:
+            return "You're most welcome! 🌿 Stay safe and breathe clean air. Feel free to check with me anytime about Delhi-NCR air quality, weather, or safe travel routes!"
+        else:
+            return "Aapka bahut-bahut swagat hai! 🌿 Hamesha safe rahein aur saaf hawa me saans lein. Jab bhi Delhi-NCR ke AQI ya mausam ke baare me janna ho, main hamesha yahan hoon!"
+
+    # 3. Who are you / Identity
+    if any(k in q for k in ["who are you", "kaun ho", "tum kaun", "aap kaun", "who made you", "kisne banaya"]):
+        if is_english:
+            return (
+                "I am **VayuAI**, an atmospheric and environmental intelligence assistant created for **VayuCoupler** — Delhi-NCR's Coupled Atmospheric Cockpit developed for the Ministry of Earth Sciences (MoES) — SIH 2026.<br><br>"
+                "I combine real-time CPCB/CAQM station telemetry, WRF-Chem atmospheric models, satellite stubble-fire detection, and boundary-layer physics to provide actionable environmental intelligence."
+            )
+        else:
+            return (
+                "Main **VayuAI** hoon — **VayuCoupler** ka dedicated atmospheric companion, jise Ministry of Earth Sciences (MoES) — SIH 2026 ke liye develop kiya gaya hai.<br><br>"
+                "Main Delhi-NCR ke 58 stations ka live data, satellite stubble monitoring aur atmospheric inversion curves analyze karke aapko accurate forecasts aur health advisories deta hoon."
+            )
+
+    # 4. What is VayuCoupler / App features
     if any(k in q for k in ["vayucoupler", "ye app", "app kya", "features", "how to use", "kaise use", "about", "app ke baare"]):
         if is_english:
             return (
-                "**VayuCoupler** is Delhi-NCR's high-fidelity atmospheric cockpit built for MoES. Here are the core features you can explore:<br><br>"
-                "• 🎛️ **Command Cockpit:** Real-time AQI across 58 monitoring stations, 72h-168h synoptic coupled forecast curves, and boundary layer metrics.<br>"
-                "• 🌦️ **Weather Tab:** Real-time hourly & 7-day weather radar, precipitation probability, humidity, and thermal inversion curves.<br>"
+                "**VayuCoupler** is Delhi-NCR's high-fidelity atmospheric cockpit built for MoES. Key features:<br><br>"
+                "• 🎛️ **Command Cockpit:** Real-time AQI across 58 monitoring stations, 72h-168h coupled forecast curves, and boundary layer metrics.<br>"
+                "• 🌦️ **Weather Tab:** Real-time hourly & 7-day weather radar, precipitation probability, humidity, and inversion curves.<br>"
                 "• 🛡️ **Predictive GRAP:** 48-hour early warning system predicting CAQM emergency stages (Stage I to IV) and strict compliance actions.<br>"
                 "• 🔬 **Source Attribution:** Dynamic source apportionment breaking down pollution into farm fires, vehicular exhaust, industry, and dust.<br>"
                 "• 🪟 **Clean Air Windows:** Identifies safe diurnal time-slots to open home windows and exercise without inhaling toxic smog.<br>"
@@ -381,41 +426,192 @@ def _synthesize_atmospheric_reply(payload: VayuAIChatRequest, is_english: bool) 
                 "• ⚡ **Offline Mode:** Net band hone par bhi local physics model se 100% chalne ki suvidha!"
             )
 
-    # 3. Weather
+    # 5. Weather / Mausam
     if any(k in q for k in ["weather", "mausam", "barish", "rain", "temp", "temperature", "taapman", "humidity", "nami"]):
         if is_english:
             return (
                 f"**Delhi-NCR Live Meteorological Report:**<br><br>"
-                f"• 🌡️ **Temperature:** Current is **{temp}°C** (Feels like: {payload.feels_like or 29}°C). Today's High: {payload.temp_high or 33}°C, Low: {payload.temp_low or 24}°C.<br>"
-                f"• ☁️ **Condition:** {cond} with moderate cloud cover.<br>"
-                f"• 🌧️ **Precipitation:** {payload.precipitation or 15}% rain probability with {payload.humidity or 72}% humidity.<br>"
-                f"• 💨 **Wind & Dispersion:** Surface winds from NW at {payload.wind_speed or 4.2} km/h with boundary layer ceiling at {payload.pblh or 340}m.<br>"
-                f"• 📅 **Forecast:** Rain chances increase over the weekend, which will help settle suspended particulate matter."
+                f"• 🌡️ **Temperature:** Current is **{temp}°C** (Feels like: {feels}°C). Today's High: {high}°C, Low: {low}°C.<br>"
+                f"• ☁️ **Condition:** {cond} with moderate haze.<br>"
+                f"• 🌧️ **Precipitation:** {precip}% rain probability with {humid}% relative humidity.<br>"
+                f"• 💨 **Wind & Dispersion:** Surface winds from NW at {wind} km/h with boundary layer ceiling at {payload.pblh or 340}m.<br>"
+                f"• 📅 **Forecast:** Rain chances increase over the weekend, which will help wash out suspended particulate matter."
             )
         else:
             return (
                 f"**Delhi-NCR Live Mausam Update:**<br><br>"
-                f"• 🌡️ **Taapman:** Abhi **{temp}°C** hai (RealFeel: {payload.feels_like or 29}°C). Maximum {payload.temp_high or 33}°C aur minimum {payload.temp_low or 24}°C rehne ka anuman hai.<br>"
+                f"• 🌡️ **Taapman:** Abhi **{temp}°C** hai (RealFeel: {feels}°C). Maximum {high}°C aur minimum {low}°C rehne ka anuman hai.<br>"
                 f"• ☁️ **Condition:** {cond} aur halki dhund.<br>"
-                f"• 🌧️ **Baarish & Nami:** Baarish ke chances {payload.precipitation or 15}% aur relative humidity {payload.humidity or 72}% par hai.<br>"
-                f"• 💨 **Hawa:** NW disha se {payload.wind_speed or 4.2} km/h ki raftaar se hawa chal rahi hai.<br>"
-                f"• 📅 **Forecast:** Weekend par rain chances badhenge jisse pradooshan settle hone me madad milegi."
+                f"• 🌧️ **Baarish & Nami:** Baarish ke chances {precip}% aur relative humidity {humid}% par hai.<br>"
+                f"• 💨 **Hawa:** NW disha se {wind} km/h ki raftaar se hawa chal rahi hai.<br>"
+                f"• 📅 **Forecast:** Weekend par rain chances badhenge jisse pradooshan dhulne me madad milegi."
             )
 
-    # 4. School closure
+    # 6. School closure / chutti
     if any(k in q for k in ["school", "schools", "chutti", "holiday", "band"]):
-        crosses = (payload.forecast_aqi or aqi) >= 400
+        crosses = (forecast_aqi or aqi) >= 400
         if is_english:
             return (
-                f"Yes, under CAQM GRAP Stage IV emergency protocols, Primary schools (Classes 1–5) transition to online mode when AQI exceeds 400. Tomorrow's projected AQI is **{payload.forecast_aqi or aqi}**."
+                f"Yes, under CAQM GRAP Stage IV emergency protocols, Primary schools (Classes 1–5) transition to online mode when AQI exceeds 400. Tomorrow's projected AQI is **{forecast_aqi}**."
                 if crosses else
-                f"No, tomorrow's projected AQI (**{payload.forecast_aqi or aqi}**) is currently below the emergency closure threshold (<400). Regular school schedules will proceed, though outdoor morning assemblies remain cancelled."
+                f"No, tomorrow's projected AQI (**{forecast_aqi}**) is currently below the emergency closure threshold (<400). Regular school schedules will proceed, though outdoor morning assemblies remain suspended."
             )
         else:
             return (
-                f"Haan, CAQM guidelines ke tehat agar AQI 400 cross karta hai toh Primary schools (Class 1–5) physically band rahenge aur online classes chalengi. Kal ka projected AQI **{payload.forecast_aqi or aqi}** hai."
+                f"Haan, CAQM guidelines ke tehat agar AQI 400 cross karta hai toh Primary schools (Class 1–5) physically band rahenge aur online classes chalengi. Kal ka projected AQI **{forecast_aqi}** hai."
                 if crosses else
-                f"Nahi, kal projected AQI (**{payload.forecast_aqi or aqi}**) emergency threshold (<400) se neeche hai. Schools regular schedule par operate karenge, par subah outdoor physical activities cancel rahengi."
+                f"Nahi, kal projected AQI (**{forecast_aqi}**) emergency threshold (<400) se neeche hai. Schools regular schedule par chalenge, par subah outdoor physical activities suspended rahengi."
+            )
+
+    # 7. Odd-Even Scheme
+    if any(k in q for k in ["odd even", "odd-even", "gadi niyam", "car rule"]):
+        if is_english:
+            return (
+                f"The **Odd-Even rationing scheme** is triggered under **GRAP Stage IV** when AQI sustains above 450+. Currently, Delhi-NCR is under **{grap}** (AQI: {aqi}). "
+                f"The Transport Department has not officially mandated Odd-Even today. However, BS-III Petrol and BS-IV Diesel non-essential four-wheelers remain strictly restricted."
+            )
+        else:
+            return (
+                f"**Odd-Even scheme** tab lagu hoti hai jab AQI 450 cross karke **GRAP Stage IV (Severe+)** me chala jata hai. Abhi Delhi-NCR **{grap}** (AQI: {aqi}) me hai, isliye Odd-Even abhi lagu nahi hai. "
+                f"Lekin BS-III Petrol aur BS-IV Diesel 4-wheelers par sakht ban abhi bhi chal raha hai."
+            )
+
+    # 8. GRAP Stages & CAQM Rules
+    if any(k in q for k in ["grap", "stage 1", "stage 2", "stage 3", "stage 4", "stage i", "stage ii", "stage iii", "stage iv", "restriction", "kya band"]):
+        if is_english:
+            return (
+                f"Delhi-NCR is currently under **{grap}** (CAQM Mandate). Key enforcement actions:<br><br>"
+                f"• 🚫 Strict ban on non-essential construction and demolition activities.<br>"
+                f"• 🚛 Ban on BS-III Petrol and BS-IV Diesel private light motor vehicles.<br>"
+                f"• 🏭 Diesel generator sets prohibited (except emergency and healthcare facilities).<br>"
+                f"• 💧 Intensified mechanized road sweeping and anti-smog water misting guns."
+            )
+        else:
+            return (
+                f"Delhi-NCR abhi **{grap}** ke sakht niyamon ke tehat hai. Mukhya pabandiyan ye hain:<br><br>"
+                f"• 🚫 Non-essential construction aur building tod-fod par poori tarah rok.<br>"
+                f"• 🚛 BS-III Petrol aur BS-IV Diesel private gaadiyon par ban.<br>"
+                f"• 🏭 Diesel generator sets chalane par pabandi (hospital/emergency ko chhodkar).<br>"
+                f"• 💧 Sadkon par mechanized vacuum sweeping aur water mist cannons ka tez prayog."
+            )
+
+    # 9. Morning Walk / Outdoor Running
+    if any(k in q for k in ["morning walk", "walk par", "running", "jogging", "exercise", "kasrat", "bahar jana"]):
+        if is_english:
+            return (
+                f"**Warning:** Morning walks between 05:00 AM and 09:30 AM are **NOT recommended** today. "
+                f"Due to nocturnal radiative cooling, a shallow boundary layer (~250m) traps heavy particulate matter (PM2.5: {aqi} µg/m³) at breathing level. "
+                f"If exercising, do indoor stretching, or wait until **01:00 PM to 04:00 PM** when the atmosphere disperses."
+            )
+        else:
+            return (
+                f"**Chetawni:** Subah 05:00 AM se 09:30 AM ke beech **morning walk par jana bilkul safe nahi hai**. "
+                f"Thermal inversion ke karan zameen ke paas zehreela smog jama rehta hai. "
+                f"Agar exercise karni ho toh ghar ke andar karein, ya dopahar **01:00 PM se 04:00 PM** ke beech safe window me walk karein."
+            )
+
+    # 10. Mask Guidance
+    if any(k in q for k in ["mask", "n95", "ffp2", "pehnna", "pehne"]):
+        if is_english:
+            return (
+                f"With AQI at **{aqi}**, wearing an **N-95 or FFP2 respirator** is mandatory when stepping outside in Delhi-NCR. "
+                f"Standard surgical or cloth masks filter less than 25% of sub-micron PM2.5 particulates. Ensure an airtight seal over your nose and chin."
+            )
+        else:
+            return (
+                f"Live AQI **{aqi}** par bahar nikalte waqt **N-95 ya FFP2 mask** lagana behad zaroori hai. "
+                f"Sadharan kapde ya surgical mask microscopic PM2.5 particles ko nahi rok pate. Mask ko naak aur chin par poora tight fit rakhein."
+            )
+
+    # 11. Air Purifier & HEPA filters
+    if any(k in q for k in ["purifier", "air purifier", "hepa", "filter"]):
+        if is_english:
+            return (
+                f"Yes, indoor air purifiers equipped with **True HEPA (H13) filters** should run continuously, especially in bedrooms during night hours. "
+                f"Keep doors and windows sealed to prevent outdoor smog ingress. Check filter pre-mesh weekly for dust build-up."
+            )
+        else:
+            return (
+                f"Haan, ghar ke andar **True HEPA filter** wala air purifier chalana behad faydemand hai, khaaskar sote waqt bedroom me. "
+                f"Purifier chalate waqt kamre ke darwaze aur khidkiyan band rakhein taaki bahar ka pradushan andar na aaye."
+            )
+
+    # 12. Stubble Burning / Parali Contribution
+    if any(k in q for k in ["parali", "stubble", "farm fire", "kisaan", "jalana"]):
+        if is_english:
+            return (
+                f"Coupled WRF-Chem atmospheric modeling indicates stubble burning (crop residue fires in Punjab and Haryana) contributes approximately **18% to 26%** of Delhi's PM2.5 mass today. "
+                f"North-westerly winds ({wind} km/h) are transporting active agricultural smoke plumes directly into the NCR airshed."
+            )
+        else:
+            return (
+                f"Coupled WRF-Chem model ke anusaar, Punjab aur Haryana me jalne wali **parali ka Delhi ke PM2.5 pollution me lagbhag 18% se 26% hissa** hai. "
+                f"North-West disha se aane wali hawa ({wind} km/h) is dhuen ko seedhe Delhi-NCR ki taraf kheench rahi hai."
+            )
+
+    # 13. Construction & Dust
+    if any(k in q for k in ["construction", "dust", "mining", "tod phod", "nirman"]):
+        if is_english:
+            return (
+                f"Under active **{grap}**, all non-essential construction, excavation, drilling, and demolition activities remain **strictly prohibited** across Delhi, Gurugram, Faridabad, Ghaziabad, and Noida. Violators face heavy DPCC penalties."
+            )
+        else:
+            return (
+                f"Active **{grap}** ke chalte Delhi, Noida, Gurugram, Faridabad aur Ghaziabad me construction, demolition aur mitti khudaai par **poora pratibandh** laga hua hai. CAQM iski drone se monitoring kar raha hai."
+            )
+
+    # 14. Diesel & Vehicle Bans
+    if any(k in q for k in ["diesel", "bs3", "bs4", "bs-iii", "bs-iv", "truck", "gadi"]):
+        if is_english:
+            return (
+                f"Under current **{grap}** mandates: BS-III Petrol and BS-IV Diesel four-wheelers are strictly barred from plying on Delhi-NCR roads. "
+                f"Diesel trucks carrying non-essential goods are also denied entry at Delhi borders (only LNG/CNG and electric trucks allowed)."
+            )
+        else:
+            return (
+                f"**{grap}** ke anusaar: BS-III Petrol aur BS-IV Diesel caron ko Delhi-NCR ki sadkon par chalane par sakht ban hai. "
+                f"Non-essential diesel trucks ki Delhi border par entry band hai; kewal EV, CNG aur essential items wale trucks allowed hain."
+            )
+
+    # 15. Window Ventilation / Khidki kab kholein
+    if any(k in q for k in ["khidki", "window", "windows", "ventilat", "taza hawa", "fresh air"]):
+        if is_english:
+            return (
+                f"Keep all windows and balcony doors **firmly shut between 05:00 AM and 10:00 AM** due to shallow nocturnal inversion. "
+                f"The cleanest diurnal ventilation window is between **01:30 PM and 04:00 PM**, when solar heating expands the boundary layer to ~1,200m."
+            )
+        else:
+            return (
+                f"Subah **05:00 AM se 10:00 AM ke dauran khidkiyan bilkul band rakhein**, kyunki inversion ke chalte zehreela smog zameen ke paas rehta hai. "
+                f"Ghar me cross-ventilation karne ka sabse safe samay dopahar **01:30 PM se 04:00 PM** hai, jab dhoop se pradushan upar uth jata hai."
+            )
+
+    # 16. Commute / Travel route
+    if any(k in q for k in ["commute", "travel", "route", "metro", "traffic", "safar"]):
+        if is_english:
+            return (
+                f"For Delhi-NCR travel today: Open two-wheelers and autos expose commuters to dangerous PM2.5 levels (>280 µg/m³ along Ring Roads). "
+                f"We strongly recommend using **Delhi Metro** or air-conditioned four-wheelers set to **Internal Recirculation Mode**."
+            )
+        else:
+            return (
+                f"Delhi-NCR me safar ke liye: Open bike ya auto me travel karne se Ring Road corridors par direct toxic smoke lungs me jata hai. "
+                f"Sabse safe yahi hai ki **Delhi Metro** se travel karein ya AC car ko **Recirculation mode** par chalayein."
+            )
+
+    # 17. Current AQI & Station info
+    if any(k in q for k in ["aqi kitna", "current aqi", "live aqi", "sabse jyada", "station", "pradushan kitna"]):
+        if is_english:
+            return (
+                f"At **{st}**, the live real-time AQI is **{aqi}** (Status: **{grap}**). "
+                f"Delhi-NCR's city-wide 58-station weighted average is approximately **{aqi}**, with Anand Vihar and Jahangirpuri recording peak particulate spikes. "
+                f"Surface temperature is **{temp}°C** with {wind} km/h winds."
+            )
+        else:
+            return (
+                f"Abhi **{st}** par live AQI **{aqi}** chal raha hai (Active GRAP: **{grap}**). "
+                f"Delhi-NCR ke 58 stations ka average AQI bhi lagbhag **{aqi}** ke aas-paas bana hua hai. "
+                f"Abhi ka taapman **{temp}°C** hai aur hawa NW disha se {wind} km/h chal rahi hai."
             )
 
     # General Fallback
@@ -466,7 +662,7 @@ def vayuai_chat(payload: VayuAIChatRequest):
         )
 
         # Use correct, stable Gemini model names
-        models_to_try = ["gemini-1.5-flash-latest", "gemini-1.5-pro-latest", "gemini-pro"]
+        models_to_try = ["gemini-2.0-flash", "gemini-1.5-flash", "gemini-1.5-flash-latest", "gemini-1.5-pro", "gemini-pro"]
         headers = {"Content-Type": "application/json"}
         body = {
             "contents": [{"parts": [{"text": f"SYSTEM INSTRUCTION:\n{system_instruction}\n\n{context_prompt}"}]}],

@@ -6548,8 +6548,14 @@ html.light-theme .mobile-nav-item.active span {
             🎙️
           </div>
           <div>
-            <h3 class="text-base font-bold text-[#EEF0EC] font-space leading-tight" id="vayuai-voice-modal-title">VayuAI Voice Assistant</h3>
-            <p class="text-[11px] text-[#8C948B] font-mono" id="vayuai-voice-modal-sub">Speak or tap any query below for instant answers</p>
+            <div class="flex items-center gap-2">
+              <h3 class="text-base font-bold text-[#EEF0EC] font-space leading-tight" id="vayuai-voice-modal-title">VayuAI Voice Assistant</h3>
+              <div class="inline-flex items-center gap-1">
+                <button type="button" id="vayuai-voice-lang-hi" onclick="VayuAIAssistant.setSpeechLanguage('hi-IN')" class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#7FD4FF]/20 text-[#7FD4FF] border border-[#7FD4FF]/40">🇮🇳 Hinglish</button>
+                <button type="button" id="vayuai-voice-lang-en" onclick="VayuAIAssistant.setSpeechLanguage('en-IN')" class="px-2 py-0.5 rounded-full text-[10px] font-mono text-[#8C948B] border border-[#262A26] hover:text-[#EEF0EC]">🇬🇧 English</button>
+              </div>
+            </div>
+            <p class="text-[11px] text-[#8C948B] font-mono mt-0.5" id="vayuai-voice-modal-sub">Speak or tap any query below for instant answers</p>
           </div>
         </div>
         <button onclick="closeVayuAIVoiceModal()" class="text-[#8C948B] hover:text-[#EEF0EC] p-1.5 rounded-lg hover:bg-[#1c1f1c] text-sm transition">
@@ -6559,7 +6565,7 @@ html.light-theme .mobile-nav-item.active span {
 
       <!-- Center Voice Animation & Live Transcript -->
       <div class="flex flex-col items-center justify-center py-3 text-center gap-2">
-        <div id="vayuai-voice-anim-orb" class="w-20 h-20 rounded-full bg-gradient-to-tr from-[#7FD4FF]/20 to-[#6fe2a3]/30 border-2 border-[#7FD4FF] flex items-center justify-center relative cursor-pointer active:scale-95 transition-all shadow-lg" onclick="VayuAIAssistant.toggleSpeech()">
+        <div id="vayuai-voice-anim-orb" class="w-20 h-20 rounded-full bg-gradient-to-tr from-[#7FD4FF]/20 to-[#6fe2a3]/30 border-2 border-[#7FD4FF] flex items-center justify-center relative cursor-pointer active:scale-95 transition-all shadow-lg" onclick="VayuAIAssistant.toggleSpeech()" title="Tap to start/stop listening">
           <span id="vayuai-voice-pulse-1" class="absolute inset-0 rounded-full border border-[#7FD4FF] animate-ping opacity-60"></span>
           <svg class="w-9 h-9 text-[#7FD4FF] svg-icon-line relative z-10" viewBox="0 0 24 24" stroke="currentColor">
             <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
@@ -6574,8 +6580,13 @@ html.light-theme .mobile-nav-item.active span {
         </div>
         
         <!-- Live Transcript Bubble -->
-        <div id="vayuai-voice-transcript-box" class="w-full p-3 rounded-xl bg-[#0A0B0A] border border-[#262A26] text-xs text-[#EEF0EC] min-h-[48px] flex items-center justify-center italic leading-relaxed">
+        <div id="vayuai-voice-transcript-box" class="w-full p-3 rounded-xl bg-[#0A0B0A] border border-[#262A26] text-xs text-[#EEF0EC] min-h-[48px] flex items-center justify-center italic leading-relaxed text-center">
           "Boliye (e.g. Kal school band rahenge kya?)"
+        </div>
+        <!-- Optional Typing Fallback if in noisy area or mic blocked -->
+        <div class="w-full flex items-center gap-1.5 mt-1">
+          <input type="text" id="vayuai-voice-fallback-input" placeholder="Ya yahan sawaal likhein..." onkeydown="if(event.key==='Enter') submitVayuAIVoiceTranscript()" class="flex-1 px-3 py-1.5 rounded-xl bg-[#0A0B0A] border border-[#262A26] text-xs text-[#EEF0EC] placeholder-[#8C948B] focus:border-[#7FD4FF] focus:outline-none font-sans">
+          <button type="button" onclick="submitVayuAIVoiceTranscript()" class="px-3 py-1.5 rounded-xl bg-[#191C19] hover:bg-[#262A26] text-[#7FD4FF] text-xs font-mono border border-[#262A26]">Send</button>
         </div>
       </div>
 
@@ -13475,64 +13486,137 @@ html.light-theme .mobile-nav-item.active span {
 
         // Update speech recognizer language
         if (this.speechRecognizer) {
-          this.speechRecognizer.lang = lang === 'en' ? 'en-US' : 'hi-IN';
+          const sLang = lang === 'en' ? 'en-IN' : 'hi-IN';
+          this.speechLang = sLang;
+          this.speechRecognizer.lang = sLang;
+        }
+      },
+
+      speechLang: 'hi-IN',
+      speechRecognizer: null,
+      isListening: false,
+      isListeningSession: false,
+      currentSpeechTranscript: '',
+      speechSilenceTimer: null,
+
+      setSpeechLanguage(langCode) {
+        this.speechLang = langCode;
+        const btnHi = document.getElementById('vayuai-voice-lang-hi');
+        const btnEn = document.getElementById('vayuai-voice-lang-en');
+        if (btnHi && btnEn) {
+          if (langCode.startsWith('hi')) {
+            btnHi.className = "px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#7FD4FF]/20 text-[#7FD4FF] border border-[#7FD4FF]/40";
+            btnEn.className = "px-2 py-0.5 rounded-full text-[10px] font-mono text-[#8C948B] border border-[#262A26] hover:text-[#EEF0EC]";
+          } else {
+            btnEn.className = "px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#7FD4FF]/20 text-[#7FD4FF] border border-[#7FD4FF]/40";
+            btnHi.className = "px-2 py-0.5 rounded-full text-[10px] font-mono text-[#8C948B] border border-[#262A26] hover:text-[#EEF0EC]";
+          }
+        }
+        if (this.speechRecognizer) {
+          this.speechRecognizer.lang = langCode;
+          if (this.isListening) {
+            try { this.speechRecognizer.stop(); } catch(e){}
+            setTimeout(() => {
+              try { this.speechRecognizer.start(); } catch(e){}
+            }, 250);
+          }
         }
       },
 
       initSpeechRecognition() {
         const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (!SpeechRec) {
-          console.log("Speech recognition not supported on this browser.");
+          console.log("Web Speech recognition not natively available in this browser.");
           return;
         }
 
         const recognizer = new SpeechRec();
-        recognizer.continuous = false;
+        recognizer.continuous = true;
         recognizer.interimResults = true;
-        const currentLang = (typeof VayuSettings !== 'undefined' && VayuSettings.language) ? VayuSettings.language : (localStorage.getItem('vayu_language') || 'en');
-        recognizer.lang = currentLang === 'en' ? 'en-US' : 'hi-IN';
+        recognizer.maxAlternatives = 1;
+        const currentLang = (typeof VayuSettings !== 'undefined' && VayuSettings.language) ? VayuSettings.language : (localStorage.getItem('vayu_language') || 'hinglish');
+        this.speechLang = (currentLang === 'en') ? 'en-IN' : 'hi-IN';
+        recognizer.lang = this.speechLang;
 
         recognizer.onstart = () => {
           this.isListening = true;
+          this.isListeningSession = true;
+          this.currentSpeechTranscript = '';
           const container = document.getElementById('vayuai-mic-container');
           const feedback = document.getElementById('vayuai-mic-feedback');
           const heroOrb = document.getElementById('vayuai-hero-orb');
           const pill = document.getElementById('orb-status-pill');
           const modalStatus = document.getElementById('vayuai-voice-status-text');
           const pulse = document.getElementById('vayuai-voice-pulse-1');
-          const lang = (typeof VayuSettings !== 'undefined' && VayuSettings.language) ? VayuSettings.language : 'en';
+          const isEn = this.speechLang.startsWith('en');
 
           if (container) container.classList.add('mic-listening');
           if (feedback) feedback.classList.remove('hidden');
           if (heroOrb) heroOrb.classList.add('orb-listening');
           if (pulse) pulse.classList.remove('hidden');
           if (pill) {
-            pill.innerHTML = `<span class="w-2 h-2 rounded-full bg-[#f2966e] animate-ping"></span><span class="text-[#f2966e] font-bold">🎙️ ${lang === 'en' ? 'Listening, please speak...' : 'Boliye, sun raha hoon...'}</span>`;
+            pill.innerHTML = `<span class="w-2 h-2 rounded-full bg-[#f2966e] animate-ping"></span><span class="text-[#f2966e] font-bold">🎙️ ${isEn ? 'Listening, please speak...' : 'Boliye, sun raha hoon...'}</span>`;
           }
           if (modalStatus) {
-            modalStatus.innerText = lang === 'en' ? "🎙️ Listening... Speak your question" : "🎙️ Sun raha hoon... Boliye apna sawaal";
-            modalStatus.className = "text-xs font-bold text-[#7FD4FF] font-mono mt-1";
+            modalStatus.innerText = isEn ? "🎙️ Listening... Speak your question clearly" : "🎙️ Sun raha hoon... Boliye apna sawaal";
+            modalStatus.className = "text-xs font-bold text-[#7FD4FF] font-mono mt-1 animate-pulse";
           }
         };
 
         recognizer.onresult = (e) => {
-          let transcript = '';
+          let interimTranscript = '';
           for (let i = e.resultIndex; i < e.results.length; ++i) {
-            transcript += e.results[i][0].transcript;
+            const transcriptChunk = e.results[i][0].transcript;
+            if (e.results[i].isFinal) {
+              this.currentSpeechTranscript += ' ' + transcriptChunk;
+            } else {
+              interimTranscript += transcriptChunk;
+            }
           }
+          const displayTranscript = (this.currentSpeechTranscript + ' ' + interimTranscript).trim();
+          if (!displayTranscript) return;
+
           const transcriptEl = document.getElementById('vayuai-live-speech-transcript');
           const inputEl = document.getElementById('vayuai-chat-input');
           const modalBox = document.getElementById('vayuai-voice-transcript-box');
-          if (transcriptEl) transcriptEl.innerText = transcript;
-          if (inputEl) inputEl.value = transcript;
+          const modalStatus = document.getElementById('vayuai-voice-status-text');
+
+          if (transcriptEl) transcriptEl.innerText = displayTranscript;
+          if (inputEl) inputEl.value = displayTranscript;
           if (modalBox) {
-            modalBox.innerText = `"${transcript}"`;
+            modalBox.innerText = `"${displayTranscript}"`;
             modalBox.classList.remove('italic');
+            modalBox.classList.add('text-[#7FD4FF]', 'font-semibold');
           }
+          if (modalStatus) {
+            modalStatus.innerText = "🟢 " + (this.speechLang.startsWith('en') ? "Capturing speech..." : "Aawaz suni ja rahi hai...");
+            modalStatus.className = "text-xs font-bold text-[#52C41A] font-mono mt-1";
+          }
+
+          // Debounced auto-submit after user stops speaking for 1.3s
+          if (this.speechSilenceTimer) clearTimeout(this.speechSilenceTimer);
+          this.speechSilenceTimer = setTimeout(() => {
+            if (this.isListeningSession && displayTranscript.length > 2) {
+              if (typeof closeVayuAIVoiceModal === 'function') closeVayuAIVoiceModal();
+              this.askQuestion(displayTranscript, true);
+              this.currentSpeechTranscript = '';
+              if (inputEl) inputEl.value = '';
+            }
+          }, 1400);
         };
 
         recognizer.onend = () => {
           this.isListening = false;
+          // If session is still active (e.g. user hasn't closed modal or submitted), restart listening so mic doesn't die
+          const modal = document.getElementById('vayuai-voice-modal');
+          const modalIsOpen = modal && !modal.classList.contains('hidden');
+          if (this.isListeningSession && modalIsOpen) {
+            try {
+              recognizer.start();
+              return;
+            } catch(e) {}
+          }
+
           const container = document.getElementById('vayuai-mic-container');
           const feedback = document.getElementById('vayuai-mic-feedback');
           const heroOrb = document.getElementById('vayuai-hero-orb');
@@ -13546,46 +13630,54 @@ html.light-theme .mobile-nav-item.active span {
             pill.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-[#6fe2a3] animate-ping"></span><span>Tap icon to speak / Activate VayuAI</span>`;
           }
 
+          // If transcript was captured, submit it
           const inputEl = document.getElementById('vayuai-chat-input');
           const modalBox = document.getElementById('vayuai-voice-transcript-box');
-          let capturedText = (inputEl && inputEl.value.trim()) ? inputEl.value.trim() : '';
-          if (!capturedText && modalBox && !modalBox.classList.contains('italic')) {
-            capturedText = modalBox.innerText.replace(/^["']|["']$/g, '').trim();
+          let captured = (this.currentSpeechTranscript || (inputEl && inputEl.value) || '').trim();
+          if (!captured && modalBox && !modalBox.classList.contains('italic')) {
+            captured = modalBox.innerText.replace(/^["']|["']$/g, '').trim();
           }
 
-          if (capturedText && !capturedText.toLowerCase().includes('sun raha hoon') && !capturedText.toLowerCase().includes('listening')) {
+          if (captured && !captured.toLowerCase().includes('sun raha hoon') && !captured.toLowerCase().includes('listening') && !captured.toLowerCase().includes('boliye')) {
             if (typeof closeVayuAIVoiceModal === 'function') closeVayuAIVoiceModal();
-            this.askQuestion(capturedText);
+            this.askQuestion(captured, true);
+            this.currentSpeechTranscript = '';
             if (inputEl) inputEl.value = '';
           }
         };
 
         recognizer.onerror = (err) => {
-          console.warn("Speech recognition error:", err);
-          this.isListening = false;
-          const container = document.getElementById('vayuai-mic-container');
-          const feedback = document.getElementById('vayuai-mic-feedback');
-          const heroOrb = document.getElementById('vayuai-hero-orb');
-          const pill = document.getElementById('orb-status-pill');
-          const pulse = document.getElementById('vayuai-voice-pulse-1');
+          console.warn("Speech recognition warning/error:", err.error || err);
           const modalStatus = document.getElementById('vayuai-voice-status-text');
-
-          if (container) container.classList.remove('mic-listening');
-          if (feedback) feedback.classList.add('hidden');
-          if (heroOrb) heroOrb.classList.remove('orb-listening');
-          if (pulse) pulse.classList.add('hidden');
-          if (pill) {
-            pill.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-[#6fe2a3] animate-ping"></span><span>Tap icon to speak / Activate VayuAI</span>`;
+          
+          if (err && err.error === 'no-speech') {
+            // Keep listening, do not abort
+            if (modalStatus && this.isListeningSession) {
+              const isEn = this.speechLang.startsWith('en');
+              modalStatus.innerText = isEn ? "🎙️ Still listening... Please speak" : "🎙️ Sun raha hoon... Boliye apna sawaal";
+              modalStatus.className = "text-xs font-bold text-[#7FD4FF] font-mono mt-1";
+            }
+            return;
           }
 
+          if (err && err.error === 'not-allowed') {
+            this.isListening = false;
+            this.isListeningSession = false;
+            if (modalStatus) {
+              modalStatus.innerText = "⚠️ Mic permission blocked. Click 'Allow' in address bar or type below:";
+              modalStatus.className = "text-xs font-bold text-[#FF4D4F] font-mono mt-1";
+            }
+            return;
+          }
+
+          // For other errors, keep user informed
           if (modalStatus) {
             const isOff = this.isOffline || this.manualOfflineOverride;
-            const lang = (typeof VayuSettings !== 'undefined' && VayuSettings.language) ? VayuSettings.language : 'en';
             if (isOff || (err && err.error === 'network')) {
-              modalStatus.innerText = lang === 'en' ? "⚡ Offline: Speech requires net. Tap any question below:" : "⚡ Offline Mode: Voice ke liye net chahiye. Neeche kisi sawaal par tap karein:";
+              modalStatus.innerText = "⚡ Offline: Speech requires net. Type or tap any question below:";
               modalStatus.className = "text-xs font-bold text-[#FFA940] font-mono mt-1";
             } else {
-              modalStatus.innerText = lang === 'en' ? "Tap any question below for instant answer:" : "Neeche kisi bhi sawaal par tap karke instant answer payein:";
+              modalStatus.innerText = "Boliye ya neeche kisi sawaal par tap karein:";
               modalStatus.className = "text-xs font-bold text-[#8C948B] font-mono mt-1";
             }
           }
@@ -13596,6 +13688,9 @@ html.light-theme .mobile-nav-item.active span {
 
       toggleSpeech() {
         if (!this.speechRecognizer) {
+          this.initSpeechRecognition();
+        }
+        if (!this.speechRecognizer) {
           if (typeof openVayuAIVoiceModal === 'function') {
             openVayuAIVoiceModal();
           } else {
@@ -13605,17 +13700,77 @@ html.light-theme .mobile-nav-item.active span {
         }
 
         if (this.isListening) {
-          this.speechRecognizer.stop();
+          this.isListeningSession = false;
+          try { this.speechRecognizer.stop(); } catch (e) {}
         } else {
+          this.isListeningSession = true;
           try {
             this.speechRecognizer.start();
           } catch (e) {
-            console.warn("Speech start skipped:", e);
+            console.warn("Speech start note:", e);
           }
         }
       },
 
-      async askQuestion(query) {
+      speakText(rawText, lang = 'hi') {
+        if (!('speechSynthesis' in window)) return;
+        try {
+          window.speechSynthesis.cancel();
+          const clean = rawText
+            .replace(/<[^>]*>/g, ' ')
+            .replace(/[*_#•]/g, ' ')
+            .replace(/&nbsp;/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+          if (!clean) return;
+
+          const isEn = lang === 'en' || (typeof lang === 'string' && lang.startsWith('en'));
+          const voices = window.speechSynthesis.getVoices() || [];
+          let selectedVoice = null;
+          if (isEn) {
+            selectedVoice = voices.find(v => v.lang === 'en-IN') ||
+                            voices.find(v => v.lang.startsWith('en') && v.name.includes('India')) ||
+                            voices.find(v => v.lang.startsWith('en-US')) ||
+                            voices.find(v => v.lang.startsWith('en'));
+          } else {
+            selectedVoice = voices.find(v => v.lang === 'hi-IN') ||
+                            voices.find(v => v.lang.includes('hi') || v.name.includes('Hindi')) ||
+                            voices.find(v => v.lang.startsWith('en-IN'));
+          }
+
+          const u = new SpeechSynthesisUtterance(clean);
+          u.lang = isEn ? (selectedVoice ? selectedVoice.lang : 'en-IN') : (selectedVoice ? selectedVoice.lang : 'hi-IN');
+          if (selectedVoice) u.voice = selectedVoice;
+          u.rate = isEn ? 1.0 : 0.95;
+          u.pitch = 1.0;
+          u.volume = 1.0;
+          window.speechSynthesis.speak(u);
+        } catch (e) {
+          console.warn("Speech synthesis error:", e);
+        }
+      },
+
+      toggleMessageSpeech(btn, text) {
+        if (!('speechSynthesis' in window)) return;
+        if (window.speechSynthesis.speaking) {
+          window.speechSynthesis.cancel();
+          if (btn) btn.innerHTML = '<span>🔊 Bol kar sunao / Read Aloud</span>';
+          return;
+        }
+        const currentLang = (typeof VayuSettings !== 'undefined' && VayuSettings.language) ? VayuSettings.language : 'hinglish';
+        this.speakText(text, currentLang);
+        if (btn) {
+          btn.innerHTML = '<span>⏹️ Stop Voice</span>';
+          const checkTimer = setInterval(() => {
+            if (!window.speechSynthesis.speaking) {
+              btn.innerHTML = '<span>🔊 Bol kar sunao / Read Aloud</span>';
+              clearInterval(checkTimer);
+            }
+          }, 500);
+        }
+      },
+
+      async askQuestion(query, wasVoice = false) {
         const hubView = document.getElementById('vayuai-hub-view');
         const chatThread = document.getElementById('vayuai-chat-thread');
         const history = document.getElementById('vayuai-chat-history');
@@ -13666,7 +13821,8 @@ html.light-theme .mobile-nav-item.active span {
             const currentAQI = VayuForecastEngine.currentAQI || 388;
             const stationName = VayuForecastEngine.currentStation ? VayuForecastEngine.currentStation.name : 'Punjabi Bagh';
             const next24Pt = forecast[24] || forecast[forecast.length - 1];
-            const max48AQI = Math.max(...(forecast.slice(0, 48).map(p => p.aqi) || [388]));
+            const aqiList = (forecast || []).slice(0, 48).map(p => p.aqi).filter(Number.isFinite);
+            const max48AQI = aqiList.length ? Math.max(...aqiList) : currentAQI;
             const max48Stage = VayuForecastEngine.getGrapStage ? VayuForecastEngine.getGrapStage(max48AQI) : { stage: 'STAGE III' };
             const clientKey = localStorage.getItem('vayuai_gemini_api_key') || '';
 
@@ -13707,9 +13863,9 @@ html.light-theme .mobile-nav-item.active span {
               qLower.includes('nami')
             );
 
-            // Resilient timeout controller for 8s (permits Cloud Gemini generation)
+            // Resilient timeout controller for 15s (permits Cloud Gemini generation on cold starts)
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 8000);
+            const timeoutId = setTimeout(() => controller.abort(), 15000);
 
             const res = await fetch('/api/vayuai/chat', {
               signal: controller.signal,
@@ -13810,6 +13966,13 @@ html.light-theme .mobile-nav-item.active span {
                 </div>
               `}
               <div class="text-[#EEF0EC] leading-relaxed">${responseData.text}</div>
+
+              <!-- Voice Listen / Read Aloud Button -->
+              <div class="mt-2.5 flex items-center gap-2">
+                <button type="button" onclick="VayuAIAssistant.toggleMessageSpeech(this, decodeURIComponent('${encodeURIComponent(responseData.text)}'))" class="text-[10.5px] font-mono px-2.5 py-1 rounded-lg bg-[#131513] border border-[#262A26] hover:border-[#7FD4FF] text-[#7FD4FF] flex items-center gap-1.5 transition cursor-pointer active:scale-95">
+                  <span>🔊 Bol kar sunao / Read Aloud</span>
+                </button>
+              </div>
               
               ${responseData.showWeatherCard && responseData.weatherData ? `
                 <div class="my-3 p-3 rounded-[12px] bg-[#191C19] border border-[#262A26] flex flex-col gap-2.5">
@@ -13862,6 +14025,11 @@ html.light-theme .mobile-nav-item.active span {
           </div>
         `;
         history.scrollTop = history.scrollHeight;
+
+        // Auto read-aloud if asked via voice!
+        if (wasVoice && responseData && responseData.text) {
+          this.speakText(responseData.text, currentLang);
+        }
       },
 
       computeDynamicAnswer(query, isOffline = false) {
@@ -13906,6 +14074,25 @@ html.light-theme .mobile-nav-item.active span {
         const precip = (typeof VayuWeather !== 'undefined' && VayuWeather.precipProb) ? VayuWeather.precipProb : 15;
         const humid = (typeof VayuWeather !== 'undefined' && VayuWeather.humidity) ? VayuWeather.humidity : 72;
         const cond = currDay ? (respondInEn ? currDay.conditionEn : currDay.conditionHi) : (respondInEn ? 'Partly Cloudy' : 'बादल छाए रहेंगे');
+
+        // 0. VOICE / AUDIO HEARING TEST ("Sun pa rahe ho?", "Meri aawaz aa rahi hai?", "Can you hear me?")
+        if (
+          q.includes('sun pa rahe') || q.includes('sun rahe ho') || q.includes('meri aawaz') || 
+          q.includes('meri awaz') || q.includes('can you hear') || q.includes('are you listening') || 
+          q.includes('hear me') || q.includes('voice check') || q.includes('mic test') || 
+          q.includes('testing mic') || q.includes('aawaz aa rahi') || q.includes('awaz aa rahi') || 
+          q.includes('sunai de raha') || q.includes('kya tum sun') || q.includes('sun rhe ho')
+        ) {
+          return {
+            isOffline: isOffline !== false,
+            text: respondInEn
+              ? `Yes, I can hear you loud and clear! 😊🎙️<br><br>I am <b>VayuAI</b>, your atmospheric intelligence companion for Delhi-NCR. Currently at <b>${stationName}</b>, the live AQI is <b>${currentAQI} (${meta.label})</b> and temperature is <b>${temp}°C</b>.<br><br>You can speak or ask about: school closures, 7-day weather radar, GRAP emergency rules, morning walk safety, or clean commute routes!`
+              : `Haan ji, main aapki aawaz bilkul saaf sun raha hoon! 😊🎙️<br><br>Main <b>VayuAI</b> hoon — Delhi-NCR ka atmospheric intelligence companion. Abhi <b>${stationName}</b> par live AQI <b>${currentAQI} (${meta.label})</b> aur taapman <b>${temp}°C</b> chal raha hai.<br><br>Aap mujhse live mausam, school ki chutti, GRAP emergency niyam, morning walk safety ya Odd-Even ke baare me bejhijhak poochiye!`,
+            leadMeta: metaLead(`VayuAI Voice Assistant · Station ${stationName}`),
+            confidence: 99,
+            tabLink: 'overview'
+          };
+        }
 
         // 1. GREETINGS & "HOW ARE YOU" / "KAISE HO"
         if (
@@ -14395,7 +14582,11 @@ html.light-theme .mobile-nav-item.active span {
       if (!modal) return;
       modal.classList.remove('hidden');
 
-      const lang = (typeof VayuSettings !== 'undefined' && VayuSettings.language) ? VayuSettings.language : (localStorage.getItem('vayu_language') || 'en');
+      if (VayuAIAssistant && !VayuAIAssistant.speechRecognizer) {
+        VayuAIAssistant.initSpeechRecognition();
+      }
+
+      const lang = (typeof VayuSettings !== 'undefined' && VayuSettings.language) ? VayuSettings.language : (localStorage.getItem('vayu_language') || 'hinglish');
       const isEn = lang === 'en';
       const isOff = !navigator.onLine || (VayuAIAssistant && VayuAIAssistant.isOffline);
 
@@ -14405,15 +14596,23 @@ html.light-theme .mobile-nav-item.active span {
       const chipsHeading = document.getElementById('vayuai-voice-chips-heading');
       const chipsSub = document.getElementById('vayuai-voice-chips-sub');
       const transcriptBox = document.getElementById('vayuai-voice-transcript-box');
+      const fallbackInput = document.getElementById('vayuai-voice-fallback-input');
       const pulse = document.getElementById('vayuai-voice-pulse-1');
 
-      if (titleEl) titleEl.innerText = isEn ? "VayuAI Voice Assistant" : "VayuAI Voice Assistant";
+      if (fallbackInput) fallbackInput.value = '';
+      if (titleEl) titleEl.innerText = "VayuAI Voice Assistant";
       if (subEl) subEl.innerText = isEn ? "Speak or tap any query below for instant answers" : "Boliye ya neeche kisi sawaal par tap karein";
       if (chipsHeading) chipsHeading.innerText = isEn ? "What to say or ask? (Direct 1-Tap Answers)" : "Kya bole ya poochein? (Direct 1-Tap Answers)";
       if (chipsSub) chipsSub.innerText = isEn ? "Tap any inquiry below for an immediate response:" : "Neeche kisi bhi sawaal par tap karke instant answer payein:";
       if (transcriptBox) {
         transcriptBox.innerText = isEn ? '"Listening... (e.g. Will schools be closed tomorrow?)"' : '"Sun raha hoon... (e.g. Kal school band rahenge kya?)"';
-        transcriptBox.classList.add('italic');
+        transcriptBox.className = "w-full p-3 rounded-xl bg-[#0A0B0A] border border-[#262A26] text-xs text-[#EEF0EC] min-h-[48px] flex items-center justify-center italic leading-relaxed text-center";
+      }
+
+      // Sync speech language button highlight
+      if (VayuAIAssistant && VayuAIAssistant.setSpeechLanguage) {
+        const defaultSpeechLang = isEn ? 'en-IN' : 'hi-IN';
+        VayuAIAssistant.setSpeechLanguage(VayuAIAssistant.speechLang || defaultSpeechLang);
       }
 
       if (isOff) {
@@ -14426,13 +14625,14 @@ html.light-theme .mobile-nav-item.active span {
         if (pulse) pulse.classList.remove('hidden');
         if (statusEl) {
           statusEl.innerText = isEn ? "🎙️ Listening... Please speak your question" : "🎙️ Sun raha hoon... Boliye apna sawaal";
-          statusEl.className = "text-xs font-bold text-[#7FD4FF] font-mono mt-1";
+          statusEl.className = "text-xs font-bold text-[#7FD4FF] font-mono mt-1 animate-pulse";
         }
-        if (VayuAIAssistant && VayuAIAssistant.speechRecognizer && !VayuAIAssistant.isListening) {
+        if (VayuAIAssistant && VayuAIAssistant.speechRecognizer) {
+          VayuAIAssistant.isListeningSession = true;
           try {
             VayuAIAssistant.speechRecognizer.start();
           } catch (e) {
-            console.warn("Speech start skipped or active:", e);
+            console.warn("Speech start note:", e);
           }
         }
       }
@@ -14456,30 +14656,42 @@ html.light-theme .mobile-nav-item.active span {
     function closeVayuAIVoiceModal() {
       const modal = document.getElementById('vayuai-voice-modal');
       if (modal) modal.classList.add('hidden');
-      if (VayuAIAssistant && VayuAIAssistant.speechRecognizer && VayuAIAssistant.isListening) {
-        try {
-          VayuAIAssistant.speechRecognizer.stop();
-        } catch (e) {}
+      if (VayuAIAssistant) {
+        VayuAIAssistant.isListeningSession = false;
+        if (VayuAIAssistant.speechRecognizer && VayuAIAssistant.isListening) {
+          try {
+            VayuAIAssistant.speechRecognizer.stop();
+          } catch (e) {}
+        }
       }
     }
 
     function selectVayuAIVoicePrompt(query) {
       closeVayuAIVoiceModal();
       if (VayuAIAssistant && typeof VayuAIAssistant.askQuestion === 'function') {
-        VayuAIAssistant.askQuestion(query);
+        VayuAIAssistant.askQuestion(query, true);
       }
     }
 
     function submitVayuAIVoiceTranscript() {
       const transcriptBox = document.getElementById('vayuai-voice-transcript-box');
-      let q = transcriptBox ? transcriptBox.innerText.replace(/^["']|["']$/g, '').trim() : '';
+      const fallbackInput = document.getElementById('vayuai-voice-fallback-input');
+      let q = '';
+      if (fallbackInput && fallbackInput.value.trim()) {
+        q = fallbackInput.value.trim();
+        fallbackInput.value = '';
+      } else if (VayuAIAssistant && VayuAIAssistant.currentSpeechTranscript && VayuAIAssistant.currentSpeechTranscript.trim()) {
+        q = VayuAIAssistant.currentSpeechTranscript.trim();
+      } else if (transcriptBox && !transcriptBox.classList.contains('italic')) {
+        q = transcriptBox.innerText.replace(/^["']|["']$/g, '').trim();
+      }
       closeVayuAIVoiceModal();
-      if (q && !q.toLowerCase().includes('sun raha hoon') && !q.toLowerCase().includes('listening')) {
-        VayuAIAssistant.askQuestion(q);
+      if (q && !q.toLowerCase().includes('sun raha hoon') && !q.toLowerCase().includes('listening') && !q.toLowerCase().includes('boliye')) {
+        VayuAIAssistant.askQuestion(q, true);
       } else {
-        const lang = (typeof VayuSettings !== 'undefined' && VayuSettings.language) ? VayuSettings.language : 'en';
+        const lang = (typeof VayuSettings !== 'undefined' && VayuSettings.language) ? VayuSettings.language : 'hinglish';
         const fallbackQ = lang === 'en' ? "Will schools be closed tomorrow?" : "Kal school band rahenge kya?";
-        VayuAIAssistant.askQuestion(fallbackQ);
+        VayuAIAssistant.askQuestion(fallbackQ, true);
       }
     }
 
